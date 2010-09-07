@@ -395,7 +395,7 @@ public class SimulationToAsciiFileMariaPerez extends java.lang.Object implements
         routingParams.put("v_o",0.6f);
 
         //FILE NAME OF DEM (POINITNG TO METADEM)
-        java.io.File theFile=new java.io.File("/Users/mperezgo/Documents/cuencas/ELKADER/Rasters/Topography/TurkeyatEldorado90m/ned_30_ascii.metaDEM");
+        java.io.File theFile=new java.io.File("/Users/mperezgo/Documents/cuencas/ELKADER/Rasters/Topography/TurkeyatElkader90m/dem-3arc.metaDEM");
         hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
         metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".dir"));
         
@@ -406,6 +406,7 @@ public class SimulationToAsciiFileMariaPerez extends java.lang.Object implements
         metaModif.setFormat("Integer");
         int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
 
+        //Eldorado (x,y) are (481,618) Elkader (x,y) are (1476,151)
         //A BASIC SIMULATION WITH FAKE RAINFALL (ALL SIMULATION PARAMETERS ARE GIVEN HERE)
         //A STORM WITH 20 mm/h FOR 5 min WITH CONSTANT VELOCITY GIVEN BY "v_o"
         //new SimulationToAsciiFileMariaPerez(481,618,matDirs,magnitudes,metaModif,  40.0f,20.0f,0.0f,2,new java.io.File("/Users/mperezgo/Documents/cuencas/ELKADER/SimulationResults"),routingParams).executeSimulation();
