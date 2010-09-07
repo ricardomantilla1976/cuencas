@@ -235,7 +235,7 @@ public class SimulationToAsciiFileMariaPerez extends java.lang.Object implements
                 newfile.write("Link-"+linksStructure.completeStreamLinksArray[i]+",");
         }
         
-        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay thisBasinEqSys=new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay(linksStructure,thisHillsInfo,thisNetworkGeom,routingType);
+        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay_Runoff_Coeff thisBasinEqSys=new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay_Runoff_Coeff(linksStructure,thisHillsInfo,thisNetworkGeom,routingType);
 
         //RESETING INFILTRATION TO 0 AFTER ARGUMENT HAS BEEN PASSED TO THE CONSTRUCTOR
 //        infilMan=new hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager(linksStructure,0.0f);
@@ -317,8 +317,11 @@ public class SimulationToAsciiFileMariaPerez extends java.lang.Object implements
         }
         
         newfile.write("\n");
+        newfile.write("\n");
         
         double[] myRain=new double[linksStructure.contactsArray.length];
+
+        newfile.write("Time,Mean Areal Rainfall[mm/hr]\n");
 
         for (int k=0;k<numPeriods;k++) {
             //System.out.println("Initiating time step "+k);
@@ -332,7 +335,6 @@ public class SimulationToAsciiFileMariaPerez extends java.lang.Object implements
             newfile.write("\n");
         }
         newfile.write("\n");
-        java.util.Date endTime1=new java.util.Date();
         System.out.println("Done Writing Precipitations");
         newfile.close();
         bufferout.close();
@@ -390,7 +392,7 @@ public class SimulationToAsciiFileMariaPerez extends java.lang.Object implements
         routingParams.put("lambda1",0.3f);
         routingParams.put("lambda2",-0.1f);
         
-        routingParams.put("v_o",1.0f);
+        routingParams.put("v_o",0.6f);
 
         //FILE NAME OF DEM (POINITNG TO METADEM)
         java.io.File theFile=new java.io.File("/Users/mperezgo/Documents/cuencas/ELKADER/Rasters/Topography/TurkeyatEldorado90m/ned_30_ascii.metaDEM");
@@ -412,7 +414,7 @@ public class SimulationToAsciiFileMariaPerez extends java.lang.Object implements
         stormFile=new java.io.File("C:/Users/mperezgo/Documents/cuencas/ELKADER/Rasters/Hydrology/EventIowaJuneMPE/May15toJune26/hydroNexrad.metaVHC");
 
         //A MORE COMPLEX SIMULATION WITH ACTUAL RAINFALL (ALL SIMULATION PARAMETERS ARE GIVEN HERE)
-        new SimulationToAsciiFileMariaPerez(481,618,matDirs,magnitudes,metaModif,  stormFile,0.0f,2,new java.io.File("/Users/mperezgo/Documents/cuencas/ELKADER/SimulationResults"),routingParams).executeSimulation();
+        new SimulationToAsciiFileMariaPerez(481,618,matDirs,magnitudes,metaModif,  stormFile,1.0f,2,new java.io.File("/Users/mperezgo/Documents/cuencas/ELKADER/SimulationResults"),routingParams).executeSimulation();
     }
 }
 
