@@ -514,8 +514,7 @@ public class Basin extends Object{
 
             int numCols=localMetaRaster.getNumCols();
 
-            //for(int i=0;i<headsTails[0].length;i++){
-            for(int i=0;i<2;i++){
+            for(int i=0;i<headsTails[0].length;i++){
                 int xOulet=headsTails[0][i]%numCols;
                 int yOulet=headsTails[0][i]/numCols;
 
