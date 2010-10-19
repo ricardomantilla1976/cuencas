@@ -87,7 +87,7 @@ public class NetworkEquations_HillDelay_Runoff_Coeff implements hydroScalingAPI.
         lamda2=linksHydraulicInfo.getLamda2();
         CkArray=linksHydraulicInfo.getCkArray();
         
-        vh=0.1;
+        vh=0.014;
 
         generalRunoffCoeff=basinHillSlopesInfo.infiltRate(0,0);
         
@@ -162,7 +162,7 @@ public class NetworkEquations_HillDelay_Runoff_Coeff implements hydroScalingAPI.
             
             maxInt=Math.max(maxInt,hillPrecIntensity);
             
-            effPrecip=Math.max(hillPrecIntensity-basinHillSlopesInfo.infiltRate(i,time),0.0);
+            effPrecip=Math.max(hillPrecIntensity-0.0,0.0);
             
             qs=vh*lengthArray[0][i]/areasHillArray[0][i]*input[i+nLi]/1e3*3.6;
             

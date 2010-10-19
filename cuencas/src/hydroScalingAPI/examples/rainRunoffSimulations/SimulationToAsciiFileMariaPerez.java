@@ -389,10 +389,10 @@ public class SimulationToAsciiFileMariaPerez extends java.lang.Object implements
 
         //PARAMETERS TO MODIFY FOR CHANNEL VELOCITY FUNCTION\
 
-        routingParams.put("lambda1",0.3f);
-        routingParams.put("lambda2",-0.1f);
+        routingParams.put("lambda1",0.25f);
+        routingParams.put("lambda2",-0.15f);
         
-        routingParams.put("v_o",0.6f);
+        routingParams.put("v_o",0.88f);
 
         //FILE NAME OF DEM (POINITNG TO METADEM)
         java.io.File theFile=new java.io.File("/Users/mperezgo/Documents/cuencas/ELKADER/Rasters/Topography/TurkeyatElkader90m/dem-3arc.metaDEM");
@@ -406,7 +406,7 @@ public class SimulationToAsciiFileMariaPerez extends java.lang.Object implements
         metaModif.setFormat("Integer");
         int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
 
-        //Eldorado (x,y) are (481,618) Elkader (x,y) are (1476,151)
+        //Eldorado (x,y) are (983,402) Elkader (x,y) are (1476,151)
         //A BASIC SIMULATION WITH FAKE RAINFALL (ALL SIMULATION PARAMETERS ARE GIVEN HERE)
         //A STORM WITH 20 mm/h FOR 5 min WITH CONSTANT VELOCITY GIVEN BY "v_o"
         //new SimulationToAsciiFileMariaPerez(481,618,matDirs,magnitudes,metaModif,  40.0f,20.0f,0.0f,2,new java.io.File("/Users/mperezgo/Documents/cuencas/ELKADER/SimulationResults"),routingParams).executeSimulation();
@@ -415,7 +415,7 @@ public class SimulationToAsciiFileMariaPerez extends java.lang.Object implements
         stormFile=new java.io.File("C:/Users/mperezgo/Documents/cuencas/ELKADER/Rasters/Hydrology/EventIowaJuneMPE/May15toJune26/hydroNexrad.metaVHC");
 
         //A MORE COMPLEX SIMULATION WITH ACTUAL RAINFALL (ALL SIMULATION PARAMETERS ARE GIVEN HERE)
-        new SimulationToAsciiFileMariaPerez(481,618,matDirs,magnitudes,metaModif,  stormFile,1.0f,2,new java.io.File("/Users/mperezgo/Documents/cuencas/ELKADER/SimulationResults"),routingParams).executeSimulation();
+        new SimulationToAsciiFileMariaPerez(1476,151,matDirs,magnitudes,metaModif,  stormFile,0.5f,2,new java.io.File("/Users/mperezgo/Documents/cuencas/ELKADER/SimulationResults"),routingParams).executeSimulation();
     }
 }
 
