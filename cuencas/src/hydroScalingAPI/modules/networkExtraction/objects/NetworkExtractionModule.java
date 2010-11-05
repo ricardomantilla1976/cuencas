@@ -1079,9 +1079,23 @@ public class NetworkExtractionModule implements Runnable {
      */
     public static void main(String[] Arguments){
         
-        /*Arguments=new String[] { "/hidrosigDataBases/Continental_US_database/Rasters/Topography/Dd_Basins_30_ArcSec/B_01/84928846.metaDEM",
-                                 "/hidrosigDataBases/Continental_US_database/Rasters/Topography/Dd_Basins_30_ArcSec/B_01/84928846.dem"};*/
-        
+ 
+System.out.print("ASTER");
+        Arguments=new String[] { "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/asterdem.metaDEM",
+                                 "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/asterdem.dem"};
+//
+//System.out.print("5meter");
+//        Arguments=new String[] { "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/5meters/5meterc1.metaDEM",
+//                                 "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/5meters/5meterc1.dem"};
+//
+//System.out.print("3meter");
+//        Arguments=new String[] { "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/3meters/3meterc1.metaDEM",
+//                                 "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/3meterc1.dem"};
+//
+//System.out.print("2meter");
+//        Arguments=new String[] { "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/2meterc1.metaDEM",
+//                                 "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/2meterc1.dem"};
+
         /*Arguments=new String[] { "/hidrosigDataBases/Continental_US_database/Rasters/Topography/Dd_Basins_30_ArcSec/B_02/31908796.metaDEM",
                                  "/hidrosigDataBases/Continental_US_database/Rasters/Topography/Dd_Basins_30_ArcSec/B_02/31908796.dem"};*/
         

@@ -78,7 +78,7 @@ public class HydroNexradRes_time extends Object {
        System.out.println("Start to read the files"+"ListFiles.length = " + ListFiles.length);
 
         double[] timestamp = new double[ListFiles.length];
-        double sumtime,sum;
+        float sumtime,sum;
 
         for(int il=0;il<ListFiles.length;il++){
         sum=0;
@@ -104,7 +104,8 @@ public class HydroNexradRes_time extends Object {
                     sum=sum+1;}
 
                     } catch (NumberFormatException NFE){matrixtime[tt][i][j] = -9999;}
-                if(matrixtime[tt][i][j]>=0) matrixtime[tt][i][j]=matrixtime[tt][i][j]*(60/IniResolution); //rain rate in mm/hour
+                //if(matrixtime[tt][i][j]>=0) matrixtime[tt][i][j]=matrixtime[tt][i][j]*(60/IniResolution); //rain rate in mm/hour
+                if(matrixtime[tt][i][j]>=0) matrixtime[tt][i][j]=matrixtime[tt][i][j]; //rain rate in mm/hour
                 }
               }
              System.out.println("sumtime = " +sumtime);
@@ -199,9 +200,9 @@ public class HydroNexradRes_time extends Object {
         }
 
     String vhcFilename;
-        System.out.println("vhcFilename=H00070802_R1504_G_.."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".asc");
-    if (type.equals("Bin")){vhcFilename="H00070802_R1504_G_."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".vhc";}
-    else {vhcFilename="H00070802_R1504_G_."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".asc";}
+        System.out.println("vhcFilename=hydroNexrad."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".asc");
+    if (type.equals("Bin")){vhcFilename="hydroNexrad."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".vhc";}
+    else {vhcFilename="hydroNexrad."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".asc";}
     return vhcFilename;
     }
 

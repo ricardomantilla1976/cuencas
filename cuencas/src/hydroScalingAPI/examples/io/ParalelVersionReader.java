@@ -1,397 +1,1775 @@
-/*
- * To change this template, choose Tools | Templates
+
+/* To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hydroScalingAPI.examples.io;
+
 import java.io.*;
+import java.text.DecimalFormat;
 /**
  *
  * @author pmandapa
  */
-
 import java.io.*;
 import java.util.*;
- 
+
 public class ParalelVersionReader extends Object {
-    
-    private  String[]         variables = new String[8];
-    private  String[]         metaInfo = new String[12];
-    private  String           fileName;
-    float[]          UpsArea;
-    float[]          HortonO;
-    float[]          Qmax;
-    float[]          Tmax;
-    float[]          LinkNumber;
-    int              nlinks;
-    int              nhydro;
-    int              ntime;
-    String[]         IDJ;
-    float[][]        hydrographs;
-    float[]        AvePrec;
-    float[]        nelem;
-    float[][]        HTime;
-    
-    float[]        RTime;
-    private  int              columns,rows;
-    
-    public ParalelVersionReader(java.io.File InputFile)
+
+    private String[] variables = new String[8];
+    private String[] metaInfo = new String[12];
+    private String fileName;
+    int nhydro;
+    int ntime;
+    String[] IDJ;
+    float[][] hydrographs;
+    float[][] Storage2;
+    float[][] Storage1;
+    float[][] Storage0;
+    float[] RRTime;
+    float[][] Rain;
+    float[] nelem;
+    float[][] HTime;
+    int[] xxx;
+    int[] yyy;
+    float[] hydroorder;
+    float[] hydroarea;
+    float[] hydrolat;
+    float[] hydrolong;
+    // Link information from entire basin
+    int[] Linkcode;
+    int[] Linkorder;
+    float[] Linkarea;
+    float[] LinkupsLength;
+    float[] LinkdOutlet;
+    int[] LinkX;
+    int[] LinkY;
+    float[] Linklat;
+    float[] Linklong;
+    float maxdistOutlet;
+    float maxupsarea;
+    int nlinksT;
+    //private  int              columns,rows;
+    float[][] AvePrec;
+    float[][] accum;
+    float[] maxtime;
+    float[] coveragetime;
+    float[] avetime;
+    float[] BCM;
+    float[] PCM;
+    float[] distMaxtime;
+    float[][] RTime;
+    int[] nelemDO;
+    //int     nert;
+    //int[]   xxxS;
+    //int[]   yyyS;
+    int nelemtime;
+    float[] LinknHyd;
+    //float[] LinknRain;
+    float[] Linkn;
+    int[] XLinkn;
+    int[] YLinkn;
+    float[] CodeL;
+    float[] UpsArea;
+    float[] HortonO;
+    float[] xxFile;
+    float[] yyFile;
+    float[] Qmax;
+    float[] Tmax;
+    int nlinks;
+    float[] DistOutlet;
+    float[] meanRainS;
+    float[] accumRainS;
+    float[] maxRainS;
+    float[] TmaxRainS;
+    float[] CoverageS;
+    int nlS;
+    int ntimestep;
+    int NC;
+    int NL;
+    float RES;
+
+    public ParalelVersionReader(java.io.File InputFile, java.io.File LinkAnal, String ident, java.io.File OutFile)
             throws java.io.IOException {
-        
-
-         java.io.File[] lasQueSi=InputFile.listFiles();
-         UpsArea = new float[200000];
-         HortonO = new float[200000];
-         Qmax = new float[200000];
-         LinkNumber = new float[200000];
-         Tmax = new float[200000];
-         hydrographs=new float[1000][8000];
-         AvePrec=new float[8000];
-         nelem=new float[8000];
-         HTime=new float[1000][8000];
-         RTime=new float[8000];
-         IDJ = new String[200000];
-         nlinks=0;
-         nhydro=0;
-         ntime=0;
-
-         System.out.println("lenght - "+lasQueSi.length);
-         for (int i=0;i<lasQueSi.length;i++)
-             {
-             System.out.println("lasQueSi[i] - "+lasQueSi[i]);
 
 
-                 int flag = checkfile(lasQueSi[i]);
-                 if(flag==-1) readFile1(lasQueSi[i]);
-                 if(flag==1) readFile2(lasQueSi[i]);
-             }
-         
-         String FileName=lasQueSi[0].getName();
-         java.io.File theFile;
+        java.io.File[] lasQueSi = InputFile.listFiles();
 
-         theFile=new java.io.File(InputFile+"/sumary.csv");
-         System.out.println("Writing disc1 - "+theFile);
+        if (lasQueSi == null || lasQueSi.length==0) {
+            System.out.println("NO FILES");
+            return;
+        }
 
-         java.io.FileOutputStream salida = new java.io.FileOutputStream(theFile);
-         java.io.BufferedOutputStream bufferout = new java.io.BufferedOutputStream(salida);
-         java.io.OutputStreamWriter newfile = new java.io.OutputStreamWriter(bufferout);
-         newfile.write("order,"+"area,"+"Qmax,"+ "Tmax" + "fileID"+"\n");
-         for (int ii=0;ii<nlinks;ii++){
-             newfile.write(HortonO[ii]+","+UpsArea[ii]+","+Qmax[ii]+","+Tmax[ii]+","+IDJ[ii]+"\n");
-         }
-         newfile.close();
-         bufferout.close();
-
-         // write output file
+        // info for the T and Q max
+        //nLinksT - approximate number of total links
+        int nest = 80000;
+        Linkcode = new int[nest];
+        Linkorder = new int[nest];
+        Linkarea = new float[nest];
+        LinkupsLength = new float[nest];
+        LinkdOutlet = new float[nest];
+        LinkX = new int[nest];
+        LinkY = new int[nest];
+        Linklat = new float[nest];
+        Linklong = new float[nest];
 
 
-         theFile=new java.io.File(InputFile+"/hydrograph.csv");
-         System.out.println("Writing disc1 - "+theFile);
 
-         salida = new java.io.FileOutputStream(theFile);
-         bufferout = new java.io.BufferedOutputStream(salida);
-         newfile = new java.io.OutputStreamWriter(bufferout);
-         int j=0;
-         //IOWA
-         //int[] hyd = {44,136,1,550,600,650,700,nhydro-1};
-         //Cedar River
-         int[] hyd = {1,622,208,550,600,650,700,nhydro-1};
-         double[] matmax=new double[nlinks];
+        LinkAnalysisFile(LinkAnal);
+        int noutlet = (int) (lasQueSi.length / 3) + 20; // approximated number of outlets
+        System.out.println("nlinksT = " + nlinksT + "noutlet = " + noutlet);
+        UpsArea = new float[nlinksT + 1000];
+        HortonO = new float[nlinksT + 1000];
+        xxFile = new float[nlinksT + 1000];
+        yyFile = new float[nlinksT + 1000];
+        Qmax = new float[nlinksT + 1000];
+        Tmax = new float[nlinksT + 1000];
+        DistOutlet = new float[nlinksT + 1000];
+        // info prec space
+        ntimestep = 14000;
+        Linkn = new float[nlinksT + 1000];
+        CodeL = new float[nlinksT + 1000];
+        XLinkn = new int[nlinksT + 1000];
+        YLinkn = new int[nlinksT + 1000];
+        meanRainS = new float[nlinksT + 1000];
+        accumRainS = new float[nlinksT + 1000];
+        maxRainS = new float[nlinksT + 1000];
+        TmaxRainS = new float[nlinksT + 1000];
+        CoverageS = new float[nlinksT + 1000];
+        RRTime = new float[ntimestep];
+//         nlS=0;
+        // info for the hydrographs - Outlet file
+//         nelem=new float[1000];
+        HTime = new float[noutlet][ntimestep];
+        xxx = new int[noutlet];
+        yyy = new int[noutlet];
+        hydroorder = new float[noutlet];
+        hydroarea = new float[noutlet];
+        hydrolat = new float[noutlet];
+        hydrolong = new float[noutlet];
+        nhydro = 0;
 
-         for (int ii=0;ii<ntime;ii++){
-           //for (int jj=0;jj<nhydro;jj++){
-           for (int it=0;it<nhydro;it++)
-           {
-            int new_t_res=it;  
-            newfile.write(hydrographs[it][ii]+",");
-             //j=jj;
-           }
-         
-          newfile.write("\n");
-         }
-         newfile.close();
-         bufferout.close();
+        hydrographs = new float[noutlet][ntimestep];
+        Storage0 = new float[noutlet][ntimestep];
+        Storage1 = new float[noutlet][ntimestep];
+        Storage2 = new float[noutlet][ntimestep];
+        LinknHyd = new float[noutlet]; // = x+3848*y for iowa and cedar river
+//         LinknRain = new float[1000]; // = x+3848*y for iowa and cedar river
+        // info for precipitation - time
+//         RTime=new float[2000][4000];
+//         xxxS=new int[1000];
+//         yyyS=new int[1000];
 
+        int ndistoutlet = (int) Math.ceil(maxdistOutlet / 10);
+        System.out.println("\n" + "max dist outlet = " + maxdistOutlet + "n group - " + ndistoutlet + "\n");
+        Rain = new float[ndistoutlet][ntimestep];
 
-          theFile=new java.io.File(InputFile+"/Time_hydrograph.csv");
-         System.out.println("Writing disc1 - "+theFile);
-
-         salida = new java.io.FileOutputStream(theFile);
-         bufferout = new java.io.BufferedOutputStream(salida);
-         newfile = new java.io.OutputStreamWriter(bufferout);
-         j=0;
-         //IOWA
-         //int[] hyd = {44,136,1,550,600,650,700,nhydro-1};
-         //Cedar River
-
-         for (int ii=0;ii<ntime;ii++){
-            //for (int jj=0;jj<nhydro;jj++){
-           for (int it=0;it<nhydro;it++)
-           {
-            int new_t_res=it;
-            newfile.write(HTime[it][ii]+",");
-             //j=jj;
-
-           }
-
-          newfile.write("\n");
-         }
-         newfile.close();
-         bufferout.close();
-
-         theFile=new java.io.File(InputFile+"/rainfall.csv");
-         System.out.println("Writing disc1 - "+theFile);
-
-         salida = new java.io.FileOutputStream(theFile);
-         bufferout = new java.io.BufferedOutputStream(salida);
-         newfile = new java.io.OutputStreamWriter(bufferout);
-         for (int i=0;i<AvePrec.length;i++) {AvePrec[i]=AvePrec[i]/nelem[i];}
-         for (int ii=0;ii<ntime;ii++){
-           newfile.write(RTime[ii]+","+AvePrec[ii]+"\n");
-           }
-
-         newfile.close();
-         bufferout.close();
-
-         // write output file
-
-    }
-    
-      public void readFile1(java.io.File InputFile) throws java.io.IOException{
-
-          java.io.FileReader ruta;
-          java.io.BufferedReader buffer;
-
-          java.util.StringTokenizer tokens;
-          String linea=null, basura, nexttoken;
-          //System.out.println("InputFile" + InputFile);
-          ruta = new FileReader(InputFile);
-          buffer=new BufferedReader(ruta);
-          String data = buffer.readLine(); // JUMP 3 LINES IN THE BEGINING
-          data = buffer.readLine();
-          data = buffer.readLine();
-          data = buffer.readLine();
-          //READ Horton order
-          //System.out.println("data" + data);
-          tokens = new StringTokenizer(data,",");
-          String temp=new String(tokens.nextToken());
-          //System.out.println("temp   " + temp);
-          int ii=nlinks;
-          //int fileid=InputFile.getName().indexOf("_");
-          //int fileid2=InputFile.getName().indexOf("_",fileid+1);
-         // System.out.println(InputFile.getName()+"fileid - "+fileid + "fileid2  " + fileid2);
-         // System.out.println(InputFile.getName()+"fileid - "+fileid + "fileid2  " + fileid2 + "   " + InputFile.getName().substring(fileid+1,fileid2));
-          //String tt=InputFile.getName().substring(fileid+1,fileid2);
-          while (tokens.hasMoreTokens())
-            {
-            HortonO[ii]=new Float(tokens.nextToken());
-            IDJ[ii]="1";
-            ii=ii+1;
+        accum = new float[ndistoutlet][ntimestep];
+        AvePrec = new float[ndistoutlet][ntimestep];
+        avetime = new float[ntimestep];
+        maxtime = new float[ntimestep];
+        coveragetime = new float[ntimestep];
+        PCM = new float[ntimestep];
+        BCM = new float[ntimestep];
+        distMaxtime = new float[ntimestep];
+        nelemDO = new int[ndistoutlet];
+        //
+        for (int i = 0; i < ntimestep; i++) {
+            avetime[i] = 0.0f;
+            maxtime[i] = 0.0f;
+            coveragetime[i] = 0.0f;
+            PCM[i] = 0.0f;
+            BCM[i] = 0.0f;
+            distMaxtime[i] = 0.0f;
+            for (int j = 0; j < ndistoutlet; j++) {
+                accum[j][i] = 0.0f;
+                AvePrec[j][i] = 0.0f;
             }
+        }
+
+        //nert=0;
+        // Open Link analysis file
+        nelemtime = 0;
+
+        //IDJ = new String[200000];
+        nlinks = 0;
+
+        ntime = 0;
+        double Tinit = 20200320;
+        //double Tinit=2.10387600106333*Math.pow(10, 7);
+        System.out.println("lenght - " + lasQueSi.length);
+        for (int i = 0; i < lasQueSi.length; i++) {
+            System.out.println("lasQueSi[i] - " + lasQueSi[i]);
+
+            int flag = checkfile(lasQueSi[i]);
+            if (flag == -1) {
+                readFile1(lasQueSi[i], Tinit);
+            }
+            if (flag == 1) {
+                readFile2(lasQueSi[i], Tinit);
+            }
+
+            //       if(flag==5) readFile3(lasQueSi[i],Tinit);
+        }
+
+        //GenerateStatisticsRain();
+
+        DecimalFormat df = new DecimalFormat("###");
+        DecimalFormat df1 = new DecimalFormat("###.#");
+        DecimalFormat df2 = new DecimalFormat("###.##");
+        DecimalFormat df3 = new DecimalFormat("###.###");
+
+
+
+        String FileName = lasQueSi[0].getName();
+        java.io.File theFile;
+
+        theFile = new java.io.File(OutFile + "/statistics_links" + ident + ".csv");
+        System.out.println("Writing disc1 - " + theFile);
+
+        java.io.FileOutputStream salida = new java.io.FileOutputStream(theFile);
+        java.io.BufferedOutputStream bufferout = new java.io.BufferedOutputStream(salida);
+        java.io.OutputStreamWriter newfile = new java.io.OutputStreamWriter(bufferout);
+        newfile.write("Linkcode," + "order," + "area," + "Qmax," + "Tmax," + "X," + "Y,"
+                + "distoutlet," + "accumrain," + "meanrain," + "maxrain," + "Timemaxrain,"
+                + "coverage" + "\n");
+        for (int ii = 0; ii < nlinks; ii++) {
+            //newfile.write(HortonO[ii]+","+UpsArea[ii]+","+Qmax[ii]+","+Tmax[ii]+","+IDJ[ii]+"\n");
+            newfile.write(df.format(CodeL[ii]) + "," + df.format(HortonO[ii]) + "," + df2.format(UpsArea[ii]) + "," + df2.format(Qmax[ii]) + "," + df2.format(Tmax[ii])
+                    + "," + LinkX[ii] + "," + LinkY[ii] + "," + df2.format(DistOutlet[ii]) + "," + df2.format(accumRainS[ii])
+                    + "," + df2.format(meanRainS[ii]) + "," + df2.format(maxRainS[ii]) + "," + df2.format(TmaxRainS[ii])
+                    + "," + df2.format(CoverageS[ii]) + "," + df.format(xxFile[ii]) + "," + df.format(yyFile[ii]) + "\n");
+        }
+        newfile.close();
+        bufferout.close();
+
+        // write output file
+
+
+        theFile = new java.io.File(OutFile + "/hydrograph" + ident + ".csv");
+        System.out.println("Writing disc1 - " + theFile);
+
+        salida = new java.io.FileOutputStream(theFile);
+        bufferout = new java.io.BufferedOutputStream(salida);
+        newfile = new java.io.OutputStreamWriter(bufferout);
+        int j = 0;
+        //IOWA
+        //int[] hyd = {44,136,1,550,600,650,700,nhydro-1};
+        //Cedar River
+
+
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(LinknHyd[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydroorder[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydroarea[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydrolat[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydrolong[it] + ",");
+        }
+        newfile.write("\n");
+
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(xxx[it] + ",");
+        }
+        newfile.write("\n");
+
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(yyy[it] + ",");
+        }
+        newfile.write("\n");
+
+        for (int ii = 0; ii < ntime; ii++) {
+            //for (int jj=0;jj<nhydro;jj++){
+            for (int it = 0; it < nhydro; it++) {
+                newfile.write(df2.format(hydrographs[it][ii]) + ",");
+            }
+            newfile.write("\n");
+        }
+        newfile.close();
+        bufferout.close();
+
+
+        theFile = new java.io.File(OutFile + "/Time_hydrograph" + ident + ".csv");
+        System.out.println("Writing disc1 - " + theFile);
+
+        salida = new java.io.FileOutputStream(theFile);
+        bufferout = new java.io.BufferedOutputStream(salida);
+        newfile = new java.io.OutputStreamWriter(bufferout);
+        j = 0;
+        //IOWA
+        //int[] hyd = {44,136,1,550,600,650,700,nhydro-1};
+        //Cedar River
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(LinknHyd[it] + ",");
+        }
+        newfile.write("\n");
+        for (int ii = 0; ii < ntime; ii++) {
+            //for (int jj=0;jj<nhydro;jj++){
+            for (int it = 0; it < nhydro; it++) {
+                newfile.write(HTime[it][ii] + ",");
+            }
+            newfile.write("\n");
+        }
+        newfile.close();
+        bufferout.close();
+
+
+        theFile = new java.io.File(OutFile + "/Storage1" + ident + ".csv");
+        System.out.println("Writing disc1 - " + theFile);
+
+        salida = new java.io.FileOutputStream(theFile);
+        bufferout = new java.io.BufferedOutputStream(salida);
+        newfile = new java.io.OutputStreamWriter(bufferout);
+        j = 0;
+        //IOWA
+        //int[] hyd = {44,136,1,550,600,650,700,nhydro-1};
+        //Cedar River
+
+
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(LinknHyd[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydroorder[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydroarea[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydrolat[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydrolong[it] + ",");
+        }
+        newfile.write("\n");
+        for (int ii = 0; ii < ntime; ii++) {
+            //for (int jj=0;jj<nhydro;jj++){
+            for (int it = 0; it < nhydro; it++) {
+                newfile.write(df2.format(Storage1[it][ii]) + ",");
+            }
+            newfile.write("\n");
+        }
+        newfile.close();
+        bufferout.close();
+
+        theFile = new java.io.File(OutFile + "/Storage0" + ident + ".csv");
+        System.out.println("Writing disc1 - " + theFile);
+
+        salida = new java.io.FileOutputStream(theFile);
+        bufferout = new java.io.BufferedOutputStream(salida);
+        newfile = new java.io.OutputStreamWriter(bufferout);
+        j = 0;
+        //IOWA
+        //int[] hyd = {44,136,1,550,600,650,700,nhydro-1};
+        //Cedar River
+
+
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(LinknHyd[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydroorder[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydroarea[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydrolat[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydrolong[it] + ",");
+        }
+        newfile.write("\n");
+        for (int ii = 0; ii < ntime; ii++) {
+            //for (int jj=0;jj<nhydro;jj++){
+            for (int it = 0; it < nhydro; it++) {
+                newfile.write(df2.format(Storage0[it][ii]) + ",");
+            }
+            newfile.write("\n");
+        }
+        newfile.close();
+        bufferout.close();
+
+
+        theFile = new java.io.File(OutFile + "/Storage2" + ident + ".csv");
+        System.out.println("Writing Storage2 - " + theFile);
+
+        salida = new java.io.FileOutputStream(theFile);
+        bufferout = new java.io.BufferedOutputStream(salida);
+        newfile = new java.io.OutputStreamWriter(bufferout);
+        j = 0;
+        //IOWA
+        //int[] hyd = {44,136,1,550,600,650,700,nhydro-1};
+        //Cedar River
+
+
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(LinknHyd[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydroorder[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydroarea[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydrolat[it] + ",");
+        }
+        newfile.write("\n");
+        for (int it = 0; it < nhydro; it++) {
+            newfile.write(hydrolong[it] + ",");
+        }
+        newfile.write("\n");
+
+
+
+        for (int ii = 0; ii < ntime; ii++) {
+            //for (int jj=0;jj<nhydro;jj++){
+            for (int it = 0; it < nhydro; it++) {
+                newfile.write(df2.format(Storage2[it][ii]) + ",");
+            }
+            newfile.write("\n");
+        }
+        newfile.close();
+        bufferout.close();
+
+        theFile = new java.io.File(OutFile + "/statistics_time" + ident + ".csv");
+        System.out.println("Writing disc1 - " + theFile);
+
+        salida = new java.io.FileOutputStream(theFile);
+        bufferout = new java.io.BufferedOutputStream(salida);
+        newfile = new java.io.OutputStreamWriter(bufferout);
+
+        newfile.write("timeID," + "aveRtime," + "maxRtime," + "distMAxOutl," + "Coverage," + "PCM," + "\n");
+
+        for (int it = 0; it < nelemtime; it++) {
+            avetime[it] = avetime[it] / nlinks;
+            coveragetime[it] = coveragetime[it] / nlinks;
+            if (avetime[it] > 0) {
+                PCM[it] = PCM[it] / (BCM[it] * avetime[it]);
+            } else {
+                PCM[it] = -9.9f;
+            }
+            newfile.write(df2.format(RRTime[it]) + "," + df2.format(avetime[it]) + "," + df2.format(maxtime[it]) + "," + df2.format(distMaxtime[it]) + "," + df2.format(coveragetime[it]) + "," + df2.format(PCM[it]) + "\n");
+        }
+
+        newfile.close();
+        bufferout.close();
+
+        theFile = new java.io.File(OutFile + "/statistics_dist_outlet" + ident + ".csv");
+        System.out.println("Writing disc1 - " + theFile);
+
+        salida = new java.io.FileOutputStream(theFile);
+        bufferout = new java.io.BufferedOutputStream(salida);
+        newfile = new java.io.OutputStreamWriter(bufferout);
+        newfile.write("1,");
+        for (int ig = 1; ig < ndistoutlet; ig++) {
+            newfile.write(ig * 10 + ",");
+        }
+        newfile.write("\n");
+        newfile.write("2,");
+        for (int ig = 0; ig < ndistoutlet; ig++) {
+            newfile.write(nelemDO[ig] + ",");
+        }
+        newfile.write("\n");
+        System.out.println("ndistoutlet - " + ndistoutlet + "  nelemtime" + nelemtime);
+        for (int it = 0; it < nelemtime; it++) {
+            newfile.write(RRTime[it] + ",");
+            for (int ig = 0; ig < ndistoutlet; ig++) {
+                float temp = 0.0f;
+                if (nelemDO[ig] > 0) {
+                    temp = (accum[ig][it] / nelemDO[ig]);
+                } else {
+                    temp = 0.0f;
+                }
+                newfile.write(df2.format(temp) + ",");
+            }
+            newfile.write("\n");
+        }
+
+        newfile.close();
+        bufferout.close();
+    }
+
+    public void LinkAnalysisFile(java.io.File LinkAnal) throws java.io.IOException {
+
+        java.io.FileReader ruta;
+        java.io.BufferedReader buffer;
+
+        java.util.StringTokenizer tokens;
+
+        System.out.println("InputFile" + LinkAnal);
+        ruta = new FileReader(LinkAnal);
+        buffer = new BufferedReader(ruta);
+        String data = buffer.readLine();
+        nlinksT = 0;
+        maxdistOutlet = 0;
+        maxupsarea = 0;
+        while (data != null) {
+            //System.out.println("data" + data);
+            tokens = new StringTokenizer(data, ",");
+            String temp = new String(tokens.nextToken());
+
+            Linkcode[nlinksT] = new Integer(tokens.nextToken());
+            //System.out.println("Linkcode[nlinksT]" + Linkcode[nlinksT]);
+            float tempf = new Float(tokens.nextToken());
+            Linkorder[nlinksT] = (int) Math.ceil(tempf);
+            //System.out.println("Linkorder[nlinksT]" + Linkorder[nlinksT]);
+            Linkarea[nlinksT] = new Float(tokens.nextToken());
+            //System.out.println("Linkarea[nlinksT]" + Linkarea[nlinksT]);
+            LinkupsLength[nlinksT] = new Float(tokens.nextToken());
+            LinkdOutlet[nlinksT] = new Float(tokens.nextToken());
+            //System.out.println("LinkX[nlinksT]" + LinkX[nlinksT]);
+            LinkX[nlinksT] = new Integer(tokens.nextToken());
+            LinkY[nlinksT] = new Integer(tokens.nextToken());
+            Linklat[nlinksT] = new Float(tokens.nextToken());
+            Linklong[nlinksT] = new Float(tokens.nextToken());
+
+            NC = new Integer(tokens.nextToken());
+            NL = new Integer(tokens.nextToken());
+            RES = new Float(tokens.nextToken());
+            if (LinkdOutlet[nlinksT] > maxdistOutlet) {
+                maxdistOutlet = LinkdOutlet[nlinksT];
+            }
+            if (Linkarea[nlinksT] > maxupsarea) {
+                maxupsarea = Linkarea[nlinksT];
+            }
+            nlinksT = nlinksT + 1;
             data = buffer.readLine();
-           //READ Horton order
-           tokens = new StringTokenizer(data,",");
-           temp=new String(tokens.nextToken());
-           ii=nlinks;
-           while (tokens.hasMoreTokens())
-             {
-             UpsArea[ii]=new Float(tokens.nextToken());
-             ii=ii+1;
-             }
-           for (int j=0;j<7;j++) data = buffer.readLine();
-           //READ Upstream Area
-           tokens = new StringTokenizer(data,",");
-           temp=new String(tokens.nextToken());
-           ii=nlinks;
-           while (tokens.hasMoreTokens())
-             {
-             Qmax[ii]=new Float(tokens.nextToken());
-             ii=ii+1;
-             }
-           data = buffer.readLine();
-           tokens = new StringTokenizer(data,",");
-           temp=new String(tokens.nextToken());
-           ii=nlinks;
-           double Tinit=2.10387600106333*Math.pow(10, 7);
 
-           while (tokens.hasMoreTokens())
-             {
-             double number1;
-             double number2;
-             temp=new String(tokens.nextToken());
-             double TTemp=0;
-             if(temp.indexOf("E")<1) {TTemp=Double.valueOf(temp);}
-             else {
-             number1=Double.valueOf(temp.substring(0,temp.indexOf("E")));
-             number2=Double.valueOf(temp.substring((temp.indexOf("E")+1),temp.length()));
-             TTemp=number1 * Math.pow(10,number2);
-             }
+        }
+        System.out.println("\n" + "nlinksT = " + nlinksT + "\n");
+    }
 
-//System.out.println(InputFile + "       string " + temp);
-             
-            
-             TTemp=(TTemp-Tinit)/(24*60);
-             Tmax[ii]=(float) TTemp;
-             ii=ii+1;
-             }
-             nlinks=ii;
-           // READ RAIN
-           data = buffer.readLine();
-           data = buffer.readLine();
-           data = buffer.readLine();
-           int j=0;
-           
-           while (data != null)
-             {
-             double number1;
-             double number2;
-             tokens = new StringTokenizer(data,",");
-             
-             temp=new String(tokens.nextToken());
-             double TTemp=0;
-             if(temp.indexOf("E")<1) {TTemp=Double.valueOf(temp);}
-             else {
-             number1=Double.valueOf(temp.substring(0,temp.indexOf("E")));
-             number2=Double.valueOf(temp.substring((temp.indexOf("E")+1),temp.length()));
-             TTemp=number1 * Math.pow(10,number2);}
+    public void readFile1(java.io.File InputFile, double Ti) throws java.io.IOException {
 
-             TTemp=(TTemp-Tinit)/(24*60);
-             RTime[j]=(float) TTemp;
-             while (tokens.hasMoreTokens())
-             {
-              AvePrec[j]=AvePrec[j]+new Float(tokens.nextToken());
-              nelem[j]=nelem[j]+1;
-             }
-             
-             j=j+1;
-             data = buffer.readLine();
-             if(j>=8000)data =null;
+        java.io.FileReader ruta;
+        java.io.BufferedReader buffer;
 
-             }
-                    
+        java.util.StringTokenizer tokens;
+        String linea = null, basura, nexttoken;
+        //System.out.println("InputFile" + InputFile);
+        ruta = new FileReader(InputFile);
+        buffer = new BufferedReader(ruta);
+        String data = buffer.readLine(); // JUMP 3 LINES IN THE BEGINING
+        data = buffer.readLine();
+        data = buffer.readLine();
+        data = buffer.readLine(); // Horton
+        //READ Horton order
+        System.out.println("data" + data);
+        if (data.length()>0) tokens = new StringTokenizer(data, ",");
+        else return;
+        String temp = new String(tokens.nextToken());
+
+        String filename = InputFile.getName();
+        String FileDir = InputFile.getParent();
+
+        int i1 = filename.indexOf("_") + 1;
+        int i2 = filename.indexOf("_", i1);
+        int i3 = filename.indexOf("_", i1) + 1;
+        int i4 = filename.indexOf("-", i1);
+
+        int xx = Integer.valueOf(filename.substring(i1, i2));
+        int yy = Integer.valueOf(filename.substring(i3, i4));
+
+
+
+        //System.out.println("temp   " + temp);
+        int ii = nlinks;
+        //int fileid=InputFile.getName().indexOf("_");
+        //int fileid2=InputFile.getName().indexOf("_",fileid+1);
+        // System.out.println(InputFile.getName()+"fileid - "+fileid + "fileid2  " + fileid2);
+        // System.out.println(InputFile.getName()+"fileid - "+fileid + "fileid2  " + fileid2 + "   " + InputFile.getName().substring(fileid+1,fileid2));
+        //String tt=InputFile.getName().substring(fileid+1,fileid2);
+        while (tokens.hasMoreTokens()) {
+            HortonO[ii] = new Float(tokens.nextToken());
+            xxFile[ii] = xx;
+            yyFile[ii] = yy;
+            //IDJ[ii]="1";
+            ii = ii + 1;
+        }
+        data = buffer.readLine();
+        //System.out.println("upstream area" + data);
+        //READ Horton order
+        if (data.length()>0) tokens = new StringTokenizer(data, ",");
+        else return;
+        temp = new String(tokens.nextToken());
+        ii = nlinks;
+        while (tokens.hasMoreTokens()) {
+            UpsArea[ii] = new Float(tokens.nextToken());
+            ii = ii + 1;
+        }
+
+        for (int j = 0; j < 9; j++) {
+            data = buffer.readLine();
+        }
+        //READ Upstream Area
+        if (data.length()>0) tokens = new StringTokenizer(data, ",");
+        else return;
+        temp = new String(tokens.nextToken());
+        ii = nlinks;
+
+        while (tokens.hasMoreTokens()) {
+            String tt = tokens.nextToken();
+            Qmax[ii] = new Float(tt);
+//            try{
+//                Qmax[ii] = new Float(tt);
+//            }
+//            catch(java.lang.NumberFormatException nfe)
+//            {
+//                Qmax[ii] =-9.9f;
+//            }
+//            
+            //System.out.println(ii+"Qmax[ii]" + Qmax[ii]);
+            ii = ii + 1;
+
+        }
+        data = buffer.readLine();
+        if (data.length()>0) tokens = new StringTokenizer(data, ",");
+         else return;
+        temp = new String(tokens.nextToken());
+        ii = nlinks;
+
+
+        while (tokens.hasMoreTokens()) {
+            float TTemp = new Float(tokens.nextToken());
+            Tmax[ii] = TTemp - (float) Ti;
+            ii = ii + 1;
+        }
+
+        // READ RAIN
+        data = buffer.readLine();
+        data = buffer.readLine();
+        data = buffer.readLine();
+        // Read link info
+        if (data.length()>0) tokens = new StringTokenizer(data, ",");
+          else return;
+        temp = new String(tokens.nextToken());
+        ii = nlinks;
+
+        while (tokens.hasMoreTokens()) {
+            Linkn[ii] = new Float(tokens.nextToken());
+            ii = ii + 1;
+        }
+        data = buffer.readLine();
+        // Read link X
+        tokens = new StringTokenizer(data, ",");
+        temp = new String(tokens.nextToken());
+
+        ii = nlinks;
+
+        while (tokens.hasMoreTokens()) {
+            XLinkn[ii] = new Integer(tokens.nextToken());
+            ii = ii + 1;
+        }
+
+        data = buffer.readLine();
+        // Read link Y
+        tokens = new StringTokenizer(data, ",");
+        temp = new String(tokens.nextToken());
+        //ii=nlinks;
+
+        for (int i = nlinks; i < ii; i++) {
+            YLinkn[i] = new Integer(tokens.nextToken());
+        }
+
+        data = buffer.readLine();
+        data = buffer.readLine();
+        // Read link Y
+        int iif = 0;
+        int jt = 0;
+        float[] tempRRtime = new float[5000];
+        int nel = ii - nlinks + 10;
+        float[][] tempRain = new float[nel][5000];
+
+        while (data != null) {
+            tokens = new StringTokenizer(data, ",");
+            double TTemp = 0;
+            RRTime[jt] = new Float(tokens.nextToken());
+            tempRRtime[jt] = RRTime[jt];
+            iif = 0;
+
+            while (tokens.hasMoreTokens()) {
+                tempRain[iif][jt] = new Float(tokens.nextToken());
+                iif = iif + 1;
+            }
+            jt = jt + 1;
+            data = buffer.readLine();
+        }
+
+        nelemtime = jt;
+
+        // Statistics per link!!!!!
+        for (int il = nlinks; il < ii; il++) {//find the distance to outlet
+
+            int its = 0;
+            int ndogroup = -99;
+
+            while (its < nlinksT) {
+                if (XLinkn[il] == LinkX[its] && YLinkn[il] == LinkY[its]) {
+                    DistOutlet[il] = LinkdOutlet[its];
+                    CodeL[il] = Linkcode[its];
+                    its = nlinksT;
+                }
+                its = its + 1;
+            }
+            ndogroup = (int) Math.floor(DistOutlet[il] / 10);
+            if (ndogroup >= 0) {
+                nelemDO[ndogroup] = nelemDO[ndogroup] + 1;
+            }
+            accumRainS[il] = 0;
+            meanRainS[il] = 0;
+            maxRainS[il] = 0;
+            CoverageS[il] = 0;
+            // use its to find relative position in the rainfall vector
+            its = il - nlinks;
+            for (int it = 0; it < nelemtime; it++) {
+                accumRainS[il] = accumRainS[il] + tempRain[its][it];
+                meanRainS[il] = meanRainS[il] + tempRain[its][it];
+                if (maxRainS[il] < tempRain[its][it]) {
+                    maxRainS[il] = tempRain[its][it];
+                }
+                TmaxRainS[il] = tempRRtime[it];
+                if (tempRain[its][it] > 0.01) {
+                    CoverageS[il] = CoverageS[il] + 1;
+                }
+                if (ndogroup >= 0) {
+                    accum[ndogroup][it] = accum[ndogroup][it] + tempRain[its][it];
+                }
+            }
+            if (nelemtime > 0) {
+                meanRainS[il] = meanRainS[il] / nelemtime;
+            }
+            if (nelemtime > 0) {
+                CoverageS[il] = CoverageS[il] / nelemtime;
+            }
+            // Statistics per group of dist to outlet and time
+
+        }
+        System.out.println("start statistics for time");
+        // Statistics per time step
+        for (int it = 0; it < nelemtime; it++) {
+
+            for (int il = nlinks; il < ii; il++) {
+                int its = il - nlinks;
+                avetime[it] = avetime[it] + tempRain[its][it];
+                if (maxtime[it] < tempRain[its][it]) {
+                    maxtime[it] = tempRain[its][it];
+                    distMaxtime[it] = DistOutlet[il];
+                }
+
+                if (tempRain[its][it] > 0.01) {
+                    coveragetime[it] = coveragetime[it] + 1;
+                }
+                PCM[it] = PCM[it] + DistOutlet[il] * tempRain[its][it];
+                BCM[it] = BCM[it] + DistOutlet[il];
+            }
+
+        }
+        System.out.println("nlinks initial  " + nlinks + "nlinks final " + ii + "difference" + (ii - nlinks));
+        nlinks = ii;
+
+        ruta.close();
+        buffer.close();
+    }
+
+    public void readFile2(java.io.File InputFile, double Ti) throws java.io.IOException {
+
+        java.io.FileReader ruta;
+        java.io.BufferedReader buffer;
+
+        java.util.StringTokenizer tokens = null;
+        String linea = null, basura, nexttoken;
+        int linejump = 20;
+        ruta = new FileReader(InputFile);
+        buffer = new BufferedReader(ruta);
+        String data = "test"; // JUMP 1 LINE IN THE BEGINING
+        data = buffer.readLine(); // JUMP 2 LINE IN THE BEGINING
+        data = buffer.readLine(); // JUMP 2 LINE IN THE BEGINING
+        String temp;
+
+        String filename = InputFile.getName();
+        String FileDir = InputFile.getParent();
+
+        int i1 = filename.indexOf("_") + 1;
+        int i2 = filename.indexOf("_", i1);
+        int i3 = filename.indexOf("_", i1) + 1;
+        int i4 = filename.indexOf("-", i1);
+
+        int ii = nhydro;
+        xxx[ii] = Integer.valueOf(filename.substring(i1, i2));
+        yyy[ii] = Integer.valueOf(filename.substring(i3, i4));
+        LinknHyd[ii] = xxx[ii] + yyy[ii] * NC;
+        int flag = 0;
+        int i = 0;
+        while (flag == 0) {   //System.out.println("i  " + i+"LinknHyd[ii]   " + LinknHyd[ii] + "Linkcode[i]   " +Linkcode[i]);
+            if (Linkcode[i] == LinknHyd[ii]) {
+                hydroorder[ii] = Linkorder[i];
+                hydroarea[ii] = Linkarea[i];
+                hydrolat[ii] = Linklat[i];
+                hydrolong[ii] = Linklong[i];
+                flag = 1;
+            }
+            i = i + 1;
+            if (i == Linkcode.length && flag == 0) {
+                hydroorder[ii] = -9;
+                hydroarea[ii] = -9.9f;
+                hydrolat[ii] = -9.9f;
+                hydrolong[ii] = -9.9f;
+                flag = 1;
+                break;
+            }
+        }
+        System.out.println("LinknHyd[ii]   " + LinknHyd[ii] + "xxx   " + xxx[ii] + "yyy    " + yyy[ii]);
+        int j = 0;
+        data = buffer.readLine();
+        //READ Horton order
+        if (flag == 0) {
+            System.out.println("Didnt find link   " + LinknHyd[ii]);
+        }
+        if (flag == 1) {
+            while (data != null) {
+
+                double number1;
+                double number2;
+                tokens = new StringTokenizer(data, ",");
+
+                temp = new String(tokens.nextToken());
+                double TTemp;
+                if (temp.indexOf("E") < 1) {
+                    TTemp = Double.valueOf(temp);
+                    TTemp = TTemp - (Ti);
+                } else {
+                    number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                    number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                    TTemp = number1 * Math.pow(10, number2);
+                    TTemp = (TTemp - Ti);
+                }
+//System.out.println(ii + "temp" +temp+ "j" + j);
+                HTime[ii][j] = (float) TTemp;
+
+                // check if there is an E
+
+                temp = new String(tokens.nextToken());
+                if (temp.indexOf("E") < 1) {
+                    hydrographs[ii][j] = Float.valueOf(temp);
+                } else {
+                    number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                    number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                    hydrographs[ii][j] = (float) (number1 * Math.pow(10, number2));
+                }
+
+                for (int cc = 0; cc <= linejump; cc++) {
+                    data = buffer.readLine();
+                }
+                data = buffer.readLine();
+                j = j + 1;
+
+
+                if (j >= ntimestep) {
+                    data = null;
+                }
+//System.out.println(ii + "temp" +temp+ "j" + j);
+
+            }
+            nhydro = nhydro + 1;
+            ntime = Math.max(ntime, j);
+            ruta.close();
+            buffer.close();
+
+            String FilenameStorage = filename.replace("Outlet", "Storage");
+            ruta = new FileReader(FileDir + "/" + FilenameStorage);
+            buffer = new BufferedReader(ruta);
+
+            data = buffer.readLine(); // JUMP 2 LINE IN THE BEGINING
+            data = buffer.readLine(); // JUMP 2 LINE IN THE BEGINING
+            data = buffer.readLine(); // DATA LINE
+            j = 0;
+            while (data != null) {
+
+                double number1;
+                double number2;
+                tokens = new StringTokenizer(data, ","); // jump time stamp
+                temp = new String(tokens.nextToken()); // jump time stamp
+                temp = new String(tokens.nextToken());
+
+                if (temp.indexOf("E") < 1) {
+                    Storage0[ii][j] = Float.valueOf(temp);
+                } else {
+                    number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                    number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                    Storage0[ii][j] = (float) (number1 * Math.pow(10, number2));
+                }
+
+                temp = new String(tokens.nextToken());
+
+                if (temp.indexOf("E") < 1) {
+                    Storage1[ii][j] = Float.valueOf(temp);
+                } else {
+                    number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                    number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                    Storage1[ii][j] = (float) (number1 * Math.pow(10, number2));
+                }
+
+                temp = new String(tokens.nextToken());
+
+                if (temp.indexOf("E") < 1) {
+                    Storage2[ii][j] = Float.valueOf(temp);
+                } else {
+                    number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                    number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                    Storage2[ii][j] = (float) (number1 * Math.pow(10, number2));
+                }
+
+                for (int cc = 0; cc <= linejump; cc++) {
+                    data = buffer.readLine();
+                }
+                data = buffer.readLine();
+                j = j + 1;
+
+
+                if (j >= ntimestep) {
+                    data = null;
+                }
+            }
+        }
+
+
+
 
     }
 
-      public void readFile2(java.io.File InputFile) throws java.io.IOException{
+//      public void GenerateStatisticsRain() throws java.io.IOException{
+//
+//          java.io.FileReader ruta;
+//          java.io.BufferedReader buffer;
+//
+//          java.util.StringTokenizer tokens;
+//          String linea=null, basura, nexttoken;
+//          //System.out.println("InputFile" + InputFile);
+//          ruta = new FileReader(InputFile);
+//          buffer=new BufferedReader(ruta);
+//          String data = buffer.readLine();
+//          for (int i=0;i<6;i++) data = buffer.readLine(); // JUMP 1+5 LINES IN THE BEGINING
+//          data = buffer.readLine(); // Read x
+//
+//          //System.out.println("data" + data);
+//          tokens = new StringTokenizer(data,",");
+//          String temp=new String(tokens.nextToken()); // header
+//          //System.out.println("temp   " + temp);
+//
+//          float[] xx=new float[20000];
+//          float[] yy=new float[20000];
+//
+//          int irel=0;
+//          while (tokens.hasMoreTokens())
+//            {
+//            xx[irel]=new Float(tokens.nextToken());
+//            //IDJ[ii]="1";
+//            irel=irel+1;
+//            }
+//            data = buffer.readLine();
+//           //READ Horton order
+//           tokens = new StringTokenizer(data,",");
+//           temp=new String(tokens.nextToken());
+//            irel=0;
+//           while (tokens.hasMoreTokens())
+//             {
+//             yy[irel]=new Float(tokens.nextToken());
+//             irel=irel+1;
+//             }
+//           int ii=nlS;
+//           for (int j=0;j<xx.length;j++)
+//           {Linkn[ii] = xx[j]+yy[j]*3848;
+//           ii=ii+1;
+//           }
+//           data = buffer.readLine(); // jump distance to outlet
+//           data = buffer.readLine(); // meanRainfall
+//
+//           tokens = new StringTokenizer(data,",");
+//           temp=new String(tokens.nextToken());
+//           ii=nlS;
+//           while (tokens.hasMoreTokens())
+//             {
+//             meanRainS[ii]=new Float(tokens.nextToken());
+//             ii=ii+1;
+//             }
+//
+//           data = buffer.readLine(); // accumRainfall
+//           tokens = new StringTokenizer(data,",");
+//           temp=new String(tokens.nextToken());
+//           ii=nlS;
+//           while (tokens.hasMoreTokens())
+//             {
+//             accumRainS[ii]=new Float(tokens.nextToken());
+//             ii=ii+1;
+//             }
+//
+//           data = buffer.readLine(); // maxRainfall
+//           tokens = new StringTokenizer(data,",");
+//           temp=new String(tokens.nextToken());
+//           ii=nlS;
+//           while (tokens.hasMoreTokens())
+//             {
+//            maxRainS[ii]=new Float(tokens.nextToken());
+//             ii=ii+1;
+//             }
+//
+//           data = buffer.readLine(); // maxRainfall
+//           tokens = new StringTokenizer(data,",");
+//           temp=new String(tokens.nextToken());
+//           ii=nlS;
+//           while (tokens.hasMoreTokens())
+//             {
+//            float ttemp=new Float(tokens.nextToken());
+//            TmaxRainS[ii]=ttemp-(float)Ti;
+//            ii=ii+1;
+//             }
+//
+//
+//           data = buffer.readLine(); // CoverageS
+//           tokens = new StringTokenizer(data,",");
+//           temp=new String(tokens.nextToken());
+//           ii=nlS;
+//           while (tokens.hasMoreTokens())
+//             {
+//            CoverageS[ii]=new Float(tokens.nextToken());
+//            ii=ii+1;
+//             }
+//
+//          nlS=ii;
+//
+//          String filename=InputFile.getName();
+//          int i1=filename.indexOf("_")+1;
+//          int i2=filename.indexOf("_",i1)-1;
+//          int i3=filename.indexOf("_",i1)+1;
+//          int i4=filename.indexOf("-",i1)-1;
+//
+//
+//          xxxS[nert] = Integer.valueOf(filename.substring(i1,i2));
+//          yyyS[nert] = Integer.valueOf(filename.substring(i3,i4));
+//
+//          LinknRain[nert]=xxxS[nert]+yyyS[nert]*3848;
+//
+//
+//          for (int i=0;i<3;i++)   data = buffer.readLine();
+//           data = buffer.readLine(); // read first line of
+//          //READ Horton order
+//           int it=0;
+//           System.out.print("nert" + nert +"\n");
+//           while (data != null)
+//           {  //System.out.print("it" + it);
+//               tokens = new StringTokenizer(data,",");
+//               float tt=new Float(tokens.nextToken());
+//               RTime[nert][it]=tt-(float)Ti;
+//               Coverage[nert][it]=new Float(tokens.nextToken());
+//               AvePrec[nert][it]=new Float(tokens.nextToken());
+//               Stddev[nert][it]=new Float(tokens.nextToken());
+//               max[nert][it]=new Float(tokens.nextToken());
+//               accum[nert][it]=new Float(tokens.nextToken());
+//               PCM[nert][it]=new Float(tokens.nextToken());
+//               BCM[nert][it]=new Float(tokens.nextToken());
+//               data = buffer.readLine(); // read first line of
+//               it=it+1;
+//           }
+//           nelemtime=it;
+//           nert=nert+1;
+//
+//    }
+//
+    public static int checkfile(java.io.File OutputFile) throws java.io.IOException {
 
-          java.io.FileReader ruta;
-          java.io.BufferedReader buffer;
+        String FileName = OutputFile.getName();
 
-          java.util.StringTokenizer tokens = null;
-          String linea=null, basura, nexttoken;
+        int flag = FileName.indexOf("Outlet");
+        if (flag != -1) {
+            flag = 1;
+        }
+        if (flag == -1) {
+            flag = FileName.indexOf("complete");
+            if (flag != -1) {
+                flag = 2;
+            }
+        }
+        if (flag == -1) {
+            flag = FileName.indexOf("sumary");
+            if (flag != -1) {
+                flag = 3;
+            }
+        }
+        if (flag == -1) {
+            flag = FileName.indexOf("rainfall");
+            if (flag != -1) {
+                flag = 4;
+            }
+        }
+        if (flag == -1) {
+            flag = FileName.indexOf("Prec");
+            if (flag != -1) {
+                flag = 5;
+            }
+        }
+        if (flag == -1) {
+            flag = FileName.indexOf("hydrograph");
+            if (flag != -1) {
+                flag = 3;
+            }
+        }
+        if (flag == -1) {
+            flag = FileName.indexOf("sumrainT");
+            if (flag != -1) {
+                flag = 3;
+            }
+        }
+        if (flag == -1) {
+            flag = FileName.indexOf("sumrainS");
+            if (flag != -1) {
+                flag = 3;
+            }
+        }
 
-          ruta = new FileReader(InputFile);
-          buffer=new BufferedReader(ruta);
-          String data = "test"; // JUMP 1 LINE IN THE BEGINING
-          data = buffer.readLine(); // JUMP 2 LINE IN THE BEGINING
-          data = buffer.readLine(); // JUMP 2 LINE IN THE BEGINING
-          String temp;
-           int ii=nhydro;
-           double Tinit=2.10387600106333*Math.pow(10, 7);
+        if (flag == -1) {
+            flag = FileName.indexOf("Storage");
+            if (flag != -1) {
+                flag = 6;
+            }
+        }
 
-           int j=0;
-              data = buffer.readLine();
-          //READ Horton order
+        if (flag == -1) {
+            flag = FileName.indexOf("Tile_");
+            if (flag != -1) {
+                flag = 7;
+            }
+        }
 
-           while (data != null)
-           {
-               double number1;
-               double number2;
-               tokens = new StringTokenizer(data,",");
-
-               temp=new String(tokens.nextToken());
-               number1=Double.valueOf(temp.substring(0,temp.indexOf("E")));
-               number2=Double.valueOf(temp.substring((temp.indexOf("E")+1),temp.length()));
-
-               double TTemp=number1 * Math.pow(10,number2);
-               TTemp=(TTemp-Tinit);
-               HTime[ii][j]=(float) TTemp;
-               temp=new String(tokens.nextToken());
-               // check if there is an E
-
-
-             if(temp.indexOf("E")<1) {hydrographs[ii][j]=Float.valueOf(temp);}
-             else {
-              number1=Double.valueOf(temp.substring(0,temp.indexOf("E")));
-              number2=Double.valueOf(temp.substring((temp.indexOf("E")+1),temp.length()));
-              hydrographs[ii][j]=(float)(number1 * Math.pow(10,number2));}
-
-                j=j+1;
-                data = buffer.readLine();
-                if(j>=1000)data =null;
-//System.out.println(ii + "temp" +temp+ "j" + j);
-           
-           }
-            nhydro=nhydro+1;
-            ntime=Math.max(ntime,j);
-
-}
-
-public static int checkfile(java.io.File OutputFile) throws java.io.IOException{
-
-        String FileName=OutputFile.getName();
-
-        int flag=FileName.indexOf("Outlet");
-        if(flag!=-1) flag=1;
-        if(flag==-1) 
-           {flag=FileName.indexOf("complete");   
-            if (flag!=-1) flag=2;}
-        if(flag==-1) 
-           {flag=FileName.indexOf("sumary");   
-            if (flag!=-1) flag=3;}
-        if(flag==-1)
-           {flag=FileName.indexOf("rainfall");
-            if (flag!=-1) flag=4;}
-        if(flag==-1)
-           {flag=FileName.indexOf("hydrograph");
-            if (flag!=-1) flag=3;}
 
         return flag;
     }
 
-
-    public static ArrayList<File> getFileList(File dir) throws FileNotFoundException{
+    public static ArrayList<File> getFileList(File dir) throws FileNotFoundException {
         ArrayList<File> result = new ArrayList<File>();
         File[] files = dir.listFiles();
         List<File> tempfiles = Arrays.asList(files);
-        for(File file : files){
+        for (File file : files) {
             result.add(file);
-        }        
+        }
         return result;
     }
-    
-    public static void main(String[] args) throws IOException {
-      
-        int[] space = {25,40};
+
+    /**
+     * Tests for the class
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+
+
+        //mainparam(args);
+        //mainRES(args);
+        mainClearCleek(args);
+    }
+
+    public static void mainparam(String args[]) {
+
+        float[] lamb1 = {0.2f};
         //int[] time = {};
-        int[] time = {1,3,7};
+        float[] vo = {0.3f};
         float[][] matrix_temp;
-        int NDecRes;    // number of time we would like to reduce the spatial resolution
-        int new_t_res;
+        float NDecRes;    // number of time we would like to reduce the spatial resolution
+        float new_t_res;
+        int nc = 3848;
+        for (float is : lamb1) {
+            NDecRes = is;
+            for (float it : vo) {
+                new_t_res = it;
+                //File folder = new File("/usr/home/rmantill/luciana/Parallel/event2008FIXEDrr0.4/3IowaRiver/hydroNexrad/" +NDecRes+ "/"+new_t_res +"/");
+                File folder = new File("/usr/home/rmantill/luciana/Parallel/event2008FIXEDrr0.40_0.65_0.95/3CedarRiver/hydroNexrad/" + NDecRes + "/" + new_t_res + "/");
+                File outfolder = new File("/usr/home/rmantill/luciana/Parallel/event2008FIXEDrr0.40_0.65_0.95/3CedarRiver/results/");
+                outfolder.mkdirs();
+                //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
+                File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+                System.out.println("folder - " + folder);
+                System.out.print(folder);
+                try {
+                    String str = "blabla";
+                    new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                } catch (java.io.IOException IOE) {
+                    System.out.print(IOE);
+                    System.exit(0);
+                }
+            }
+        }
+    }
 
-        for (int is : space)
-           {
-           NDecRes=is;
-           for (int it : time)
-           {
-            new_t_res=it;
-           // File folder = new File("D:/CUENCAS/CedarRapids/simulation/RadarAgreg_v2/CedarRapids_SatRC1.00/AveragedIowaRiver_0.4_0.2_-0.1/");
-            File folder = new File("E:/CUENCAS/CedarRapids/snow/simulation/snow/3IowaRiver_6h/" +NDecRes+"/"+ new_t_res +"/");
+    public static void mainRES(String args[]) {
+
+        int nc = 3848;
+//        int[] PrecAr = {120,60,15};
+//        float[] lam2 = {-0.15f};
+//        float[] lam1 = {0.25f};
+//        float[] v_o = {0.9f};
+//        float[] vostAr = {0.0f,0.15f,0.3f};
+//
+//        for (float vo : v_o) {
+//            float VO = vo;
+//            for (float l2 : lam2) {
+//                float L2 = l2;
+//                for (float l1 : lam1) {
+//                    float L1 = l1;
+//                for (int pr : PrecAr) {
+//                    int PR = pr;
+//                    for (float vst : vostAr) {
+//                    float VST = vst;
+//
+//
+//           //File folder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS/3ClearCreek/FIXED2/RoutingT5/HillT4/HillVelocityT3/VO0.28/VS0.5/LSCS0.2/IC0.0");
+//
+//
+//                    File folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/" + PR + "/"+ VO + "/" + L1 + "/" + L2 + "/"+ VST + "/");
+//
+//
+//                    File outfolder = new File("/usr/home/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/resultsv3/");
+//                    outfolder.mkdirs();
+//////////////////////// GENERATED WITH LINKANALYSIS
+//                    //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
+//                    File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+//                    //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2817_713.csv"); // Clear Creek
+//
+//
+//                    try {
+//                        String str = "Hg_PR" + PR + "VO"+ VO + "L1" + L1 + "L2" + L2 + "VST"+ VST+"ORDER5";
+//                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+//                    } catch (java.io.IOException IOE) {
+//                        System.out.print(IOE);
+//                        System.exit(0);
+//                    }
+//
+//                }
+//            }
+//        }}}
 
 
-            System.out.println("folder - "+folder);
-            System.out.print(folder);
-            try{
+        int[] PrecAr2 = {120, 60, 15};
+        float[] lam22 = {-0.15f, -0.1f, -0.2f};
+        float[] lam12 = {0.25f, 0.2f, 0.3f};
+        float[] v_o2 = {0.85f, 0.95f};
+        float[] vostAr2 = {0.0f};
+        for (float vo : v_o2) {
+            float VO = vo;
+            for (float l2 : lam22) {
+                float L2 = l2;
+                for (float l1 : lam12) {
+                    float L1 = l1;
+                    for (int pr : PrecAr2) {
+                        int PR = pr;
+                        for (float vst : vostAr2) {
+                            float VST = vst;
+                            //File folder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS/3ClearCreek/FIXED2/RoutingT5/HillT4/HillVelocityT3/VO0.28/VS0.5/LSCS0.2/IC0.0");
 
-            new ParalelVersionReader(folder);
-            } catch (java.io.IOException IOE){
-            System.out.print(IOE);
-            System.exit(0);}
-           }
-          }
-   }
 
+                            File folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/" + PR + "/" + VO + "/" + L1 + "/" + L2 + "/" + VST + "/");
+
+
+                            File outfolder = new File("/usr/home/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/resultsv3/");
+                            outfolder.mkdirs();
+////////////////////// GENERATED WITH LINKANALYSIS
+                            //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
+                            File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+                            //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2817_713.csv"); // Clear Creek
+
+
+                            try {
+                                String str = "Hg_PR" + PR + "VO" + VO + "L1" + L1 + "L2" + L2 + "VST" + VST + "ORDER5";
+                                new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                            } catch (java.io.IOException IOE) {
+                                System.out.print(IOE);
+                                System.exit(0);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    public static void mainClearCleek(String args[]) {
+
+
+
+//////
+        //int nc=4424; //ClearCreek - 10 meters
+        int nc = 3848; //ClearCreek -90 metere USGS
+
+         String[] AllSimName = {"5DEMLIDAR"};
+//        String[] AllSimName = {"90DEMUSGS",
+//        "30DEMLIDAR",
+//        "5DEMLIDAR",
+//            "10DEMLIDAR",
+//            "ASTER",
+//            "60DEMLIDAR",
+//            "10DEMLIDAR",
+//            "10DEMUSGS","5DEMLIDAR"};
+        //5DEMLIDAR
+//               String[] AllSimName = {"ASTER",
+//                   "60DEMLIDAR",
+//            "10DEMLIDAR",
+//            "5DEMLIDAR",
+//            "30DEMUSGS",
+//            "10DEMUSGS"};
+      //  String[] AllSimName = {"90DEMUSGS",
+//"3ClearCreek",
+//"3ClearCreek",
+//         String[] AllRain = {"3ClearCreek",
+//         "3ClearCreek_15_180",
+//         "3ClearCreek_1_180",
+//         "3ClearCreek_15_15",};
+        String[] AllRain = {"ClearCreek",
+                        "3ClearCreek_PERSIAN",
+            "3ClearCreek_TRMM",
+            "3ClearCreek",
+         "3ClearCreek_15_180",
+         "3ClearCreek_1_180",
+         "3ClearCreek_15_15",
+            "3CedarRiver_PERSIAN",
+            "3CedarRiver_TRMM",
+            "3CedarRiver_15_180",
+
+            };
+
+        
+ // String[] AllRain = {"3CedarRiver_15_180","3CedarRiver_TRMM"};
+        int nsim = AllSimName.length;
+        int nbas = AllRain.length;
+
+        for (int i = 0; i < nsim; i++) {
+            for (int ib = 0; ib < nbas; ib++) {
+
+                System.out.println("Running BASIN " + AllSimName[i]);
+                System.out.println("Running BASIN " + AllRain[ib]);
+
+                String SimName = AllSimName[i];
+                String BasinName = AllRain[ib];
+                File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
+                //
+//
+                if (SimName.equals("5DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo8052_497.csv"); // 10METER Clear Creek
+                }
+                if (SimName.equals("10DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo4025_244.csv"); // 10METER Clear Creek
+                }
+                if (SimName.equals("20DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2013_122.csv"); // 10METER Clear Creek
+                }
+                if (SimName.equals("30DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo1341_82.csv"); // 10METER Clear Creek //File
+                }
+                if (SimName.equals("60DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo670_41.csv"); // 10METER Clear Creek //File
+                }
+                if (SimName.equals("90DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo447_27.csv"); // 10METER Clear Creek //File
+                }                   //LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+                if (SimName.equals("90DEMUSGS")) {
+                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2817_713.csv"); // 90METER Clear Creek
+                }
+                if (SimName.equals("ASTER")) {
+                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo1596_298.csv");
+                }
+                if (BasinName.indexOf("3CedarRiver") > 0 && SimName.equals("90DEMUSGS")) {
+                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv");
+                }
+
+                      if (BasinName.indexOf("Cedar") > 0) {
+                   LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv");        }
+
+
+                //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+                //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo4025_244.csv"); // 10METER Clear Creek
+                //        float[] PH = {0.5f,0.1f,0.2f,0.4f,0.3f,0.0f};
+//        float[] Phi = {0.5f,0.1f,0.2f};
+////
+//1111111 RT=2 (cte vel). HillT=0 (const runoff), HillVel=0 (no hill delay), RR=1.0
+                File outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                File folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                        + "RoutT_2/"
+                        + "/HillT_0/"
+                        + "/HillVelT_0"
+                        + "/RR_1");
+               if (folder.exists() ) {
+                String[] folStr=folder.list();
+                int Str=folStr.length;
+               if (Str>0){
+                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                    outfolder.mkdirs();
+
+                    try {
+                        String str = "1RoutT_2HillT_0HillVelT_0_RR_1";
+                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                    } catch (java.io.IOException IOE) {
+                        System.out.print(IOE);
+                        System.exit(0);
+                    }
+                }}
+//C2222222 RT=2 (cte vel). HillT=0 (const runoff), HillVel=0 (no hill delay), RR=0.5
+
+                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                        + "RoutT_2/"
+                        + "/HillT_0/"
+                        + "/HillVelT_0"
+                        + "/RR_0.5");
+
+                 if (folder.exists() ) {
+                String[] folStr=folder.list();
+                int Str=folStr.length;
+               if (Str>0){
+                   outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+
+                    outfolder.mkdirs();
+                    try {
+                        String str = "2RoutT_2HillT_0HillVelT_0_RR_0.5";
+                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                    } catch (java.io.IOException IOE) {
+                        System.out.print(IOE);
+                        System.exit(0);
+                    }
+                }}
+                //C333333 RT=2 (cte vel). HillT=1 (const runoff), HillVel=1 (cte hill delay), RR=0.5
+                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                        + "RoutT_2/"
+                        + "/HillT_1/"
+                        + "/HillVelT_0_v50"
+                        + "/RR_0.5");
+
+               if (folder.exists() ) {
+                String[] folStr=folder.list();
+                int Str=folStr.length;
+               if (Str>0){
+                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                    outfolder.mkdirs();
+                    try {
+                        String str = "3RoutT_2HillT_1HillVelT_0_v50_RR_0.5";
+                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                    } catch (java.io.IOException IOE) {
+                        System.out.print(IOE);
+                        System.exit(0);
+                    }
+                }}
+                //C444444 RT=2 (cte vel). HillT=1 (const runoff), HillVel=3 (no hill delay), RR=0.5
+                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                        + "RoutT_2/"
+                        + "/HillT_1/"
+                        + "/HillVelT_3"
+                        + "/RR_0.5");
+
+                if (folder.exists()) {
+                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                    outfolder.mkdirs();
+                    try {
+                        String str = "4RoutT_2HillT_1HillVelT_3_RR_0.5";
+                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                    } catch (java.io.IOException IOE) {
+                        System.out.print(IOE);
+                        System.exit(0);
+                    }
+                }
+                //C555555 RT=5 (cte vel). HillT=0 (const runoff), HillVel=0 (no hill delay), RR=1.0
+                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                        + "RoutT_5/"
+                        + "/HillT_0/"
+                        + "/HillVelT_0"
+                        + "/RR_1");
+
+                if (folder.exists()) {
+                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                    outfolder.mkdirs();
+                    try {
+                        String str = "5RoutT_5HillT_0HillVelT_0_RR_1";
+                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                    } catch (java.io.IOException IOE) {
+                        System.out.print(IOE);
+                        System.exit(0);
+                    }
+                }
+                //C666666 RT=5 (cte vel). HillT=0 (const runoff), HillVel=0 (no hill delay), RR=0.5
+                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                        + "RoutT_5/"
+                        + "/HillT_0/"
+                        + "/HillVelT_0"
+                        + "/RR_0.5");
+                if (folder.exists()) {
+                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                    outfolder.mkdirs();
+                    try {
+                        String str = "6RoutT_5HillT_0HillVelT_0_RR_0.5";
+                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                    } catch (java.io.IOException IOE) {
+                        System.out.print(IOE);
+                        System.exit(0);
+                    }
+                }
+
+
+                 folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                + "RoutT_5/"
+                + "/HillT_1/"
+                + "/HillVelT_3"
+                + "/RR_0.5lambda0.4");
+
+            if (folder.exists()) {
+                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                    outfolder.mkdirs();
+                    try {
+                        String str = "6RoutT_5HillT_1HillVelT_3_RR_0.5Lambda0.4";
+                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                    } catch (java.io.IOException IOE) {
+                        System.out.print(IOE);
+                        System.exit(0);
+                    }
+                }
+
+            folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                + "RoutT_5/"
+                + "/HillT_0/"
+                + "/HillVelT_0"
+                + "/RR_0.5lambda0.4/");
+
+                       if (folder.exists()) {
+                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                    outfolder.mkdirs();
+                    try {
+                        String str = "6RoutT_5HillT_0HillVelT_0_RR_0.5lambda0.4";
+                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                    } catch (java.io.IOException IOE) {
+                        System.out.print(IOE);
+                        System.exit(0);
+                    }
+                }
+
+                //C7777777 RT=5 (cte vel). HillT=1 (const runoff), HillVel=0 (cte hill delay), RR=0.5
+                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                        + "RoutT_5/"
+                        + "/HillT_1/"
+                        + "/HillVelT_0_v50"
+                        + "/RR_0.5");
+                if (folder.exists()) {
+                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                    outfolder.mkdirs();
+                    try {
+                        String str = "7RoutT_5HillT_1HillVelT_0_v50_RR_0.5";
+                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                    } catch (java.io.IOException IOE) {
+                        System.out.print(IOE);
+                        System.exit(0);
+                    }
+                }
+                //C8888888 RT=5 (cte vel). HillT=1 (const runoff), HillVel=3 (no hill delay), RR=0.5
+                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                        + "RoutT_5/"
+                        + "/HillT_1/"
+                        + "/HillVelT_3"
+                        + "/RR_0.5");
+                if (folder.exists()) {
+                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                    outfolder.mkdirs();
+                    try {
+                        String str = "8RoutT_5HillT_1HillVelT_3_RR_0.5";
+                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                    } catch (java.io.IOException IOE) {
+                        System.out.print(IOE);
+                        System.exit(0);
+                    }
+                }
+
+
+
+                float[] vsAr = {0.0025f};
+                float[] PH = {0.1f};
+                float[] Phi = {0.1f};
+                float[] IaAr = {0.02f};
+
+                for (float voo : vsAr) {
+                    float vsub = voo;
+                    for (float in1 : PH) {
+                        float p1 = in1;
+                        for (float in2 : Phi) {
+                            float p2 = in2;
+                            for (float ia1 : IaAr) {
+                                float ia = ia1;
+//C999999 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - spattially constant
+                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                                        + "Rout_2Hill_3CteRC130_HVelCte50/"
+                                        + "/IA" + ia
+                                        + "/VS" + vsub
+                                        + "/UnsO" + p2
+                                        + "/PH" + p1);
+                                if (folder.exists()) {
+                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder.mkdirs();
+////////////////////// GENERATED WITH LINKANALYSIS
+                                    System.out.println("folder - " + folder);
+                                    System.out.print(folder);
+                                    try {
+
+                                        String str = "9Rout_2Hill_3CteRC130_HVelCte50_" + ia + "vsub" + vsub + "PH" + p1 + "UnsO" + p2;
+                                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                                    } catch (java.io.IOException IOE) {
+                                        System.out.print(IOE);
+                                        //   System.exit(0);
+                                    }
+                                }
+
+                                //C10 RT=5 (cte vel). HillT=3 , HillVel=3 (hill veloc variable), SCS method - spattially constant
+                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                                        + "Rout_5Hill_3CteRC130_HVelCte50/"
+                                        + "/IA" + ia
+                                        + "/VS" + vsub
+                                        + "/UnsO" + p2
+                                        + "/PH" + p1);
+                                if (folder.exists()) {
+                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder.mkdirs();
+////////////////////// GENERATED WITH LINKANALYSIS
+                                    System.out.println("folder - " + folder);
+                                    System.out.print(folder);
+                                    try {
+
+                                        String str = "11Rout_5Hill_3CteRC130_HVelCte50_" + ia + "vsub" + vsub + "PH" + p1 + "UnsO" + p2;
+                                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                                    } catch (java.io.IOException IOE) {
+                                        System.out.print(IOE);
+                                        //   System.exit(0);
+                                    }
+                                }
+
+                                //C11 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - distributed
+                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                                        + "RRout_5Hill_3CteRC130_HVel3/"
+                                        + "/IA" + ia
+                                        + "/VS" + vsub
+                                        + "/UnsO" + p2
+                                        + "/PH" + p1);
+                                if (folder.exists()) {
+                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder.mkdirs();
+////////////////////// GENERATED WITH LINKANALYSIS
+                                    System.out.println("folder - " + folder);
+                                    System.out.print(folder);
+                                    try {
+
+                                        String str = "13Rout_5Hill_3CteRC130_HVel3_" + ia + "vsub" + vsub + "PH" + p1 + "UnsO" + p2;
+                                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                                    } catch (java.io.IOException IOE) {
+                                        System.out.print(IOE);
+                                        //   System.exit(0);
+                                    }
+                                }
+
+                                //C12 RT=5 (cte vel). HillT=3 , HillVel=3 (hill veloc cte), SCS method - distributed
+                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                                        + "Rout_2Hill_3VarRC_HVelCte50/"
+                                        + "/IA" + ia
+                                        + "/VS" + vsub
+                                        + "/UnsO" + p2
+                                        + "/PH" + p1);
+                                if (folder.exists()) {
+                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder.mkdirs();
+////////////////////// GENERATED WITH LINKANALYSIS
+                                    System.out.println("folder - " + folder);
+                                    System.out.print(folder);
+                                    try {
+
+                                        String str = "10Rout_2Hill_3VarRC_HVelCte50_" + ia + "vsub" + vsub + "PH" + p1 + "UnsO" + p2;
+                                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                                    } catch (java.io.IOException IOE) {
+                                        System.out.print(IOE);
+                                        //   System.exit(0);
+                                    }
+                                }
+
+
+//C13 RT=5 (cte vel). HillT=3 , HillVel=3 (hill veloc cte), SCS method - distributed
+                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                                        + "Rout_5Hill_3VarRC_HVelCte50/"
+                                        + "/IA" + ia
+                                        + "/VS" + vsub
+                                        + "/UnsO" + p2
+                                        + "/PH" + p1);
+                                if (folder.exists()) {
+                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder.mkdirs();
+////////////////////// GENERATED WITH LINKANALYSIS
+                                    System.out.println("folder - " + folder);
+                                    System.out.print(folder);
+                                    try {
+
+                                        String str = "14Rout_5Hill_3VarRC_HVelCte50_" + ia + "vsub" + vsub + "PH" + p1 + "UnsO" + p2;
+                                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                                    } catch (java.io.IOException IOE) {
+                                        System.out.print(IOE);
+                                        //   System.exit(0);
+                                    }
+                                }
+                                //C14 RT=5 (cte vel). HillT=3 , HillVel=3 (hill veloc cte), SCS method - distributed
+                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                                        + "Rout_5Hill_3/"
+                                        + "/IA" + ia
+                                        + "/VS" + vsub
+                                        + "/UnsO" + p2
+                                        + "/PH" + p1);
+                                if (folder.exists()) {
+                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder.mkdirs();
+////////////////////// GENERATED WITH LINKANALYSIS
+                                    System.out.println("folder - " + folder);
+                                    System.out.print(folder);
+                                    try {
+
+                                        String str = "12Rout_5Hill_3_" + ia + "vsub" + vsub + "PH" + p1 + "UnsO" + p2;
+                                        new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+                                    } catch (java.io.IOException IOE) {
+                                        System.out.print(IOE);
+                                        //   System.exit(0);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+    }
 }
+
+
+
+
 
 
 

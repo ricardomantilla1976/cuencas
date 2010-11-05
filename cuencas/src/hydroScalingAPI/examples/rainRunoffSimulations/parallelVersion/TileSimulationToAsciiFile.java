@@ -75,6 +75,8 @@ public class TileSimulationToAsciiFile extends java.lang.Object implements Runna
                                         float[] correctionsO,
                                         long zST) throws java.io.IOException, VisADException{
 
+
+
         zeroSimulationTime=java.util.Calendar.getInstance();
         zeroSimulationTime.setTimeInMillis(zST);
         
@@ -212,13 +214,16 @@ public class TileSimulationToAsciiFile extends java.lang.Object implements Runna
         System.out.println(theFile);
 
         if(theFile.exists()){
-            //ATTENTION
-            //The followng print statement announces the completion of the program.
-            //DO NOT modify!  It tells the queue manager that the process can be
-            //safely killed.
-            System.out.println("Termina escritura de Resultados");
-            return;
-        }
+       //ATTENTION
+        //The followng print statement announces the completion of the program.
+        //DO NOT modify!  It tells the queue manager that the process can be
+        //safely killed.
+        System.out.println("Termina escritura de Resultados");
+        writeReportFile(outputDirectory.getAbsolutePath(),x,y);
+        return;
+
+    }
+
         
         java.io.FileOutputStream salida = new java.io.FileOutputStream(theFile);
         java.io.BufferedOutputStream bufferout = new java.io.BufferedOutputStream(salida);
@@ -370,13 +375,20 @@ public class TileSimulationToAsciiFile extends java.lang.Object implements Runna
         newfile.close();
         bufferout.close();
         
-        //ATTENTION
+       //ATTENTION
         //The followng print statement announces the completion of the program.
         //DO NOT modify!  It tells the queue manager that the process can be
         //safely killed.
         System.out.println("Termina escritura de Resultados");
-        
+        writeReportFile(outputDirectory.getAbsolutePath(),x,y);
+        return;
+
     }
+
+    private void writeReportFile(String outputDir, int x, int y) throws java.io.IOException{
+        new java.io.File(outputDir+"/Tile_"+x+"_"+y+".done").createNewFile();
+    }
+
     
     public void run(){
         

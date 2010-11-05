@@ -698,14 +698,17 @@ public class NetworkEquationsLuciana_mod implements hydroScalingAPI.util.ordDiff
                   if(basinHillSlopesInfo.LandUseSCS(i)==8) vr=100.0; // Pasture/Small Grains
                   if(basinHillSlopesInfo.LandUseSCS(i)==9) vr=50.0; // Wetlands
                break;
-               case 3: //manning equation - manning roughness as a function of land cover and soil hyd group
+               case 3: //NRCS method - function of land cover and soil hyd group
 
                    Slope=Math.max(0.005,basinHillSlopesInfo.getHillslope(i));
                    // check this velocity!!! It should be btw 250 and 10 for forest and I just adapt the formula
                    vr=(basinHillSlopesInfo.Hill_K_NRCS(i))*Math.pow((Slope),0.5)*100*0.3048; //(m/h)
-                   if(basinHillSlopesInfo.LandUse(i)==10 && input[i+2*nLi]>=(0.5*25.4)) vr=(basinHillSlopesInfo.Hill_K_NRCS(i))*Math.pow((Slope),0.5)*100*0.3048; //(m/h)
-                   if(basinHillSlopesInfo.LandUse(i)==10 && input[i+2*nLi]<(0.5*25.4)) vr=0; //(m/h)
-                   vflor=(1.4)*Math.pow(Slope,0.5)*100*0.3048;     //same as forest
+                   if(vr>250) vr=500;
+                   if(vr<10) vr=10;
+                   // version with reservoir
+                   //if(basinHillSlopesInfo.LandUse(i)==10 && input[i+2*nLi]>=(0.5*25.4)) vr=(basinHillSlopesInfo.Hill_K_NRCS(i))*Math.pow((Slope),0.5)*100*0.3048; //(m/h)
+                   //if(basinHillSlopesInfo.LandUse(i)==10 && input[i+2*nLi]<(0.5*25.4)) vr=0; //(m/h)
+                   //vflor=(1.4)*Math.pow(Slope,0.5)*100*0.3048;     //same as forest
                    //m/h
                   //if(i==119) System.out.println("Link =" + i + "Manning(i)= "+basinHillSlopesInfo.HillManning(i)+"Slope" + Slope+" input[i+nLi] ="+input[i+nLi]+" vr = "+vr);
                break;

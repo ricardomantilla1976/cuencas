@@ -32,7 +32,7 @@ import visad.*;
  *
  * @author Ricardo Mantilla
  */
-public class TileSimulationToAsciiFile2 extends java.lang.Object implements Runnable{
+public class TileSimulationToAsciiFilePradeep extends java.lang.Object implements Runnable{
     
     private hydroScalingAPI.io.MetaRaster metaDatos;
     private byte[][] matDir,hortonOrders;
@@ -54,7 +54,7 @@ public class TileSimulationToAsciiFile2 extends java.lang.Object implements Runn
 
     private java.util.Calendar zeroSimulationTime;
 
-    public TileSimulationToAsciiFile2(   int xx, 
+    public TileSimulationToAsciiFilePradeep(   int xx,
                                         int yy, 
                                         int xxHH, 
                                         int yyHH,
@@ -117,11 +117,11 @@ public class TileSimulationToAsciiFile2 extends java.lang.Object implements Runn
         basinOrder=linksStructure.getBasinOrder();
 
         String demName=metaDatos.getLocationBinaryFile().getName().substring(0,metaDatos.getLocationBinaryFile().getName().lastIndexOf("."));
-//        java.io.File theFile2=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+".complete.csv");
-//        java.io.OutputStreamWriter compnewfile = new java.io.OutputStreamWriter(new java.io.BufferedOutputStream(new java.io.FileOutputStream(theFile2)));
-//        for(int i=0;i<linksStructure.completeStreamLinksArray.length;i++) compnewfile.write(linksStructure.completeStreamLinksArray[i]+",");
-//
-//        compnewfile.close();
+        java.io.File theFile2=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+".complete.csv");
+       java.io.OutputStreamWriter compnewfile = new java.io.OutputStreamWriter(new java.io.BufferedOutputStream(new java.io.FileOutputStream(theFile2)));
+        for(int i=0;i<linksStructure.completeStreamLinksArray.length;i++) compnewfile.write(linksStructure.completeStreamLinksArray[i]+",");
+
+        compnewfile.close();
 
         hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom=new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(linksStructure);
         
@@ -211,12 +211,13 @@ public class TileSimulationToAsciiFile2 extends java.lang.Object implements Runn
         
         System.out.println(theFile);
 
-        if(theFile.exists()){
+        if (theFile.exists()) {
             //ATTENTION
             //The followng print statement announces the completion of the program.
             //DO NOT modify!  It tells the queue manager that the process can be
             //safely killed.
             System.out.println("Termina escritura de Resultados");
+            writeReportFile(outputDirectory.getAbsolutePath(),x,y);
             return;
         }
         
@@ -370,12 +371,14 @@ public class TileSimulationToAsciiFile2 extends java.lang.Object implements Runn
         newfile.close();
         bufferout.close();
         
-        //ATTENTION
-        //The followng print statement announces the completion of the program.
-        //DO NOT modify!  It tells the queue manager that the process can be
-        //safely killed.
-        System.out.println("Termina escritura de Resultados");
-        
+         System.out.println("Termina escritura de Resultados");
+        writeReportFile(outputDirectory.getAbsolutePath(),x,y);
+        return;
+
+    }
+
+    private void writeReportFile(String outputDir, int x, int y) throws java.io.IOException{
+        new java.io.File(outputDir+"/Tile_"+x+"_"+y+".done").createNewFile();
     }
     
     public void run(){
@@ -467,7 +470,7 @@ public class TileSimulationToAsciiFile2 extends java.lang.Object implements Runn
             corrO=new float[corr.length]; for (int i = 0; i < corrO.length; i++) corrO[i]=Float.parseFloat(corr[i].trim());
         }
         
-        new TileSimulationToAsciiFile2(Integer.parseInt(args[1]),Integer.parseInt(args[2]),Integer.parseInt(args[3]),Integer.parseInt(args[4]),Integer.parseInt(args[5]),matDirs,magnitudes,horOrders,metaModif,0.0f,0.0f,stormFile,null,infilRate,routingType,routingParams,outputDirectory,connO,corrO,Long.parseLong(args[15])).executeSimulation();
+        new TileSimulationToAsciiFile(Integer.parseInt(args[1]),Integer.parseInt(args[2]),Integer.parseInt(args[3]),Integer.parseInt(args[4]),Integer.parseInt(args[5]),matDirs,magnitudes,horOrders,metaModif,0.0f,0.0f,stormFile,null,infilRate,routingType,routingParams,outputDirectory,connO,corrO,Long.parseLong(args[15])).executeSimulation();
         
     }
     
@@ -508,7 +511,7 @@ public class TileSimulationToAsciiFile2 extends java.lang.Object implements Runn
 
         java.io.File outputDirectory=new java.io.File("/Users/ricardo/simulationResults/Parallel/WalnutGulch/");
         
-        new TileSimulationToAsciiFile2(729,130,-1,-1,4,matDirs,magnitudes,horOrders,metaModif,20.0f,5.0f,stormFile,null,0.0f,2,routingParams,outputDirectory,new int[] {},new float[] {},zeroSimulationTime.getTimeInMillis()).executeSimulation();
+        new TileSimulationToAsciiFile(729,130,-1,-1,4,matDirs,magnitudes,horOrders,metaModif,20.0f,5.0f,stormFile,null,0.0f,2,routingParams,outputDirectory,new int[] {},new float[] {},zeroSimulationTime.getTimeInMillis()).executeSimulation();
         //new TileSimulationToAsciiFile(229,286,-1,-1,3,matDirs,magnitudes,horOrders,metaModif,20.0f,5.0f,stormFile,null,0.0f,2,routingParams,outputDirectory,new int[] {314711, 315971},monitor,new float[] {0.027654171f, 0.20069313f}).executeSimulation();
             
     }

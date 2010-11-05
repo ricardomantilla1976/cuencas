@@ -440,4 +440,9 @@ public class HillSlopesInfo extends java.lang.Object {
         return thisSCSData.getavehillBasedSlope(HillNumber);
     }
 
+
+    public double getArea_ReliefParam(int HillNumber, int coef) {
+        return thisSCSData.getTerm(HillNumber,coef);
+    }
+
 }

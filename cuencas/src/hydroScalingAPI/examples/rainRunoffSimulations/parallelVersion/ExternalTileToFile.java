@@ -41,6 +41,9 @@ public class ExternalTileToFile extends Thread{
     public boolean executing = false;
     private java.lang.Process localProcess;
     private int managerProcIndex;
+
+    private String outputDir;
+    private int x,y;
     
     hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.ParallelSimulationToFile coordinatorProc;
     
@@ -62,16 +65,21 @@ public class ExternalTileToFile extends Thread{
                                     String correctionsO,
                                     hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.ParallelSimulationToFile coordinator,
                                     long iniTimeInMilliseconds,
-                                    int dynaIndex){
+                                    int dynaIndex,
+                                    java.util.Hashtable routingParams
+                                    ){
 
         String[] possibleTileDynamics=new String[] { "hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.TileSimulationToAsciiFile",
-                                                     "hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.TileSimulationToAsciiFileLuciana"
-                                                     };
+                                                     "hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.TileSimulationToAsciiFileLuciana",
+                                                     "hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.TileSimulationToAsciiFilePradeep",
+                                                     "hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.TileSimulationToAsciiFileSCSMEthod"
+                                                   };
                                         
         procName=pn;
         
         System.out.println("main - dynaindex=" + "tilesim =" + dynaIndex + possibleTileDynamics[dynaIndex]);
-        command=new String[] {  "/usr/bin/ssh",
+
+        if(dynaIndex==3) {command=new String[] {  "/usr/bin/ssh",
                                 "NODENAME",
                                 System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
                                 "-Xmx1500m",
@@ -79,24 +87,55 @@ public class ExternalTileToFile extends Thread{
                                 "-cp",
                                 System.getProperty("java.class.path"),
                                 possibleTileDynamics[dynaIndex],
-                                mFN,
-                                ""+xx,
-                                ""+yy, 
-                                ""+xxHH, 
-                                ""+yyHH,
-                                ""+scaleO,
-                                ""+routingType,
-                                ""+lambda1,
-                                ""+lambda2,
-                                ""+v_o,
-                                stormFile,
-                                ""+infilRate,
-                                outputDirectory,
-                                connectionsO,
-                                correctionsO,
-                                ""+iniTimeInMilliseconds};
+                                mFN, // args[0]
+                                ""+xx, // args[1]
+                                ""+yy,  // args[2]
+                                ""+xxHH,  // args[3]
+                                ""+yyHH, // args[4]
+                                ""+scaleO, // args[5]
+                                ""+routingType, // args[6]
+                                ""+lambda1, // args[7]
+                                ""+lambda2, // args[8]
+                                ""+v_o, // args[9]
+                                stormFile, // args[10]
+                                ""+infilRate, // args[11]
+                                outputDirectory, // args[12]
+                                connectionsO, // args[13]
+                                correctionsO, // args[14]
+                                ""+iniTimeInMilliseconds, // args[15]
+                                routingParams.toString()};} // args[16]
+        else  {command=new String[] {  "/usr/bin/ssh",
+                                "NODENAME",
+                                System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
+                                "-Xmx1500m",
+                                "-Xrs",
+                                "-cp",
+                                System.getProperty("java.class.path"),
+                                possibleTileDynamics[dynaIndex],
+                                mFN, // args[0]
+                                ""+xx, // args[1]
+                                ""+yy,  // args[2]
+                                ""+xxHH,  // args[3]
+                                ""+yyHH, // args[4]
+                                ""+scaleO, // args[5]
+                                ""+routingType, // args[6]
+                                ""+lambda1, // args[7]
+                                ""+lambda2, // args[8]
+                                ""+v_o, // args[9]
+                                stormFile, // args[10]
+                                ""+infilRate, // args[11]
+                                outputDirectory, // args[12]
+                                connectionsO, // args[13]
+                                correctionsO, // args[14]
+                                ""+iniTimeInMilliseconds};} // args[15]};} // args[16]
+
+
         coordinatorProc=coordinator;
         System.out.println(">>>> Original state: "+coordinatorProc.threadsRunning);
+        
+        outputDir=outputDirectory;
+        x=xx;
+        y=yy;
 
     }
 
@@ -112,7 +151,9 @@ public class ExternalTileToFile extends Thread{
             System.out.println("Manager Created Process "+managerProcIndex+" executes: "+java.util.Arrays.toString(command));
 
             localProcess=java.lang.Runtime.getRuntime().exec(command);
-            System.out.println(">> The command was sent");
+            java.util.Date startTime=new java.util.Date();
+
+            System.out.println("Time = " + startTime.toString()+"The command was sent" + java.util.Arrays.toString(command));
 
             boolean monitor = true;
             String concat="";
@@ -121,9 +162,10 @@ public class ExternalTileToFile extends Thread{
                 concat+=s;
                 if(s.equalsIgnoreCase("\n")) {
                     System.out.print(concat);
-                    if(concat.substring(0, Math.min(31,concat.length())).equalsIgnoreCase("Termina escritura de Resultados")) break;
+                    //if(concat.substring(0, Math.min(31,concat.length())).equalsIgnoreCase("Termina escritura de Resultados")) break;
                     concat="";
                 }
+                if(new java.io.File(outputDir+"/Tile_"+x+"_"+y+".done").exists()) break;
             }
             
             completed=true;

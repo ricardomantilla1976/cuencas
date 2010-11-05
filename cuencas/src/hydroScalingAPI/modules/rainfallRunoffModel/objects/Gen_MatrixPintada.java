@@ -113,7 +113,7 @@ public class Gen_MatrixPintada{
 
                     myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDir,magnitudes,metaDatos);
                     for (int j=0;j<myHillActual.getXYHillSlope()[0].length;j++){
-                        matrizPintada[myHillActual.getXYHillSlope()[1][j]-myCuenca.getMinY()+1][myHillActual.getXYHillSlope()[0][j]-myCuenca.getMinX()+1]=i+1;
+                        matrizPintada[myHillActual.getXYHillSlope()[1][j]-myCuenca.getMinY()+1][myHillActual.getXYHillSlope()[0][j]-myCuenca.getMinX()+1]=linksStructure.contactsArray[i];
                     }
                 } else {
 
@@ -122,7 +122,7 @@ public class Gen_MatrixPintada{
 
                     myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDir,magnitudes,metaDatos);
                     for (int j=0;j<myHillActual.getXYHillSlope()[0].length;j++){
-                        matrizPintada[myHillActual.getXYHillSlope()[1][j]-myCuenca.getMinY()+1][myHillActual.getXYHillSlope()[0][j]-myCuenca.getMinX()+1]=i+1;
+                        matrizPintada[myHillActual.getXYHillSlope()[1][j]-myCuenca.getMinY()+1][myHillActual.getXYHillSlope()[0][j]-myCuenca.getMinX()+1]=linksStructure.contactsArray[i];
                     }
                 }
             }
@@ -230,16 +230,16 @@ public class Gen_MatrixPintada{
     */
     public static void main (String args[]) throws IOException {
 
-        String pathinput = "C:/CUENCAS/Charlote/Rasters/Topography/Charlotte_1AS/";
-        java.io.File theFile=new java.io.File(pathinput + "charlotte" + ".metaDEM");
+        String pathinput = "/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec//";
+        java.io.File theFile=new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".metaDEM");
         hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-        metaModif.setLocationBinaryFile(new java.io.File(pathinput + "charlotte" + ".dir"));
+        metaModif.setLocationBinaryFile(new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".dir"));
         String formatoOriginal=metaModif.getFormat();
         metaModif.setFormat("Byte");
         byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
 
 
-        metaModif.setLocationBinaryFile(new java.io.File(pathinput + "charlotte" + ".horton"));
+        metaModif.setLocationBinaryFile(new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".horton"));
         formatoOriginal=metaModif.getFormat();
         metaModif.setFormat("Byte");
         byte [][] HortonLinks=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
@@ -248,12 +248,15 @@ public class Gen_MatrixPintada{
         metaModif.setFormat("Integer");
         int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
 
-        String Dir="C:/CUENCAS/Charlote/Rasters/";
-        String OutputM=Dir+"/MatrizPintada.asc";
-        String OutputL=Dir+"/HortonLinks.asc";
+
+
+
+        String Dir="/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec//";
+        String OutputM=Dir+"/MatrizPintadaCR.asc";
+        String OutputL=Dir+"/HortonLinksCR.asc";
         new java.io.File(Dir+"/").mkdirs();
-         int x= 764;
-        int y= 168;
+        int x=2734;
+        int y=1069; //Cedar Rapids
         hydroScalingAPI.util.geomorphology.objects.Basin myCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x,y,matDirs,metaModif);
         hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure=new hydroScalingAPI.util.geomorphology.objects.LinksAnalysis(myCuenca, metaModif, matDirs);
         hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom=new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(linksStructure);

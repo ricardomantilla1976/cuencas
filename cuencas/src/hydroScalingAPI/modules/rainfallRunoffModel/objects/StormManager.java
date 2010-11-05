@@ -34,12 +34,13 @@ package hydroScalingAPI.modules.rainfallRunoffModel.objects;
  */
 public class StormManager {
 
-    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] precOnBasin;
+    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] precOnBasin,accumPrecOnBasin;
     private boolean success=false,veryFirstDrop=true;
     private hydroScalingAPI.io.MetaRaster metaStorm;
     private java.util.Calendar firstWaterDrop,lastWaterDrop;
     private float[][] totalPixelBasedPrec;
     private float[] totalHillBasedPrec;
+    private float[] totalHillBasedPrecmm;
     private hydroScalingAPI.util.fileUtilities.ChronoFile[] arCron;
 
     int[][] matrizPintada;
@@ -76,6 +77,10 @@ public class StormManager {
         for (int i=0;i<precOnBasin.length;i++){
             precOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
             precOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
+            ////// this is wrong, should be accumulated
+            accumPrecOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
+            accumPrecOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
+
         }
 
         recordResolutionInMinutes=rainDuration;
@@ -99,9 +104,9 @@ public class StormManager {
      */
     public StormManager(java.io.File locFile, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes) {
 
-        System.out.println("locFile.getParentFile()" + locFile.getParentFile());
+        //System.out.println("locFile.getParentFile()" + locFile.getParentFile());
         int temp=locFile.getName().lastIndexOf(".");
-        System.out.println("temp"+temp+"locFile.getName..." + locFile.getName());
+        //System.out.println("temp"+temp+"locFile.getName..." + locFile.getName());
         java.io.File directorio=locFile.getParentFile();
         String baseName=locFile.getName().substring(0,locFile.getName().lastIndexOf("."));
 
@@ -174,16 +179,26 @@ public class StormManager {
             }
 
             precOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
-
+            accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+//////////////////////////////////////// stopped here - be sure accumulated is being calculated correctly
             int regInterval=metaStorm.getTemporalScale();
+            float regIntervalmm=((float)metaStorm.getTemporalScale())/(1000.0f*60.0f);
 
             System.out.println("Time interval for this file: "+regInterval);
 
             totalHillBasedPrec=new float[precOnBasin.length];
+            totalHillBasedPrecmm=new float[precOnBasin.length];
 
-            for (int i=0;i<precOnBasin.length;i++){
+                double[] currentHillBasedPrec=new double[precOnBasin.length];
+                float[] currentHillNumPixels=new float[precOnBasin.length];
+
+                for (int i=0;i<precOnBasin.length;i++){
                 precOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
-            }
+                accumPrecOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
+                totalHillBasedPrecmm[i]=0.0f;
+                currentHillBasedPrec[i]=0.0D;
+                currentHillNumPixels[i]=0.0f;
+                }
 
             double[] evalSpot;
             double [][] dataSnapShot, dataSection;
@@ -193,21 +208,20 @@ public class StormManager {
 
             totalPixelBasedPrec=new float[matDirBox.length][matDirBox[0].length];
 
+
+
             for (int i=0;i<arCron.length;i++){
                 //Cargo cada uno
                 metaStorm.setLocationBinaryFile(arCron[i].fileName);
-                System.out.println("--> Loading data from "+arCron[i].fileName.getName());
+                //System.out.println("--> Loading data from "+arCron[i].fileName.getName());
                 dataSnapShot=new hydroScalingAPI.io.DataRaster(metaStorm).getDouble();
 
 
-                hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaStorm.getMissing()).doubleValue());
-                System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
+                //hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaStorm.getMissing()).doubleValue());
+                //System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
 
 
                 //recorto la seccion que esta en la cuenca (TIENE QUE CONTENERLA)
-
-                double[] currentHillBasedPrec=new double[precOnBasin.length];
-                float[] currentHillNumPixels=new float[precOnBasin.length];
 
 
                 double demMinLon=metaDatos.getMinLon();
@@ -224,7 +238,7 @@ public class StormManager {
                 double stormResLat=metaStorm.getResLat();
 
                 for (int j=0;j<matrizPintada.length;j++) for (int k=0;k<matrizPintada[0].length;k++){
-
+                    
                     evalSpot=new double[] {demMinLon+(basinMinX+k-1)*demResLon/3600.0,
                                            demMinLat+(basinMinY+j-1)*demResLat/3600.0};
 
@@ -241,19 +255,25 @@ public class StormManager {
                 }
 
                 for (int j=0;j<linksStructure.contactsArray.length;j++){
-                    if (currentHillBasedPrec[j] != 0) {
+                    if (currentHillBasedPrec[j] > 0) {
                         if (veryFirstDrop){
                             firstWaterDrop=arCron[i].getDate();
                             veryFirstDrop=false;
                         }
 
                         precOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(currentHillBasedPrec[j]/currentHillNumPixels[j])); //
+                        totalHillBasedPrecmm[j]+=(currentHillBasedPrec[j]/currentHillNumPixels[j])*(regIntervalmm/60);
                         totalHillBasedPrec[j]+=currentHillBasedPrec[j]/currentHillNumPixels[j];
                         lastWaterDrop=arCron[i].getDate();
+                    } else{totalHillBasedPrecmm[j]=0.0f;}
+                    
 
-
-                    }
+                    accumPrecOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(totalHillBasedPrecmm[j])); //
+       //             System.out.println(arCron[i].getDate()+"Rain file " + i + "link " +j + "totalHillBasedPrecmm[j] = " + totalHillBasedPrecmm[j]);
+                    currentHillBasedPrec[j]=0.0D;
+                    currentHillNumPixels[j]=0.0f;
                 }
+
                 //System.out.println("-----------------Done with this snap-shot----------------");
 
             }
@@ -266,7 +286,7 @@ public class StormManager {
 
             success=true;
 
-            System.out.println("-----------------Done with Files Reading----------------");
+            //System.out.println("-----------------Done with Files Reading----------------");
 
             recordResolutionInMinutes=metaStorm.getTemporalScale()/1000.0/60.0;
 
@@ -303,30 +323,34 @@ public class StormManager {
      * @return Returns the rainfall rate in mm/h
      */
     public double getAcumPrecOnHillslope(int HillNumber,java.util.Calendar dateRequested){
-        double Acum=0.0f;
-        long dateRequestedMil=dateRequested.getTimeInMillis();
-        double timemin=dateRequestedMil/1000./60.;
-        double inc=stormRecordResolutionInMinutes();
-        java.util.Calendar currtime=java.util.Calendar.getInstance();
-        currtime.clear();
-        currtime.set(1971, 6, 1, 6, 0, 0);
-        currtime.setTimeInMillis(dateRequestedMil);
-        long j=0;
-        if (timemin==stormInitialTimeInMinutes()) Acum =0;
-        if (timemin>stormInitialTimeInMinutes()){
-           j=(long)stormInitialTimeInMinutes()*1000*60;
-           for (double i=stormInitialTimeInMinutes()+inc;i<=timemin;i=i+inc)
-           {
-               j=(long)i*1000*60;
-               currtime.setTimeInMillis(j);
-               Acum = Acum + precOnBasin[HillNumber].getRecord(currtime)*(inc/60);
-           }
 
-           long dif=dateRequestedMil-j;
-           currtime.setTimeInMillis(j);
-           Acum=Acum + precOnBasin[HillNumber].getRecord(currtime)*((dif/1000./60.)/60);
-        }
-        return Acum;
+
+        return accumPrecOnBasin[HillNumber].getRecord(dateRequested);
+
+//        double Acum=0.0f;
+//        long dateRequestedMil=dateRequested.getTimeInMillis();
+//        double timemin=dateRequestedMil/1000./60.;
+//        double inc=stormRecordResolutionInMinutes();
+//        java.util.Calendar currtime=java.util.Calendar.getInstance();
+//        currtime.clear();
+//        currtime.set(1971, 6, 1, 6, 0, 0);
+//        currtime.setTimeInMillis(dateRequestedMil);
+//        long j=0;
+//        if (timemin==stormInitialTimeInMinutes()) Acum =0;
+//        if (timemin>stormInitialTimeInMinutes()){
+//           j=(long)stormInitialTimeInMinutes()*1000*60;
+//           for (double i=stormInitialTimeInMinutes()+inc;i<=timemin;i=i+inc)
+//           {
+//               j=(long)i*1000*60;
+//               currtime.setTimeInMillis(j);
+//               Acum = Acum + precOnBasin[HillNumber].getRecord(currtime)*(inc/60);
+//           }
+//
+//           long dif=dateRequestedMil-j;
+//           currtime.setTimeInMillis(j);
+//           Acum=Acum + precOnBasin[HillNumber].getRecord(currtime)*((dif/1000./60.)/60);
+//        }
+//        return Acum;
 
     }
 

@@ -822,7 +822,8 @@ public class LinksAnalysis extends java.lang.Object {
         //main1(args);
         //main2(args);
         //main3(args);
-        main4(args);
+        main5(args);
+        //main4(args);
     }
 
     /**
@@ -1184,73 +1185,88 @@ public class LinksAnalysis extends java.lang.Object {
      * Tests for the class
      * @param args the command line arguments
      */
-    public static void main5(String args[]) {
-
-        String[][] codesCoord={
-            {"05451210","951","1479"},
-            {"05451500","1245","1181"},
-            {"05451700","1312","1112"},
-            {"05451900","1765","981"},
-            {"05452200","1871","903"},
-            {"05453000","2115","801"},
-            {"05453100","2256","876"},
-            {"05453520","2900","768"},
-            {"05454000","2949","741"},
-            {"05454220","2646","762"},
-            {"05454300","2817","713"},
-            {"05454500","2885","690"},
-            {"05455100","2796","629"},
-            {"05455500","2676","465"},
-            {"05455700","2958","410"},
-            {"05457000","1164","3066"},
-            {"05457700","1526","2376"},
-            {"05458000","1730","2341"},
-            {"05458300","1770","1987"},
-            {"05458500","1775","1879"},
-            {"05458900","1682","1858"},
-            {"05459500","903","2499"},
-            {"05462000","1634","1956"},
-            {"05463000","1590","1789"},
-            {"05463500","1779","1591"},
-            {"05464000","1932","1695"},
-            {"05464220","1978","1403"},
-            {"05464500","2734","1069"},
-            {"05464942","3113","705"},
-            {"05465000","3186","392"},
-            {"05465500","3316","116"}};
-
+public static void main5(String args[]) {
 
         java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
         java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
         dpoint2.applyPattern("0.00000000");
 
         try{
-
-            java.io.File theFile=new java.io.File("/hidrosigDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+            //java.io.File theFile=new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM");
+            java.io.File theFile=new java.io.File("/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+ //java.io.File theFile = new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/90meterc1.metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".dir"));
+            metaModif.setLocationBinaryFile(new java.io.File("/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            // metaModif.setLocationBinaryFile(new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.dir"));
+            
+          //  int xOut=1596;
+          //  int yOut=298;
 
+
+             //int xOut=2885;
+            //int yOut=690; // Iowa River at Iowa City
+//            int xOut=2817;
+//            int yOut=713; //90METER - Clear Creek - coralville
+//            int xOut = 8052;
+//            int yOut = 497;//5METERDEMClear Creek - coralville
+//            int xOut = 4025;
+//            int yOut = 244;//10METERDEMClear Creek - coralville
+//            int xOut = 2013;
+//            int yOut = 122;//20METERDEMClear Creek - coralville
+//            int xOut = 1341;
+//            int yOut = 82;//30METERDEMClear Creek - coralville
+//            int xOut = 670;
+//            int yOut = 41;//60METERDEMClear Creek - coralville
+          //nt xOut = 2817;
+          //  int yOut = 713;//90METERDEMClear Creek - coralville
+//
+            int xOut=2734;
+            int yOut=1069; // Cedar Rapids
+
+            String formatoOriginal=metaModif.getFormat();
             metaModif.setFormat("Byte");
             byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
 
-            for (int c = 0; c < codesCoord.length; c++) {
-                int xx = Integer.parseInt(codesCoord[c][1]);
-                int yy = Integer.parseInt(codesCoord[c][2]);
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(xOut,yOut,matDirs,metaModif);
 
-                hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(xx,yy,matDirs,metaModif);
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
 
-                LinksAnalysis myResults=new LinksAnalysis(laCuenca, metaModif, matDirs);
+            java.io.File theFile1=new java.io.File("/usr/home/rmantill/luciana/Parallel/"+"linksInfo" + xOut +"_" + yOut+".csv");
+            java.io.FileOutputStream salida = new java.io.FileOutputStream(theFile1);
+            java.io.BufferedOutputStream bufferout = new java.io.BufferedOutputStream(salida);
+            java.io.OutputStreamWriter newfile = new java.io.OutputStreamWriter(bufferout);
+            System.out.println("mylinksAnalysis.contactsArray.length = " + mylinksAnalysis.contactsArray.length);
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom=new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(mylinksAnalysis);
 
-                double[][] wfs=myResults.getWidthFunctions(new int[]{myResults.getOutletID()},0);
-                for (int i = 0; i < wfs.length; i++) {
-                    hydroScalingAPI.util.statistics.Stats myStats=new hydroScalingAPI.util.statistics.Stats(wfs[i]);
-                    System.out.println(codesCoord[c][0]+","+myStats.maxValue);
-                }
+        float[][] bigDtoO=mylinksAnalysis.getDistancesToOutlet();
 
-            }
-
-
-
+        int nc=metaModif.getNumCols();
+        int nr=metaModif.getNumRows();
+        double res=metaModif.getResLat();
+        double minLat=metaModif.getMinLat();
+        double minLon=metaModif.getMinLon();
+        System.out.println("nc = " + nc + "nr = " + nr + "minLat = " + minLat + "minLon = " + minLon);
+        for (int i=0;i<mylinksAnalysis.contactsArray.length;i++){
+                newfile.write("Link-"+i+",");
+                newfile.write(mylinksAnalysis.contactsArray[i]+",");
+                newfile.write(thisNetworkGeom.linkOrder(i)+",");
+                newfile.write(thisNetworkGeom.upStreamArea(i)+",");
+                newfile.write(thisNetworkGeom.Length(i)+",");
+                int xCon=mylinksAnalysis.contactsArray[i]%nc;
+                int yCon=mylinksAnalysis.contactsArray[i]/nc;
+                newfile.write(bigDtoO[1][i]+",");
+                newfile.write(xCon+",");
+                newfile.write(yCon+",");
+                double lat=minLat+yCon*res/3600.0;
+                double lon=minLon+xCon*res/3600.0;
+                newfile.write(lat+",");
+                newfile.write(lon+",");
+                newfile.write(nc+",");
+                newfile.write(nr+",");
+                newfile.write(res+"\n");
+        }
+        newfile.close();
+        bufferout.close();
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
             System.exit(0);

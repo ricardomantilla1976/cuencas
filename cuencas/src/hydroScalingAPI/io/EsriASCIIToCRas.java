@@ -178,17 +178,32 @@ public class EsriASCIIToCRas extends Object {
      * @param args The arguments are not used.
      */
     public static void main(String args[]) {
-        
-        try {
-            new EsriASCIIToCRas( new java.io.File("/home/matt/demtest/dem48states-1km.asc"),
-                                new java.io.File("/home/matt/demtest/"),0);
-            
+
+      
+System.out.print("2meter");
+
+           try {
+            new EsriASCIIToCRas( new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/2meterc1cliped/2meterc1cliped.asc"),
+                                new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/2meterc1cliped/"),0);
+
         } catch (Exception IOE){
             System.out.print(IOE);
             System.exit(0);
         }
-        
-        System.exit(0);
+
+System.out.print("3meter");
+           try {
+            new EsriASCIIToCRas( new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/3meterc1cliped/3meterc1cliped.asc"),
+                                new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/3meterc1cliped/"),0);
+
+        } catch (Exception IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+
+
+
     }
-    
+
 }
