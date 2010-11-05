@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion;
 
+import java.io.IOException;
+
 /**
  * This is the Thread used by the {@link
  * hydroScalingAPI.modules.networkExtraction.objects.NetworkExtractionOptimizer} to
@@ -84,8 +86,8 @@ public class ExternalTileToFile extends Thread{
                                 System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
                                 "-Xmx1500m",
                                 "-Xrs",
-                                "-cp",
-                                System.getProperty("java.class.path"),
+                                "-classpath",
+                                "\""+System.getProperty("java.class.path")+"\"",
                                 possibleTileDynamics[dynaIndex],
                                 mFN, // args[0]
                                 ""+xx, // args[1]
@@ -109,7 +111,7 @@ public class ExternalTileToFile extends Thread{
                                 System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
                                 "-Xmx1500m",
                                 "-Xrs",
-                                "-cp",
+                                "-classpath",
                                 System.getProperty("java.class.path"),
                                 possibleTileDynamics[dynaIndex],
                                 mFN, // args[0]
@@ -148,6 +150,18 @@ public class ExternalTileToFile extends Thread{
     public void run(){
         
         try{
+            //UNCOMMENT IF RUNNING ON SINLGE MACHINE WITH MULTIPLE PROCESSORS
+            //IT KNOCKS OUT THE FIRST TWO ARGUMENTS THAT SEND PROCESSES TO AN EXTERNAL COMPUTATIONAL NODE
+            //STARTING HERE
+            String [] newCommand=new String[command.length-2];
+            for (int i = 0; i < newCommand.length; i++) {
+                newCommand[i]=command[i+2];
+            }
+            command=newCommand;
+            //ENDING HERE
+
+            command=new String[] {System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java -version"};
+
             System.out.println("Manager Created Process "+managerProcIndex+" executes: "+java.util.Arrays.toString(command));
 
             localProcess=java.lang.Runtime.getRuntime().exec(command);
@@ -186,6 +200,25 @@ public class ExternalTileToFile extends Thread{
             System.err.println(ioe);
         }
         
+    }
+
+    public static void main(String args[]) throws java.io.IOException{
+        String[] command=new String[] {System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java -version"};
+
+        command=new String[] { "java","-classpath","\"/Users/luciana/NetBeansProjects/cuencas/external/geotransform.jar:/Users/luciana/NetBeansProjects/cuencas/external/idv.jar:/Users/luciana/NetBeansProjects/cuencas/external/ij.jar:/Users/luciana/NetBeansProjects/cuencas/external/visad.jar:/Applications/NetBeans/NetBeans 6.8.app/Contents/Resources/NetBeans/platform11/modules/ext/swing-layout-1.0.4.jar:/Users/luciana/NetBeansProjects/cuencas/external/Jama-1.0.2.jar:/Users/luciana/NetBeansProjects/cuencas/external/postgresql-8.2-506.jdbc2.jar:/Users/luciana/NetBeansProjects/cuencas/build/classes\"","hydroScalingAPI.util.statistics.Stats"};
+
+        java.lang.Process localProcess=java.lang.Runtime.getRuntime().exec(command);
+        boolean monitor = true;
+        String concat="";
+        int k=0;
+        while(monitor){
+            String s=new String(new byte[] {Byte.parseByte(""+localProcess.getInputStream().read())});
+            System.out.print(s);
+            if(k++ == 1000) break;
+            
+        }
+
+        System.exit(0);
     }
     
     

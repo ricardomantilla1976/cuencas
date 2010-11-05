@@ -363,8 +363,8 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         // did not find a way to pass that without change ExternalTileToFile
         // This has to be fixed
         if (BasinFlag == 0) {
-            LandUse = "/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
-            SoilData = "/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+            SoilData = "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
         }
         System.out.println("LandUse  " + LandUse + "\n");
         System.out.println("SoilData  " + SoilData + "\n");
