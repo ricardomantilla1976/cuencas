@@ -43,6 +43,7 @@ public class HillSlopesInfo extends java.lang.Object {
 
     private float[][] areasArray,infilRateArray, SoArray, TsArray, TeArray;
     private float[][] VolRes,GreenRoof;
+    private float vh;
 
     hydroScalingAPI.modules.rainfallRunoffModel.objects.StormManager thisStormEvent;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager thisInfiltManager;
@@ -107,6 +108,14 @@ public class HillSlopesInfo extends java.lang.Object {
 
     public float getGreenRoofAreaArray(int HillNumber){
         return GreenRoof[0][HillNumber];
+    }
+
+    public void setHillslopeVh(float v_h){
+        vh=v_h;
+    }
+
+    public float getHillslopeVh(){
+        return vh;
     }
 
     /**

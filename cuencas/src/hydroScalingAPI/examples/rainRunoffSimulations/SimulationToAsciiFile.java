@@ -662,11 +662,11 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         //new SimulationToAsciiFile(1425, 349, matDirs, magnitudes, metaModif, 40,60, infil, 2, new java.io.File("/Users/ricardo/simulationResults/SquawCreek/"), routingParams).executeSimulation();
 
 
-        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/OverSquawCreek/hydroNexrad.metaVHC");
-        routingParams.put("v_o", 0.3f);
-        new SimulationToAsciiFile(1425, 349, matDirs, magnitudes, metaModif, stormFile, infil, 2, new java.io.File("/Users/ricardo/simulationResults/SquawCreek/"), routingParams).executeSimulation();
+        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventOverAmes/hydroNexrad.metaVHC");
+        routingParams.put("v_o", 0.5f);
+        new SimulationToAsciiFile(1306, 376, matDirs, magnitudes, metaModif, stormFile, infil, 2, new java.io.File("/Users/ricardo/simulationResults/SquawCreek/"), routingParams).executeSimulation();
 
-//        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/OverSquawCreek/hydroNexrad.metaVHC");
+//        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventOverAmes/hydroNexrad.metaVHC");
 //        routingParams.put("lambda1",0.2f);
 //        routingParams.put("lambda2",-0.1f);
 //        routingParams.put("v_o", 0.3f);

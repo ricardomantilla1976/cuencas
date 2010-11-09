@@ -87,9 +87,9 @@ public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffE
         lamda2=linksHydraulicInfo.getLamda2();
         CkArray=linksHydraulicInfo.getCkArray();
         
-        vh=0.1;
+        vh=basinHillSlopesInfo.getHillslopeVh();
 
-        generalRunoffCoeff=1.0;//basinHillSlopesInfo.infiltRate(0,0);
+        generalRunoffCoeff=basinHillSlopesInfo.infiltRate(0,0);//1.0;//
         
     }
     

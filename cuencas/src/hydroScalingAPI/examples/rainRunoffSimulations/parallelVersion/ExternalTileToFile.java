@@ -205,14 +205,17 @@ public class ExternalTileToFile extends Thread{
     public static void main(String args[]) throws java.io.IOException{
         String[] command=new String[] {System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java -version"};
 
-        command=new String[] { "java","-classpath","\"/Users/luciana/NetBeansProjects/cuencas/external/geotransform.jar:/Users/luciana/NetBeansProjects/cuencas/external/idv.jar:/Users/luciana/NetBeansProjects/cuencas/external/ij.jar:/Users/luciana/NetBeansProjects/cuencas/external/visad.jar:/Applications/NetBeans/NetBeans 6.8.app/Contents/Resources/NetBeans/platform11/modules/ext/swing-layout-1.0.4.jar:/Users/luciana/NetBeansProjects/cuencas/external/Jama-1.0.2.jar:/Users/luciana/NetBeansProjects/cuencas/external/postgresql-8.2-506.jdbc2.jar:/Users/luciana/NetBeansProjects/cuencas/build/classes\"","hydroScalingAPI.util.statistics.Stats"};
+        command=new String[] { "java","-version"};
 
         java.lang.Process localProcess=java.lang.Runtime.getRuntime().exec(command);
         boolean monitor = true;
         String concat="";
         int k=0;
         while(monitor){
-            String s=new String(new byte[] {Byte.parseByte(""+localProcess.getInputStream().read())});
+            String s;
+            //s=new String(new byte[] {Byte.parseByte(""+localProcess.getInputStream().read())});
+            //System.out.print(s);
+            s=new String(new byte[] {Byte.parseByte(""+localProcess.getErrorStream().read())});
             System.out.print(s);
             if(k++ == 1000) break;
             
