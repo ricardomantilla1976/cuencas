@@ -342,8 +342,9 @@ public class MetaPolygon {
         writerKml.write("</Style>" + ret);
         writerKml.write("<Style id=\"Point\">" + ret);
         writerKml.write("<IconStyle>" + ret);
+        writerKml.write("<scale>0.5</scale>" + ret);
         writerKml.write("<Icon>" + ret);
-        writerKml.write("<href>http://weather.iihr.uiowa.edu/ifc/graphics/icon.png</href>" + ret);
+        writerKml.write("<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots32/real00dot.png</href>" + ret);
         writerKml.write("</Icon>" + ret);
         writerKml.write("</IconStyle>" + ret);
         writerKml.write("</Style>" + ret);

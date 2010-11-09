@@ -202,17 +202,21 @@ public class MetaNetToKML_Eric {
                             "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
                             "/Users/ricardo/rawData/BasinMasks/large_cities/"};
 
-//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_usgs_gauges.log",
-//                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
-//                            "/Users/ricardo/rawData/BasinMasks/usgs_gauges/"};
-//
-//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_medium_cities.log",
-//                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
-//                            "/Users/ricardo/rawData/BasinMasks/medium_cities/"};
+        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_usgs_gauges.log",
+                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
+                            "/Users/ricardo/rawData/BasinMasks/usgs_gauges/"};
+
+        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_medium_cities.log",
+                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
+                            "/Users/ricardo/rawData/BasinMasks/medium_cities/"};
 
 //        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_small_cities.log",
 //                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
 //                            "/Users/ricardo/rawData/BasinMasks/small_cities/"};
+
+//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_sensors.log",
+//                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
+//                            "/Users/ricardo/rawData/BasinMasks/ifc_sensors/"};
 
         main1(args);
     }
@@ -243,7 +247,7 @@ public class MetaNetToKML_Eric {
 
 
             for (int i = 0; i < basins.length; i++) {
-            //for (int i = 0; i < 2; i++) {
+            //for (int i = 0; i < 1; i++) {
 
                 if(!basins[i].equalsIgnoreCase("")){
                     String[] basLabel = basins[i].split("; ");
@@ -255,12 +259,20 @@ public class MetaNetToKML_Eric {
 
                     String[] cityName=uniqueIdentifier.split(" \\(");
 
-                    System.out.println(x+" "+y+" "+uniqueIdentifier);
-
                     hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
 
                     java.io.File outputDir=new java.io.File(args[2]+cityName[0]);
                     outputDir.mkdirs();
+
+                    hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure=new hydroScalingAPI.util.geomorphology.objects.LinksAnalysis(laCuenca, metaModif, matDirs);
+                    hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom=new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(linksStructure);
+
+
+                    double areaUp=Math.round(thisNetworkGeom.upStreamArea(linksStructure.OuletLinkNum)*10)/10.0;
+
+
+                    System.out.println(x+";"+y+";"+areaUp+";"+uniqueIdentifier);
+
 
                     MetaNetToKML_Eric exporter=new MetaNetToKML_Eric(metaModif,outputDir,laCuenca,matDirs,gdo,uniqueIdentifier);
 

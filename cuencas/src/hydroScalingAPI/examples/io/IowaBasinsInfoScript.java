@@ -11,7 +11,6 @@ package hydroScalingAPI.examples.io;
 import java.io.*;
 import java.util.zip.*;
 import java.net.*;
-import java.util.Stack;
 
 public class IowaBasinsInfoScript{
 
@@ -182,7 +181,7 @@ public class IowaBasinsInfoScript{
                             System.out.println("NFE" + nfe.getMessage());
                         }
 
-                        if(f > 0.0 && f < 60.0) matrix[i][j] += f;
+                        if(f > 0.0 && f < 100.0) matrix[i][j] += f;
 
                     }
 
@@ -577,18 +576,18 @@ public class IowaBasinsInfoScript{
                         line2=line2.substring(0, indOfString)+"<br><br><b>Accumulated Rainfall over Residence Time</b><br>"+averageValue+" mm ("+averageValueInches+" in)<br>"+"<b>Return Period</b><br>"+Math.max(1,(int)Math.round(Tr))+" years <br>"+"<b>Flood Index</b><br>"+averageValueTimeMachine+"<br><br>]]></description><styleUrl>#Point</styleUrl>";
                     }
 
-                    if(line2.startsWith("<href>http://weather.iihr.uiowa.edu/ifc/graphics/icon.png</href>")){
+                    if(line2.startsWith("<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots32/real00dot.png</href>")){
 
                         //Green
-                        if(averageValueTimeMachine > 0.00) line2="<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots/l1.png</href>";
+                        if(averageValueTimeMachine > 0.00) line2="<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots32/l1.png</href>";
                         //Blue
-                        if(averageValueTimeMachine > 1.00) line2="<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots/l2.png</href>";
+                        if(averageValueTimeMachine > 1.00) line2="<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots32/l2.png</href>";
                         //Yellow
-                        if(averageValueTimeMachine > 2.00) line2="<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots/l3.png</href>";
+                        if(averageValueTimeMachine > 2.00) line2="<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots32/l3.png</href>";
                         //Orange
-                        if(averageValueTimeMachine > 3.00) line2="<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots/l4.png</href>";
+                        if(averageValueTimeMachine > 3.00) line2="<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots32/l4.png</href>";
                         //Red
-                        if(averageValueTimeMachine > 4.00) line2="<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots/l5.png</href>";
+                        if(averageValueTimeMachine > 4.00) line2="<href>http://weather.iihr.uiowa.edu/ifc/graphics/dots32/l5.png</href>";
 
                     }
 
@@ -691,7 +690,8 @@ public class IowaBasinsInfoScript{
             String[][] kmlInAndOut=new String[][] {{"/Users/ricardo/rawData/BasinMasks/usgs_gauges/","/Volumes/ricardo/temp/iowa_basins_data/usgs_gauges/"},
                                                    {"/Users/ricardo/rawData/BasinMasks/large_cities/","/Volumes/ricardo/temp/iowa_basins_data/large_cities/"},
                                                    {"/Users/ricardo/rawData/BasinMasks/medium_cities/","/Volumes/ricardo/temp/iowa_basins_data/medium_cities/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data/small_cities/"}
+                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data/small_cities/"},
+                                                   {"/Users/ricardo/rawData/BasinMasks/ifc_sensors/","/Volumes/ricardo/temp/iowa_basins_data/ifc_sensors/"}
                                                   };
 
 
