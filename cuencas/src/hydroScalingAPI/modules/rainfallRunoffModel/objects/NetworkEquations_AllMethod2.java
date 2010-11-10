@@ -259,17 +259,17 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
                         input[i] = 0;
                     }
                     double rrr = 1.0;
-                    if (rr == 1.0f) { // for cedar river iowa simulation
-                        rrr = 0.55;
+                 //   if (rr == 1.0f) { // for cedar river iowa simulation
+                 //       rrr = 0.55;
 //                        if (time >= 20200620 && time < 20216460) {
 //                            rrr = 0.55;
 //                        }
 //                        if (time > 20216460) {
 //                            rrr = 0.70;
 //                        }
-                    }
+                 //   }
 
-                    double hillPrecIntensity = rrr * basinHillSlopesInfo.precipitation(i, time);// for URP event apply this rule*0.143;
+                    double hillPrecIntensity = rr * basinHillSlopesInfo.precipitation(i, time);// for URP event apply this rule*0.143;
 
                     effPrecip = Math.max(hillPrecIntensity - basinHillSlopesInfo.infiltRate(i, time), 0.0);
                     q01 = 0;
@@ -309,19 +309,19 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
                     }
                     double rrr = 1.0;
 
-                   if (rr == 1.0f) { // for cedar river iowa simulation
-                       if (rr == 1.0f) { // for cedar river iowa simulation
-                        rrr = 0.55;
+               //    if (rr == 1.0f) { // for cedar river iowa simulation
+               //        if (rr == 1.0f) { // for cedar river iowa simulation
+               //         rrr = 0.55;
 //                        if (time >= 20200620 && time < 20216460) {
 //                            rrr = 0.55;
 //                        }
 //                        if (time > 20216460) {
 //                            rrr = 0.70;
 //                        }
-                    }
+               //     }
 
-                    }
-                    double hillPrecIntensity = rrr * basinHillSlopesInfo.precipitation(i, time);// for URP event apply this rule*0.143;
+              //      }
+                    double hillPrecIntensity = rr * basinHillSlopesInfo.precipitation(i, time);// for URP event apply this rule*0.143;
 
                     effPrecip = Math.max(hillPrecIntensity - basinHillSlopesInfo.infiltRate(i, time), 0.0);
                     q01 = effPrecip;
