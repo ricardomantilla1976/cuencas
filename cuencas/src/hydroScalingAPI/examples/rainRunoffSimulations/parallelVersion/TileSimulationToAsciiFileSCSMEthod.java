@@ -538,6 +538,8 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         System.out.println("numPeriods" + numPeriods);
 
         newfile1.write("TimeStep:" + outputTimeStep + "\n");
+
+
         newfile1.write("Time (minutes), Discharge [m3/s] \n");
         newfile3.write("TimeStep:" + outputTimeStep + "\n");
         newfile3.write("Time (minutes), Surface Storage [mm], Soil Storage [mm] \n");

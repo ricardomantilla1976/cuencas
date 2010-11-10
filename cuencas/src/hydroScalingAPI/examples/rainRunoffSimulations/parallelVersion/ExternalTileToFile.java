@@ -160,7 +160,7 @@ public class ExternalTileToFile extends Thread{
             command=newCommand;
             //ENDING HERE
 
-            command=new String[] {System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java -version"};
+            //command=new String[] {System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java -version"};
 
             System.out.println("Manager Created Process "+managerProcIndex+" executes: "+java.util.Arrays.toString(command));
 
@@ -176,7 +176,7 @@ public class ExternalTileToFile extends Thread{
                 concat+=s;
                 if(s.equalsIgnoreCase("\n")) {
                     System.out.print(concat);
-                    //if(concat.substring(0, Math.min(31,concat.length())).equalsIgnoreCase("Termina escritura de Resultados")) break;
+                    if(concat.substring(0, Math.min(31,concat.length())).equalsIgnoreCase("Termina escritura de Resultados")) break;
                     concat="";
                 }
                 if(new java.io.File(outputDir+"/Tile_"+x+"_"+y+".done").exists()) break;

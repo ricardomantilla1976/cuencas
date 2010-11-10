@@ -1667,7 +1667,7 @@ public class ParallelSimulationToFile extends java.lang.Object {
                 // This is clear creek
                     xOut = 2817;
                     yOut = 713;
-                    DEM = "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+                    DEM = "/Users/luciana-cunha/Documents/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
 
 
 

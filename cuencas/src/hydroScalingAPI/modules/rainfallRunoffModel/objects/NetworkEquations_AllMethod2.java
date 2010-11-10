@@ -176,7 +176,7 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
         // Future implementation (greenroof and reservoir)
         //Vo=basinHillSlopesInfo.getVolResArray();
         //Gr=basinHillSlopesInfo.getGreenRoofAreaArray(); // area of building in the hillslope (m2)
-        //System.out.println("equation object 9");
+        System.out.println("routingType" + routingType);
         //for (int i=0;i<lengthArray[0].length;i++) Gr[0][i]=Gr[0][i]/(areasHillArray[0][i]*1000000);
         float vconst = ((Float) routingParams.get("Vconst")).floatValue();
         if (routingParams.get("vssub") != null) {
