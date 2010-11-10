@@ -1218,20 +1218,9 @@ public class SimulationToFileHillslopeModel extends java.lang.Object implements 
                 routingParams.put("HillT", 3.f);  // check NetworkEquationsLuciana.java for definitions
                 routingParams.put("HillVelocityT", 3.f);  // check NetworkEquationsLuciana.java for definitions
                 routingParams.put("RunoffCoefficient", 1.0f); // reservoir position:
-                java.io.File outputDirectory;
+                
 
-                outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
-                        + "RoutT_2/"
-                        + "/HillT_3/"
-                        + "/HillVelT_3"
-                        );
-
-              //  outputDirectory.mkdirs();
-
-               // new SimulationToFileHillslopeModel(xOut, yOut, matDirs, magnitudes, metaModif, stormFile, 0.0f, outputDirectory, new java.io.File(LandUse), new java.io.File(SoilData), routingParams).executeSimulation();
-
-
-                routingParams.put("PorcHSaturated",0.1f);
+                                routingParams.put("PorcHSaturated",0.1f);
                                 routingParams.put("vssub", 0.0025f);
                                 routingParams.put("PorcPhiUnsat", 0.1f);
                                 routingParams.put("lambdaSCSMethod", 0.02f);
@@ -1241,7 +1230,7 @@ public class SimulationToFileHillslopeModel extends java.lang.Object implements 
                                 routingParams.put("ConstSoilStorage", -9.0f);  // check NetworkEquationsLuciana.java for definitions
 
 
-                outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+                java.io.File outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
                                         + "Rout_2Hill_3_3/"
                                         + "/IA" + ((Float) routingParams.get("lambdaSCSMethod")).floatValue()
                                         + "/VS" + ((Float) routingParams.get("vssub")).floatValue()
