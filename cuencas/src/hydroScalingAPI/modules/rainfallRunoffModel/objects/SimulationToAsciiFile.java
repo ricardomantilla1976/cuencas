@@ -102,7 +102,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         float lam1=((Float)routingParams.get("lambda1")).floatValue();
         float lam2=((Float)routingParams.get("lambda2")).floatValue();
 
-        float v_o=(float)(1.5/Math.pow(200,lam1)/Math.pow(1100,lam2));
+        float v_o=((Float)routingParams.get("v_o")).floatValue();
 
         thisNetworkGeom.setVqParams(v_o,0.0f,lam1,lam2);
         
@@ -129,6 +129,8 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
             infilMan=new hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager(myCuenca,linksStructure,infiltMetaRaster,matDir,magnitudes);
         
         thisHillsInfo.setInfManager(infilMan);
+
+        thisHillsInfo.setHillslopeVh(((Float)routingParams.get("v_h")).floatValue());
         
             /*
                 Escribo en un theFile lo siguiente:
@@ -180,13 +182,12 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         newfile.close();
         bufferout.close();
         
-        if(stormFile == null)
-            theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"-INT_"+rainIntensity+"-DUR_"+rainDuration+"-IR_"+infiltRate+"-Routing_"+routingString+".csv");
+        if(infiltMetaRaster == null)
+            theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+lam1+"_"+lam2+"_"+v_o+".csv");//theFile=new java.io.File(Directory+demName+"_"+x+"_"+y++"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+widthCoeff+"_"+widthExponent+"_"+widthStdDev+"_"+chezyCoeff+"_"+chezyExponent+".dat");
         else
-            theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"-"+stormFile.getName()+"-IR_"+infiltRate+"-Routing_"+routingString+".csv");
-        
+            theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+"-"+storm.stormName()+"-IR_"+infiltMetaRaster.getLocationMeta().getName().substring(0,infiltMetaRaster.getLocationMeta().getName().lastIndexOf(".metaVHC"))+"-Routing_"+routingString+"_params_"+lam1+"_"+lam2+".csv");
         System.out.println(theFile);
-        
+
         salida = new java.io.FileOutputStream(theFile);
         bufferout = new java.io.BufferedOutputStream(salida);
         newfile = new java.io.OutputStreamWriter(bufferout);
@@ -236,7 +237,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
                 newfile.write("Link-"+linksStructure.completeStreamLinksArray[i]+",");
         }
         
-        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_ChannelLosses thisBasinEqSys=new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_ChannelLosses(linksStructure,thisHillsInfo,thisNetworkGeom,routingType);
+        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay thisBasinEqSys=new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay(linksStructure,thisHillsInfo,thisNetworkGeom,routingType);
         double[] initialCondition=new double[linksStructure.contactsArray.length*2];
         
         float[][] areasHillArray=thisHillsInfo.getAreasArray();

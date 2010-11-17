@@ -239,9 +239,9 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
         
         hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay thisBasinEqSys=new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay(linksStructure,thisHillsInfo,thisNetworkGeom,routingType);
 
-        //RESETING INFILTRATION TO 0 AFTER ARGUMENT HAS BEEN PASSED TO THE CONSTRUCTOR
-        infilMan=new hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager(linksStructure,0.0f);
-        thisHillsInfo.setInfManager(infilMan);
+//        //RESETING INFILTRATION TO 0 AFTER ARGUMENT HAS BEEN PASSED TO THE CONSTRUCTOR
+//        infilMan=new hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager(linksStructure,0.0f);
+//        thisHillsInfo.setInfManager(infilMan);
 
 
         double[] initialCondition=new double[linksStructure.contactsArray.length*2];
@@ -285,6 +285,23 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
             //System.out.println(resSimID);
             //System.out.println(linksStructure.contactsArray(xyval[i][0],xyval[i][1]).length);   //contactsArray.length
         }
+        
+//        double[] myRain=new double[linksStructure.contactsArray.length];
+//
+//        for (int k=0;k<numPeriods;k++) {
+//            //System.out.println("Initiating time step "+k);
+//            double currTime=storm.stormInitialTimeInMinutes()+k*storm.stormRecordResolutionInMinutes();
+//
+//            System.out.print(currTime+",");
+//            for (int i=0;i<linksStructure.contactsArray.length;i++){
+//                myRain[i]=thisHillsInfo.precipitation(i,currTime);
+//            }
+//            System.out.print(new hydroScalingAPI.util.statistics.Stats(myRain).meanValue+",");
+//            System.out.print("\n");
+//        }
+//        System.out.print("\n");
+
+
         
         java.io.File theFile_L;
         
@@ -422,9 +439,9 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
         routingParams.put("chezyCoeff",14.2f);
         routingParams.put("chezyExponent",-1/3.0f);
 
-        routingParams.put("lambda1",0.3f);
-        routingParams.put("lambda2",-0.1f);
-        routingParams.put("v_o", 0.6f);
+        routingParams.put("lambda1",0.247677f);
+        routingParams.put("lambda2",-0.136595f);
+        routingParams.put("v_o", 0.605935f);
         routingParams.put("v_h", 0.05f);
 
 
@@ -433,18 +450,18 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
         //int[] event_num={1,11,20,106,16,22};
         //int[] event_num={53,59,68,71,84,129};
 
-        int iniEvent=1;
-        int finEvent=148;
+//        int iniEvent=114;
+//        int finEvent=148;
+//
+//        int[] event_num=new int[finEvent-iniEvent+1];
+//
+//        int k=0;
+//        for (int i=iniEvent;i<=finEvent;i++) {
+//            event_num[k]=i;
+//            k++;
+//        }
 
-        int[] event_num=new int[finEvent-iniEvent+1];
-
-        int k=0;
-        for (int i=iniEvent;i<=finEvent;i++) {
-            event_num[k]=i;
-            k++;
-        }
-
-//        int[] event_num={35};
+        int[] event_num={20,11};
         
         for (int i : event_num) {
 
@@ -457,7 +474,7 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
             //routingParams.put("v_o", 1.0f);
             //infil=0.0f;
 
-            new SimulationToAsciiFileGoodwinCreek(44, 111, matDirs, magnitudes, metaModif, stormFile, infil, 5, new java.io.File("/Users/ricardo/simulationResults/GoodwinCreek/MV/"), routingParams).executeSimulation();
+            new SimulationToAsciiFileGoodwinCreek(44, 111, matDirs, magnitudes, metaModif, stormFile, infil, 5, new java.io.File("/Users/ricardo/simulationResults/GoodwinCreek/"), routingParams).executeSimulation();
 
         }
 
@@ -465,158 +482,158 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
 
     }
 
-    //IN REALITY THIS ARRAY HAS RUNOFF RATIOS
-    private static double[] infiltrations=new double[] {        0.077022071,
-                                                                0.34012493,
-                                                                0.333511691,
-                                                                0.716385188,
-                                                                0.20588632,
-                                                                0.177444245,
-                                                                0.328270834,
-                                                                0.10120517,
-                                                                0.332646378,
-                                                                0.106678441,
-                                                                0.774447255,
-                                                                0.615064835,
-                                                                0.319330615,
-                                                                0.01336562,
-                                                                0.077079363,
-                                                                0.044391986,
-                                                                0.339509116,
-                                                                0.450247728,
-                                                                0.075753272,
-                                                                0.590036175,
-                                                                0.616538687,
-                                                                0.866002865,
-                                                                0.07800495,
-                                                                0.019630104,
-                                                                0.036202253,
-                                                                0.375114432,
-                                                                0.400599008,
-                                                                0.367944328,
-                                                                0.538504229,
-                                                                0.579145505,
-                                                                0.187790544,
-                                                                0.085957997,
-                                                                0.069133093,
-                                                                0.247932036,
-                                                                0.133938066,
-                                                                0.508117959,
-                                                                0.234489554,
-                                                                0.057404023,
-                                                                0.246224337,
-                                                                0.12452904,
-                                                                0.510958983,
-                                                                0.514918041,
-                                                                0.185754099,
-                                                                0.667300503,
-                                                                0.628651591,
-                                                                0.038739517,
-                                                                0.246131896,
-                                                                0.466040922,
-                                                                0.412816165,
-                                                                0.080090839,
-                                                                0.108656627,
-                                                                0.160761293,
-                                                                0.566938325,
-                                                                0.101381712,
-                                                                0.051022133,
-                                                                0.045647676,
-                                                                0.064408884,
-                                                                0.307115064,
-                                                                0.331998629,
-                                                                0.135476629,
-                                                                0.205425676,
-                                                                0.45826406,
-                                                                0.007913502,
-                                                                0.082581954,
-                                                                0.231444048,
-                                                                0.109859193,
-                                                                0.283012258,
-                                                                0.680048683,
-                                                                0.014680208,
-                                                                0.138982251,
-                                                                0.463436895,
-                                                                0.371659048,
-                                                                0.561747255,
-                                                                0.356436745,
-                                                                0.061217948,
-                                                                0.160903834,
-                                                                0.02660134,
-                                                                0.053967182,
-                                                                0.15160992,
-                                                                0.045605686,
-                                                                0.524097075,
-                                                                0.230003667,
-                                                                0.096489359,
-                                                                0.734083373,
-                                                                0.183424361,
-                                                                0.401482167,
-                                                                0.099468118,
-                                                                0.486882603,
-                                                                0.551205681,
-                                                                0.169131416,
-                                                                0.090518576,
-                                                                0.586988501,
-                                                                0.239485384,
-                                                                0.4100776,
-                                                                0.741049274,
-                                                                0.747517553,
-                                                                0.329335291,
-                                                                0.071597809,
-                                                                0.028197039,
-                                                                0.425152372,
-                                                                0.429820152,
-                                                                0.007882444,
-                                                                0.05689351,
-                                                                0.052307742,
-                                                                0.098823154,
-                                                                0.332689718,
-                                                                0.195057369,
-                                                                0.875087886,
-                                                                0.460854797,
-                                                                0.045373679,
-                                                                0.44236926,
-                                                                0.221973544,
-                                                                0.689785119,
-                                                                0.074815707,
-                                                                0.251705177,
-                                                                0.103389072,
-                                                                0.492598832,
-                                                                0.596336503,
-                                                                0.090646317,
-                                                                0.047177175,
-                                                                0.268372051,
-                                                                0.473798993,
-                                                                0.363178177,
-                                                                0.172820994,
-                                                                0.054021429,
-                                                                0.171357025,
-                                                                0.287116482,
-                                                                0.290760052,
-                                                                0.033227418,
-                                                                0.055569819,
-                                                                0.161583032,
-                                                                0.091773909,
-                                                                0.351084013,
-                                                                0.192698688,
-                                                                0.44127816,
-                                                                0.26674327,
-                                                                0.310187835,
-                                                                0.289029867,
-                                                                0.290058672,
-                                                                0.050237899,
-                                                                0.307326753,
-                                                                0.271074713,
-                                                                0.727726257,
-                                                                0.717162667,
-                                                                0.233157709,
-                                                                0.10934099,
-                                                                0.261735946,
-                                                                0.232595453
-};
+//    //IN REALITY THIS ARRAY HAS RUNOFF RATIOS
+//    private static double[] infiltrations=new double[] {        0.077022071,
+//                                                                0.34012493,
+//                                                                0.333511691,
+//                                                                0.716385188,
+//                                                                0.20588632,
+//                                                                0.177444245,
+//                                                                0.328270834,
+//                                                                0.10120517,
+//                                                                0.332646378,
+//                                                                0.106678441,
+//                                                                0.774447255,
+//                                                                0.615064835,
+//                                                                0.319330615,
+//                                                                0.01336562,
+//                                                                0.077079363,
+//                                                                0.044391986,
+//                                                                0.339509116,
+//                                                                0.450247728,
+//                                                                0.075753272,
+//                                                                0.590036175,
+//                                                                0.616538687,
+//                                                                0.866002865,
+//                                                                0.07800495,
+//                                                                0.019630104,
+//                                                                0.036202253,
+//                                                                0.375114432,
+//                                                                0.400599008,
+//                                                                0.367944328,
+//                                                                0.538504229,
+//                                                                0.579145505,
+//                                                                0.187790544,
+//                                                                0.085957997,
+//                                                                0.069133093,
+//                                                                0.247932036,
+//                                                                0.133938066,
+//                                                                0.508117959,
+//                                                                0.234489554,
+//                                                                0.057404023,
+//                                                                0.246224337,
+//                                                                0.12452904,
+//                                                                0.510958983,
+//                                                                0.514918041,
+//                                                                0.185754099,
+//                                                                0.667300503,
+//                                                                0.628651591,
+//                                                                0.038739517,
+//                                                                0.246131896,
+//                                                                0.466040922,
+//                                                                0.412816165,
+//                                                                0.080090839,
+//                                                                0.108656627,
+//                                                                0.160761293,
+//                                                                0.566938325,
+//                                                                0.101381712,
+//                                                                0.051022133,
+//                                                                0.045647676,
+//                                                                0.064408884,
+//                                                                0.307115064,
+//                                                                0.331998629,
+//                                                                0.135476629,
+//                                                                0.205425676,
+//                                                                0.45826406,
+//                                                                0.007913502,
+//                                                                0.082581954,
+//                                                                0.231444048,
+//                                                                0.109859193,
+//                                                                0.283012258,
+//                                                                0.680048683,
+//                                                                0.014680208,
+//                                                                0.138982251,
+//                                                                0.463436895,
+//                                                                0.371659048,
+//                                                                0.561747255,
+//                                                                0.356436745,
+//                                                                0.061217948,
+//                                                                0.160903834,
+//                                                                0.02660134,
+//                                                                0.053967182,
+//                                                                0.15160992,
+//                                                                0.045605686,
+//                                                                0.524097075,
+//                                                                0.230003667,
+//                                                                0.096489359,
+//                                                                0.734083373,
+//                                                                0.183424361,
+//                                                                0.401482167,
+//                                                                0.099468118,
+//                                                                0.486882603,
+//                                                                0.551205681,
+//                                                                0.169131416,
+//                                                                0.090518576,
+//                                                                0.586988501,
+//                                                                0.239485384,
+//                                                                0.4100776,
+//                                                                0.741049274,
+//                                                                0.747517553,
+//                                                                0.329335291,
+//                                                                0.071597809,
+//                                                                0.028197039,
+//                                                                0.425152372,
+//                                                                0.429820152,
+//                                                                0.007882444,
+//                                                                0.05689351,
+//                                                                0.052307742,
+//                                                                0.098823154,
+//                                                                0.332689718,
+//                                                                0.195057369,
+//                                                                0.875087886,
+//                                                                0.460854797,
+//                                                                0.045373679,
+//                                                                0.44236926,
+//                                                                0.221973544,
+//                                                                0.689785119,
+//                                                                0.074815707,
+//                                                                0.251705177,
+//                                                                0.103389072,
+//                                                                0.492598832,
+//                                                                0.596336503,
+//                                                                0.090646317,
+//                                                                0.047177175,
+//                                                                0.268372051,
+//                                                                0.473798993,
+//                                                                0.363178177,
+//                                                                0.172820994,
+//                                                                0.054021429,
+//                                                                0.171357025,
+//                                                                0.287116482,
+//                                                                0.290760052,
+//                                                                0.033227418,
+//                                                                0.055569819,
+//                                                                0.161583032,
+//                                                                0.091773909,
+//                                                                0.351084013,
+//                                                                0.192698688,
+//                                                                0.44127816,
+//                                                                0.26674327,
+//                                                                0.310187835,
+//                                                                0.289029867,
+//                                                                0.290058672,
+//                                                                0.050237899,
+//                                                                0.307326753,
+//                                                                0.271074713,
+//                                                                0.727726257,
+//                                                                0.717162667,
+//                                                                0.233157709,
+//                                                                0.10934099,
+//                                                                0.261735946,
+//                                                                0.232595453
+//};
 
-    private static double[] infiltrations2=new double[] {    4.23431,
+    private static double[] infiltrations=new double[] {    4.23431,
                                                             44.6808,
                                                             5.17731,
                                                             0.979614,

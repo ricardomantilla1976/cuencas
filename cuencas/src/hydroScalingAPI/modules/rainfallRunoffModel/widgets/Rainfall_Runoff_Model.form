@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.2" maxVersion="1.2" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <Properties>
@@ -311,7 +311,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                 <Property name="columns" type="int" value="3"/>
-                <Property name="rows" type="int" value="4"/>
+                <Property name="rows" type="int" value="7"/>
               </Layout>
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel6">
@@ -324,10 +324,31 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="rainIntensity">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="10"/>
+                    <Property name="text" type="java.lang.String" value="20"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel7">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Dialog" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value=" mm / h"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel16">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Dialog" size="10" style="1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Infiltration Intensity"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="infiltrationIntensity">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="5"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel17">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Dialog" size="10" style="0"/>
@@ -345,7 +366,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="rainDuration">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="5"/>
+                    <Property name="text" type="java.lang.String" value="60"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel9">
@@ -361,7 +382,7 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Dialog" size="10" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Flow Velocity"/>
+                    <Property name="text" type="java.lang.String" value="Channel Flow Velocity (vo)"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="flowVelocity">
@@ -382,13 +403,12 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Dialog" size="10" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Chezy Coefficient"/>
+                    <Property name="text" type="java.lang.String" value="Q exponent (Lambda 1)"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="chezyCoeff">
+                <Component class="javax.swing.JTextField" name="lambda1">
                   <Properties>
-                    <Property name="editable" type="boolean" value="false"/>
-                    <Property name="text" type="java.lang.String" value="100.0"/>
+                    <Property name="text" type="java.lang.String" value="0.3"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel13">
@@ -397,6 +417,48 @@
                       <Font name="Dialog" size="10" style="0"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value=" m^(1/2) / s"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel14">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Dialog" size="10" style="1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="A exponent (Lambda 2)"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="lambda2">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="-0.1"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel15">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Dialog" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value=" m^(1/2) / s"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel18">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Dialog" size="10" style="1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Hillslope Flow Velocity (vo)"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="hillVelocity">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="0.05"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel19">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Dialog" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value=" m / s"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -427,23 +489,16 @@
                     </Component>
                     <Component class="javax.swing.JButton" name="simButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Constant Velocity Simulation"/>
+                        <Property name="text" type="java.lang.String" value="Uniform Rainfall Simulation"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="simButtonActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="sim2Button">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Constant Chezy Simulation"/>
-                      </Properties>
-                      <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sim2ButtonActionPerformed"/>
-                      </Events>
-                    </Component>
                     <Component class="javax.swing.JButton" name="sim3Button">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Parallel Simulation"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sim3ButtonActionPerformed"/>
