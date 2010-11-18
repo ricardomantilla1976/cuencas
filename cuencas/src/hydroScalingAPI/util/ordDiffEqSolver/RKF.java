@@ -665,7 +665,7 @@ public class RKF extends java.lang.Object {
 
         }
 
-        if (currentTime != finalTime && IC[ouletID] > 1e-3) {
+        if (currentTime != finalTime && IC[ouletID] > 1e-6) {
             givenStep = step(currentTime, IC, finalTime - currentTime - 1 / 60., true);
             basicTimeStep = givenStep[0][0];
             currentTime += basicTimeStep;
