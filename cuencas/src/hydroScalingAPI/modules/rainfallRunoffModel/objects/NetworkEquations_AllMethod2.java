@@ -44,7 +44,7 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
     java.util.Hashtable routingParams;
     private int routingType, HillType, HillVelType;
     private float rr;
-    private double q01, q12, q1c, q23, qe, Q_trib, K_Q, q31, q_in_res, q_out_res;
+    private double q01, q12, q1c, q23, qe, Q_trib, K_Q, q3c, q_in_res, q_out_res;
     private double effPrecip, qs;
     private double[] output;
     private float[][] manningArray, cheziArray, widthArray, lengthArray, slopeArray, CkArray;
@@ -170,7 +170,7 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
         }
         //System.out.println("equation object 8");cc
         if (routingParams.get("RunoffCoefficient") != null) {
-            rr = (int) ((Float) routingParams.get("RunoffCoefficient")).floatValue();
+            rr = ((Float) routingParams.get("RunoffCoefficient")).floatValue();
         }
 
         // Future implementation (greenroof and reservoir)
@@ -268,14 +268,14 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
 //                            rrr = 0.70;
 //                        }
                  //   }
-
+                    double hillPrec =  basinHillSlopesInfo.precipitation(i, time);// for URP event apply this rule*0.143;
                     double hillPrecIntensity = rr * basinHillSlopesInfo.precipitation(i, time);// for URP event apply this rule*0.143;
 
                     effPrecip = Math.max(hillPrecIntensity - basinHillSlopesInfo.infiltRate(i, time), 0.0);
                     q01 = 0;
                     q12 = 0;
                     q1c = effPrecip; //Uncomment to eliminate the effect of hillslope routing
-                    q31 = 0.0;
+                    q3c = 0.0;
 
                     Q_trib = 0.0;
                     for (int j = 0; j < linksConectionStruct.connectionsArray[i].length; j++) {
@@ -289,12 +289,13 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
                     double chanLoss = lengthArray[0][i] * widthArray[0][i] * ks;
 
 
-                    /* the links*/ output[i] = 60 * K_Q * ((1 / 3.6 * areasHillArray[0][i] * (q1c + q31)) + Q_trib - input[i] - chanLoss); //[m3/s]/min
+                    /* the links*/ output[i] = 60 * K_Q * ((1 / 3.6 * areasHillArray[0][i] * (q1c + q3c)) + Q_trib - input[i] - chanLoss); //[m3/s]/min
 /* hillslope reservoir*/ output[i + nLi] = 0.0;//(1/60.)*(q01-q1c); //output[mm/min] qd and qs [mm/hour]
-/* soil reservoir*/ output[i + 2 * nLi] = 0.0;//(1/60.)*(q12-q31); //output[mm/min] effPrecip and qss [mm/hour]
+/* soil reservoir*/ output[i + 2 * nLi] = 0.0;//(1/60.)*(q12-q3c); //output[mm/min] effPrecip and qss [mm/hour]
 /* runoff rate*/            output[i+3*nLi]=0.0; // runoff rate mm/min
-/* subsurface flow rate*/   //output[i+4*nLi]=(1/60.)*q31; //subsurface flow mm/min
-/* accum prec*/             //output[i+5*nLi]=(1/60.)*hillPrecIntensity; //accumulated precipitation mm/min
+                 output[i + 4 * nLi] = (1 / 60.) *  (q1c);
+                                output[i + 5 * nLi] = (1 / 60.) *  (q3c);
+                                output[i + 6 * nLi] = (1 / 60.) *  (hillPrec);
 
 
                 }
@@ -321,6 +322,7 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
                //     }
 
               //      }
+                    double hillPrec =  basinHillSlopesInfo.precipitation(i, time);// for URP event apply this rule*0.143;
                     double hillPrecIntensity = rr * basinHillSlopesInfo.precipitation(i, time);// for URP event apply this rule*0.143;
 
                     effPrecip = Math.max(hillPrecIntensity - basinHillSlopesInfo.infiltRate(i, time), 0.0);
@@ -335,7 +337,7 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
 
 
                     //q1c=effPrecip; //Uncomment to eliminate the effect of hillslope routing
-                    q31 = 0.0;
+                    q3c = 0.0;
                     Q_trib = 0.0;
                     for (int j = 0; j < linksConectionStruct.connectionsArray[i].length; j++) {
                         Q_trib += input[linksConectionStruct.connectionsArray[i][j]];
@@ -348,14 +350,168 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
                     double chanLoss = lengthArray[0][i] * widthArray[0][i] * ks;
 
 
-                    /* the links*/ output[i] = 60 * K_Q * (((1 / 3.6) * areasHillArray[0][i] * (q1c + q31)) + Q_trib - input[i] - chanLoss); //[m3/s]/min
+                    /* the links*/ output[i] = 60 * K_Q * (((1 / 3.6) * areasHillArray[0][i] * (q1c + q3c)) + Q_trib - input[i] - chanLoss); //[m3/s]/min
 /* hillslope reservoir*/ output[i + nLi] = (1 / 60.) * (q01 - q1c); //output[mm/min] qd and qs [mm/hour]
-/* soil reservoir*/ output[i + 2 * nLi] = (1 / 60.) * (q12 - q31); //output[mm/min] effPrecip and qss [mm/hour]
+/* soil reservoir*/ output[i + 2 * nLi] = (1 / 60.) * (q12 - q3c); //output[mm/min] effPrecip and qss [mm/hour]
 /* soil reservoir*/ output[i + 3 * nLi] = 0.0f; //output[mm/min] effPrecip and qss [mm/hour]
+                              output[i + 4 * nLi] = (1 / 60.) *  (q1c);
+                                output[i + 5 * nLi] = (1 / 60.) *  (q3c);
+                                output[i + 6 * nLi] = (1 / 60.) *  (hillPrec);
 
 
                 }
                 break;
+
+                           case 2:
+                /* The same as 3 but saves contribution of surface and subsurface to estimate runoff coefficient
+                 * Presents a better representation of the subsurface flow
+                 * Considering hillslope shape
+                 * Applies SCS method to estimate infiltration
+                 * This is the SCS equation, where Qacum=(Pacum-IA)^2/(Pacum-IA+St)
+                 * Pe=Pacum-IA
+                 * So=(SI-M)
+                 * dQ/dt=(Pe*(Pe+2So)/(Pe+So)^2)*dPe/dt
+                 * SI=maximum infiltration capacity = f(soil moisture, soil hydrologic group, dry soil)
+                 * M=soil moisture at time t
+                 */
+                for (int i = 0; i < input.length; i++) {
+                    if (input[i] < 0.0) {
+                        input[i] = 0.0;
+                    }
+                    if (Double.isNaN(input[i])) {
+                        input[i] = 0.0;
+                    }
+                }
+
+                for (int i = 0; i < nLi; i++) {
+
+                    double hillPrecIntensity = basinHillSlopesInfo.precipitation(i, time);// for URP event apply this rule*0.143;
+                    double hillAcumevent = basinHillSlopesInfo.precipitationacum(i, time);
+                    // HILLSLOPE GEOMETRY RELATIONSHIPS
+
+                    double IA = lambdaSCS * Hill_SoilDepth[0][i];
+                    double ImpArea = 0.0;
+                    double PermArea =0;
+                    double deficit=0;
+                    double V3=0;
+                    double V2=0;
+                    double da_dh = 0.0;
+                    // h cannot be lower than the channel botton = hsoil
+                    double hrel = (input[i + 2 * nLi] - Hill_SoilDepth[0][i])/1000; // in m
+                    if(hrel<0) hrel=Hill_SoilDepth[0][i]/1000;
+                    double hrelmax =  (Hill_TotalDepth[0][i] - Hill_SoilDepth[0][i])/1000; // in m
+
+                    // check limit of soil parameters
+                    if(input[i + 3 * nLi]<0) input[i + 3 * nLi]=0;
+                    if(input[i + 3 * nLi]>1) input[i + 3 * nLi]=1;
+                    if(hrel<0) hrel=0;
+
+                    if (hrel >= 0 && hrel < hrelmax) {
+                        if(hrel==0) ImpArea = 0;
+                        else ImpArea = Area_Relief_Param[0][i] + Area_Relief_Param[1][i] * hrel
+                                + Area_Relief_Param[2][i] * Math.pow(hrel, 2) + Area_Relief_Param[3][i] * Math.pow(hrel, 3);//km2
+                        if(ImpArea<0) ImpArea=0;
+                        if(ImpArea>areasHillArray[0][i]) ImpArea=areasHillArray[0][i];
+
+                        PermArea = areasHillArray[0][i] - ImpArea; //in [km2]
+                        deficit = (1 - (input[i + 3 * nLi])) * (Hill_SoilDepth[0][i]); //in mm
+                        V3=(ImpArea*Hill_SoilDepth[0][i]*1e3); //in m3
+                        V2=(Hill_TotalVol[0][i]-V3); //in meters
+                        da_dh = (Area_Relief_Param[1][i]
+                                 + 2 * Area_Relief_Param[2][i] * hrel + 3 * Area_Relief_Param[3][i] * Math.pow(hrel, 2))*1e6; //[m2/m]
+                        if(da_dh <0) da_dh=0;
+
+                    } //[km]
+
+                    if (hrel>=hrelmax)
+                    {
+                        deficit=0;
+                        //input[i + 1 * nLi]=input[i + 1 * nLi]+(hrel-hrelmax)*1000;
+                        hrel=hrelmax;
+                        input[i + 2 * nLi]=hrelmax*1000+Hill_SoilDepth[0][i];
+                        V3=Hill_TotalVol[0][i];
+                        V2=0;
+                        PermArea =0;
+                        ImpArea=areasHillArray[0][i];
+                        da_dh = (Area_Relief_Param[1][i]
+                                 + 2 * Area_Relief_Param[2][i] * hrel + 3 * Area_Relief_Param[3][i] * Math.pow(hrel, 2))*1e6; //m2/m
+
+                       if(da_dh <0) da_dh=0;
+                    }
+
+                    //Soil moisture content of the unsaturated layer (0-1) times volume of the layer 2 (Vol total-v3)
+
+
+
+                    // Hillslope model - estimation of infiltration
+                    double C = 0;
+                    double Pe = hillAcumevent - IA;
+                    if (hillPrecIntensity > 0.0f && (Pe) > 0) {
+                        C = Pe * (Pe + 2 * deficit) / Math.pow((Pe + deficit), 2);
+                        if (C > 1) {
+                            C = 1;
+                        }
+                        if (C < 0) {
+                            C = 0;
+                        }
+                        q01 = (ImpArea * hillPrecIntensity + PermArea * C * hillPrecIntensity) / areasHillArray[0][i];    /// this would guarantee it is in mm/h
+                        q12 = (PermArea / areasHillArray[0][i]) * (1 - C) * (hillPrecIntensity);
+                        if (q12 < 0) {
+                            q12 = 0;
+                        }
+                    } else { // if qacum<IA - qd=0;
+                        q01 = 0;
+                        q12 = 0;
+                    }
+                    // Hillslope Velocity
+                    double vr = Hillvelocity(HillVelType, i, input[i + 1 * nLi]);
+                    if(vr>500) vr=500;
+                    if(vr<1) vr=1;
+                    if(Double.isNaN(vr)) vr=1;
+
+                    double Ksat = (vsub);     //hour
+
+                    /// (reservoir constant --- 1/hour                    )) * (if ImpArea=areasHillArray[0][i], time constant is larger because
+                    //it has to travel throught the hillslope, if imp area =0 the water does not flow**** I removed that(ImpArea/areasHillArray[0][i])
+                    q1c = ((2 * lengthArray[0][i] / (1e6 * areasHillArray[0][i])) * vr) * (input[i + nLi]); //mm/hour//((input[i+nLi] > So)?1:0)*(1/Ts*(input[i+nLi]-So));
+                    double kunsat=Ksat*Math.exp(input[i + 3 * nLi]-1);
+                    if(Double.isNaN(vr)) kunsat=Ksat;
+                    q23 = kunsat *input[i + 3 * nLi]*1000; //mm/hour
+
+                    if(ImpArea>0 && hrel>0 && hrelmax>0)q3c = Ksat * 1000* (ImpArea/areasHillArray[0][i])*(input[i + 2*nLi]-Hill_SoilDepth[0][i])/(hrelmax*1000);  //mm/hour // correct units!!!!!
+                    else q3c =0;
+                    //if(PermArea==0)q3c = Ksat * (hrel) *(lengthArray[0][i]/(1e6*PermArea));  //mm/hour
+                    Q_trib = 0.0;
+
+                    for (int j = 0; j < linksConectionStruct.connectionsArray[i].length; j++) {
+                        Q_trib += input[linksConectionStruct.connectionsArray[i][j]];
+                    }
+
+
+                    K_Q = RoutingType(routingType, i, input[i]);
+
+
+
+/* the links*/                  output[i] = 60 * K_Q * ((1 / 3.6 * areasHillArray[0][i] * (q1c+q3c)) + Q_trib - input[i]); //[m3/s]/min
+                                if(Double.isNaN(output[i])) output[i]=0.0;
+/*surface hillslope reservoir*/ output[i + nLi] = (1 / 60.) * (q01 - q1c); //output[mm/h/min]
+                                if(Double.isNaN(output[i + nLi])) output[i + nLi]=0.0;
+/* depth - saturated area*/
+                                double dV3_dt=(1e12)*((areasHillArray[0][i]-ImpArea) * q23 - (areasHillArray[0][i]) * q3c); //mm3/h
+                                if(da_dh>0 && Hill_SoilDepth[0][i]>0) output[i + 2 * nLi] =(1 / 60.) * (dV3_dt/(1e3*Hill_SoilDepth[0][i]*da_dh)) ; //output[mm/min] effPrecip and qss [mm/hour]
+                                else output[i + 2 * nLi] =0;
+                                if(Double.isNaN(output[i + 2 * nLi])) output[i + 2 * nLi]=0.0;
+                                if(V2!=0)
+/* soil moisture*/              output[i + 3 * nLi] = (1 / 60.) * (1 / V2) * (1e3*(areasHillArray[0][i]*q12 - (areasHillArray[0][i]-ImpArea)*q23) - ((input[i + 3 * nLi]) * dV3_dt)/1e9); //output[1/min]
+                                else output[i + 3 * nLi]=0;
+                                if(Double.isNaN(output[i + 3 * nLi])) output[i + 3 * nLi]=0.0;
+                                output[i + 4 * nLi] = (1 / 60.) *  (q1c);
+                                output[i + 5 * nLi] = (1 / 60.) *  (q3c);
+                                output[i + 6 * nLi] = (1 / 60.) *  (hillPrecIntensity);
+
+                }
+                break;
+
             case 3:
                 /* Luciana - Simplified version of hillslope equations
                  * Aug-09/2010
@@ -473,9 +629,9 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
                     if(Double.isNaN(vr)) kunsat=Ksat;
                     q23 = kunsat *input[i + 3 * nLi]*1000; //mm/hour
                     
-                    if(ImpArea>0 && hrel>0 && hrelmax>0)q31 = Ksat * 1000* (ImpArea/areasHillArray[0][i])*(input[i + 2*nLi]-Hill_SoilDepth[0][i])/(hrelmax*1000);  //mm/hour // correct units!!!!!
-                    else q31 =0;
-                    //if(PermArea==0)q31 = Ksat * (hrel) *(lengthArray[0][i]/(1e6*PermArea));  //mm/hour
+                    if(ImpArea>0 && hrel>0 && hrelmax>0)q3c = Ksat * 1000* (ImpArea/areasHillArray[0][i])*(input[i + 2*nLi]-Hill_SoilDepth[0][i])/(hrelmax*1000);  //mm/hour // correct units!!!!!
+                    else q3c =0;
+                    //if(PermArea==0)q3c = Ksat * (hrel) *(lengthArray[0][i]/(1e6*PermArea));  //mm/hour
                     Q_trib = 0.0;
 
                     for (int j = 0; j < linksConectionStruct.connectionsArray[i].length; j++) {
@@ -487,12 +643,12 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
  
                   
 
-/* the links*/                  output[i] = 60 * K_Q * ((1 / 3.6 * areasHillArray[0][i] * (q1c)) + Q_trib - input[i]); //[m3/s]/min
+/* the links*/                  output[i] = 60 * K_Q * ((1 / 3.6 * areasHillArray[0][i] * (q1c+q3c)) + Q_trib - input[i]); //[m3/s]/min
                                 if(Double.isNaN(output[i])) output[i]=0.0;
-/*surface hillslope reservoir*/ output[i + nLi] = (1 / 60.) * (q01 - q1c + q31); //output[mm/h/min]
+/*surface hillslope reservoir*/ output[i + nLi] = (1 / 60.) * (q01 - q1c); //output[mm/h/min]
                                 if(Double.isNaN(output[i + nLi])) output[i + nLi]=0.0;
 /* depth - saturated area*/
-                                double dV3_dt=(1e12)*((areasHillArray[0][i]-ImpArea) * q23 - (areasHillArray[0][i]) * q31); //mm3/h
+                                double dV3_dt=(1e12)*((areasHillArray[0][i]-ImpArea) * q23 - (areasHillArray[0][i]) * q3c); //mm3/h
                                 if(da_dh>0 && Hill_SoilDepth[0][i]>0) output[i + 2 * nLi] =(1 / 60.) * (dV3_dt/(1e3*Hill_SoilDepth[0][i]*da_dh)) ; //output[mm/min] effPrecip and qss [mm/hour]
                                 else output[i + 2 * nLi] =0;
                                 if(Double.isNaN(output[i + 2 * nLi])) output[i + 2 * nLi]=0.0;
@@ -500,7 +656,6 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
 /* soil moisture*/              output[i + 3 * nLi] = (1 / 60.) * (1 / V2) * (1e3*(areasHillArray[0][i]*q12 - (areasHillArray[0][i]-ImpArea)*q23) - ((input[i + 3 * nLi]) * dV3_dt)/1e9); //output[1/min]
                                 else output[i + 3 * nLi]=0;
                                 if(Double.isNaN(output[i + 3 * nLi])) output[i + 3 * nLi]=0.0;
-
 
                 }
                 break;
@@ -576,7 +731,7 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
                     q1c = (input[i + nLi] / K); //mm/hour//((input[i+nLi] > So)?1:0)*(1/Ts*(input[i+nLi]-So));
 
 
-                    q31 = 0.4 * (input[i + 2 * nLi] / K_subfast) + 0.6 * (input[i + 2 * nLi] / K_subslow);  //mm/hour
+                    q3c = 0.4 * (input[i + 2 * nLi] / K_subfast) + 0.6 * (input[i + 2 * nLi] / K_subslow);  //mm/hour
                     Q_trib = 0.0;
 
                     for (int j = 0; j < linksConectionStruct.connectionsArray[i].length; j++) {
@@ -593,9 +748,9 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
                     //double qev=1; //1mm/h
                     //double soilLoss=areasHillArray[0][i]*ks;
                     //System.out.println("Link =" + i + "C= "+C+"hillAcumevent=" + hillAcumevent+" Pe ="+Pe+" S = "+S+" So = "+input[i+2*nLi]+" So/S = "+input[i+2*nLi]/S);
-/* the links*/ output[i] = 60 * K_Q * ((1 / 3.6 * areasHillArray[0][i] * (q1c + q31)) + Q_trib - input[i] - chanLoss); //[m3/s]/min
+/* the links*/ output[i] = 60 * K_Q * ((1 / 3.6 * areasHillArray[0][i] * (q1c + q3c)) + Q_trib - input[i] - chanLoss); //[m3/s]/min
 /* hillslope reservoir*/ output[i + nLi] = (1 / 60.) * (q01 - q1c); //output[mm/min] qd and qs [mm/hour]
-/* soil reservoir*/ output[i + 2 * nLi] = (1 / 60.) * (q12 - q31); //output[mm/min] effPrecip and qss [mm/hour]
+/* soil reservoir*/ output[i + 2 * nLi] = (1 / 60.) * (q12 - q3c); //output[mm/min] effPrecip and qss [mm/hour]
 /* soil reservoir*/ output[i + 3 * nLi] = 0.0; //output[mm/min] effPrecip and qss [mm/hour]
 
                 }
