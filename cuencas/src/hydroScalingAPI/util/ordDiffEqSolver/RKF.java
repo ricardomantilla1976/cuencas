@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 package hydroScalingAPI.util.ordDiffEqSolver;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 /**
  * An implementation of the Runge-Kutta-Felberg algorithm for solving non-linear ordinary
@@ -215,7 +216,7 @@ public class RKF extends java.lang.Object {
         Delta = 0;
         for (int i = 0; i < IC.length; i++) {
             //&& Math.abs(newY[i] - newYstar[i])>0.001
-            if ((newY[i] + newYstar[i]) > 0.001) {
+            if ((newY[i] + newYstar[i]) > 0.0) {
                 double newdelta = Math.abs(2 * (newY[i] - newYstar[i]) / (newY[i] + newYstar[i]));
                 if (Delta < newdelta) {
                     Delta = newdelta;
@@ -228,7 +229,6 @@ public class RKF extends java.lang.Object {
 
         newTimeStep = timeStep;
 
-        newTimeStep = timeStep;
 
         if (finalize) {
 
@@ -269,7 +269,7 @@ public class RKF extends java.lang.Object {
 ////   out.write("-------------> " + "Yval   " + Yprob + "Yvalprob    " + Ystarprob+"\n");
 //
 //out.close();
-            //System.out.println("    --> "+timeStep+" "+epsilon+" "+Delta+" "+factor+" "+newTimeStep+" ("+java.util.Calendar.getInstance().getTime()+")");
+//            System.out.println("    --> "+timeStep+" "+epsilon+" "+Delta+" "+factor+" "+newTimeStep+" ("+java.util.Calendar.getInstance().getTime()+")");
             if (newTimeStep < 0.01 / 60.) {
                 newTimeStep = 0.01 / 60.;
             }
@@ -707,7 +707,7 @@ public class RKF extends java.lang.Object {
      * of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
-    public void jumpsRunToAsciiFilePlusLocations(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom,int[] resSimID,java.io.OutputStreamWriter outputStream_L) throws java.io.IOException {
+    public void jumpsRunToAsciiFilePlusLocations(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, int[] resSimID, java.io.OutputStreamWriter outputStream_L) throws java.io.IOException {
 
         double currentTime = iniTime, targetTime;
 
@@ -722,7 +722,9 @@ public class RKF extends java.lang.Object {
                 outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
             }
         }
-        for(int i : resSimID) outputStream_L.write(IC[i-1] + ",");
+        for (int i : resSimID) {
+            outputStream_L.write(IC[i - 1] + ",");
+        }
 
         java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
@@ -752,11 +754,11 @@ public class RKF extends java.lang.Object {
                 givenStep[0][0] = currentTime;
                 IC = givenStep[1];
 
-                if (currentTime < targetTime){
+                if (currentTime < targetTime) {
                     for (int i = 0; i < IC.length; i++) {
-                        if(IC[i] > maxAchieved[i]){
+                        if (IC[i] > maxAchieved[i]) {
                             maxAchieved[i] = IC[i];
-                            timeOfMaximumAchieved[i]=currentTime;
+                            timeOfMaximumAchieved[i] = currentTime;
                         }
                     }
                     thisDate = java.util.Calendar.getInstance();
@@ -801,14 +803,16 @@ public class RKF extends java.lang.Object {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
                 }
             }
-            for(int i : resSimID) outputStream_L.write(IC[i-1] + ",");
+            for (int i : resSimID) {
+                outputStream_L.write(IC[i - 1] + ",");
+            }
 
             thisDate = java.util.Calendar.getInstance();
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
 
-        //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
-        //System.out.println();
+            //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
+            //System.out.println();
 
         }
 
@@ -828,13 +832,15 @@ public class RKF extends java.lang.Object {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
                 }
             }
-            for(int i : resSimID) outputStream_L.write(IC[i-1] + ",");
+            for (int i : resSimID) {
+                outputStream_L.write(IC[i - 1] + ",");
+            }
 
             thisDate = java.util.Calendar.getInstance();
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
-        //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
-        //System.out.println();
+            //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
+            //System.out.println();
 
         }
 
@@ -857,7 +863,7 @@ public class RKF extends java.lang.Object {
      * of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
-    public void jumpsRunToAsciiFileHilltype4(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, java.io.OutputStreamWriter outputStream2, java.io.OutputStreamWriter outputStream3, java.io.OutputStreamWriter outputStream4,  java.io.OutputStreamWriter outputStream5,  java.io.OutputStreamWriter outputStream6, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, int HT) throws java.io.IOException {
+    public void jumpsRunToAsciiFileHilltype4(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, java.io.OutputStreamWriter outputStream2, java.io.OutputStreamWriter outputStream3, java.io.OutputStreamWriter outputStream4, java.io.OutputStreamWriter outputStream5, java.io.OutputStreamWriter outputStream6, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, int HT) throws java.io.IOException {
 
         double currentTime = iniTime, targetTime;
 
@@ -1337,6 +1343,7 @@ public class RKF extends java.lang.Object {
 
         while (currentTime < finalTime) {
             targetTime = currentTime + incrementalTime;
+
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance();
@@ -1463,36 +1470,51 @@ public class RKF extends java.lang.Object {
      * of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
-    public void jumpsRunCompleteToAsciiFileSCSsimple(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, java.io.OutputStreamWriter outputStream1, java.io.OutputStreamWriter outputStream2) throws java.io.IOException {
+    public void jumpsRunCompleteToAsciiFileSCSsimple(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, java.io.OutputStreamWriter outputStream1, java.io.OutputStreamWriter outputStream2, java.io.OutputStreamWriter outputStream3) throws java.io.IOException {
 
         double currentTime = iniTime, targetTime;
+        //System.out.println("currentTime"+currentTime +"incrementalTime"+incrementalTime);
+        //DecimalFormat df = new DecimalFormat("###");
+        DecimalFormat df1 = new DecimalFormat("###.#");
+        DecimalFormat df2 = new DecimalFormat("###.##");
+        DecimalFormat df3 = new DecimalFormat("###.###");
+        //DecimalFormat df10 = new DecimalFormat("###.##########");
 
         int ouletID = linksStructure.getOutletID();
         int nlinks = linksStructure.contactsArray.length;
 
         java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-        System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+        System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID] + " Precip: " + IC[6 * nlinks + ouletID]);
 
+        int writeorder = linksStructure.basinOrder - 4;
+        writeorder = Math.max(1, writeorder);
 
-        outputStream1.write(currentTime + ",");
-        outputStream2.write(currentTime + ",");
-        for (int i = 0; i < linksStructure.contactsArray.length; i++) {
-            if (thisNetworkGeom.linkOrder(i) > 3) {
-                outputStream1.write(IC[i] + ",");
-                outputStream2.write(IC[nlinks + i] + "," + IC[2 * nlinks + i] + "," + IC[3 * nlinks + i] + "\n");
+        outputStream1.write(df3.format(currentTime) + ",");
+        outputStream2.write(df3.format(currentTime) + ",");
+        outputStream3.write(df3.format(currentTime) + ",");
+        // define the order to be ploted
+        for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
+            int nl = linksStructure.completeStreamLinksArray[i];
+            if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
+                outputStream1.write(df2.format(IC[nl]) + ",");
+                outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
+                outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + ",");
             }
         }
         outputStream1.write("\n");
         outputStream2.write("\n");
+        outputStream3.write("\n");
 
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
         //System.out.println();
+
 
         double[][] givenStep;
 
         while (currentTime < finalTime) {
             targetTime = currentTime + incrementalTime;
+          //  System.out.println("currentTime"+currentTime+"targetTime"+targetTime + "basicTimeStep" +basicTimeStep);
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance();
@@ -1500,7 +1522,7 @@ public class RKF extends java.lang.Object {
                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 givenStep = stepSCS(currentTime, IC, basicTimeStep, false);
-
+            //    System.out.println("currentTime"+currentTime+"targetTime"+targetTime +"basicTimeStep"+ basicTimeStep+"givenStep[0][0]"+givenStep[0][0]);
                 if (currentTime + givenStep[0][0] >= targetTime) {
                     //System.out.println("******** False Step ********");
                     break;
@@ -1522,17 +1544,22 @@ public class RKF extends java.lang.Object {
                     thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
                     System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
                     //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
-                    outputStream1.write(currentTime + ",");
-                    outputStream2.write(currentTime + ",");
-                    for (int i = 0; i < linksStructure.contactsArray.length; i++) {
-                        if (thisNetworkGeom.linkOrder(i) > 3) {
-                            outputStream1.write(IC[i] + ",");
-                            outputStream2.write(IC[nlinks + i] + "," + IC[2 * nlinks + i] + "," + IC[3 * nlinks + i] + "\n");
+                    outputStream1.write(df3.format(currentTime) + ",");
+                    outputStream2.write(df3.format(currentTime) + ",");
+                    outputStream3.write(df3.format(currentTime) + ",");
+                    // define the order to be ploted
+                    for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
+                        int nl = linksStructure.completeStreamLinksArray[i];
+                        if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
+                            outputStream1.write(df2.format(IC[nl]) + ",");
+                            outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
+                            outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + ",");
                         }
                     }
                     outputStream1.write("\n");
                     outputStream2.write("\n");
-                }
+                    outputStream3.write("\n");
+      }
 
 
 
@@ -1568,16 +1595,21 @@ public class RKF extends java.lang.Object {
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
-            outputStream1.write(currentTime + ",");
-            outputStream2.write(currentTime + ",");
-            for (int i = 0; i < linksStructure.contactsArray.length; i++) {
-                if (thisNetworkGeom.linkOrder(i) > 3) {
-                    outputStream1.write(IC[i] + ",");
-                    outputStream2.write(IC[nlinks + i] + "," + IC[2 * nlinks + i] + "," + IC[3 * nlinks + i] + "\n");
-                }
-            }
-            outputStream1.write("\n");
-            outputStream2.write("\n");         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
+          outputStream1.write(df3.format(currentTime) + ",");
+                    outputStream2.write(df3.format(currentTime) + ",");
+                    outputStream3.write(df3.format(currentTime) + ",");
+                    // define the order to be ploted
+                    for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
+                        int nl = linksStructure.completeStreamLinksArray[i];
+                        if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
+                            outputStream1.write(df2.format(IC[nl]) + ",");
+                            outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
+                            outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + ",");
+                        }
+                    }
+                    outputStream1.write("\n");
+                    outputStream2.write("\n");
+                    outputStream3.write("\n");         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
         }
@@ -1606,93 +1638,85 @@ public class RKF extends java.lang.Object {
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
-            outputStream1.write(currentTime + ",");
-            outputStream2.write(currentTime + ",");
-            for (int i = 0; i < linksStructure.contactsArray.length; i++) {
-                if (thisNetworkGeom.linkOrder(i) > 3) {
-                    outputStream1.write(IC[i] + ",");
-                    outputStream2.write(IC[nlinks + i] + "," + IC[2 * nlinks + i] + "," + IC[3 * nlinks + i] + "\n");
-                }
-            }
-            outputStream1.write("\n");
-            outputStream2.write("\n");       //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
+            outputStream1.write(df3.format(currentTime) + ",");
+                    outputStream2.write(df3.format(currentTime) + ",");
+                    outputStream3.write(df3.format(currentTime) + ",");
+                    // define the order to be ploted
+                    for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
+                        int nl = linksStructure.completeStreamLinksArray[i];
+                        if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
+                            outputStream1.write(df2.format(IC[nl]) + ",");
+                            outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
+                            outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + ",");
+                        }
+                    }
+                    outputStream1.write("\n");
+                    outputStream2.write("\n");
+                    outputStream3.write("\n");       //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
         }
 
         finalCond = IC;
+
     }
 
-
-/**
- * Writes (in ascii format) to a specified file the values of the function described by differential
- * equations in the the intermidia steps requested to go from the Initial to the Final
- * time.  This method is very specific for solving equations of flow in a network.  It prints output for
- * the flow component at a few locations.
- * @param iniTime The initial time of the solution
- * @param finalTime The final time of the solution
- * @param incrementalTime How often the values are desired
- * @param IC The value of the initial condition
- * @param outputStream The file to which the information will be writen
- * @param linksStructure The structure describing the topology of the river network
- * @param thisNetworkGeom The descripion the the hydraulic and geomorphic parameters
- * of the links in the network
- * @throws java.io.IOException Captures errors while writing to the file
- */
-public void
-
-jumpsRunToIncompleteAsciiFile(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom) throws java.io.IOException {
+    /**
+     * Writes (in ascii format) to a specified file the values of the function described by differential
+     * equations in the the intermidia steps requested to go from the Initial to the Final
+     * time.  This method is very specific for solving equations of flow in a network.  It prints output for
+     * the flow component at a few locations.
+     * @param iniTime The initial time of the solution
+     * @param finalTime The final time of the solution
+     * @param incrementalTime How often the values are desired
+     * @param IC The value of the initial condition
+     * @param outputStream The file to which the information will be writen
+     * @param linksStructure The structure describing the topology of the river network
+     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic parameters
+     * of the links in the network
+     * @throws java.io.IOException Captures errors while writing to the file
+     */
+    public void jumpsRunToIncompleteAsciiFile(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom) throws java.io.IOException {
 
         double currentTime = iniTime, targetTime;
 
 
 
-int basinOrder = linksStructure.getBasinOrder();
+        int basinOrder = linksStructure.getBasinOrder();
 
 
-int ouletID = linksStructure.getOutletID();
+        int ouletID = linksStructure.getOutletID();
 
-        outputStream.
-
-write("\n");
-        outputStream.
-
-write(currentTime + ",");
+        outputStream.write("\n");
+        outputStream.write(currentTime + ",");
 
 
-for (int i = 0; i
-
-< linksStructure.completeStreamLinksArray.length; i++
-
-) {
+        for (int i = 0; i
+                < linksStructure.completeStreamLinksArray.length; i++) {
             if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > Math.max(basinOrder - 3, 1)) {
                 outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
 
 
-}
+            }
         }
 
         java.util.Calendar thisDate = java.util.Calendar.getInstance();
-        thisDate.
-
-setTimeInMillis((long) (currentTime * 60. * 1000.0));
-        System.
-
-out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")");
+        thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
+        System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")");
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
         //System.out.println();
 
 
 
-double[][] givenStep;
+        double[][] givenStep;
 
 
 
-while (currentTime < finalTime) {
+        while (currentTime < finalTime) {
             targetTime = currentTime + incrementalTime;
 
 
-while (currentTime < targetTime) {
+            while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance();
                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
@@ -1702,26 +1726,22 @@ while (currentTime < targetTime) {
 
 
 
-if (currentTime + givenStep[0][0] > targetTime) {
+                if (currentTime + givenStep[0][0] > targetTime) {
                     //System.out.println("******** False Step ********");
                     break;
 
 
-}
+                }
 
                 basicTimeStep = givenStep[0][0];
-                currentTime
-
-+= basicTimeStep;
+                currentTime += basicTimeStep;
                 givenStep[
 
 0][0] = currentTime;
-                IC
-
-= givenStep[1];
+                IC = givenStep[1];
 
 
-}
+            }
 
             double typicalStepSize = basicTimeStep;
 
@@ -1731,110 +1751,82 @@ if (currentTime + givenStep[0][0] > targetTime) {
 
 
 
-if (targetTime == finalTime) {
+            if (targetTime == finalTime) {
                 //System.out.println("******** I'll go to End Of Step ********");
                 break;
 
 
-}
+            }
 
             givenStep = step(currentTime, IC, targetTime - currentTime, true);
 
 
 
-if (currentTime + givenStep[0][0] >= finalTime) {
+            if (currentTime + givenStep[0][0] >= finalTime) {
                 //System.out.println("******** False Step ********");
                 break;
 
 
-}
+            }
 
             if (IC[ouletID] < 1e-1) {
                 //System.out.println("******** False Step ********");
                 break;
 
 
-}
+            }
 
             basicTimeStep = givenStep[0][0];
-            currentTime
-
-+= basicTimeStep;
+            currentTime += basicTimeStep;
             givenStep[
 
 0][0] = currentTime;
-            IC
+            IC = givenStep[1];
 
-= givenStep[1];
-
-            outputStream.
-
-write("\n");
-            outputStream.
-
-write(currentTime + ",");
+            outputStream.write("\n");
+            outputStream.write(currentTime + ",");
 
 
-for (int i = 0; i
-
-< linksStructure.completeStreamLinksArray.length; i++
-
-) {
+            for (int i = 0; i
+                    < linksStructure.completeStreamLinksArray.length; i++) {
                 if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > Math.max(basinOrder - 3, 1)) {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
 
 
-}
+                }
             }
 
             thisDate = java.util.Calendar.getInstance();
-            thisDate.
-
-setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.
-
-out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID] + " - Tipical Time Step: " + typicalStepSize);
+            thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
+            System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID] + " - Tipical Time Step: " + typicalStepSize);
 
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
 
 
-}
+        }
 
         if (currentTime != finalTime && IC[ouletID] > 1e-1) {
             givenStep = step(currentTime, IC, finalTime - currentTime - 1 / 60., true);
-            basicTimeStep
-
-= givenStep[0][0];
-            currentTime
-
-+= basicTimeStep;
+            basicTimeStep = givenStep[0][0];
+            currentTime += basicTimeStep;
             givenStep[
 
 0][0] = currentTime;
-            IC
+            IC = givenStep[1];
 
-= givenStep[1];
-
-            outputStream.
-
-write("\n");
-            outputStream.
-
-write(currentTime + ",");
+            outputStream.write("\n");
+            outputStream.write(currentTime + ",");
 
 
-for (int i = 0; i
-
-< linksStructure.completeStreamLinksArray.length; i++
-
-) {
+            for (int i = 0; i
+                    < linksStructure.completeStreamLinksArray.length; i++) {
                 if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > Math.max(basinOrder - 3, 1)) {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
 
 
-}
+                }
             }
 
             /*thisDate=java.util.Calendar.getInstance();
@@ -1849,7 +1841,7 @@ for (int i = 0; i
 
 
 
-}
+    }
 
     /**
      * Writes to standard output the values of the function described by differential
@@ -1861,119 +1853,86 @@ for (int i = 0; i
      * @param outputStream The file to which the information will be writen
      * @throws java.io.IOException Captures errors while writing to the file
      */
-    public void
-
-simpleRunToScreen(double iniTime, double finalTime, double[] IC) {
+    public void simpleRunToScreen(double iniTime, double finalTime, double[] IC) {
 
         double currentTime = iniTime;
 
-        System.
-
-out.print(currentTime + ",");
+        System.out.print(currentTime + ",");
 
 
-for (int j = 0; j
-
-< IC.length; j++
-
-) {
+        for (int j = 0; j
+                < IC.length; j++) {
             System.out.print(IC[j] + ",");
 
 
-}
+        }
         System.out.println();
 
 
-double[][] givenStep;
+        double[][] givenStep;
 
 
 
-while (currentTime < finalTime) {
+        while (currentTime < finalTime) {
             givenStep = step(currentTime, IC, basicTimeStep, false);
-            basicTimeStep
-
-= givenStep[0][0];
-            currentTime
-
-+= basicTimeStep;
+            basicTimeStep = givenStep[0][0];
+            currentTime += basicTimeStep;
             givenStep[
 
 0][0] = currentTime;
-            IC
+            IC = givenStep[1];
 
-= givenStep[1];
+            java.util.Calendar thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
 
-            java.
-
-util.Calendar thisDate = java.util.Calendar.getInstance();
-            thisDate.
-
-setTimeInMillis((long) (currentTime * 60. * 1000.0));
-
-            System.
-
-out.print(currentTime + ",");
+            System.out.print(currentTime + ",");
 
 
-for (int j = 0; j
-
-< IC.length; j++
-
-) {
+            for (int j = 0; j
+                    < IC.length; j++) {
                 System.out.print(IC[j] + ",");
 
 
-}
+            }
             System.out.println();
 
 
 
-if (givenStep[0][0] + basicTimeStep > finalTime) {
+            if (givenStep[0][0] + basicTimeStep > finalTime) {
                 break;
 
 
-}
+            }
         }
 
         if (currentTime != finalTime) {
             givenStep = step(currentTime, IC, finalTime - currentTime, true);
-            basicTimeStep
-
-= givenStep[0][0];
-            currentTime
-
-+= basicTimeStep;
+            basicTimeStep = givenStep[0][0];
+            currentTime += basicTimeStep;
             givenStep[
 
 0][0] = currentTime;
-            IC
+            IC = givenStep[1];
 
-= givenStep[1];
-
-            System.
-
-out.print(currentTime + ",");
+            System.out.print(currentTime + ",");
 
 
-for (int j = 0; j
-
-< IC.length; j++
-
-) {
+            for (int j = 0; j
+                    < IC.length; j++) {
                 System.out.print(IC[j] + ",");
 
 
-}
+            }
             System.out.println();
 
 
-}
+        }
 
         finalCond = IC;
 
 
 
-}
+    }
 
     /**
      * Writes to standard output the values of the function described by differential
@@ -1986,40 +1945,33 @@ for (int j = 0; j
      * @param outputStream The file to which the information will be writen
      * @throws java.io.IOException Captures errors while writing to the file
      */
-    public void
-
-jumpsRunToScreen(double iniTime, double finalTime, double incrementalTime, double[] IC) {
+    public void jumpsRunToScreen(double iniTime, double finalTime, double incrementalTime, double[] IC) {
 
         double currentTime = iniTime, targetTime;
 
 
-        System.
-
-out.print(currentTime + ",");
+        System.out.print(currentTime + ",");
 
 
-for (int j = 0; j
-
-< IC.length; j++
-
-) {
+        for (int j = 0; j
+                < IC.length; j++) {
             System.out.print(IC[j] + ",");
 
 
-}
+        }
         System.out.println();
 
 
 
-double[][] givenStep;
+        double[][] givenStep;
 
 
 
-while (currentTime < finalTime) {
+        while (currentTime < finalTime) {
             targetTime = currentTime + incrementalTime;
 
 
-while (currentTime < targetTime) {
+            while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance();
                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
@@ -2029,74 +1981,61 @@ while (currentTime < targetTime) {
 
 
 
-if (currentTime + givenStep[0][0] > targetTime) {
+                if (currentTime + givenStep[0][0] > targetTime) {
                     //System.out.println("******** False Step ********");
                     break;
 
 
-}
+                }
 
                 basicTimeStep = givenStep[0][0];
-                currentTime
-
-+= basicTimeStep;
+                currentTime += basicTimeStep;
                 givenStep[
 
 0][0] = currentTime;
-                IC
-
-= givenStep[1];
+                IC = givenStep[1];
 
 
 
 
-} /*thisDate=java.util.Calendar.getInstance();
-        thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-        System.out.println("outsideLoop"+thisDate.getTime());*/
+            } /*thisDate=java.util.Calendar.getInstance();
+            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+            System.out.println("outsideLoop"+thisDate.getTime());*/
 
             if (targetTime == finalTime) {
                 //System.out.println("******** I'll go to End Of Step ********");
                 break;
 
 
-}
+            }
 
             givenStep = step(currentTime, IC, targetTime - currentTime, true);
 
 
 
-if (currentTime + givenStep[0][0] >= finalTime) {
+            if (currentTime + givenStep[0][0] >= finalTime) {
                 //System.out.println("******** False Step ********");
                 break;
 
 
-}
+            }
 
             basicTimeStep = givenStep[0][0];
-            currentTime
-
-+= basicTimeStep;
+            currentTime += basicTimeStep;
             givenStep[
 
 0][0] = currentTime;
-            IC
+            IC = givenStep[1];
 
-= givenStep[1];
-
-            System.
-
-out.print(currentTime + ",");
+            System.out.print(currentTime + ",");
 
 
-for (int j = 0; j
-
-< IC.length; j++
-
-) {
+            for (int j = 0; j
+                    < IC.length; j++) {
                 System.out.print(IC[j] + ",");
 
 
-}
+            }
             System.out.println();
 
 
@@ -2105,85 +2044,61 @@ for (int j = 0; j
 
 
 
-}
+        }
 
         if (currentTime != finalTime) {
             givenStep = step(currentTime, IC, finalTime - currentTime - 1 / 60., true);
-            basicTimeStep
-
-= givenStep[0][0];
-            currentTime
-
-+= basicTimeStep;
+            basicTimeStep = givenStep[0][0];
+            currentTime += basicTimeStep;
             givenStep[
 
 0][0] = currentTime;
-            IC
+            IC = givenStep[1];
 
-= givenStep[1];
-
-            System.
-
-out.print(currentTime + ",");
+            System.out.print(currentTime + ",");
 
 
-for (int j = 0; j
-
-< IC.length; j++
-
-) {
+            for (int j = 0; j
+                    < IC.length; j++) {
                 System.out.print(IC[j] + ",");
 
 
-}
+            }
             System.out.println();
 
 
 
-}
+        }
 
         finalCond = IC;
 
 
 
-}
+    }
 
-    public void
-
-jumpsRunToAsciiFile_luciana(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom) throws java.io.IOException {
+    public void jumpsRunToAsciiFile_luciana(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom) throws java.io.IOException {
 
         double currentTime = iniTime, targetTime;
 
 
 
-int ouletID = linksStructure.getOutletID();
+        int ouletID = linksStructure.getOutletID();
 
-        java.
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
+        thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
 
-util.Calendar thisDate = java.util.Calendar.getInstance();
-        thisDate.
-
-setTimeInMillis((long) (currentTime * 60. * 1000.0));
-
-        outputStream.
-
-write("\n");
-        outputStream.
-
-write(thisDate.getTime() + ",");
+        outputStream.write("\n");
+        outputStream.write(thisDate.getTime() + ",");
         //outputStream.write(currentTime+",");
 
 
-for (int i = 0; i
-
-< linksStructure.completeStreamLinksArray.length; i++
-
-) {
+        for (int i = 0; i
+                < linksStructure.completeStreamLinksArray.length; i++) {
             if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1) {
                 outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
 
 
-}
+            }
         }
 
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
@@ -2192,15 +2107,15 @@ for (int i = 0; i
 
 
 
-double[][] givenStep;
+        double[][] givenStep;
 
 
 
-while (currentTime < finalTime) {
+        while (currentTime < finalTime) {
             targetTime = currentTime + incrementalTime;
 
 
-while (currentTime < targetTime) {
+            while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance();
                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
@@ -2210,239 +2125,179 @@ while (currentTime < targetTime) {
 
 
 
-if (currentTime + givenStep[0][0] > targetTime) {
+                if (currentTime + givenStep[0][0] > targetTime) {
                     //System.out.println("******** False Step ********");
                     break;
 
 
-}
+                }
 
                 basicTimeStep = givenStep[0][0];
-                currentTime
-
-+= basicTimeStep;
+                currentTime += basicTimeStep;
                 givenStep[
 
 0][0] = currentTime;
-                IC
-
-= givenStep[1];
+                IC = givenStep[1];
 
 
 
 
-} /*thisDate=java.util.Calendar.getInstance();
-        thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-        System.out.println("outsideLoop"+thisDate.getTime());*/
+            } /*thisDate=java.util.Calendar.getInstance();
+            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+            System.out.println("outsideLoop"+thisDate.getTime());*/
 
             if (targetTime == finalTime) {
                 //System.out.println("******** I'll go to End Of Step ********");
                 break;
 
 
-}
+            }
 
             givenStep = step(currentTime, IC, targetTime - currentTime, true);
 
 
 
-if (currentTime + givenStep[0][0] >= finalTime) {
+            if (currentTime + givenStep[0][0] >= finalTime) {
                 //System.out.println("******** False Step ********");
                 break;
 
 
-}
+            }
 
             if (IC[ouletID] < 1e-3) {
                 //System.out.println("******** False Step ********");
                 break;
 
 
-}
+            }
 
             basicTimeStep = givenStep[0][0];
-            currentTime
-
-+= basicTimeStep;
+            currentTime += basicTimeStep;
             givenStep[
 
 0][0] = currentTime;
-            IC
+            IC = givenStep[1];
 
-= givenStep[1];
+            outputStream.write("\n");
 
-            outputStream.
-
-write("\n");
-
-            outputStream.
-
-write(thisDate.getTime() + ",");
+            outputStream.write(thisDate.getTime() + ",");
             // outputStream.write(currentTime+",");
 
 
-for (int i = 0; i
-
-< linksStructure.completeStreamLinksArray.length; i++
-
-) {
+            for (int i = 0; i
+                    < linksStructure.completeStreamLinksArray.length; i++) {
                 if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1) {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
 
 
-}
+                }
             }
 
             thisDate = java.util.Calendar.getInstance();
-            thisDate.
-
-setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.
-
-out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
+            System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
 
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
 
 
-}
+        }
 
         if (currentTime != finalTime && IC[ouletID] > 1e-3) {
             givenStep = step(currentTime, IC, finalTime - currentTime - 1 / 60., true);
-            basicTimeStep
-
-= givenStep[0][0];
-            currentTime
-
-+= basicTimeStep;
+            basicTimeStep = givenStep[0][0];
+            currentTime += basicTimeStep;
             givenStep[
 
 0][0] = currentTime;
-            IC
+            IC = givenStep[1];
 
-= givenStep[1];
-
-            outputStream.
-
-write("\n");
-            outputStream.
-
-write(thisDate.getTime() + ",");
+            outputStream.write("\n");
+            outputStream.write(thisDate.getTime() + ",");
             // outputStream.write(currentTime+",");
 
 
-for (int i = 0; i
-
-< linksStructure.completeStreamLinksArray.length; i++
-
-) {
+            for (int i = 0; i
+                    < linksStructure.completeStreamLinksArray.length; i++) {
                 if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1) {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
 
 
-}
+                }
             }
 
             thisDate = java.util.Calendar.getInstance();
-            thisDate.
-
-setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.
-
-out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
+            System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
 
 
-}
+        }
 
         finalCond = IC;
 
 
 
-}
+    }
 
     /**
      * Sets the valuo of the algorithm time step
      * @param newBTS The time step to assign
      */
-    public void
-
-setBasicTimeStep(double newBTS) {
+    public void setBasicTimeStep(double newBTS) {
         basicTimeStep = newBTS;
 
 
-}
+    }
 
     /**
      * Returns an array with the maximum value calculated during the iteration process
      * @param newBTS The time step to assign
      */
-    public double
-
-[] getMaximumAchieved() {
+    public double[] getMaximumAchieved() {
         return maxAchieved;
 
 
-}
+    }
 
     /**
      * Returns an array with the time to maximum value calculated during the iteration process
      * @param newBTS The time step to assign
      */
-    public double
-
-[] getTimeToMaximumAchieved() {
+    public double[] getTimeToMaximumAchieved() {
         return timeOfMaximumAchieved;
 
 
-}
+    }
 
     /**
      * Tests for the class
      * @param args the command line arguments
      */
-    public static void
-
-main(String args[]) {
+    public static void main(String args[]) {
 
         hydroScalingAPI.util.ordDiffEqSolver.Lorenz funcionLorenz;
 
 
-double[][][] answer;
+        double[][][] answer;
 
-        funcionLorenz
-
-= new hydroScalingAPI.util.ordDiffEqSolver.Lorenz(16.0f, 45.0f, 4.0f);
+        funcionLorenz = new hydroScalingAPI.util.ordDiffEqSolver.Lorenz(16.0f, 45.0f, 4.0f);
         //double[][] answer1=new RKF(funcionLorenz, 1e-6, .001).step(0.0,new double[] {-13,-12, 52},.001,false);
         //System.out.print("Time: "+answer1[0][0]+" Evaluation: ");
         //for(int j=0;j<answer1[1].length;j++) System.out.print(answer1[1][j]+" ");
         //System.exit(0);
 
-        System.
-
-out.println("starts running");
-        java.
-
-util.Date startTime = new java.util.Date();
-        System.
-
-out.println("Start Time: " + startTime.toString());
-        answer
-
-= new RKF(funcionLorenz, 1e-4, .001).jumpsRun(0, 1000, 0.2, new double[]{-13, -12, 52});
+        System.out.println("starts running");
+        java.util.Date startTime = new java.util.Date();
+        System.out.println("Start Time: " + startTime.toString());
+        answer = new RKF(funcionLorenz, 1e-4, .001).jumpsRun(0, 1000, 0.2, new double[]{-13, -12, 52});
         //answer=new RKF(funcionLorenz, 1e-4, .001).simpleRun(0,10000,new double[] {-13,-12, 52});
-        java.
-
-util.Date endTime = new java.util.Date();
-        System.
-
-out.println("End Time:" + endTime.toString());
-        System.
-
-out.println("Running Time:" + (.001 * (endTime.getTime() - startTime.getTime())) + " seconds");
+        java.util.Date endTime = new java.util.Date();
+        System.out.println("End Time:" + endTime.toString());
+        System.out.println("Running Time:" + (.001 * (endTime.getTime() - startTime.getTime())) + " seconds");
 
         /*System.out.println(answer.length);
         System.exit(0);
@@ -2454,5 +2309,5 @@ out.println("Running Time:" + (.001 * (endTime.getTime() - startTime.getTime()))
 
 
 
-}
+    }
 }
