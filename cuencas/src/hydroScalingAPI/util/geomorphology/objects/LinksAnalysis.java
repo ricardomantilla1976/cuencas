@@ -1222,6 +1222,18 @@ public static void main5(String args[]) {
 //
             int xOut=2734;
             int yOut=1069; // Cedar Rapids
+             xOut =3053;
+            yOut =2123;// turkey
+            xOut =2885;
+            yOut =690; //Iowa City
+             xOut =1932;
+            yOut =1695;// Waterloo
+                   xOut = 1775;
+            yOut = 1879; //Janesville
+            
+
+            
+
 
             String formatoOriginal=metaModif.getFormat();
             metaModif.setFormat("Byte");
