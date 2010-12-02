@@ -117,6 +117,22 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         java.util.Date startTime = new java.util.Date();
         System.out.println("Start Tile 1," + x + "," + y + "," + startTime.toString());
         System.out.println("Running Time:" + "0.0" + " seconds");
+        java.io.File theFile;
+        theFile=new java.io.File(outputDirectory.getAbsolutePath() + "/Tile_"+x+"_"+y+".done");
+        System.out.println(theFile);
+
+        if (theFile.exists()) {
+
+            //ATTENTION
+            //The followng print statement announces the completion of the program.
+            //DO NOT modify!  It tells the queue manager that the process can be
+            //safely killed.
+            System.out.println("Termina escritura de Resultados"  + x + "," + y);
+            writeReportFile(outputDirectory.getAbsolutePath(),x,y);
+            return;
+        }
+
+
         hydroScalingAPI.util.geomorphology.objects.Basin myCuenca = new hydroScalingAPI.util.geomorphology.objects.Basin(x, y, matDir, metaDatos);
 
         hydroScalingAPI.util.randomSelfSimilarNetworks.RsnTile myTileActual = new hydroScalingAPI.util.randomSelfSimilarNetworks.RsnTile(x, y, xH, yH, matDir, hortonOrders, metaDatos, scale);
@@ -324,7 +340,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
                 break;
         }
 
-        java.io.File theFile;
+        
 
         interTime = new java.util.Date();
         System.out.println("Generate the infiltration," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
@@ -340,17 +356,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         System.out.println("Generate the name of the file," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
 
 
-        System.out.println(theFile);
-
-        if (theFile.exists()) {
-            //ATTENTION
-            //The followng print statement announces the completion of the program.
-            //DO NOT modify!  It tells the queue manager that the process can be
-            //safely killed.
-            System.out.println("Termina escritura de Resultados"  + x + "," + y);
-            writeReportFile(outputDirectory.getAbsolutePath(),x,y);
-            return;
-        }
+       
 
         interTime = new java.util.Date();
         System.out.println("Define Land cover info," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
@@ -363,8 +369,8 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         // did not find a way to pass that without change ExternalTileToFile
         // This has to be fixed
         if (BasinFlag == 0) {
-            LandUse = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
-            SoilData = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+            SoilData = "/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
         }
         System.out.println("LandUse  " + LandUse + "\n");
         System.out.println("SoilData  " + SoilData + "\n");
@@ -533,13 +539,11 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
   
          double outputTimeStep=storm.stormRecordResolutionInMinutes();
        // double extraSimTime=240D*Math.pow(1.5D,(basinOrder-1));
-        double extraSimTime=240D*Math.pow(1.5D,(9-1));
+        double extraSimTime=300D*Math.pow(1.5D,(9-1));
         // original - double extraSimTime=240D*Math.pow(2.0D,(basinOrder-1));
         System.out.println("numPeriods" + numPeriods);
 
         newfile1.write("TimeStep:" + outputTimeStep + "\n");
-
-
         newfile1.write("Time (minutes), Discharge [m3/s] \n");
         newfile3.write("TimeStep:" + outputTimeStep + "\n");
         newfile3.write("Time (minutes), Surface Storage [mm], Soil Storage [mm] \n");
@@ -563,7 +567,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         System.out.println("Running Time:" + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
         System.out.println("Finish first part," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
         //outputTimeStep=5*Math.pow(2.0D,(basinOrder-1));
-        outputTimeStep=5*Math.pow(1.5D,(basinOrder-1));
+        outputTimeStep=2*Math.pow(1.5D,(basinOrder-1));
         if(outputTimeStep>60) outputTimeStep=60;
 //        if (HillType < 3) {
 //               rainRunoffRaining.jumpsRunCompleteToAsciiFile(storm.stormInitialTimeInMinutes() + numPeriods * storm.stormRecordResolutionInMinutes(), (storm.stormInitialTimeInMinutes() + (numPeriods + 1) * storm.stormRecordResolutionInMinutes()) + extraSimTime, outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1);
