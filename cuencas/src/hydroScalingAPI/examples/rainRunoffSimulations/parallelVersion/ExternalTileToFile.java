@@ -143,7 +143,7 @@ public class ExternalTileToFile extends Thread{
 
     public void setComputingNode(String cn, int indexProc){
         procName=cn;
-        command[1]=cn.split("-")[0];
+        command[1]=cn.split("_")[0];
         managerProcIndex=indexProc;
     }
 
@@ -153,11 +153,11 @@ public class ExternalTileToFile extends Thread{
             //UNCOMMENT IF RUNNING ON SINLGE MACHINE WITH MULTIPLE PROCESSORS
             //IT KNOCKS OUT THE FIRST TWO ARGUMENTS THAT SEND PROCESSES TO AN EXTERNAL COMPUTATIONAL NODE
             //STARTING HERE
-            String [] newCommand=new String[command.length-2];
-            for (int i = 0; i < newCommand.length; i++) {
-                newCommand[i]=command[i+2];
-            }
-            command=newCommand;
+//            String [] newCommand=new String[command.length-2];
+//            for (int i = 0; i < newCommand.length; i++) {
+//                newCommand[i]=command[i+2];
+//            }
+//            command=newCommand;
             //ENDING HERE
 
             //command=new String[] {System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java -version"};

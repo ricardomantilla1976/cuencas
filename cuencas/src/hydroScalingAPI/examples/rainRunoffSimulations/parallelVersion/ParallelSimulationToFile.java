@@ -23,7 +23,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion;
 
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import visad.*;
 
 /**
@@ -270,6 +273,40 @@ public class ParallelSimulationToFile extends java.lang.Object {
      */
     public static void main(String args[]) {
 
+
+        System.out.println("The scheduler is being launched!");
+        System.out.println("List of Available nodes:");
+        System.out.println(java.util.Arrays.toString(args));
+
+        java.util.Vector<String> theNodes=new java.util.Vector<String>();
+
+
+        try {
+            java.io.BufferedReader fileMeta = new java.io.BufferedReader(new java.io.FileReader(new java.io.File(args[0])));
+            String fullLine;
+            fullLine=fileMeta.readLine();
+            int avaNodes=Integer.parseInt(fullLine.split(" ")[1]);
+            for (int i = 0; i < avaNodes-1; i++) theNodes.add(fullLine.split(" ")[0]+"_"+i);
+            fullLine=fileMeta.readLine();
+            while (fullLine != null) {
+                System.out.println(fullLine);
+                avaNodes=Integer.parseInt(fullLine.split(" ")[1]);
+                for (int i = 0; i < avaNodes; i++) theNodes.add(fullLine.split(" ")[0]+"-"+i);
+                fullLine=fileMeta.readLine();
+            }
+            fileMeta.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ParallelSimulationToFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        Object[] argsObj=theNodes.toArray();
+        args=new String[argsObj.length];
+        for (int i = 0; i < argsObj.length; i++) {
+            args[i]=(String)argsObj[i];
+        }
+
+        System.out.println(java.util.Arrays.toString(args));
+
         try {
             //subMain_1(args);  //Using Walnut Gulch, AZ
             //subMain0(args);  //Using AveragedIowaRiver
@@ -308,8 +345,8 @@ public class ParallelSimulationToFile extends java.lang.Object {
     public static void subMain_1(String args[]) throws java.io.IOException, VisADException {
 
         java.util.Hashtable<String, Boolean> myNodeNames = new java.util.Hashtable<String, Boolean>();
-        for (int j = 0; j <= 7; j++) {
-            myNodeNames.put("localhost" + "-" + j, false);
+        for (int j = 0; j < args.length; j++) {
+            myNodeNames.put( args[j], false);
         }
 
         int numNodes = myNodeNames.size();
@@ -1603,28 +1640,13 @@ public class ParallelSimulationToFile extends java.lang.Object {
     public static void subMainMaria(String args[]) throws java.io.IOException, VisADException {
 
         java.util.Hashtable<String, Boolean> myNodeNames = new java.util.Hashtable<String, Boolean>();
-        // DEFINE THE PROCESSORS TO BE USED IN THE KENNEDY MACHINE
-        // CHECK WHAT IS AVAILABLE
-        // USE ALL  NODES BUT NOT ALL PROCESSORS
-
-//        for (int i = 46; i <= 60; i++) {
-//            for (int j = 0; j <= 2; j++) {
-//                myNodeNames.put("c0" + Double.toString(i / 100.0 + 0.00001).substring(2, 4) + "-" + j, false);
-//            }
-//        }
-//
-//        for (int i = 62; i <= 64; i++) {
-//            for (int j = 0; j <= 2; j++) {
-//                myNodeNames.put("c0" + Double.toString(i / 100.0 + 0.00001).substring(2, 4) + "-" + j, false);
-//            }
-//        }
-
-
-        for (int i = 1; i <= 7; i++) {
-            for (int j = 0; j <= 0; j++) {
-                myNodeNames.put("c0" + Double.toString(i / 100.0 + 0.00001).substring(2, 4) + "-" + j, false);
-            }
+        for (int j = 0; j < args.length; j++) {
+            myNodeNames.put( args[j], false);
         }
+
+        int numNodes = myNodeNames.size();
+
+
 
 //          String[] AllSimName = {"30DEMUSGS","10DEMLIDAR","ASTER",};
 
@@ -1658,16 +1680,16 @@ public class ParallelSimulationToFile extends java.lang.Object {
                 String SimName = AllSimName[i];
                 String BasinName = AllRain[ib];
                 String DEM = "error";
-                int numNodes = myNodeNames.size();
+                
                 // DEFINE THE DEM
                 int xOut = 2817;
                 int yOut = 713; //90METERDEMClear Creek - coralville
 
 
                 // This is clear creek
-                    xOut = 2817;
-                    yOut = 713;
-                    DEM = "/Users/luciana-cunha/Documents/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+                    xOut = 447;
+                    yOut = 27;
+                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/90meterc1.metaDEM";
 
 
 
@@ -1716,7 +1738,7 @@ public class ParallelSimulationToFile extends java.lang.Object {
 //        int disc=5;
 //        String BasinName="3CedarRapids";
                 //1 space and 15 time
-                    stormFile = new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune26/hydroNexrad.metaVHC");
+                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/test/hydroNexrad.metaVHC");
 
 
 
@@ -1752,7 +1774,7 @@ public class ParallelSimulationToFile extends java.lang.Object {
                 routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
                 routingParams.put("RunoffCoefficient", 0.0f); // reservoir position:
 
-                outputDirectory = new java.io.File("/Users/luciana/Documents/Results_ClearCreek_test/" + BasinName + "/" + SimName + "/"
+                outputDirectory = new java.io.File("/Users/rmantill/Documents/Results_ClearCreek_test/" + BasinName + "/" + SimName + "/"
                         + "RoutT_2/"
                         + "/HillT_0/"
                         + "/HillVelT_0"
@@ -1762,6 +1784,8 @@ public class ParallelSimulationToFile extends java.lang.Object {
                 int rrt = ((Integer) routingParams.get("RoutingT")).intValue();
                  outputDirectory.mkdirs();
                  new ParallelSimulationToFile(xOut, yOut, matDirs, magnitudes, horOrders, metaModif, stormFile, 0.0f, rrt, routingParams, outputDirectory, zeroSimulationTime, myNodeNames, numNodes, disc);
+
+                 System.exit(0);
 
 //C2222222 RT=2 (cte vel). HillT=0 (const runoff), HillVel=0 (no hill delay), RR=0.5
                 routingParams.put("RoutingT", 2); // check NetworkEquationsLuciana.java for definitions
