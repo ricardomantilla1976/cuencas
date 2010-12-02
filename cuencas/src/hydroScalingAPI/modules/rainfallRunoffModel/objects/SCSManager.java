@@ -555,9 +555,9 @@ public class SCSManager {
                 double Aaccum = 0;
                 double Relief = 0;
 
-                java.util.Vector<hydroScalingAPI.polysolve.Pair> userDataVector;
-                userDataVector = new java.util.Vector<hydroScalingAPI.polysolve.Pair>();
-                userDataVector.add(new hydroScalingAPI.polysolve.Pair(0, 0));
+                java.util.Vector<hydroScalingAPI.util.polysolve.Pair> userDataVector;
+                userDataVector = new java.util.Vector<hydroScalingAPI.util.polysolve.Pair>();
+                userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(0, 0));
                 //System.out.println("regression " + j);
 
                 for (int ih = 0; ih < 5; ih++) {
@@ -565,14 +565,14 @@ public class SCSManager {
                     accum = accum + HillslopeReliefArea[j][ih];
                     Aaccum = (currentHillNumPixels[j] * PixelSize * PixelSize * accum) / 1E6;
                     Relief = (ih + 1) * (HillslopeRelief[j] / 5);
-                    userDataVector.add(new hydroScalingAPI.polysolve.Pair(Relief, Aaccum));
+                    userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(Relief, Aaccum));
                     //System.out.println("link" + j + "ih" + ih + "Aaccum " + Aaccum + "Relief " + Relief );
                     //userDataVector.add(new hydroScalingAPI.polysolve.Pair((ih+1)*0.2,accum));
                 }
-                hydroScalingAPI.polysolve.MatrixFunctions mfunct;
-                mfunct = new hydroScalingAPI.polysolve.MatrixFunctions();
-                hydroScalingAPI.polysolve.Pair[] userData;
-                userData = userDataVector.toArray(new hydroScalingAPI.polysolve.Pair[]{});
+                hydroScalingAPI.util.polysolve.MatrixFunctions mfunct;
+                mfunct = new hydroScalingAPI.util.polysolve.MatrixFunctions();
+                hydroScalingAPI.util.polysolve.Pair[] userData;
+                userData = userDataVector.toArray(new hydroScalingAPI.util.polysolve.Pair[]{});
                 terms[j] = mfunct.polyregress(userData, 3);
 
                 //System.out.println("A " + terms[j][0] + " B " + terms[j][1] + " C " + terms[j][2] + " D " + terms[j][3]);
