@@ -67,6 +67,7 @@ public class ExternalTileToFile extends Thread{
                                     String correctionsO,
                                     hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.ParallelSimulationToFile coordinator,
                                     long iniTimeInMilliseconds,
+                                    long endTimeInMilliseconds,
                                     int dynaIndex,
                                     java.util.Hashtable routingParams
                                     ){
@@ -105,6 +106,7 @@ public class ExternalTileToFile extends Thread{
                                 connectionsO, // args[13]
                                 correctionsO, // args[14]
                                 ""+iniTimeInMilliseconds, // args[15]
+                                ""+endTimeInMilliseconds, // args[15]
                                 routingParams.toString()};} // args[16]
         else  {command=new String[] {  "/usr/bin/ssh",
                                 "NODENAME",
@@ -129,7 +131,8 @@ public class ExternalTileToFile extends Thread{
                                 outputDirectory, // args[12]
                                 connectionsO, // args[13]
                                 correctionsO, // args[14]
-                                ""+iniTimeInMilliseconds};} // args[15]};} // args[16]
+                                ""+iniTimeInMilliseconds,
+                                ""+endTimeInMilliseconds};} // args[15]};} // args[16]
 
 
         coordinatorProc=coordinator;
@@ -176,7 +179,7 @@ public class ExternalTileToFile extends Thread{
                 concat+=s;
                 if(s.equalsIgnoreCase("\n")) {
                     System.out.print(concat);
-                    if(concat.substring(0, Math.min(31,concat.length())).equalsIgnoreCase("Termina escritura de Resultados")) break;
+                    //if(concat.substring(0, Math.min(31,concat.length())).equalsIgnoreCase("Termina escritura de Resultados")) break;
                     concat="";
                 }
                 if(new java.io.File(outputDir+"/Tile_"+x+"_"+y+".done").exists()) break;
