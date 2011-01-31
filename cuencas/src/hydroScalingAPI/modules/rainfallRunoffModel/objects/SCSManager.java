@@ -191,9 +191,11 @@ public class SCSManager {
             int MatXLC, MatYLC;
             int MatXSOIL, MatYSOIL;
             int MatXDem, MatYDem;
+            float[][] AreaHill;
             //System.out.println("-----------------Start of Files Reading - LC----------------");
             Hyd_Group = new double[linksStructure.contactsArray.length];  // [link][SoilData]//
             CN = new double[linksStructure.contactsArray.length];
+            AreaHill = new float[1][linksStructure.contactsArray.length];
             Manning = new double[linksStructure.contactsArray.length];
             K_NRCS = new double[linksStructure.contactsArray.length];
             maxHillBasedCN = new double[linksStructure.contactsArray.length];
@@ -549,7 +551,7 @@ public class SCSManager {
             }
 
             terms = new double[linksStructure.contactsArray.length][4];
-
+            AreaHill = linksStructure.getVarValues(0);
             for (int j = 0; j < linksStructure.contactsArray.length; j++) {
                 double accum = 0;
                 double Aaccum = 0;
@@ -563,11 +565,13 @@ public class SCSManager {
                 for (int ih = 0; ih < 5; ih++) {
                     HillslopeReliefArea[j][ih] = HillslopeReliefArea[j][ih] / currentHillNumPixels[j];
                     accum = accum + HillslopeReliefArea[j][ih];
-                    Aaccum = (currentHillNumPixels[j] * PixelSize * PixelSize * accum) / 1E6;
-                    Relief = (ih + 1) * (HillslopeRelief[j] / 5);
-                    userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(Relief, Aaccum));
-                    //System.out.println("link" + j + "ih" + ih + "Aaccum " + Aaccum + "Relief " + Relief );
-                    //userDataVector.add(new hydroScalingAPI.polysolve.Pair((ih+1)*0.2,accum));
+
+                    Aaccum = ( AreaHill[0][j] * accum);
+                    //Relief = (ih + 1) * (HillslopeRelief[j] / 5);
+                    Relief = ((double)ih + 1.0) / 5.0;
+                        userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(Relief, accum));
+                    System.out.println("link" + j + "ih" + ih + "accum"+ accum+ "         Relief " + Relief );
+                   //userDataVector.add(new hydroScalingAPI.polysolve.Pair((ih+1)*0.2,accum));
                 }
                 hydroScalingAPI.util.polysolve.MatrixFunctions mfunct;
                 mfunct = new hydroScalingAPI.util.polysolve.MatrixFunctions();

@@ -273,10 +273,125 @@ public class RKF extends java.lang.Object {
             if (newTimeStep < 0.01 / 60.) {
                 newTimeStep = 0.01 / 60.;
             }
-            return step(currentTime, IC, newTimeStep, true);
+            return stepSCS(currentTime, IC, newTimeStep, true);
         }
     }
 
+
+    private double[][] stepSCSSerial(double currentTime, double[] IC, double timeStep, boolean finalize) throws IOException {
+
+        //if first time call ever define array maxAchieved
+        if (maxAchieved == null) {
+            maxAchieved = new double[IC.length];
+            timeOfMaximumAchieved = new double[IC.length];
+            java.util.Arrays.fill(maxAchieved, Double.MIN_VALUE);
+        }
+
+        carrier = new double[IC.length];
+
+        k0 = theFunction.eval(IC, currentTime);
+        for (int i = 0; i < IC.length; i++) {
+            carrier[i] = Math.max(0, IC[i] + timeStep * b[1][0] * k0[i]);
+        }
+        k1 = theFunction.eval(carrier, currentTime + a[1] * timeStep);
+        for (int i = 0; i < IC.length; i++) {
+            carrier[i] = Math.max(0, IC[i] + timeStep * (b[2][0] * k0[i] + b[2][1] * k1[i]));
+        }
+        k2 = theFunction.eval(carrier, currentTime + a[2] * timeStep);
+        for (int i = 0; i < IC.length; i++) {
+            carrier[i] = Math.max(0, IC[i] + timeStep * (b[3][0] * k0[i] + b[3][1] * k1[i] + b[3][2] * k2[i]));
+        }
+        k3 = theFunction.eval(carrier, currentTime + a[3] * timeStep);
+        for (int i = 0; i < IC.length; i++) {
+            carrier[i] = Math.max(0, IC[i] + timeStep * (b[4][0] * k0[i] + b[4][1] * k1[i] + b[4][2] * k2[i] + b[4][3] * k3[i]));
+        }
+        k4 = theFunction.eval(carrier, currentTime + a[4] * timeStep);
+        for (int i = 0; i < IC.length; i++) {
+            carrier[i] = Math.max(0, IC[i] + timeStep * (b[5][0] * k0[i] + b[5][1] * k1[i] + b[5][2] * k2[i] + b[5][3] * k3[i] + b[5][4] * k4[i]));
+        }
+        k5 = theFunction.eval(carrier, currentTime + a[5] * timeStep);
+
+        int ndif=IC.length/14;
+        newY = new double[IC.length];
+        newYstar = new double[IC.length];
+        for (int i = 0; i < ndif*14; i++) {
+            newY[i] = IC[i] + timeStep * (c[0] * k0[i] + c[1] * k1[i] + c[2] * k2[i] + c[3] * k3[i] + c[4] * k4[i] + c[5] * k5[i]);
+            newY[i] = Math.max(0, newY[i]);
+            newYstar[i] = IC[i] + timeStep * (cStar[0] * k0[i] + cStar[1] * k1[i] + cStar[2] * k2[i] + cStar[3] * k3[i] + cStar[4] * k4[i] + cStar[5] * k5[i]);
+            newYstar[i] = Math.max(0, newYstar[i]);
+
+        }
+
+        for (int i = ndif*14; i < IC.length; i++) {
+            newYstar[i] = IC[i];
+            newY[i] = IC[i];
+        }
+
+        int problink = 0;
+        double Yprob = 0, Ystarprob = 0;
+        Delta = 0;
+        for (int i = 0; i < IC.length; i++) {
+            //&& Math.abs(newY[i] - newYstar[i])>0.001
+            if ((newY[i] + newYstar[i]) > 0.0) {
+                double newdelta = Math.abs(2 * (newY[i] - newYstar[i]) / (newY[i] + newYstar[i]));
+                if (Delta < newdelta) {
+                    Delta = newdelta;
+                    problink = i;
+                    Yprob = newY[i];
+                    Ystarprob = newYstar[i];
+                }
+            }
+        }
+
+        newTimeStep = timeStep;
+
+
+        if (finalize) {
+
+//            for (int i = 0; i < IC.length; i++) {
+//                if(newY[i] > maxAchieved[i]){
+//                    maxAchieved[i] = newY[i];
+//                    timeOfMaximumAchieved[i]=currentTime;
+//                }
+//            }
+            return new double[][]{{newTimeStep}, newY};
+        } else {
+            if (Delta != 0.0) {
+                factor = epsilon / Delta;
+
+                if (factor >= 1) {
+                    newTimeStep = timeStep * Math.pow(factor, 0.15);
+                } else {
+                    newTimeStep = timeStep * Math.pow(factor, 0.25);
+                }
+            } else {
+                factor = 1e5;
+                newTimeStep = timeStep * Math.pow(factor, 0.15);
+                finalize = true;
+            }
+
+
+//              java.io.FileWriter fstream;
+//           fstream = new java.io.FileWriter("/usr/home/rmantill/luciana/Parallel/testcom/RKF4.txt", true);
+//
+//              java.io.BufferedWriter out = new java.io.BufferedWriter(fstream);
+//
+//           //Close the output stream
+////out.close();
+//
+////   out.write("--> "+"Tstep = " + timeStep+"newTimeStep" + newTimeStep +" Dif"+ ( timeStep-newTimeStep)+"\n");
+////   out.write("-----> "+"Delta = " + Delta+" epsilon "+epsilon+" factor "+factor+"\n");
+////   out.write("---------> "+" N Link " +IC.length+" Link with prob=" + problink+"\n");
+////   out.write("-------------> " + "Yval   " + Yprob + "Yvalprob    " + Ystarprob+"\n");
+//
+//out.close();
+//            System.out.println("    --> "+timeStep+" "+epsilon+" "+Delta+" "+factor+" "+newTimeStep+" ("+java.util.Calendar.getInstance().getTime()+")");
+            if (newTimeStep < 0.01 / 60.) {
+                newTimeStep = 0.01 / 60.;
+            }
+            return stepSCSSerial(currentTime, IC, newTimeStep, true);
+        }
+    }
     /**
      * Returns the values of the function described by differential equations in the
      * the intermidia steps needed to go from the Initial to the Final time
@@ -1470,7 +1585,7 @@ public class RKF extends java.lang.Object {
      * of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
-    public void jumpsRunCompleteToAsciiFileSCSsimple(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, java.io.OutputStreamWriter outputStream1, java.io.OutputStreamWriter outputStream2, java.io.OutputStreamWriter outputStream3) throws java.io.IOException {
+    public void jumpsRunCompleteToAsciiFileSCSSerial(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, java.io.OutputStreamWriter outputStream1, java.io.OutputStreamWriter outputStream2, java.io.OutputStreamWriter outputStream3, java.io.OutputStreamWriter outputStream4, int writeorder) throws java.io.IOException {
 
         double currentTime = iniTime, targetTime;
         //System.out.println("currentTime"+currentTime +"incrementalTime"+incrementalTime);
@@ -1487,25 +1602,28 @@ public class RKF extends java.lang.Object {
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID] + " Precip: " + IC[6 * nlinks + ouletID]);
 
-        int writeorder = linksStructure.basinOrder - 4;
+        
         writeorder = Math.max(1, writeorder);
-
+        
         outputStream1.write(df3.format(currentTime) + ",");
         outputStream2.write(df3.format(currentTime) + ",");
         outputStream3.write(df3.format(currentTime) + ",");
+        outputStream4.write(df3.format(currentTime) + ",");
         // define the order to be ploted
         for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
             int nl = linksStructure.completeStreamLinksArray[i];
             if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
                 outputStream1.write(df2.format(IC[nl]) + ",");
                 outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
-                outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + ",");
+                outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df2.format(IC[9 * nlinks + nl]) + ",");
+                outputStream4.write(df2.format(IC[10 * nlinks + nl]) + "," + df2.format(IC[11 * nlinks + nl]) + "," + df2.format(IC[12 * nlinks + nl]) + "," + df2.format(IC[13 * nlinks + nl]) + ",");
+
             }
         }
         outputStream1.write("\n");
         outputStream2.write("\n");
         outputStream3.write("\n");
-
+        outputStream4.write("\n");
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
         //System.out.println();
 
@@ -1514,15 +1632,15 @@ public class RKF extends java.lang.Object {
 
         while (currentTime < finalTime) {
             targetTime = currentTime + incrementalTime;
-          //  System.out.println("currentTime"+currentTime+"targetTime"+targetTime + "basicTimeStep" +basicTimeStep);
+            //  System.out.println("currentTime"+currentTime+"targetTime"+targetTime + "basicTimeStep" +basicTimeStep);
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance();
                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
                 System.out.println("inLoop"+thisDate.getTime());*/
 
-                givenStep = stepSCS(currentTime, IC, basicTimeStep, false);
-            //    System.out.println("currentTime"+currentTime+"targetTime"+targetTime +"basicTimeStep"+ basicTimeStep+"givenStep[0][0]"+givenStep[0][0]);
+                givenStep = stepSCSSerial(currentTime, IC, basicTimeStep, false);
+                //    System.out.println("currentTime"+currentTime+"targetTime"+targetTime +"basicTimeStep"+ basicTimeStep+"givenStep[0][0]"+givenStep[0][0]);
                 if (currentTime + givenStep[0][0] >= targetTime) {
                     //System.out.println("******** False Step ********");
                     break;
@@ -1544,22 +1662,27 @@ public class RKF extends java.lang.Object {
                     thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
                     System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
                     //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
+
                     outputStream1.write(df3.format(currentTime) + ",");
                     outputStream2.write(df3.format(currentTime) + ",");
                     outputStream3.write(df3.format(currentTime) + ",");
+                    outputStream4.write(df3.format(currentTime) + ",");
                     // define the order to be ploted
                     for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
                         int nl = linksStructure.completeStreamLinksArray[i];
                         if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
                             outputStream1.write(df2.format(IC[nl]) + ",");
                             outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
-                            outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + ",");
+                            outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df2.format(IC[9 * nlinks + nl]) + ",");
+                            outputStream4.write(df2.format(IC[10 * nlinks + nl]) + "," + df2.format(IC[11 * nlinks + nl]) + "," + df2.format(IC[12 * nlinks + nl]) + "," + df2.format(IC[13 * nlinks + nl]) + ",");
+
                         }
                     }
                     outputStream1.write("\n");
                     outputStream2.write("\n");
                     outputStream3.write("\n");
-      }
+                    outputStream4.write("\n");
+                }
 
 
 
@@ -1573,7 +1696,7 @@ public class RKF extends java.lang.Object {
                 break;
             }
 
-            givenStep = stepSCS(currentTime, IC, targetTime - currentTime, true);
+            givenStep = stepSCSSerial(currentTime, IC, targetTime - currentTime, true);
 
             if (currentTime + givenStep[0][0] >= finalTime) {
                 System.out.println("******** False Step ********");
@@ -1595,27 +1718,32 @@ public class RKF extends java.lang.Object {
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
-          outputStream1.write(df3.format(currentTime) + ",");
-                    outputStream2.write(df3.format(currentTime) + ",");
-                    outputStream3.write(df3.format(currentTime) + ",");
-                    // define the order to be ploted
-                    for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
-                        int nl = linksStructure.completeStreamLinksArray[i];
-                        if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
-                            outputStream1.write(df2.format(IC[nl]) + ",");
-                            outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
-                            outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + ",");
-                        }
-                    }
-                    outputStream1.write("\n");
-                    outputStream2.write("\n");
-                    outputStream3.write("\n");         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
+
+            outputStream1.write(df3.format(currentTime) + ",");
+            outputStream2.write(df3.format(currentTime) + ",");
+            outputStream3.write(df3.format(currentTime) + ",");
+            outputStream4.write(df3.format(currentTime) + ",");
+            // define the order to be ploted
+            for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
+                int nl = linksStructure.completeStreamLinksArray[i];
+                if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
+                    outputStream1.write(df2.format(IC[nl]) + ",");
+                    outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
+                    outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df2.format(IC[9 * nlinks + nl]) + ",");
+                    outputStream4.write(df2.format(IC[10 * nlinks + nl]) + "," + df2.format(IC[11 * nlinks + nl]) + "," + df2.format(IC[12 * nlinks + nl]) + "," + df2.format(IC[13 * nlinks + nl]) + ",");
+
+                }
+            }
+            outputStream1.write("\n");
+            outputStream2.write("\n");
+            outputStream3.write("\n");
+            outputStream4.write("\n");       //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
         }
 
         if (currentTime != finalTime) {
-            givenStep = stepSCS(currentTime, IC, finalTime - currentTime - 1 / 60., true);
+            givenStep = stepSCSSerial(currentTime, IC, finalTime - currentTime - 1 / 60., true);
             basicTimeStep = givenStep[0][0];
             currentTime += basicTimeStep;
             givenStep[0][0] = currentTime;
@@ -1638,21 +1766,26 @@ public class RKF extends java.lang.Object {
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
-            outputStream1.write(df3.format(currentTime) + ",");
-                    outputStream2.write(df3.format(currentTime) + ",");
-                    outputStream3.write(df3.format(currentTime) + ",");
-                    // define the order to be ploted
-                    for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
-                        int nl = linksStructure.completeStreamLinksArray[i];
-                        if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
-                            outputStream1.write(df2.format(IC[nl]) + ",");
-                            outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
-                            outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + ",");
-                        }
-                    }
-                    outputStream1.write("\n");
-                    outputStream2.write("\n");
-                    outputStream3.write("\n");       //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
+
+//            outputStream1.write(df3.format(currentTime) + ",");
+//            outputStream2.write(df3.format(currentTime) + ",");
+//            outputStream3.write(df3.format(currentTime) + ",");
+//            outputStream4.write(df3.format(currentTime) + ",");
+//            // define the order to be ploted
+//            for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
+//                int nl = linksStructure.completeStreamLinksArray[i];
+//                if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
+//                    outputStream1.write(df2.format(IC[nl]) + ",");
+//                    outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
+//                    outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df2.format(IC[9 * nlinks + nl]) + ",");
+//                    outputStream4.write(df2.format(IC[10 * nlinks + nl]) + "," + df2.format(IC[11 * nlinks + nl]) + "," + df2.format(IC[12 * nlinks + nl]) + "," + df2.format(IC[13 * nlinks + nl]) + ",");
+//
+//                }
+//            }
+//            outputStream1.write("\n");
+//            outputStream2.write("\n");
+//            outputStream3.write("\n");
+//            outputStream4.write("\n");       //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
         }
