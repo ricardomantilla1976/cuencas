@@ -52,6 +52,7 @@ public class NetworkEquations_AllMethodParallel implements hydroScalingAPI.util.
     private float[][] aH, upAreasArray, landCoversArray, slopesArray, Hill_K_NRCSArray;
     private float[][] hb, hH, Ht, Vt;
     private float[][] Area_Relief_Param;
+    private float[][] HydCond;
     private double So, Ts, Te, vh; // not an array because I assume uniform soil properties
     private double lamda1, lamda2;
     private double vHunoff, vsub, SM, lambdaSCS; // velocity of the direct runoff and subsurface runoff - m/s
@@ -111,6 +112,7 @@ public class NetworkEquations_AllMethodParallel implements hydroScalingAPI.util.
         hH = new float[1][lengthArray[0].length]; // mm
         Ht = new float[1][lengthArray[0].length]; // mm
         Vt  = new float[1][lengthArray[0].length]; //[m3]
+        HydCond  = new float[1][lengthArray[0].length]; //[m3]
 
 
         float HD=-9.f;
@@ -119,6 +121,8 @@ public class NetworkEquations_AllMethodParallel implements hydroScalingAPI.util.
         }
         System.out.println("ConstSoilStorage"+HD);
         // HILLSLOPE GEOMETRY RELATIONSHIP
+        vsub=-9;
+        if (routingParams.get("vssub") != null) vsub = ((Float) routingParams.get("vssub")).floatValue();
         for (int i = 0; i < lengthArray[0].length; i++) {
             landCoversArray[0][i] = (float) basinHillSlopesInfo.LandUseSCS(i);
             slopesArray[0][i] = (float) basinHillSlopesInfo.getHillslope(i);
@@ -132,7 +136,11 @@ public class NetworkEquations_AllMethodParallel implements hydroScalingAPI.util.
             Area_Relief_Param[1][i] = (float) basinHillSlopesInfo.getArea_ReliefParam(i, 1);
             Area_Relief_Param[2][i] = (float) basinHillSlopesInfo.getArea_ReliefParam(i, 2);
             Area_Relief_Param[3][i] = (float) basinHillSlopesInfo.getArea_ReliefParam(i, 3);
+            if(vsub<0) HydCond[0][i]=(float) basinHillSlopesInfo.MinHydCond(i);
+            else HydCond[0][i]= (float) vsub;
         }
+
+
 
 
 
@@ -183,9 +191,8 @@ System.out.println("equation object 6");
 System.out.println("routingType" + routingType);
         //for (int i=0;i<lengthArray[0].length;i++) Gr[0][i]=Gr[0][i]/(aH[0][i]*1000000);
         float vconst = ((Float) routingParams.get("Vconst")).floatValue();
-        if (routingParams.get("vssub") != null) {
-            vsub = ((Float) routingParams.get("vssub")).floatValue();
-        }
+
+
         if (routingParams.get("vrunoff") != null) {
             vHunoff = ((Float) routingParams.get("vrunoff")).floatValue(); //[m/h]
         }        //System.out.println("equation object 10");
@@ -354,7 +361,7 @@ System.out.println("routingType" + routingType);
                 }
                 break;
 
-             case 2:
+                 case 5:
                 /* The same as 3 but saves contribution of surface and subsurface to estimate runoff coefficient
                  * Presents a better representation of the subsurface flow
                  * Considering hillslope shape
@@ -394,7 +401,7 @@ System.out.println("routingType" + routingType);
                     if (hrel < 0) {
                         hrel = hb[0][i] / 1000;
                     }
-                    
+
                     // check limit of soil parameters
                     if(input[i + 3 * nLi]<0) input[i + 3 * nLi]=0; // [%]
                     if(input[i + 3 * nLi]>1) input[i + 3 * nLi]=1; // [%]
@@ -467,11 +474,11 @@ System.out.println("routingType" + routingType);
                     if(vH<1) vH=1;
                     if(Double.isNaN(vH)) vH=1;
 
-                    double Ksat = (vsub);     //m/hour
+                    double Ksat = (HydCond[0][i]);      //m/hour
 
                     /// (reservoir constant --- 1/hour                    )) * (if ai=aH[0][i], time constant is larger because
                     //it has to travel throught the hillslope, if imp area =0 the water does not flow**** I removed that(ai/aH[0][i])
-                    
+
                     qp_l = ((2 * lengthArray[0][i] / (1e6 * aH[0][i])) * vH) * (input[i + nLi]); //mm/hour//((input[i+nLi] > So)?1:0)*(1/Ts*(input[i+nLi]-So));
                     double kunsat=Ksat*Math.exp(input[i + 3 * nLi]-1);
                     if(Double.isNaN(vH)) kunsat=Ksat;
@@ -503,16 +510,16 @@ System.out.println("routingType" + routingType);
                                 else output[i + 2 * nLi] =0;
                                 if(Double.isNaN(output[i + 2 * nLi])) output[i + 2 * nLi]=0.0;
                                 if(Vs_unsat!=0)
-/* soil moisture*/              output[i + 3 * nLi] = (1 / 60.) * (1 / Vs_unsat) * (1e3*(aH[0][i]*qp_u - (ap)*qu_s) - ((input[i + 3 * nLi]) * dVs_sat_dt)); //output[1/min]
-
+/* soil moisture*/              output[i + 3 * nLi] = (1 / 60.) * (1 / Vs_unsat) * (1e3*(aH[0][i]*qp_u - (ap)*qu_s) + ((input[i + 3 * nLi]) * dVs_sat_dt)); //output[1/min]
                                 else output[i + 3 * nLi]=0;
+
                                 if(Double.isNaN(output[i + 3 * nLi])) output[i + 3 * nLi]=0.0;
-         
+
 
                 }
                 break;
 
-             case 3:
+             case 6:
                 /* The same as 3 but saves contribution of surface and subsurface to estimate runoff coefficient
                  * Presents a better representation of the subsurface flow
                  * Considering hillslope shape
@@ -647,7 +654,7 @@ System.out.println("routingType" + routingType);
                     if(vH<1) vH=1;
                     if(Double.isNaN(vH)) vH=1;
 
-                    double Ksat = (vsub);     //m/hour
+                    double Ksat = (HydCond[0][i]);      //m/hour
 
                     /// (reservoir constant --- 1/hour                    )) * (if ai=aH[0][i], time constant is larger because
                     //it has to travel throught the hillslope, if imp area =0 the water does not flow**** I removed that(ai/aH[0][i])
@@ -685,7 +692,7 @@ System.out.println("routingType" + routingType);
                                 else output[i + 2 * nLi] =0;
                                 if(Double.isNaN(output[i + 2 * nLi])) output[i + 2 * nLi]=0.0;
                                 if(Vs_unsat!=0)
-/* soil moisture*/              output[i + 3 * nLi] = (1 / 60.) * (1 / Vs_unsat) * (1e3*(aH[0][i]*qp_u - (ap)*qu_s) - ((input[i + 3 * nLi]) * dVs_sat_dt)); //output[1/min]
+/* soil moisture*/              output[i + 3 * nLi] = (1 / 60.) * (1 / Vs_unsat) * (1e3*(aH[0][i]*qp_u - (ap)*qu_s) + ((input[i + 3 * nLi]) * dVs_sat_dt)); //output[1/min]
                                 else output[i + 3 * nLi]=0;
                                 if(Double.isNaN(output[i + 3 * nLi])) output[i + 3 * nLi]=0.0;
 
@@ -694,8 +701,7 @@ System.out.println("routingType" + routingType);
 
                 }
                 break;
-
-        }
+         }
 
 
         // Evaluate the output flow for the upstream links - do not change with rainfall-runoff model

@@ -42,7 +42,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
     private hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksConectionStruct;
     private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo basinHillSlopesInfo;
     private hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo linksHydraulicInfo;
-    java.util.Hashtable routingParams;
+     java.util.Hashtable routingParams;
     private int routingType, HillType, HillVelType;
     private float rr;
     private double qp, qp_u, qp_l, qu_s, qe, Q_trib, K_Q, qs_l, q_in_res, q_out_res;
@@ -52,6 +52,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
     private float[][] aH, upAreasArray, landCoversArray, slopesArray, Hill_K_NRCSArray;
     private float[][] hb, hH, Ht, Vt;
     private float[][] Area_Relief_Param;
+    private float[][] HydCond;
     private double So, Ts, Te, vh; // not an array because I assume uniform soil properties
     private double lamda1, lamda2;
     private double vHunoff, vsub, SM, lambdaSCS; // velocity of the direct runoff and subsurface runoff - m/s
@@ -89,7 +90,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
         linksHydraulicInfo = linkIn;
         routingParams = rP;
 
-        upAreasArray = linksHydraulicInfo.getUpStreamAreaArray(); //[km]
+       upAreasArray = linksHydraulicInfo.getUpStreamAreaArray(); //[km]
         cheziArray = linksHydraulicInfo.getCheziArray();
         manningArray = linksHydraulicInfo.getManningArray();
         widthArray = linksHydraulicInfo.getWidthArray();
@@ -109,14 +110,17 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
         hH = new float[1][lengthArray[0].length]; // mm
         Ht = new float[1][lengthArray[0].length]; // mm
         Vt  = new float[1][lengthArray[0].length]; //[m3]
+        HydCond  = new float[1][lengthArray[0].length]; //[m3]
 
 
         float HD=-9.f;
         if (routingParams.get("ConstSoilStorage") != null) {
                HD = ((Float) routingParams.get("ConstSoilStorage")).floatValue();
         }
-        //System.out.println("ConstSoilStorage"+HD);
+        System.out.println("ConstSoilStorage"+HD);
         // HILLSLOPE GEOMETRY RELATIONSHIP
+        vsub=-9;
+        if (routingParams.get("vssub") != null) vsub = ((Float) routingParams.get("vssub")).floatValue();
         for (int i = 0; i < lengthArray[0].length; i++) {
             landCoversArray[0][i] = (float) basinHillSlopesInfo.LandUseSCS(i);
             slopesArray[0][i] = (float) basinHillSlopesInfo.getHillslope(i);
@@ -130,7 +134,10 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
             Area_Relief_Param[1][i] = (float) basinHillSlopesInfo.getArea_ReliefParam(i, 1);
             Area_Relief_Param[2][i] = (float) basinHillSlopesInfo.getArea_ReliefParam(i, 2);
             Area_Relief_Param[3][i] = (float) basinHillSlopesInfo.getArea_ReliefParam(i, 3);
+            if(vsub<0) HydCond[0][i]=(float) basinHillSlopesInfo.MinHydCond(i);
+            else HydCond[0][i]= (float) vsub;
         }
+
 
 
 
@@ -253,7 +260,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
         System.out.println("    "+thisDate.getTime()+" "+basinHillSlopesInfo.precipitation(0,time)+" "+input[287]);*/
 
         switch (HillType) {
-            case 0:    /* RUNOFF = RAINFALL - NO DELAY DELLAY FUNCTION */
+                case 0:    /* RUNOFF = RAINFALL - NO DELAY DELLAY FUNCTION */
 
                 for (int i = 0; i < nLi; i++) {
                     if (input[i] < 0) {
@@ -301,7 +308,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
 
                 break;
 
-            case 1:    /* RUNOFF = RAINFALL - WITH DELLAY FUNCTION */
+              case 1:    /* RUNOFF = RAINFALL - WITH DELLAY FUNCTION */
 
                 for (int i = 0; i < nLi; i++) {
                     if (input[i] < 0) {
@@ -356,6 +363,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
 /* hillslope reservoir*/ output[i + nLi] = (1 / 60.) * (qp - qp_l-qp_u); //output[mm/min] qd and qs [mm/hour]
 /* soil reservoir*/ output[i + 2 * nLi] = (1 / 60.) * (qp_u - qs_l); //output[mm/min] effPrecip and qss [mm/hour]
 /* soil reservoir*/ output[i + 3 * nLi] = 0.0f; //output[mm/min] effPrecip and qss [mm/hour]
+
                                        output[i + 4 * nLi] = (1 / 60.) * (qp);
                     output[i + 5 * nLi] = (1 / 60.) * (qp_u);
                     output[i + 6 * nLi] = (1 / 60.) * (qp_l);
@@ -370,7 +378,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
                 }
                 break;
 
-             case 2:
+            case 5:
                 /* The same as 3 but saves contribution of surface and subsurface to estimate runoff coefficient
                  * Presents a better representation of the subsurface flow
                  * Considering hillslope shape
@@ -382,7 +390,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
                  * SI=maximum infiltration capacity = f(soil moisture, soil hydrologic group, dry soil)
                  * M=soil moisture at time t
                  */
-                   for (int i = 0; i < input.length; i++) {
+                for (int i = 0; i < input.length; i++) {
                     if (input[i] < 0.0) {
                         input[i] = 0.0;
                     }
@@ -483,19 +491,18 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
                     if(vH<1) vH=1;
                     if(Double.isNaN(vH)) vH=1;
 
-                    double Ksat = (vsub);     //m/hour
+                    double Ksat = (HydCond[0][i]);      //m/hour
 
                     /// (reservoir constant --- 1/hour                    )) * (if ai=aH[0][i], time constant is larger because
                     //it has to travel throught the hillslope, if imp area =0 the water does not flow**** I removed that(ai/aH[0][i])
 
                     qp_l = ((2 * lengthArray[0][i] / (1e6 * aH[0][i])) * vH) * (input[i + nLi]); //mm/hour//((input[i+nLi] > So)?1:0)*(1/Ts*(input[i+nLi]-So));
-                    double kunsat=Ksat*Math.exp(input[i + 3 * nLi]-1)*(hrelmax-hrel)/(hrelmax);
+                    double kunsat=Ksat*Math.exp(input[i + 3 * nLi]-1);
                     if(Double.isNaN(vH)) kunsat=Ksat;
                     qu_s = kunsat *input[i + 3 * nLi]*1000; //mm/hour
 
                     //if(ai>0 && hrel>0 && hrelmax>0)qs_l = Ksat * 1000* (ai/aH[0][i])* ((hrel)/(hrelmax));  //mm/hour // correct units!!!!!
-                     if(ai>0 && hrel>0 && hrelmax>0) qs_l = Ksat * 1000* ((hrel)/(hrelmax));  //mm/hour // correct units!!!!!
-
+                     if(ai>0 && hrel>0 && hrelmax>0) qs_l = Ksat * 1000* (hrel/hrelmax)*(ai/aH[0][i]);  //mm/hour // correct units!!!!!
                     else qs_l =0;
                     //if(ap==0)qs_l = Ksat * (hrel) *(lengthArray[0][i]/(1e6*ap));  //mm/hour
                     Q_trib = 0.0;
@@ -515,12 +522,14 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
                                 if(Double.isNaN(output[i + nLi])) output[i + nLi]=0.0;
 /* depth - saturated area*/
                                 double dVs_sat_dt=(1e3)*(ap * qu_s - aH[0][i] * qs_l); //m3/h
+
                                 if(da_dh>0 && hb[0][i]>0) output[i + 2 * nLi] =(1 / 60.) *1e6* (dVs_sat_dt/(hb[0][i]*da_dh)) ; //output[mm/min] effPrecip and qss [mm/hour]
                                 else output[i + 2 * nLi] =0;
                                 if(Double.isNaN(output[i + 2 * nLi])) output[i + 2 * nLi]=0.0;
                                 if(Vs_unsat!=0)
 /* soil moisture*/              output[i + 3 * nLi] = (1 / 60.) * (1 / Vs_unsat) * (1e3*(aH[0][i]*qp_u - (ap)*qu_s) + ((input[i + 3 * nLi]) * dVs_sat_dt)); //output[1/min]
                                 else output[i + 3 * nLi]=0;
+
                                 if(Double.isNaN(output[i + 3 * nLi])) output[i + 3 * nLi]=0.0;
 
 
@@ -539,7 +548,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
                 }
                 break;
 
-            case 3:
+                case 6:
                 /* The same as 3 but saves contribution of surface and subsurface to estimate runoff coefficient
                  * Presents a better representation of the subsurface flow
                  * Considering hillslope shape
@@ -674,7 +683,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
                     if(vH<1) vH=1;
                     if(Double.isNaN(vH)) vH=1;
 
-                    double Ksat = (vsub);     //m/hour
+                    double Ksat = (HydCond[0][i]);      //m/hour
 
                     /// (reservoir constant --- 1/hour                    )) * (if ai=aH[0][i], time constant is larger because
                     //it has to travel throught the hillslope, if imp area =0 the water does not flow**** I removed that(ai/aH[0][i])
@@ -712,7 +721,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
                                 else output[i + 2 * nLi] =0;
                                 if(Double.isNaN(output[i + 2 * nLi])) output[i + 2 * nLi]=0.0;
                                 if(Vs_unsat!=0)
-/* soil moisture*/              output[i + 3 * nLi] = (1 / 60.) * (1 / Vs_unsat) * (1e3*(aH[0][i]*qp_u - (ap)*qu_s) - ((input[i + 3 * nLi]) * dVs_sat_dt)); //output[1/min]
+/* soil moisture*/              output[i + 3 * nLi] = (1 / 60.) * (1 / Vs_unsat) * (1e3*(aH[0][i]*qp_u - (ap)*qu_s) + ((input[i + 3 * nLi]) * dVs_sat_dt)); //output[1/min]
                                 else output[i + 3 * nLi]=0;
                                 if(Double.isNaN(output[i + 3 * nLi])) output[i + 3 * nLi]=0.0;
 

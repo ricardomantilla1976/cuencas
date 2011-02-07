@@ -1193,10 +1193,10 @@ public static void main5(String args[]) {
 
         try{
             //java.io.File theFile=new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM");
-            java.io.File theFile=new java.io.File("/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+            java.io.File theFile=new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
  //java.io.File theFile = new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/90meterc1.metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File("/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            metaModif.setLocationBinaryFile(new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
             // metaModif.setLocationBinaryFile(new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.dir"));
             
           //  int xOut=1596;
@@ -1230,7 +1230,8 @@ public static void main5(String args[]) {
             yOut =1695;// Waterloo
                    xOut = 1775;
             yOut = 1879; //Janesville
-            
+                xOut = 3091;
+                    yOut = 2004; // Volga
 
             
 
@@ -1243,7 +1244,7 @@ public static void main5(String args[]) {
 
             LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
 
-            java.io.File theFile1=new java.io.File("/usr/home/rmantill/luciana/Parallel/"+"linksInfo" + xOut +"_" + yOut+".csv");
+            java.io.File theFile1=new java.io.File("/Users/rmantill/luciana/Parallel/"+"linksInfo" + xOut +"_" + yOut+".csv");
             java.io.FileOutputStream salida = new java.io.FileOutputStream(theFile1);
             java.io.BufferedOutputStream bufferout = new java.io.BufferedOutputStream(salida);
             java.io.OutputStreamWriter newfile = new java.io.OutputStreamWriter(bufferout);

@@ -43,6 +43,7 @@ public class SCSManager {
     double[] Hyd_Group;  // [link]//
     double[] CN;  // [link]//
     double[] Manning;
+    double[] HydCond;
     double[] K_NRCS;
     double[] HillslopeRelief; //[link]
     double[] avehillBasedSlope;
@@ -54,6 +55,8 @@ public class SCSManager {
     double[] avehillBasedH;  // [link]//
     double[] maxHillBasedMan;  // [link]//
     double[] minHillBasedMan;  // [link]//
+    double[] maxHillBasedHydCond;
+    double[] minHillBasedHydCond;
     double[] maxHillBased_K_NRCS;  // [link]//
     double[] minHillBased_K_NRCS;  // [link]//
 
@@ -193,15 +196,19 @@ public class SCSManager {
             int MatXDem, MatYDem;
             float[][] AreaHill;
             //System.out.println("-----------------Start of Files Reading - LC----------------");
-            Hyd_Group = new double[linksStructure.contactsArray.length];  // [link][SoilData]//
+            
             CN = new double[linksStructure.contactsArray.length];
             AreaHill = new float[1][linksStructure.contactsArray.length];
             Manning = new double[linksStructure.contactsArray.length];
+            HydCond=new double[linksStructure.contactsArray.length];
             K_NRCS = new double[linksStructure.contactsArray.length];
+            Hyd_Group = new double[linksStructure.contactsArray.length];
             maxHillBasedCN = new double[linksStructure.contactsArray.length];
             minHillBasedCN = new double[linksStructure.contactsArray.length];
             maxHillBasedMan = new double[linksStructure.contactsArray.length];
             minHillBasedMan = new double[linksStructure.contactsArray.length];
+            maxHillBasedHydCond = new double[linksStructure.contactsArray.length];
+            minHillBasedHydCond = new double[linksStructure.contactsArray.length];
             maxHillBased_K_NRCS = new double[linksStructure.contactsArray.length];
             minHillBased_K_NRCS = new double[linksStructure.contactsArray.length];
             int nclasses = 11;
@@ -210,6 +217,7 @@ public class SCSManager {
             int[][] currentHillBasedLandUse = new int[linksStructure.tailsArray.length][nclasses];
             double[] currentHillBasedMan = new double[linksStructure.tailsArray.length];
             double[] currentHillBased_K_NRCS = new double[linksStructure.tailsArray.length];
+            double[] currentHillBasedHydCond= new double[linksStructure.tailsArray.length];
             int[][] currentSoilType = new int[linksStructure.tailsArray.length][6];
 
             LandUseOnBasinArray = new float[linksStructure.contactsArray.length][nclasses];
@@ -234,6 +242,8 @@ public class SCSManager {
             PixelCN = -9.9;
             double PixelMan;
             PixelMan = -9.9;
+            double PixelHydCond;
+            PixelHydCond = -9.9;
             double PixelK_NRCS;
             PixelK_NRCS = -9.9;
             System.out.println("--> Loading data from LC = " + baseNameLC + "\n");
@@ -359,6 +369,7 @@ public class SCSManager {
                         PixelCN = EstimateSCS(dataSnapShotSOIL[MatYSOIL][MatXSOIL], dataSnapShotLC[MatYLC][MatXLC]);
                         PixelMan = EstimateManing(dataSnapShotSOIL[MatYSOIL][MatXSOIL], dataSnapShotLC[MatYLC][MatXLC]);
                         PixelK_NRCS = EstimateNRCS(dataSnapShotSOIL[MatYSOIL][MatXSOIL], dataSnapShotLC[MatYLC][MatXLC]);
+                        PixelHydCond = Hyd_Conductivity(dataSnapShotSOIL[MatYSOIL][MatXSOIL]);
 
 ///////////////////// K NRCS for the hillslope ///////////////////
 
@@ -379,11 +390,19 @@ public class SCSManager {
                         }
 
                         currentHillBased_K_NRCS[matrizPintada[j][k] - 1] = currentHillBased_K_NRCS[matrizPintada[j][k] - 1] + PixelK_NRCS;
-                        if (PixelK_NRCS > maxHillBasedMan[matrizPintada[j][k] - 1]) {
-                            maxHillBasedMan[matrizPintada[j][k] - 1] = PixelK_NRCS;
+                        if (PixelK_NRCS > maxHillBased_K_NRCS[matrizPintada[j][k] - 1]) {
+                            maxHillBased_K_NRCS[matrizPintada[j][k] - 1] = PixelK_NRCS;
                         }
-                        if (PixelK_NRCS < minHillBasedMan[matrizPintada[j][k] - 1] || PixelK_NRCS > 0) {
-                            minHillBasedMan[matrizPintada[j][k] - 1] = PixelK_NRCS;
+                        if (PixelK_NRCS < minHillBased_K_NRCS[matrizPintada[j][k] - 1] || PixelK_NRCS > 0) {
+                            minHillBased_K_NRCS[matrizPintada[j][k] - 1] = PixelK_NRCS;
+                        }
+
+                        currentHillBasedHydCond[matrizPintada[j][k] - 1] = currentHillBasedHydCond[matrizPintada[j][k] - 1] + PixelHydCond;
+                        if (PixelHydCond > maxHillBasedHydCond[matrizPintada[j][k] - 1]) {
+                            maxHillBasedHydCond[matrizPintada[j][k] - 1] = PixelHydCond;
+                        }
+                        if (PixelHydCond < minHillBasedHydCond[matrizPintada[j][k] - 1] || PixelHydCond > 0) {
+                            minHillBasedHydCond[matrizPintada[j][k] - 1] = PixelHydCond;
                         }
 
                         currentHillNumPixels[matrizPintada[j][k] - 1]++;
@@ -406,6 +425,7 @@ public class SCSManager {
                 CN[j] = currentHillBasedCN[j] / currentHillNumPixels[j];
                 Manning[j] = currentHillBasedMan[j] / currentHillNumPixels[j];
                 K_NRCS[j] = currentHillBased_K_NRCS[j] / currentHillNumPixels[j];
+                HydCond[j] = currentHillBasedHydCond[j] / currentHillNumPixels[j];
                 newfile.write(CN[j] + " " + Manning[j] + " " + K_NRCS[j] + " ");
 
                 for (int n = 0; n < nclasses; n++) {
@@ -560,8 +580,15 @@ public class SCSManager {
                 java.util.Vector<hydroScalingAPI.util.polysolve.Pair> userDataVector;
                 userDataVector = new java.util.Vector<hydroScalingAPI.util.polysolve.Pair>();
                 userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(0, 0));
-                //System.out.println("regression " + j);
+                System.out.println("regression " + j);
 
+                if(currentHillNumPixels[j]<5){
+                        userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(0.2, 0.2));
+                        userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(0.4, 0.4));
+                        userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(0.6, 0.6));
+                        userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(0.8, 0.8));
+                        userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(1.0, 1.0));}
+                else {
                 for (int ih = 0; ih < 5; ih++) {
                     HillslopeReliefArea[j][ih] = HillslopeReliefArea[j][ih] / currentHillNumPixels[j];
                     accum = accum + HillslopeReliefArea[j][ih];
@@ -570,9 +597,9 @@ public class SCSManager {
                     //Relief = (ih + 1) * (HillslopeRelief[j] / 5);
                     Relief = ((double)ih + 1.0) / 5.0;
                         userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(Relief, accum));
-                    System.out.println("link" + j + "ih" + ih + "accum"+ accum+ "         Relief " + Relief );
+                    System.out.println("link" + j + "  n pixels"+currentHillNumPixels[j]+"  ih" + ih + "   accum"+ accum+ "  Relief " + Relief + "HillslopeReliefArea[j][ih]" +HillslopeReliefArea[j][ih]);
                    //userDataVector.add(new hydroScalingAPI.polysolve.Pair((ih+1)*0.2,accum));
-                }
+                }}
                 hydroScalingAPI.util.polysolve.MatrixFunctions mfunct;
                 mfunct = new hydroScalingAPI.util.polysolve.MatrixFunctions();
                 hydroScalingAPI.util.polysolve.Pair[] userData;
@@ -711,6 +738,31 @@ public class SCSManager {
             }
         }
         return PixelCN;
+    }
+
+        public double Hyd_Conductivity(double soil) {
+        double PixelHydCond = -9.9;
+        if (soil == 5 || soil == 6) {
+            PixelHydCond = 0.00001;
+        }
+
+        if (soil == 1) { 
+                PixelHydCond = 0.1;
+        }
+
+         if (soil == 2) {
+                PixelHydCond = 0.005;
+        }
+
+         if (soil == 3) {
+                PixelHydCond = 0.001;
+        }
+
+       if (soil == 4) {
+                PixelHydCond = 0.0001;
+        }
+
+        return PixelHydCond;
     }
 
     public double EstimateManing(double soil, double LC) {
@@ -949,6 +1001,17 @@ public class SCSManager {
         return K_NRCS[HillNumber];
     }
 
+    public Double getAverHydCond(int HillNumber) {
+        return HydCond[HillNumber];
+    }
+
+    public Double getMaxHydCond(int HillNumber) {
+        return maxHillBasedHydCond[HillNumber];
+    }
+
+    public Double getMinHydCond(int HillNumber) {
+        return minHillBasedHydCond[HillNumber];
+    }
     /**
      * The minimum manning roughness parameter over a hillslope
      * @param HillNumber
