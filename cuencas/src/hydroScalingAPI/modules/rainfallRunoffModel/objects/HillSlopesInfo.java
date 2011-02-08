@@ -355,6 +355,18 @@ public class HillSlopesInfo extends java.lang.Object {
     public double LandUsePercSCS(int HillNumber){
         return thisSCSData.getMaxHillLUPerc(HillNumber);
     }
+
+    public double MinHydCond(int HillNumber){
+        return thisSCSData.getMinHydCond(HillNumber);
+    }
+
+    public double MaxHydCond(int HillNumber){
+        return thisSCSData.getMaxHydCond(HillNumber);
+    }
+
+     public double AveHydCond(int HillNumber){
+        return thisSCSData.getAverHydCond(HillNumber);
+    }
     /* Luciana Cunha Edition - SCS Manager - Object for Network Equations using SCSmethod
      * @param HillNumber The index of the desired hillslope
      * @return The predominant soil hydrologic group - from 0 (lower infiltration) to 3 (higher infiltration)
