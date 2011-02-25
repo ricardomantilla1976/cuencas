@@ -163,9 +163,9 @@ public class HydroNexradRes_time extends Object {
 
 
             String filenameBin = Outputname(timeident,"Bin");
-            String filenameAsc = Outputname(timeident,"Asc");
-            File fileBinoutputDir = new java.io.File(OutDir+"/bin/"+filenameBin);
-            File fileASCDir = new java.io.File(OutDir+"/Asc/"+filenameAsc);
+            String filenameAsc = Outputname(timeident,"asc");
+            File fileBinoutputDir = new java.io.File(OutDir+"/Bin/"+filenameBin);
+            File fileASCDir = new java.io.File(OutDir+"/asc/"+filenameAsc);
             newfilebinary(fileBinoutputDir,ni,missing);
             newfileASC(fileASCDir,ni,missing);
         }

@@ -21,14 +21,14 @@ public class HydroNexradToCRas extends Object {
     private  float[][]        matrix;
     private  int              columns,rows; 
     
-    public HydroNexradToCRas(java.io.File inputFile, java.io.File outputFile, int numCol, int numRow) throws java.io.IOException {
+    public HydroNexradToCRas(java.io.File inputFile, java.io.File outputFile, int numRow, int numCol) throws java.io.IOException {
         
         java.io.FileReader ruta;
         java.io.BufferedReader buffer;
         
         java.util.StringTokenizer tokens;
         String linea=null, basura, nexttoken;
-        
+        System.out.println("test1");
         ruta = new FileReader(inputFile);
         buffer=new BufferedReader(ruta);         
         
@@ -36,12 +36,19 @@ public class HydroNexradToCRas extends Object {
         rows = numRow;        
         matrix = new float[rows][columns];
         
-        for (int i=0;i<6;i++) buffer.readLine();
-        
+        for (int i=0;i<11;i++) buffer.readLine();
+        System.out.println("test2");
         for (int i=0;i<rows;i++) {
             
             linea = buffer.readLine();
-        
+
+            if(linea==null) {
+                System.out.println("linear is null");
+                for (int j=0;j<columns;j++) {
+                    matrix[i][j] = -99.00f;
+                }}
+
+            else {
             tokens = new StringTokenizer(linea);
             for (int j=0;j<columns;j++) {
                 try{
@@ -50,10 +57,10 @@ public class HydroNexradToCRas extends Object {
                 } catch (NumberFormatException NFE){
                     matrix[i][j] = -99.00f;
                 }
-            }
+            }}
         }
         buffer.close();
-        
+        System.out.println("test3");
         fileName=inputFile.getName();
         String fileBinoutputDir=outputFile.getAbsolutePath();
                 
@@ -98,21 +105,21 @@ public class HydroNexradToCRas extends Object {
             // System.out.println("in metafile function new_s_res = "+ newsresol+"new_t_res = "+newtresol+"Frows = "+Finalrows + "Fcolumns = "+Finalcolumns);
             writer.println("[Name]");
             // writer.println("Precipitation Radar Data From KICT - basin mode");
-            writer.println("PRECIPITATION PROVIDED BY BONG CHUL _ MERGED RADAR DATA");
+            writer.println("PRECIPITATION PROVIDED BY BONG CHUL _ RADAR PAPER");
             //writer.println("Precipitation Radar Data From KICT");
             //writer.println("Precipitation Radar Data From KTLX");
             //writer.println("Precipitation Radar Data From KINX");
             writer.println("[Southernmost Latitude]");
             //writer.println("37:38:00.00 N"); // KICT radar
             //writer.println("35:36:00.00 N"); // KICT radar
-            writer.println("40:58:00.00 N"); // Iowa River
+            writer.println("41:38:30.00 N"); // Iowa River
             //writer.println("33:13:00.00 N"); // KTLX radar
             //writer.println("34:07:00.00 N"); // KINX radar
             writer.println("[Westernmost Longitude]");
 
             //writer.println("97:18:00.00 W"); // KICT basin
             //writer.println("97:18:00.00 W"); // KICT radar
-            writer.println("93:58:00.00 W"); //Iowa River
+            writer.println("92:02:30.00 W"); //Iowa River
             // writer.println("100:04:00.00 W"); // KICT radar
             //writer.println("99:19:00.00 W"); // KTLX radar
             //writer.println("98:08:00.00 W");// KINX radar
@@ -138,7 +145,7 @@ public class HydroNexradToCRas extends Object {
             //writer.println("Precipitation data downloaded from NEXRAD - radar mode - KTLX");
             //writer.println("Precipitation data downloaded from NEXRAD - radar mode - KINX");
             // writer.println("Precipitation data downloaded from NEXRAD - radar mode - KICT");
-            writer.println("Precipitation data downloaded from NEXRAD - provided by BongChul-Nov2010");
+            writer.println("Precipitation data provided by BongChul-Nov2010");
             writer.close();
         } catch (IOException bs) {
             System.out.println("Error composing metafile: " + bs);
@@ -180,16 +187,17 @@ public class HydroNexradToCRas extends Object {
     public static void main(String[] args) throws java.io.IOException{
         
         java.io.File AsciiFile;
-        File folder = new File("/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/DataGenNov_2010/Radar_merged");
+        File folder = new File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/March2009_Advection");
         
  	try{
 	ArrayList<File> files = HydroNexradToCRas.getFileList(folder);
 	Iterator i = files.iterator();
         
-        String OutputDir="/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/DataGenNov_2010/Radar_merged_Vhc";
+        String OutputDir="/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/March2009_AdvectionVHC";
         new File(OutputDir).mkdirs();
-        
-                 createMetaFile(new java.io.File(OutputDir), 60, 15, 184,199);
+        int nr=37;
+        int ncol=133;
+                 createMetaFile(new java.io.File(OutputDir), 15, 15, 37,133);
 	while (i.hasNext()){
             File temp = (File) i.next();
             
@@ -205,7 +213,7 @@ public class HydroNexradToCRas extends Object {
         ////////////////////////////////////////
             try {  
                  System.out.println(temp.getAbsolutePath());
-                 new HydroNexradToCRas(AsciiFile,BinaryOutName,199,184);
+                 new HydroNexradToCRas(AsciiFile,BinaryOutName,37,133);
              } catch (Exception IOE){
                  System.err.print(IOE);
                  System.exit(0);

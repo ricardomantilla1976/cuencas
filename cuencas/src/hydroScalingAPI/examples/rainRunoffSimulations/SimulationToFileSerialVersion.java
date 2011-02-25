@@ -576,7 +576,7 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
         System.out.println("Finish file," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
         java.io.File[] filesToAdd = new java.io.File[0];
         //hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_SerialVersion thisBasinEqSys = new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_SerialVersion(linksStructure, thisHillsInfo, thisNetworkGeom, -1, filesToAdd, routingParams);
-        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_AllMethod3 thisBasinEqSys = new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_AllMethod3(linksStructure, thisHillsInfo, thisNetworkGeom, -1, filesToAdd, routingParams);
+        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_AllMethodSeriial thisBasinEqSys = new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_AllMethodSeriial(linksStructure, thisHillsInfo, thisNetworkGeom, -1, filesToAdd, routingParams);
 
         //      hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay thisBasinEqSys=new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay(linksStructure,thisHillsInfo,thisNetworkGeom,routingType);
         int nstates = linksStructure.contactsArray.length * 2;

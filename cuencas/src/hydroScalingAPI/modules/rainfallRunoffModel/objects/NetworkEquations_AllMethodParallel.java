@@ -755,17 +755,28 @@ System.out.println("routingType" + routingType);
                     vH = 50.0; // Wetlands
                 }
                 break;
-            case 3: //NRCS method manning roughness as a function of land cover and soil hyd group
-                vH = (Hill_K_NRCSArray[0][i]) * Math.pow((Slope*100), 0.5)  * 0.3048; //(m/h)
+          case 3: //NRCS method manning roughness as a function of land cover and soil hyd group
+             vH = (Hill_K_NRCSArray[0][i]) * Math.pow((Slope*100), 0.5)  * 0.3048; //(m/h)
                 if (vH > 500) {
                     vH = 500;
                 }
                 if (vH < 10) {
                     vH = 10;                      //m/h
                 }
-                break;
+                   break;
+
+
+                  case 4: //NRCS method manning roughness as a function of land cover and soil hyd group
+             vH = (Hill_K_NRCSArray[0][i]) * Math.pow((Slope/100), 0.5)  * 0.3048*3600; //(m/h)
+                if (vH > 1000) {
+                    vH = 1000;
+                }
+                if (vH < 10) {
+                    vH = 10;                      //m/h
+                }
+                   break;
         }
-        return vH;
+    return vH;
     }
 
     public double RoutingType(int method, int hilslope, double Qchannel) {

@@ -94,7 +94,7 @@ public class ParalelVersionReader extends Object {
 
         java.io.File[] lasQueSi = InputFile.listFiles();
 
-        if (lasQueSi == null || lasQueSi.length == 0) {
+        if (lasQueSi == null && lasQueSi.length<55) {
             System.out.println("NO FILES");
             return;
         }
@@ -564,15 +564,21 @@ public class ParalelVersionReader extends Object {
 
     public void readFile1(java.io.File InputFile, double Ti) throws java.io.IOException {
 
+
         java.io.FileReader ruta;
         java.io.BufferedReader buffer;
 
         java.util.StringTokenizer tokens;
         String linea = null, basura, nexttoken;
+
         //System.out.println("InputFile" + InputFile);
         ruta = new FileReader(InputFile);
+
         buffer = new BufferedReader(ruta);
+
         String data = buffer.readLine(); // JUMP 3 LINES IN THE BEGINING
+        if(data==null) return;
+
         data = buffer.readLine();
         data = buffer.readLine();
         data = buffer.readLine(); // Horton
@@ -614,7 +620,7 @@ public class ParalelVersionReader extends Object {
         }
 
 
-        //System.out.println("temp   " + temp);
+        
         int ii = nlinks;
         //int fileid=InputFile.getName().indexOf("_");
         //int fileid2=InputFile.getName().indexOf("_",fileid+1);
@@ -622,6 +628,8 @@ public class ParalelVersionReader extends Object {
         // System.out.println(InputFile.getName()+"fileid - "+fileid + "fileid2  " + fileid2 + "   " + InputFile.getName().substring(fileid+1,fileid2));
         //String tt=InputFile.getName().substring(fileid+1,fileid2);
         while (tokens.hasMoreTokens()) {
+            //System.out.println("ii   " + ii);
+            
             HortonO[ii] = new Float(tokens.nextToken());
             xxFile[ii] = xx;
             yyFile[ii] = yy;
@@ -646,9 +654,12 @@ public class ParalelVersionReader extends Object {
         for (int j = 0; j < 9; j++) {
             data = buffer.readLine();
         }
+        System.out.println("area" + data);
         //READ Upstream Area
-        if (data.length() > 0) {
+        if (data!=null) {
             tokens = new StringTokenizer(data, ",");
+          
+
         } else {
             return;
         }
@@ -849,6 +860,7 @@ public class ParalelVersionReader extends Object {
         buffer = new BufferedReader(ruta);
         String data = "test"; // JUMP 1 LINE IN THE BEGINING
         data = buffer.readLine(); // JUMP 2 LINE IN THE BEGINING
+        if(data==null) return;
         data = buffer.readLine(); // JUMP 2 LINE IN THE BEGINING
         String temp;
 
@@ -869,7 +881,7 @@ public class ParalelVersionReader extends Object {
             int i5 = filename.indexOf("_", i3) + 1;
             int i6 = filename.indexOf("-", i1);
 
-                // check if there is an E
+            // check if there is an E
 
             xxx[ii] = Integer.valueOf(filename.substring(i3, i4));
             yyy[ii] = Integer.valueOf(filename.substring(i5, i6));
@@ -908,6 +920,7 @@ public class ParalelVersionReader extends Object {
                 break;
             }
         }
+        int ll=0;
         System.out.println("LinknHyd[ii]   " + LinknHyd[ii] + "xxx   " + xxx[ii] + "yyy    " + yyy[ii]);
         int j = 0;
         data = buffer.readLine();
@@ -917,11 +930,12 @@ public class ParalelVersionReader extends Object {
         }
         if (flag == 1) {
             while (data != null) {
-
+                ll=ll+1;
+ //System.out.println(data + "   " + ll);
                 double number1;
                 double number2;
                 tokens = new StringTokenizer(data, ",");
-
+                if(tokens.hasMoreTokens()){
                 temp = new String(tokens.nextToken());
                 double TTemp;
                 if (temp.indexOf("E") < 1) {
@@ -937,8 +951,9 @@ public class ParalelVersionReader extends Object {
                 HTime[ii][j] = (float) TTemp;
 
                 // check if there is an E
-
+                if(tokens.hasMoreTokens()){
                 temp = new String(tokens.nextToken());
+               // System.out.println(HTime[ii][j] + ii + "  temp" +temp+ "   j" + j);
                 if (temp.indexOf("E") < 1) {
                     hydrographs[ii][j] = Float.valueOf(temp);
                 } else {
@@ -950,10 +965,11 @@ public class ParalelVersionReader extends Object {
                 for (int cc = 0; cc <= linejump; cc++) {
                     data = buffer.readLine();
                 }
-                data = buffer.readLine();
+                
                 j = j + 1;
-
-
+                }
+                }
+                data = buffer.readLine();
                 if (j >= ntimestep) {
                     data = null;
                 }
@@ -973,12 +989,16 @@ public class ParalelVersionReader extends Object {
             data = buffer.readLine(); // JUMP 2 LINE IN THE BEGINING
             data = buffer.readLine(); // DATA LINE
             j = 0;
+
             while (data != null) {
 
                 double number1;
                 double number2;
+               //System.out.println(data);
                 tokens = new StringTokenizer(data, ","); // jump time stamp
+                if(tokens.hasMoreTokens()){
                 temp = new String(tokens.nextToken()); // jump time stamp
+                if(tokens.hasMoreTokens()){
                 temp = new String(tokens.nextToken());
 
                 if (temp.indexOf("E") < 1) {
@@ -988,8 +1008,9 @@ public class ParalelVersionReader extends Object {
                     number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
                     Storage0[ii][j] = (float) (number1 * Math.pow(10, number2));
                 }
-
+                if(tokens.hasMoreTokens()){
                 temp = new String(tokens.nextToken());
+                //System.out.println(temp);
 
                 if (temp.indexOf("E") < 1) {
                     Storage1[ii][j] = Float.valueOf(temp);
@@ -998,7 +1019,7 @@ public class ParalelVersionReader extends Object {
                     number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
                     Storage1[ii][j] = (float) (number1 * Math.pow(10, number2));
                 }
-
+                if(tokens.hasMoreTokens()){
                 temp = new String(tokens.nextToken());
 
                 if (temp.indexOf("E") < 1) {
@@ -1009,12 +1030,13 @@ public class ParalelVersionReader extends Object {
                     Storage2[ii][j] = (float) (number1 * Math.pow(10, number2));
                 }
 
-                for (int cc = 0; cc <= linejump; cc++) {
+               
+                j = j + 1;
+}}}}
+                 for (int cc = 0; cc <= linejump; cc++) {
                     data = buffer.readLine();
                 }
                 data = buffer.readLine();
-                j = j + 1;
-
 
                 if (j >= ntimestep) {
                     data = null;
@@ -1253,7 +1275,8 @@ public class ParalelVersionReader extends Object {
 
         //mainparam(args);
         //mainRES(args);
-        mainClearCleek(args);
+        //mainClearCleek(args);
+        mainHelium(args);
     }
 
     public static void mainparam(String args[]) {
@@ -1269,12 +1292,12 @@ public class ParalelVersionReader extends Object {
             NDecRes = is;
             for (float it : vo) {
                 new_t_res = it;
-                //File folder = new File("/usr/home/rmantill/luciana/Parallel/event2008FIXEDrr0.4/3IowaRiver/hydroNexrad/" +NDecRes+ "/"+new_t_res +"/");
-                File folder = new File("/usr/home/rmantill/luciana/Parallel/event2008FIXEDrr0.40_0.65_0.95/3CedarRiver/hydroNexrad/" + NDecRes + "/" + new_t_res + "/");
-                File outfolder = new File("/usr/home/rmantill/luciana/Parallel/event2008FIXEDrr0.40_0.65_0.95/3CedarRiver/results/");
+                //File folder = new File("/Users/rmantill/luciana/Parallel/event2008FIXEDrr0.4/3IowaRiver/hydroNexrad/" +NDecRes+ "/"+new_t_res +"/");
+                File folder = new File("/Users/rmantill/luciana/Parallel/event2008FIXEDrr0.40_0.65_0.95/3CedarRiver/hydroNexrad/" + NDecRes + "/" + new_t_res + "/");
+                File outfolder = new File("/Users/rmantill/luciana/Parallel/event2008FIXEDrr0.40_0.65_0.95/3CedarRiver/results/");
                 outfolder.mkdirs();
-                //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
-                File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+                //File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
+                File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
                 System.out.println("folder - " + folder);
                 System.out.print(folder);
                 try {
@@ -1309,18 +1332,18 @@ public class ParalelVersionReader extends Object {
 //                    float VST = vst;
 //
 //
-//           //File folder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS/3ClearCreek/FIXED2/RoutingT5/HillT4/HillVelocityT3/VO0.28/VS0.5/LSCS0.2/IC0.0");
+//           //File folder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS/3ClearCreek/FIXED2/RoutingT5/HillT4/HillVelocityT3/VO0.28/VS0.5/LSCS0.2/IC0.0");
 //
 //
-//                    File folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/" + PR + "/"+ VO + "/" + L1 + "/" + L2 + "/"+ VST + "/");
+//                    File folder = new java.io.File("/Users/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/" + PR + "/"+ VO + "/" + L1 + "/" + L2 + "/"+ VST + "/");
 //
 //
-//                    File outfolder = new File("/usr/home/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/resultsv3/");
+//                    File outfolder = new File("/Users/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/resultsv3/");
 //                    outfolder.mkdirs();
 //////////////////////// GENERATED WITH LINKANALYSIS
-//                    //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
-//                    File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
-//                    //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2817_713.csv"); // Clear Creek
+//                    //File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
+//                    File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+//                    //File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2817_713.csv"); // Clear Creek
 //
 //
 //                    try {
@@ -1351,18 +1374,18 @@ public class ParalelVersionReader extends Object {
                         int PR = pr;
                         for (float vst : vostAr2) {
                             float VST = vst;
-                            //File folder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS/3ClearCreek/FIXED2/RoutingT5/HillT4/HillVelocityT3/VO0.28/VS0.5/LSCS0.2/IC0.0");
+                            //File folder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS/3ClearCreek/FIXED2/RoutingT5/HillT4/HillVelocityT3/VO0.28/VS0.5/LSCS0.2/IC0.0");
 
 
-                            File folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/" + PR + "/" + VO + "/" + L1 + "/" + L2 + "/" + VST + "/");
+                            File folder = new java.io.File("/Users/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/" + PR + "/" + VO + "/" + L1 + "/" + L2 + "/" + VST + "/");
 
 
-                            File outfolder = new File("/usr/home/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/resultsv3/");
+                            File outfolder = new File("/Users/rmantill/luciana/Parallel/veloc_study_V3/3CedarRiver/resultsv3/");
                             outfolder.mkdirs();
 ////////////////////// GENERATED WITH LINKANALYSIS
-                            //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
-                            File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
-                            //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2817_713.csv"); // Clear Creek
+                            //File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
+                            File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+                            //File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2817_713.csv"); // Clear Creek
 
 
                             try {
@@ -1391,8 +1414,7 @@ public class ParalelVersionReader extends Object {
 
 //        String[] AllSimName = {
 //            "90DEMUSGS",};
-        String[] AllSimName = {"90DEMUSGS",
-        };
+        String[] AllSimName = {"90DEMUSGS",};
 //        "30DEMLIDAR",
 //        "5DEMLIDAR",
 //            "10DEMLIDAR",
@@ -1429,65 +1451,65 @@ public class ParalelVersionReader extends Object {
 
                 String SimName = AllSimName[i];
                 String BasinName = AllRain[ib];
-                File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
+                File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
                 //
 //
                 if (SimName.equals("5DEMLIDAR")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo8052_497.csv"); // 10METER Clear Creek
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo8052_497.csv"); // 10METER Clear Creek
                 }
                 if (SimName.equals("10DEMLIDAR")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo4025_244.csv"); // 10METER Clear Creek
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo4025_244.csv"); // 10METER Clear Creek
                 }
                 if (SimName.equals("20DEMLIDAR")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2013_122.csv"); // 10METER Clear Creek
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2013_122.csv"); // 10METER Clear Creek
                 }
                 if (SimName.equals("30DEMLIDAR")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo1341_82.csv"); // 10METER Clear Creek //File
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo1341_82.csv"); // 10METER Clear Creek //File
                 }
                 if (SimName.equals("60DEMLIDAR")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo670_41.csv"); // 10METER Clear Creek //File
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo670_41.csv"); // 10METER Clear Creek //File
                 }
                 if (SimName.equals("90DEMLIDAR")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo447_27.csv"); // 10METER Clear Creek //File
-                }                   //LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo447_27.csv"); // 10METER Clear Creek //File
+                }                   //LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
                 if (SimName.equals("90DEMUSGS")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2817_713.csv"); // 90METER Clear Creek
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2817_713.csv"); // 90METER Clear Creek
                 }
                 if (SimName.equals("ASTER")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo1596_298.csv");
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo1596_298.csv");
                 }
                 if (BasinName.indexOf("CedarRiver") >= 0 && SimName.equals("90DEMUSGS")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv");
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv");
                 }
 
                 if (BasinName.indexOf("IowaCity") >= 0 && SimName.equals("90DEMUSGS")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2885_690.csv");
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2885_690.csv");
                 }
 
 
                 if (BasinName.indexOf("Waterloo") >= 0 && SimName.equals("90DEMUSGS")) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo1932_1695.csv");
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo1932_1695.csv");
                 }
 
                 if (BasinName.indexOf("Cedar") > 0) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv");
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv");
                 }
                 if (BasinName.indexOf("Turkey") > 0) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo3053_2123.csv");
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo3053_2123.csv");
                 }
                 if (BasinName.indexOf("Janesville") > 0) {
-                    LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo1775_1879.csv");
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo1775_1879.csv");
                 }
 
 
-                //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
-                //File LinkAnalysisFile = new File("/usr/home/rmantill/luciana/Parallel/linksInfo4025_244.csv"); // 10METER Clear Creek
+                //File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+                //File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo4025_244.csv"); // 10METER Clear Creek
                 //        float[] PH = {0.5f,0.1f,0.2f,0.4f,0.3f,0.0f};
 //        float[] Phi = {0.5f,0.1f,0.2f};
 ////
 //1111111 RT=2 (cte vel). HillT=0 (const runoff), HillVel=0 (no hill delay), RR=1.0
-                File outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
-                File folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+                File outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+                File folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
                         + "RoutT_2/"
                         + "/HillT_0/"
                         + "/HillVelT_0"
@@ -1496,7 +1518,7 @@ public class ParalelVersionReader extends Object {
 //////                    String[] folStr = folder.list();
 //////                    int Str = folStr.length;
 //////                    if (Str > 0) {
-//////                        outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                        outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////                        outfolder.mkdirs();
 //////
 //////                        try {
@@ -1510,7 +1532,7 @@ public class ParalelVersionReader extends Object {
 //////                }
 ////////C2222222 RT=2 (cte vel). HillT=0 (const runoff), HillVel=0 (no hill delay), RR=0.5
 //////
-//////                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//////                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //////                        + "RoutT_2/"
 //////                        + "/HillT_0/"
 //////                        + "/HillVelT_0"
@@ -1520,7 +1542,7 @@ public class ParalelVersionReader extends Object {
 //////                    String[] folStr = folder.list();
 //////                    int Str = folStr.length;
 //////                    if (Str > 0) {
-//////                        outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                        outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////
 //////                        outfolder.mkdirs();
 //////                        try {
@@ -1533,7 +1555,7 @@ public class ParalelVersionReader extends Object {
 //////                    }
 //////                }
 //////                //C333333 RT=2 (cte vel). HillT=1 (const runoff), HillVel=1 (cte hill delay), RR=0.5
-//////                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//////                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //////                        + "RoutT_2/"
 //////                        + "/HillT_1/"
 //////                        + "/HillVelT_0_v50"
@@ -1543,7 +1565,7 @@ public class ParalelVersionReader extends Object {
 //////                    String[] folStr = folder.list();
 //////                    int Str = folStr.length;
 //////                    if (Str > 0) {
-//////                        outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                        outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////                        outfolder.mkdirs();
 //////                        try {
 //////                            String str = "3RoutT_2HillT_1HillVelT_0_v50_RR_0.5";
@@ -1555,14 +1577,14 @@ public class ParalelVersionReader extends Object {
 //////                    }
 //////                }
 //////                //C444444 RT=2 (cte vel). HillT=1 (const runoff), HillVel=3 (no hill delay), RR=0.5
-//////                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//////                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //////                        + "RoutT_2/"
 //////                        + "/HillT_1/"
 //////                        + "/HillVelT_3"
 //////                        + "/RR_0.5");
 //////
 //////                if (folder.exists()) {
-//////                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////                    outfolder.mkdirs();
 //////                    try {
 //////                        String str = "4RoutT_2HillT_1HillVelT_3_RR_0.5";
@@ -1573,14 +1595,14 @@ public class ParalelVersionReader extends Object {
 //////                    }
 //////                }
 //////                //C555555 RT=5 (cte vel). HillT=0 (const runoff), HillVel=0 (no hill delay), RR=1.0
-//////                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//////                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //////                        + "RoutT_5/"
 //////                        + "/HillT_0/"
 //////                        + "/HillVelT_0"
 //////                        + "/RR_1");
 //////
 //////                if (folder.exists()) {
-//////                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////                    outfolder.mkdirs();
 //////                    try {
 //////                        String str = "5RoutT_5HillT_0HillVelT_0_RR_1";
@@ -1591,13 +1613,13 @@ public class ParalelVersionReader extends Object {
 //////                    }
 //////                }
 //////                //C666666 RT=5 (cte vel). HillT=0 (const runoff), HillVel=0 (no hill delay), RR=0.5
-//////                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//////                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //////                        + "RoutT_5/"
 //////                        + "/HillT_0/"
 //////                        + "/HillVelT_0"
 //////                        + "/RR_0.5");
 //////                if (folder.exists()) {
-//////                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////                    outfolder.mkdirs();
 //////                    try {
 //////                        String str = "6RoutT_5HillT_0HillVelT_0_RR_0.5";
@@ -1609,14 +1631,14 @@ public class ParalelVersionReader extends Object {
 //////                }
 //////
 //////
-//////                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//////                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //////                        + "RoutT_5/"
 //////                        + "/HillT_1/"
 //////                        + "/HillVelT_3"
 //////                        + "/RR_0.5lambda0.4");
 //////
 //////                if (folder.exists()) {
-//////                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////                    outfolder.mkdirs();
 //////                    try {
 //////                        String str = "6RoutT_5HillT_1HillVelT_3_RR_0.5Lambda0.4";
@@ -1627,14 +1649,14 @@ public class ParalelVersionReader extends Object {
 //////                    }
 //////                }
 //////
-//////                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//////                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //////                        + "RoutT_5/"
 //////                        + "/HillT_0/"
 //////                        + "/HillVelT_0"
 //////                        + "/RR_0.5lambda0.4/");
 //////
 //////                if (folder.exists()) {
-//////                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////                    outfolder.mkdirs();
 //////                    try {
 //////                        String str = "6RoutT_5HillT_0HillVelT_0_RR_0.5lambda0.4";
@@ -1646,13 +1668,13 @@ public class ParalelVersionReader extends Object {
 //////                }
 //////
 //////                //C7777777 RT=5 (cte vel). HillT=1 (const runoff), HillVel=0 (cte hill delay), RR=0.5
-//////                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//////                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //////                        + "RoutT_5/"
 //////                        + "/HillT_1/"
 //////                        + "/HillVelT_0_v50"
 //////                        + "/RR_0.5");
 //////                if (folder.exists()) {
-//////                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////                    outfolder.mkdirs();
 //////                    try {
 //////                        String str = "7RoutT_5HillT_1HillVelT_0_v50_RR_0.5";
@@ -1663,13 +1685,13 @@ public class ParalelVersionReader extends Object {
 //////                    }
 //////                }
 //////                //C8888888 RT=5 (cte vel). HillT=1 (const runoff), HillVel=3 (no hill delay), RR=0.5
-//////                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//////                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //////                        + "RoutT_5/"
 //////                        + "/HillT_1/"
 //////                        + "/HillVelT_3"
 //////                        + "/RR_0.5");
 //////                if (folder.exists()) {
-//////                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////                    outfolder.mkdirs();
 //////                    try {
 //////                        String str = "8RoutT_5HillT_1HillVelT_3_RR_0.5";
@@ -1701,7 +1723,7 @@ public class ParalelVersionReader extends Object {
                                         + "/PH" + p1);
 
 //C999999 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - spattially constant
-                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+                                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
                                         + "Rout_2Hill_3CteRC130_HVelCte50/"
                                         + "/IA" + ia
                                         + "/VS" + vsub
@@ -1709,7 +1731,7 @@ public class ParalelVersionReader extends Object {
                                         + "/PH" + p1);
                                 System.out.println("folder- " + folder);
                                 if (folder.exists()) {
-                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
                                     outfolder.mkdirs();
 ////////////////////// GENERATED WITH LINKANALYSIS
                                     System.out.println("folder - " + folder);
@@ -1725,7 +1747,7 @@ public class ParalelVersionReader extends Object {
                                 }
 
                                 //C10 RT=5 (cte vel). HillT=3 , HillVel=3 (hill veloc variable), SCS method - spattially constant
-                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+                                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
                                         + "Rout_5Hill_3CteRC130_HVelCte50/"
                                         + "/IA" + ia
                                         + "/VS" + vsub
@@ -1733,7 +1755,7 @@ public class ParalelVersionReader extends Object {
                                         + "/PH" + p1);
                                 System.out.println("folder- " + folder);
                                 if (folder.exists()) {
-                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
                                     outfolder.mkdirs();
 ////////////////////// GENERATED WITH LINKANALYSIS
                                     System.out.println("folder - " + folder);
@@ -1749,7 +1771,7 @@ public class ParalelVersionReader extends Object {
                                 }
 
                                 //C11 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - distributed
-                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+                                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
                                         + "RRout_5Hill_3CteRC130_HVel3/"
                                         + "/IA" + ia
                                         + "/VS" + vsub
@@ -1757,7 +1779,7 @@ public class ParalelVersionReader extends Object {
                                         + "/PH" + p1);
                                 System.out.println("folder- " + folder);
                                 if (folder.exists()) {
-                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
                                     outfolder.mkdirs();
 ////////////////////// GENERATED WITH LINKANALYSIS
                                     System.out.println("folder - " + folder);
@@ -1773,7 +1795,7 @@ public class ParalelVersionReader extends Object {
                                 }
 
                                 //C12 RT=5 (cte vel). HillT=3 , HillVel=3 (hill veloc cte), SCS method - distributed
-                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+                                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
                                         + "Rout_2Hill_3VarRC_HVelCte50/"
                                         + "/IA" + ia
                                         + "/VS" + vsub
@@ -1781,7 +1803,7 @@ public class ParalelVersionReader extends Object {
                                         + "/PH" + p1);
                                 System.out.println("folder- " + folder);
                                 if (folder.exists()) {
-                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
                                     outfolder.mkdirs();
 ////////////////////// GENERATED WITH LINKANALYSIS
                                     System.out.println("folder - " + folder);
@@ -1798,7 +1820,7 @@ public class ParalelVersionReader extends Object {
 
 
 //C13 RT=5 (cte vel). HillT=3 , HillVel=3 (hill veloc cte), SCS method - distributed
-                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+                                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
                                         + "Rout_5Hill_3VarRC_HVelCte50/"
                                         + "/IA" + ia
                                         + "/VS" + vsub
@@ -1806,7 +1828,7 @@ public class ParalelVersionReader extends Object {
                                         + "/PH" + p1);
                                 System.out.println("folder- " + folder);
                                 if (folder.exists()) {
-                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
                                     outfolder.mkdirs();
 ////////////////////// GENERATED WITH LINKANALYSIS
                                     System.out.println("folder - " + folder);
@@ -1821,7 +1843,7 @@ public class ParalelVersionReader extends Object {
                                     }
                                 }
                                 //C14 RT=5 (cte vel). HillT=3 , HillVel=3 (hill veloc cte), SCS method - distributed
-                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+                                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
                                         + "Rout_5Hill_3/"
                                         + "/IA" + ia
                                         + "/VS" + vsub
@@ -1829,7 +1851,7 @@ public class ParalelVersionReader extends Object {
                                         + "/PH" + p1);
                                 System.out.println("folder- " + folder);
                                 if (folder.exists()) {
-                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
                                     outfolder.mkdirs();
 ////////////////////// GENERATED WITH LINKANALYSIS
                                     System.out.println("folder - " + folder);
@@ -1845,7 +1867,7 @@ public class ParalelVersionReader extends Object {
                                 }
 
 //                                //C14 RT=5 (cte vel). HillT=3 , HillVel=3 (hill veloc cte), SCS method - distributed
-//                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//                                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //                                        + "Rout_5Hill_3/"
 //                                        + "/IA" + ia
 //                                        + "/VS" + vsub
@@ -1853,7 +1875,7 @@ public class ParalelVersionReader extends Object {
 //                                        + "/PH" + p1 + "VO0.8");
 //                                System.out.println("folder- " + folder);
 //                                if (folder.exists()) {
-//                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//                                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //                                    outfolder.mkdirs();
 //////////////////////// GENERATED WITH LINKANALYSIS
 //                                    System.out.println("folder - " + folder);
@@ -1868,7 +1890,7 @@ public class ParalelVersionReader extends Object {
 //                                    }
 //                                }
 //////
-//////                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+//////                                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //////                                        + "Rout_5Hill_3/"
 //////                                        + "/IA" + ia
 //////                                        + "/VS" + vsub
@@ -1876,7 +1898,7 @@ public class ParalelVersionReader extends Object {
 //////                                        + "/PH" + p1 + "VO0.5");
 //////                                System.out.println("folder- " + folder);
 //////                                if (folder.exists()) {
-//////                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+//////                                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
 //////                                    outfolder.mkdirs();
 //////////////////////////// GENERATED WITH LINKANALYSIS
 //////                                    System.out.println("folder exists- " + folder);
@@ -1891,7 +1913,7 @@ public class ParalelVersionReader extends Object {
 //////                                    }
 //////                                }
 
-                                folder = new java.io.File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + BasinName + "/" + SimName + "/"
+                                folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
                                         + "Rout_5Hill_3/"
                                         + "/IA" + ia
                                         + "/VS" + vsub
@@ -1899,7 +1921,7 @@ public class ParalelVersionReader extends Object {
                                         + "/PH" + p1 + "VO0.3");
                                 System.out.println("folder- " + folder);
                                 if (folder.exists()) {
-                                    outfolder = new File("/usr/home/rmantill/luciana/Parallel/ALL_MODELS5/" + "results/" + BasinName + "/" + SimName + "/");
+                                    outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
                                     outfolder.mkdirs();
 ////////////////////// GENERATED WITH LINKANALYSIS
                                     System.out.println("folder exists- " + folder);
@@ -1925,12 +1947,204 @@ public class ParalelVersionReader extends Object {
         }
 
     }
+
+    public static void mainHelium(String args[]) {
+
+
+
+        int nc = 3848; //ClearCreek -90 metere USGS
+
+        java.util.Hashtable routingParams = new java.util.Hashtable();
+
+
+        String[] AllSimName = {"90DEMUSGS"};
+
+       String[] AllRain = {"3CCreekJunAdvdisc4","3CCreekJunNoAdvdisc4",
+       "3CCreekMayAdvdisc4","3CCreekMayNoAdvdisc4",
+       "3CCreekMarAdvdisc4","3CCreekMarNoAdvdisc4"};
+        
+ //       "3ClearCreek2009MayAdvdisc4"};
+//,"3ClearCreek2009MayNoAdvdisc4"
+//"3ClearCreek2009MarchAdvdisc4","3ClearCreek2009MarchNoAdvdisc4"
+        // String[] AllRain = {"3CedarRiver_15_180","3CedarRiver_TRMM"};
+        int nsim = AllSimName.length;
+        int nbas = AllRain.length;
+
+        for (int i = 0; i < nsim; i++) {
+            for (int ib = 0; ib < nbas; ib++) {
+
+                System.out.println("Running BASIN " + AllSimName[i]);
+                System.out.println("Running BASIN " + AllRain[ib]);
+
+                String SimName = AllSimName[i];
+                String BasinName = AllRain[ib];
+                File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2885_690.csv"); // Iowa city
+                //
+//
+                if (SimName.equals("5DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo8052_497.csv"); // 10METER Clear Creek
+                }
+                if (SimName.equals("10DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo4025_244.csv"); // 10METER Clear Creek
+                }
+                if (SimName.equals("20DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2013_122.csv"); // 10METER Clear Creek
+                }
+                if (SimName.equals("30DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo1341_82.csv"); // 10METER Clear Creek //File
+                }
+                if (SimName.equals("60DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo670_41.csv"); // 10METER Clear Creek //File
+                }
+                if (SimName.equals("90DEMLIDAR")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo447_27.csv"); // 10METER Clear Creek //File
+                }                   //LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+                if (SimName.equals("90DEMUSGS")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2817_713.csv"); // 90METER Clear Creek
+                }
+                if (SimName.equals("ASTER")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo1596_298.csv");
+                }
+                if (BasinName.indexOf("CedarRiver") >= 0 && SimName.equals("90DEMUSGS")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv");
+                }
+                 if (BasinName.indexOf("Volga") >= 0 && SimName.equals("90DEMUSGS")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo3091_2004.csv");
+                }
+
+                if (BasinName.indexOf("IowaCity") >= 0 && SimName.equals("90DEMUSGS")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2885_690.csv");
+                }
+
+
+                if (BasinName.indexOf("Waterloo") >= 0 && SimName.equals("90DEMUSGS")) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo1932_1695.csv");
+                }
+
+                if (BasinName.indexOf("Cedar") > 0) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv");
+                }
+                if (BasinName.indexOf("Turkey") > 0) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo3053_2123.csv");
+                }
+                if (BasinName.indexOf("Janesville") > 0) {
+                    LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo1775_1879.csv");
+                }
+
+
+                //File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo2734_1069.csv"); // Cedar rapids
+                //File LinkAnalysisFile = new File("/Users/rmantill/luciana/Parallel/linksInfo4025_244.csv"); // 10METER Clear Creek
+                //        float[] PH = {0.5f,0.1f,0.2f,0.4f,0.3f,0.0f};
+//        float[] Phi = {0.5f,0.1f,0.2f};
+////
+//1111111 RT=2 (cte vel). HipllT=0 (const runoff), HillVel=0 (nbbco hill delay), RR=1.0
+
+                //File outfolder = new File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/" + "results/" + BasinName + "/" + SimName + "/");
+
+                File outfolder = new File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/" + "results2/" + BasinName + "/" + SimName + "/");
+//File outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/results/");
+                outfolder.mkdirs();
+
+
+                final Collection<File> all = new ArrayList<File>();
+                //addFilesRecursively(new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4_3/" + BasinName + "/" + SimName + "/"), all);
+
+               //addFilesRecursively(new File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/"+ BasinName + "/" + SimName + "/"), all);
+               addFilesRecursively(new File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/"+ BasinName + "/" + SimName + "/0.0/RoutT_5/HillT_5/HillVelT_4/BFExp1.0/BFCoef0.0/VS5.0E-4/"), all);
+               //addFilesRecursively(new File("//Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/3ClearCreek2009MarchAdvdisc4/"), all);
+                
+                String[] ListDir = new String[all.size()];
+                System.out.println("all size= " + all.size() + "\n");
+                int t = 0;
+                for (Iterator iterator = all.iterator(); iterator.hasNext();) {
+                    File file = (File) iterator.next();
+                    if (file.isDirectory()) {
+                        ListDir[t] = file.toString();
+                        t = t + 1;
+                    }
+
+                }
+
+
+                for (int idd = 0; idd < t; idd++) {
+                   
+                    File folder = new java.io.File(ListDir[idd]);
+
+                    if (folder.exists()) {
+                        FilenameFilter only = new OnlyExt("csv");
+                        String[] folStrfilter = folder.list(only);
+                        if (folStrfilter.length > 0) {
+                            System.out.println("File n= " + folStrfilter.length + "\n");
+                            String[] folStr = folder.list();
+                            int Str = folStr.length;
+                            System.out.println(idd + "    " + ListDir[idd] + "File n= " + Str + "\n");
+                    
+                        try {
+                            String str = ListDir[idd].replace( '/', '_' );
+                            //String str2=str.substring(str.indexOf("Rout"));
+                           System.out.println(str);
+                            String str2=str.substring(str.indexOf("RoutT")-4);
+                           System.out.println("IDENTIFIER" +str2 + "\n");
+                            new ParalelVersionReader(folder, LinkAnalysisFile, str2, outfolder);
+                        } catch (java.io.IOException IOE) {
+                            System.out.print(IOE);
+                            //System.exit(0);
+                        }
+                    
+                        }
+                    
+
+                    }
+                }
+
+
+
+//                File folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
+//                        + "RoutT_2/"
+//                        + "/HillT_0/"
+//                        + "/HillVelT_0"
+//                        + "/RR_1");
+//////                if (folder.exists()) {
+//////                    String[] folStr = folder.list();
+//////                    int Str = folStr.length;
+//////                    if (Str > 0) {
+//////                        outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + "results/" + BasinName + "/" + SimName + "/");
+//////                        outfolder.mkdirs();
+//////
+//////                        try {
+//////                            String str = "1RoutT_2HillT_0HillVelT_0_RR_1";
+//////                            new ParalelVersionReader(folder, LinkAnalysisFile, str, outfolder);
+//////                        } catch (java.io.IOException IOE) {
+//////                            System.out.print(IOE);
+//////                            System.exit(0);
+//////                        }
+//////                    }
+//////                }
+
+            }
+        }
+    }
+
+    private static void addFilesRecursively(File file, Collection<File> all) {
+        final File[] children = file.listFiles();
+        if (children != null) {
+            for (File child : children) {
+                all.add(child);
+                addFilesRecursively(child, all);
+            }
+        }
+    }
+
+    public static class OnlyExt implements FilenameFilter {
+
+        String ext;
+
+        public OnlyExt(String ext) {
+            this.ext = "." + ext;
+        }
+
+        public boolean accept(File dir, String name) {
+            return name.endsWith(ext);
+        }
+    }
 }
-
-
-
-
-
-
-
-

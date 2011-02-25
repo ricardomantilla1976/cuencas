@@ -88,7 +88,7 @@ public class SCS {
         newfile.write("order,");//2
         newfile.write("length[m],");//3
         newfile.write("TotalLength,");//4
-        newfile.write("totalLength[km2]");
+        newfile.write("mainchannellength[m]");
         newfile.write("HillArea[km2],");//5 // hillslope area (km2 - I think)
         newfile.write("UpsArea[km2],");       //6
         newfile.write("AvehillBasedSlope,");//7
@@ -109,9 +109,16 @@ public class SCS {
         newfile.write("Soil_CN1(i),");//22
         newfile.write("SCS_S1(i),");//23
         newfile.write("dist[meters],");//24
-        newfile.write("velocity,");//25
-        newfile.write("time,");//26
-        newfile.write("format_flag,");//27
+        newfile.write("vh1_1,");//25
+        newfile.write("vh1_10,");//26
+        newfile.write("vh1_25,");//27
+        newfile.write("vh2,");//28
+        newfile.write("LC,");//29
+        newfile.write("vh3,");//30
+        newfile.write("vh4,");//31
+
+        newfile.write("vh4time,");//32
+        newfile.write("format_flag,");//33
         newfile.write("\n");
         //
 
@@ -130,11 +137,14 @@ public class SCS {
             newfile.write(thisNetworkGeom.linkOrder(i) + ","); //2
             newfile.write(thisNetworkGeom.Length(i) + ",");//3
             newfile.write(thisNetworkGeom.upStreamTotalLength(i) + ",");//4
-            newfile.write(thisNetworkGeom.mainChannelLength(i)+",");
+            newfile.write(thisNetworkGeom.mainChannelLength(i)+","); //5
             newfile.write(thisHillsInfo.Area(i) + ",");//5 // hillslope area (km2 - I think)
             newfile.write(thisNetworkGeom.upStreamArea(i) + ",");       //6
             newfile.write(SCSObj.getavehillBasedSlope(i) + ",");//7
             newfile.write(thisNetworkGeom.Slope(i) + ",");//8
+
+
+
             double Hchannel = thisNetworkGeom.Slope(i) * thisNetworkGeom.Length(i);
             double HillRelief = SCSObj.getHillRelief(i) - Hchannel;
             double FormParam = (HillRelief) * 2 * thisNetworkGeom.Length(i) / (thisHillsInfo.Area(i) * 1000000);
@@ -158,11 +168,58 @@ public class SCS {
             newfile.write(dist + ",");  //24
             System.out.println("hydCond:    " + thisHillsInfo.MinHydCond(i) +"  minhydCond:    " +thisHillsInfo.MinHydCond(i));
 
+            double vH1_1 = (1 / SCSObj.getAverManning(i)) * Math.pow(SCSObj.getavehillBasedSlope(i), 0.5) * Math.pow(1 / 1000, (2 / 3)) * 3600;
+            newfile.write(vH1_1 + ",");//25
+            double vH1_10 = (1 / SCSObj.getAverManning(i)) * Math.pow(SCSObj.getavehillBasedSlope(i), 0.5) * Math.pow(10 / 1000, (2 / 3)) * 3600;
+            newfile.write(vH1_10 + ",");//26
+         double vH1_25 = (1 / SCSObj.getAverManning(i)) * Math.pow(SCSObj.getavehillBasedSlope(i), 0.5) * Math.pow(10 / 1000, (2 / 3)) * 3600;
+            newfile.write(vH1_25 + ",");//27
 
-            double vr = (SCSObj.getAverK_NRCS(i)) * Math.pow((SCSObj.getavehillBasedSlope(i)), 0.5) * 100 * 0.3048;
-            newfile.write(vr + ",");//25
-            double tt = dist / vr;
-            newfile.write(tt + ",");//26
+           double VH2=-9;
+           String LC=null;
+                if (thisHillsInfo.LandUseSCS(i) == 0) {
+                    VH2 = 500.0;
+                    LC="water";
+                } else if (thisHillsInfo.LandUseSCS(i)== 1) {
+                    VH2 = 250.0;
+                    LC="urbanArea";
+                } else if (thisHillsInfo.LandUseSCS(i) == 2) {
+                    VH2 = 100.0;
+                    LC="baren soil";// baren soil
+                } else if (thisHillsInfo.LandUseSCS(i) == 3) {
+                    VH2 = 10.0;
+                    LC="Forest";// Forest
+                } else if (thisHillsInfo.LandUseSCS(i) == 4) {
+                    VH2 = 100.0;
+                    LC="Shrubland";// Shrubland
+                } else if (thisHillsInfo.LandUseSCS(i) == 5) {
+                    VH2 = 20.0;
+                    LC="Non_natural_woody_Orchards";// Non-natural woody/Orchards
+                } else if (thisHillsInfo.LandUseSCS(i) == 6) {
+                    VH2 = 100.0;
+                    LC="Grassland";// Grassland
+                } else if (thisHillsInfo.LandUseSCS(i) == 7) {
+                    VH2 = 20.0;
+                    LC="RowCrops";// Row Crops
+                } else if (thisHillsInfo.LandUseSCS(i) == 8) {
+                    VH2 = 100.0;
+                    LC="Pasture_Small_Grains";// Pasture/Small Grains
+                } else if (thisHillsInfo.LandUseSCS(i) == 9) {
+                    VH2 = 50.0;
+                    LC="Wetland";
+
+                }
+
+            newfile.write(VH2 + ",");//28
+            newfile.write(LC + ",");//29
+            
+            double vH3 = (SCSObj.getAverK_NRCS(i))  * Math.pow((SCSObj.getavehillBasedSlope(i)*100), 0.5)  * 0.3048;
+            newfile.write(vH3 + ",");//30
+            double vH4 = (SCSObj.getAverK_NRCS(i)) * Math.pow((SCSObj.getavehillBasedSlope(i)/100), 0.5)  * 0.3048*3600;
+            newfile.write(vH4 + ",");//31
+
+            double tt4 = dist / vH4;
+            newfile.write(tt4 + ",");//32
 
             double format;
             format = SCSObj.getHillReliefMin(i) + ((SCSObj.getHillReliefMax(i) - SCSObj.getHillReliefMin(i)) / 2);
@@ -176,7 +233,7 @@ public class SCS {
             if (format == SCSObj.getHillReliefAve(i)) {
                 format_flag = 0;
             }
-            newfile.write(format_flag + ","); //27
+            newfile.write(format_flag + ","); //33
             //newfile.write(SCSObj.getTerm(i,0)+",");//25
             //newfile.write(SCSObj.getTerm(i,1)+",");//26
             //newfile.write(SCSObj.getTerm(i,2)+",");//26
@@ -347,17 +404,18 @@ public class SCS {
 
         ///// DEM DATA /////
         String Dir = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/Summary/";
+
         //new java.io.File(Dir).mkdirs();
 
         //int[] Res = {90, 60, 30, 20, 10, 5};
 
 
-        int[] Res = {-9};
+        int[] Res = {60};
 
         //int[] XX = {447, 670, 1341, 2013, 4025, 8052,-9};
         //int[] YY = {27, 41, 82, 122, 244, 497,-9};
-        int[] XX = {-9};
-        int[] YY = {-9};
+        int[] XX = {50};
+        int[] YY = {50};
         int j = 0;
         for (int ir : Res) {
 
@@ -381,10 +439,13 @@ public class SCS {
             int y = YY[j]; //Clear Creek - coralville
      int BasinFlag=0;
      DEMFile=new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-//       OutputDir= "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/TurkeyRiver/" + BasinFlag + "/";
-//       new java.io.File(OutputDir).mkdirs();
-//       x = 3053;
-//       y = 2123;
+       OutputDir= "/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/Basin_Info/TestBasin/";
+       new java.io.File(OutputDir).mkdirs();
+       x = 2858;
+      y = 742;
+      //x=2885;
+      //y=690;
+
 //
 
             hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(DEMFile);
