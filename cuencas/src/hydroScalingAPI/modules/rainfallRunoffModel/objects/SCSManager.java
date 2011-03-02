@@ -79,7 +79,7 @@ public class SCSManager {
     private double recordResolutionInMinutes;
     private String thisLandUseName;
     private String thisSoilData;
-
+    private float hillshape;
     /**
      * Creates a new instance of SCSManager
      *
@@ -93,7 +93,7 @@ public class SCSManager {
      * @param matDir The directions matrix of the DEM that contains the basin
      * @param magnitudes The magnitudes matrix of the DEM that contains the basin
      */
-    public SCSManager(java.io.File DemData, java.io.File LandUse, java.io.File SoilData, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes) {
+    public SCSManager(java.io.File DemData, java.io.File LandUse, java.io.File SoilData, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes,float HS) {
 
         System.out.println("START THE SCS MANAGER \n");
         java.io.File LCFile = LandUse;
@@ -118,6 +118,7 @@ public class SCSManager {
         }
 
         try {
+            hillshape=HS;
             // Create the metaraster for land use
             //       System.out.println("CREATE THE META RASTER _ LU \n");
             metaDemData = new hydroScalingAPI.io.MetaRaster(DemData);
@@ -572,11 +573,35 @@ public class SCSManager {
 
             terms = new double[linksStructure.contactsArray.length][4];
             AreaHill = linksStructure.getVarValues(0);
+
             for (int j = 0; j < linksStructure.contactsArray.length; j++) {
                 double accum = 0;
                 double Aaccum = 0;
                 double Relief = 0;
 
+                   //1 model concave 1 (0+0.6h-1.6h^2+2.0*h^3)
+                   //2 model concave 2 (0+0.5h-0.1h^2+0.6*h^3)
+                   //3 model linear (h)
+                  //4 model convex 1 (0+2.3h-2.1h^2+0.8*h^3)
+                  //5 model convex 2 (0+3.5h-4.4h^2+1.9*h^3)
+
+                if(hillshape==1.f){
+                terms[j][0] =0.f;terms[j][1] =0.6f;terms[j][2] =-1.6f;terms[j][3] =2.f;
+                }
+                else if(hillshape == 2.f){
+                terms[j][0] =0.f;terms[j][1] =0.5f;terms[j][2] =-0.1f;terms[j][3] =0.6f;
+                }
+                else if(hillshape == 3.f)
+                {terms[j][0] =0.f;terms[j][1] =1.f;terms[j][2] =0.f;terms[j][3] =0.f;
+                }
+                else if(hillshape == 4.f)
+                {terms[j][0] =0.f;terms[j][1] =2.3f;terms[j][2] =-2.1f;terms[j][3] =0.8f;
+                }
+                else if(hillshape == 5.f)
+                {terms[j][0] =0.f;terms[j][1] =3.5f;terms[j][2] =-4.4f;terms[j][3] =1.9f;
+                }
+
+             else {
                 java.util.Vector<hydroScalingAPI.util.polysolve.Pair> userDataVector;
                 userDataVector = new java.util.Vector<hydroScalingAPI.util.polysolve.Pair>();
                 userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(0, 0));
@@ -597,7 +622,7 @@ public class SCSManager {
                     //Relief = (ih + 1) * (HillslopeRelief[j] / 5);
                     Relief = ((double)ih + 1.0) / 5.0;
                         userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(Relief, accum));
-                    System.out.println("link" + j + "  n pixels"+currentHillNumPixels[j]+"  ih" + ih + "   accum"+ accum+ "  Relief " + Relief + "HillslopeReliefArea[j][ih]" +HillslopeReliefArea[j][ih]);
+              //      System.out.println("link" + j + "  n pixels"+currentHillNumPixels[j]+"  ih" + ih + "   accum"+ accum+ "  Relief " + Relief + "HillslopeReliefArea[j][ih]" +HillslopeReliefArea[j][ih]);
                    //userDataVector.add(new hydroScalingAPI.polysolve.Pair((ih+1)*0.2,accum));
                 }}
                 hydroScalingAPI.util.polysolve.MatrixFunctions mfunct;
@@ -605,6 +630,8 @@ public class SCSManager {
                 hydroScalingAPI.util.polysolve.Pair[] userData;
                 userData = userDataVector.toArray(new hydroScalingAPI.util.polysolve.Pair[]{});
                 terms[j] = mfunct.polyregress(userData, 3);
+                }
+
 
                 //System.out.println("A " + terms[j][0] + " B " + terms[j][1] + " C " + terms[j][2] + " D " + terms[j][3]);
             }
