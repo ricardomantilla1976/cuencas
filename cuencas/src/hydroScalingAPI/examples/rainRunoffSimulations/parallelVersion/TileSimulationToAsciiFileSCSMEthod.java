@@ -244,6 +244,11 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
             HillVelType = (int) ((Float) routingParams.get("HillVelocityT")).floatValue();
         }
 
+         int HillShapeFlag = 0;
+        if (routingParams.get("hillshapeparamflag") != null) {
+            HillShapeFlag = (int) ((Float) routingParams.get("hillshapeparamflag")).floatValue();
+        }
+
         float vconst = ((Float) routingParams.get("Vconst")).floatValue();
         float vsub = ((Float) routingParams.get("vssub")).floatValue();
         float vrun = ((Float) routingParams.get("vrunoff")).floatValue();
@@ -415,7 +420,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         interTime = new java.util.Date();
         System.out.println("Beg SCSObj," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
 
-        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes,HillShapeFlag);
 
         interTime = new java.util.Date();
         System.out.println("Set MAnager," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");

@@ -103,7 +103,7 @@ public class Inundation_map extends java.lang.Object implements Runnable{
         //thisHillsInfo.setLandUseManager(LandUse);
         hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
         java.io.File DEMFile=metaDatos.getLocationMeta();
-        SCSObj=new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile,LandUseFile,SoilFile,myCuenca,linksStructure,metaDatos,matDir,magnitudes);
+        SCSObj=new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile,LandUseFile,SoilFile,myCuenca,linksStructure,metaDatos,matDir,magnitudes,0);
 
         thisHillsInfo.setSCSManager(SCSObj);
         java.text.DecimalFormat fourPlaces=new java.text.DecimalFormat("0.0000");

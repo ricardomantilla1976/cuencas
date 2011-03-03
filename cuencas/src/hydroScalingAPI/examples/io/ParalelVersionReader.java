@@ -1957,11 +1957,9 @@ public class ParalelVersionReader extends Object {
         java.util.Hashtable routingParams = new java.util.Hashtable();
 
 
-        String[] AllSimName = {"90DEMUSGS"};
+        String[] AllSimName = {"90DEMLIDAR","30DEMLIDAR","10DEMLIDAR"};
 
-       String[] AllRain = {"3CCreekJunAdvdisc4","3CCreekJunNoAdvdisc4",
-       "3CCreekMayAdvdisc4","3CCreekMayNoAdvdisc4",
-       "3CCreekMarAdvdisc4","3CCreekMarNoAdvdisc4"};
+       String[] AllRain = {"3ClearCreekTTime"};
         
  //       "3ClearCreek2009MayAdvdisc4"};
 //,"3ClearCreek2009MayNoAdvdisc4"
@@ -2041,7 +2039,7 @@ public class ParalelVersionReader extends Object {
 
                 //File outfolder = new File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/" + "results/" + BasinName + "/" + SimName + "/");
 
-                File outfolder = new File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/" + "results2/" + BasinName + "/" + SimName + "/");
+                File outfolder = new File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/" + "resultsTT/" + BasinName + "/" + SimName + "/");
 //File outfolder = new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/results/");
                 outfolder.mkdirs();
 
@@ -2050,7 +2048,7 @@ public class ParalelVersionReader extends Object {
                 //addFilesRecursively(new File("/Users/rmantill/luciana/Parallel/ALL_MODELS4_3/" + BasinName + "/" + SimName + "/"), all);
 
                //addFilesRecursively(new File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/"+ BasinName + "/" + SimName + "/"), all);
-               addFilesRecursively(new File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/"+ BasinName + "/" + SimName + "/0.0/RoutT_5/HillT_5/HillVelT_4/BFExp1.0/BFCoef0.0/VS5.0E-4/"), all);
+               addFilesRecursively(new File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/"+ BasinName + "/" + SimName + "/"), all);
                //addFilesRecursively(new File("//Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/3ClearCreek2009MarchAdvdisc4/"), all);
                 
                 String[] ListDir = new String[all.size()];

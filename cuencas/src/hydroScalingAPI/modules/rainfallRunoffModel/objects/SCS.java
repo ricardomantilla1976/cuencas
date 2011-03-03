@@ -48,7 +48,7 @@ public class SCS {
 
         hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
 
-        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DemFile, LandUseFile, SoilDataFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DemFile, LandUseFile, SoilDataFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes,0);
 
         thisHillsInfo.setSCSManager(SCSObj);
 
@@ -88,7 +88,7 @@ public class SCS {
         newfile.write("order,");//2
         newfile.write("length[m],");//3
         newfile.write("TotalLength,");//4
-        newfile.write("mainchannellength[m]");
+        newfile.write("mainchannellength[m],");
         newfile.write("HillArea[km2],");//5 // hillslope area (km2 - I think)
         newfile.write("UpsArea[km2],");       //6
         newfile.write("AvehillBasedSlope,");//7
@@ -274,68 +274,168 @@ public class SCS {
         Area_length = new double[linksStructure.completeStreamLinksArray.length];
         System.out.println("Open the file");
 
+           newfile.write("matriz_pin,");//1
+        newfile.write("order,");//2
+        newfile.write("length[m],");//3
+        newfile.write("TotalLength,");//4
+        newfile.write("mainchannellength[m],");
+        newfile.write("HillArea[km2],");//5 // hillslope area (km2 - I think)
+        newfile.write("UpsArea[km2],");       //6
+        newfile.write("AvehillBasedSlope,");//7
+        newfile.write("Slope,");//8
+        newfile.write("HillRelief,");//9
+        newfile.write("Hchannel,");//10
+        newfile.write("HillRelief,");//11
+        newfile.write("HillReliefMin,");//12
+        newfile.write("HillReliefMax,");//13
+        newfile.write("FormParam,");//14
+        newfile.write("AverManning,");//15
+        newfile.write("minHillBasedManning,");//16
+        newfile.write("maxHillBasedManning,");//17
+        newfile.write("getAverK_NRCS,");//18
+        newfile.write("LandUseSCS,");//19
+        newfile.write("Soil_CN2(i),");//20
+        newfile.write("SCS_S2(i),");//21
+        newfile.write("Soil_CN1(i),");//22
+        newfile.write("SCS_S1(i),");//23
+        newfile.write("dist[meters],");//24
+        newfile.write("vh1_1,");//25
+        newfile.write("vh1_10,");//26
+        newfile.write("vh1_25,");//27
+        newfile.write("vh2,");//28
+        newfile.write("LC,");//29
+        newfile.write("vh3,");//30
+        newfile.write("vh4,");//31
 
-        for (int i = 0; i < nLi; i++) {
+        newfile.write("vh4time,");//32
+        newfile.write("format_flag,");//33
+        newfile.write("\n");
+        //
+        for (int ii = 0; ii < nLi; ii++) {
             //if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1){
-            int matrix_pin = linksStructure.completeStreamLinksArray[i] + 1;
-            int ii = linksStructure.completeStreamLinksArray[i];
+            int matrix_pin = linksStructure.completeStreamLinksArray[ii] + 1;
+            int i = linksStructure.completeStreamLinksArray[ii];
+            /*int yy=(int)Math.floor(linksStructure.contactsArray[i]/metaDatos.getNumCols());
+            double temp=(double)metaDatos.getNumCols()*((linksStructure.contactsArray[i]/(double)metaDatos.getNumCols())-(double)yy);
+            int xx=(int)(temp);
+            newfile.write(xx+",");
+            newfile.write(yy+",");*/
             newfile.write(matrix_pin + ","); //1
-            newfile.write(thisNetworkGeom.linkOrder(ii) + ","); //2
-            newfile.write(thisHillsInfo.Area(ii) + ",");//8
-            newfile.write(thisNetworkGeom.upStreamArea(ii) + ",");       //7
-            newfile.write(SCSObj.getavehillBasedSlope(ii) + ",");//3
-            newfile.write(thisNetworkGeom.Length(ii) + ",");
-            newfile.write(SCSObj.getHillRelief(ii) + ",");
-            newfile.write(SCSObj.getHillReliefMin(ii) + ",");
-            newfile.write(SCSObj.getHillReliefMax(ii) + ",");
-            double Hchannel = thisNetworkGeom.Slope(ii) * thisNetworkGeom.Length(ii);
-            double HillRelief = SCSObj.getHillRelief(ii) - Hchannel;
-            double FormParam = (HillRelief) * 2 * thisNetworkGeom.Length(ii) / (thisHillsInfo.Area(ii) * 1000000);
-            newfile.write(HillRelief + ",");
-            newfile.write(Hchannel + ",");
-            newfile.write(FormParam + ",");
-            newfile.write(SCSObj.getAverManning(ii) + ",");
-            newfile.write(SCSObj.getminHillBasedManning(ii) + ",");
-            newfile.write(SCSObj.getmaxHillBasedManning(ii) + ",");
-            newfile.write(SCSObj.getavehillBasedSlope(ii) + ",");
-            newfile.write(thisNetworkGeom.Slope(ii) + ",");
-            newfile.write(thisNetworkGeom.upStreamArea(ii) + ",");
+            newfile.write(thisNetworkGeom.linkOrder(i) + ","); //2
+            newfile.write(thisNetworkGeom.Length(i) + ",");//3
+            newfile.write(thisNetworkGeom.upStreamTotalLength(i) + ",");//4
+            newfile.write(thisNetworkGeom.mainChannelLength(i)+","); //5
+            newfile.write(thisHillsInfo.Area(i) + ",");//5 // hillslope area (km2 - I think)
+            newfile.write(thisNetworkGeom.upStreamArea(i) + ",");       //6
+            newfile.write(SCSObj.getavehillBasedSlope(i) + ",");//7
+            newfile.write(thisNetworkGeom.Slope(i) + ",");//8
 
 
-            newfile.write(thisNetworkGeom.upStreamTotalLength(ii) + ",");
-            newfile.write(thisHillsInfo.LandUseSCS(ii) + ",");
-            newfile.write(thisHillsInfo.Soil_SCS(ii) + ",");
-            newfile.write(thisHillsInfo.SCS_S1(ii) + ",");
 
-            double dist = thisHillsInfo.Area(ii) * 1000000 * 0.5 / (thisNetworkGeom.Length(ii)); //(m)
-            double tim_run = dist / 100; //hour
-            newfile.write(tim_run + ",");
+            double Hchannel = thisNetworkGeom.Slope(i) * thisNetworkGeom.Length(i);
+            double HillRelief = SCSObj.getHillRelief(i) - Hchannel;
+            double FormParam = (HillRelief) * 2 * thisNetworkGeom.Length(i) / (thisHillsInfo.Area(i) * 1000000);
+            newfile.write(HillRelief + ",");//9
+            newfile.write(Hchannel + ",");//10
+            newfile.write(SCSObj.getHillRelief(i) + ",");//11
+            newfile.write(SCSObj.getHillReliefMin(i) + ",");//12
+            newfile.write(SCSObj.getHillReliefMax(i) + ",");//13
+            newfile.write(FormParam + ","); //14
+            newfile.write(SCSObj.getAverManning(i) + ","); //15
+            newfile.write(SCSObj.getminHillBasedManning(i) + ","); //16
+            newfile.write(SCSObj.getmaxHillBasedManning(i) + ","); //17
+            newfile.write(SCSObj.getAverK_NRCS(i) + ","); //18
+            newfile.write(thisHillsInfo.LandUseSCS(i) + ","); //19
+            newfile.write(thisHillsInfo.SCS_CN2(i) + ","); //20
+            newfile.write(thisHillsInfo.SCS_S2(i) + ","); //21
+            newfile.write(thisHillsInfo.SCS_CN1(i) + ","); //22
+            newfile.write(thisHillsInfo.SCS_S1(i) + ","); //23
+            double dist = thisHillsInfo.Area(i) * 1000000 * 0.5 / (thisNetworkGeom.Length(i)); //(m)
+            //double tim_run=dist/100; //hour
+            newfile.write(dist + ",");  //24
+            System.out.println("hydCond:    " + thisHillsInfo.MinHydCond(i) +"  minhydCond:    " +thisHillsInfo.MinHydCond(i));
+
+            double vH1_1 = (1 / SCSObj.getAverManning(i)) * Math.pow(SCSObj.getavehillBasedSlope(i), 0.5) * Math.pow(1 / 1000, (2 / 3)) * 3600;
+            newfile.write(vH1_1 + ",");//25
+            double vH1_10 = (1 / SCSObj.getAverManning(i)) * Math.pow(SCSObj.getavehillBasedSlope(i), 0.5) * Math.pow(10 / 1000, (2 / 3)) * 3600;
+            newfile.write(vH1_10 + ",");//26
+         double vH1_25 = (1 / SCSObj.getAverManning(i)) * Math.pow(SCSObj.getavehillBasedSlope(i), 0.5) * Math.pow(10 / 1000, (2 / 3)) * 3600;
+            newfile.write(vH1_25 + ",");//27
+
+           double VH2=-9;
+           String LC=null;
+                if (thisHillsInfo.LandUseSCS(i) == 0) {
+                    VH2 = 500.0;
+                    LC="water";
+                } else if (thisHillsInfo.LandUseSCS(i)== 1) {
+                    VH2 = 250.0;
+                    LC="urbanArea";
+                } else if (thisHillsInfo.LandUseSCS(i) == 2) {
+                    VH2 = 100.0;
+                    LC="baren soil";// baren soil
+                } else if (thisHillsInfo.LandUseSCS(i) == 3) {
+                    VH2 = 10.0;
+                    LC="Forest";// Forest
+                } else if (thisHillsInfo.LandUseSCS(i) == 4) {
+                    VH2 = 100.0;
+                    LC="Shrubland";// Shrubland
+                } else if (thisHillsInfo.LandUseSCS(i) == 5) {
+                    VH2 = 20.0;
+                    LC="Non_natural_woody_Orchards";// Non-natural woody/Orchards
+                } else if (thisHillsInfo.LandUseSCS(i) == 6) {
+                    VH2 = 100.0;
+                    LC="Grassland";// Grassland
+                } else if (thisHillsInfo.LandUseSCS(i) == 7) {
+                    VH2 = 20.0;
+                    LC="RowCrops";// Row Crops
+                } else if (thisHillsInfo.LandUseSCS(i) == 8) {
+                    VH2 = 100.0;
+                    LC="Pasture_Small_Grains";// Pasture/Small Grains
+                } else if (thisHillsInfo.LandUseSCS(i) == 9) {
+                    VH2 = 50.0;
+                    LC="Wetland";
+
+                }
+
+            newfile.write(VH2 + ",");//28
+            newfile.write(LC + ",");//29
+
+            double vH3 = (SCSObj.getAverK_NRCS(i))  * Math.pow((SCSObj.getavehillBasedSlope(i)*100), 0.5)  * 0.3048;
+            newfile.write(vH3 + ",");//30
+            double vH4 = (SCSObj.getAverK_NRCS(i)) * Math.pow((SCSObj.getavehillBasedSlope(i)/100), 0.5)  * 0.3048*3600;
+            newfile.write(vH4 + ",");//31
+
+            double tt4 = dist / vH4;
+            newfile.write(tt4 + ",");//32
+
             double format;
-            format = SCSObj.getHillReliefMin(ii) + ((SCSObj.getHillReliefMax(ii) - SCSObj.getHillReliefMin(ii)) / 2);
+            format = SCSObj.getHillReliefMin(i) + ((SCSObj.getHillReliefMax(i) - SCSObj.getHillReliefMin(i)) / 2);
             double format_flag = -9.9;
-            if (format < SCSObj.getHillReliefAve(ii)) {
+            if (format < SCSObj.getHillReliefAve(i)) {
                 format_flag = 1;
             }
-            if (format > SCSObj.getHillReliefAve(ii)) {
+            if (format > SCSObj.getHillReliefAve(i)) {
                 format_flag = -1;
             }
-            if (format == SCSObj.getHillReliefAve(ii)) {
+            if (format == SCSObj.getHillReliefAve(i)) {
                 format_flag = 0;
             }
-            newfile.write(format_flag + ",");
+            newfile.write(format_flag + ","); //33
+            //newfile.write(SCSObj.getTerm(i,0)+",");//25
+            //newfile.write(SCSObj.getTerm(i,1)+",");//26
+            //newfile.write(SCSObj.getTerm(i,2)+",");//26
+            //newfile.write(SCSObj.getTerm(i,3)+",");//26
 
-            //newfile.write(thisHillsInfo.SCS_IA2(i)+" ");
-            //newfile.write(thisHillsInfo.SCS_S2(i)+" ");
-            //newfile.write(thisHillsInfo.SCS_IA3(i)+" ");
-            //newfile.write(thisHillsInfo.SCS_S3(i)+" ");
-            //for (int j=0;j<5;j++){
-            //newfile.write(SCSObj.getHillReliefClass(i,j) +" ");
-            //newfile.write(SCSObj.getHillReliefPorc(i,j) +" ");
-            //}
+            //newfile.write(SCSObj.getHillReliefPorc(i,0)+",");//28
+            //newfile.write(SCSObj.getHillReliefPorc(i,1)+",");//29
+            //newfile.write(SCSObj.getHillReliefPorc(i,2)+",");//30
+            //newfile.write(SCSObj.getHillReliefPorc(i,3)+",");//31
+            //newfile.write(SCSObj.getHillReliefPorc(i,4)+",");//32
+
+
 
             newfile.write("\n");
-//                Area_length[ii]=thisHillsInfo.Area(ii)*1000000/thisNetworkGeom.Length(ii);
-//                max_rel=Math.max(max_rel,Area_length[ii]);
+
 
         }
 

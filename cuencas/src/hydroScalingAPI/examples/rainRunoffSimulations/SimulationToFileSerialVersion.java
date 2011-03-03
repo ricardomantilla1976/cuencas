@@ -215,6 +215,12 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
             HillVelType = (int) ((Float) routingParams.get("HillVelocityT")).floatValue();
         }
 
+          int HillShapeFlag = 0;
+        if (routingParams.get("hillshapeparamflag") != null) {
+            HillShapeFlag = (int) ((Float) routingParams.get("hillshapeparamflag")).floatValue();
+        }
+
+
         float vconst = ((Float) routingParams.get("Vconst")).floatValue();
         float vsub = ((Float) routingParams.get("vssub")).floatValue();
         float vrun = ((Float) routingParams.get("vrunoff")).floatValue();
@@ -235,7 +241,8 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
         thisHillsInfo.setLandUseManager(LandUse);
         hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
         java.io.File DEMFile = metaDatos.getLocationMeta();
-        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+
+        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes,HillShapeFlag);
         thisHillsInfo.setSCSManager(SCSObj);
         java.text.DecimalFormat fourPlaces = new java.text.DecimalFormat("0.0000");
 
