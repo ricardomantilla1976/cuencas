@@ -1528,6 +1528,10 @@ public static void main5(String args[]) {
 
             LinksAnalysis mylinksAnalysis=new LinksAnalysis(metaModif, matDirs);
 
+//            float[][] longestLenghts=mylinksAnalysis.getVarValues(11);
+//            System.out.println(new hydroScalingAPI.util.statistics.Stats(longestLenghts).maxValue);
+//            System.exit(0);
+
             //CREATE FILE OF CONVOLUTION FUNCTION
 
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
