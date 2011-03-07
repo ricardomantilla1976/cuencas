@@ -804,7 +804,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
 
         try{
             rainIntensityValue=new Float(rainIntensity.getText()).floatValue();
-            infiltrationIntensityValue=new Float(rainIntensity.getText()).floatValue();
+            infiltrationIntensityValue=new Float(infiltrationIntensity.getText()).floatValue();
             rainDurationValue=new Float(rainDuration.getText()).floatValue();
             flowVel=new Float(flowVelocity.getText()).floatValue();
             exp_lambda1=new Float(lambda1.getText()).floatValue();
@@ -871,7 +871,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
 
         try{
             rainIntensityValue=new Float(rainIntensity.getText()).floatValue();
-            infiltrationIntensityValue=new Float(rainIntensity.getText()).floatValue();
+            infiltrationIntensityValue=new Float(infiltrationIntensity.getText()).floatValue();
             rainDurationValue=new Float(rainDuration.getText()).floatValue();
             flowVel=new Float(flowVelocity.getText()).floatValue();
             exp_lambda1=new Float(lambda1.getText()).floatValue();
