@@ -45,7 +45,7 @@ public class IowaBasinsInfoScript2{
 
     String KMLsPath, OutputPath;
 
-    int forecastHorizon=5;
+    int forecastHorizon=500;
     int dicretizationOfHour=3;
 
     int nColsMP,nRowsMP,maxIndex;
@@ -551,6 +551,8 @@ public class IowaBasinsInfoScript2{
                 float[] currentValues=new float[nextLinkArray.length];
                 float[] previousValues=new float[nextLinkArray.length];
 
+                if(j<dicretizationOfHour) currentValues=accumulators;
+
                 System.out.println(">> Creating Index Convolution File # "+j);
 
                 dataPath=new java.io.FileInputStream(dirOut.getPath()+"/IndexConvolution/convol-"+(j-1));
@@ -592,7 +594,7 @@ public class IowaBasinsInfoScript2{
 
         IowaBasinsInfoScript2 bigScript=new IowaBasinsInfoScript2();
         bigScript.Reset();
-        bigScript.Update();
+        //bigScript.Update();
         //bigScript.CreateIndex();
         System.exit(0);
 

@@ -1528,6 +1528,13 @@ public static void main5(String args[]) {
 
             LinksAnalysis mylinksAnalysis=new LinksAnalysis(metaModif, matDirs);
 
+//            float[][] upAreas=mylinksAnalysis.getVarValues(0);
+//            System.out.println(new hydroScalingAPI.util.statistics.Stats(upAreas).meanValue);
+//            //Returns
+//            0.39465603
+//            System.exit(0);
+
+
 //            float[][] longestLenghts=mylinksAnalysis.getVarValues(11);
 //            System.out.println(new hydroScalingAPI.util.statistics.Stats(longestLenghts).maxValue);
 //            //Returns
