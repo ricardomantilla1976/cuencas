@@ -1530,30 +1530,48 @@ public static void main5(String args[]) {
 
 //            float[][] longestLenghts=mylinksAnalysis.getVarValues(11);
 //            System.out.println(new hydroScalingAPI.util.statistics.Stats(longestLenghts).maxValue);
+//            //Returns
+//            906.93207
 //            System.exit(0);
 
             //CREATE FILE OF CONVOLUTION FUNCTION
 
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
-            
+
+            hydroScalingAPI.util.statistics.Stats infoVals=new hydroScalingAPI.util.statistics.Stats(lenghts);
+//            System.out.println(infoVals.minValue);
+//            System.out.println(infoVals.maxValue);
+//            System.out.println(infoVals.meanValue);
+//            System.out.println(infoVals.standardDeviation);
+//            //Returns
+//            0.09088898
+//            7.19419
+//            0.73578393
+//            0.473324
+//            System.exit(0);
+
             String outputMetaFile="/Users/ricardo/rawData/IowaConnectivity/NextHillslopeIowa.csv";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
 
-            float vc=0.5f;
-            float objLenght=vc*3.6f; float tllb=objLenght*.90f;
-            System.out.println(objLenght+" "+tllb);
+//            float vc=0.5f;
+//            float objLenght=vc*3.6f; float tllb=objLenght*.90f;
+//            System.out.println(objLenght+" "+tllb);
+//            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) {
+//                float traveledLenght=lenghts[0][i];
+//                int arrivalHillslope=mylinksAnalysis.nextLinkArray[i];
+//                metaBuffer.write(i+"");
+//                while(traveledLenght<tllb&&arrivalHillslope!=-1){
+//                    metaBuffer.write(","+arrivalHillslope);
+//                    traveledLenght+=lenghts[0][arrivalHillslope];
+//                    arrivalHillslope=mylinksAnalysis.nextLinkArray[arrivalHillslope];
+//                }
+//                metaBuffer.write("\n");
+//            }
+
             for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) {
-                float traveledLenght=lenghts[0][i];
-                int arrivalHillslope=mylinksAnalysis.nextLinkArray[i];
-                metaBuffer.write(i+"");
-                while(traveledLenght<tllb&&arrivalHillslope!=-1){
-                    metaBuffer.write(","+arrivalHillslope);
-                    traveledLenght+=lenghts[0][arrivalHillslope];
-                    arrivalHillslope=mylinksAnalysis.nextLinkArray[arrivalHillslope];
-                }
-                metaBuffer.write("\n");
+                    metaBuffer.write(mylinksAnalysis.nextLinkArray[i]+"\n");
             }
 
             metaBuffer.close();
