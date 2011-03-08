@@ -142,7 +142,7 @@ public class MetaNetToKML_Eric {
         metaPolyToWrite.setCoordinates(myCuenca.getLonLatBasinDivide());
         metaPolyToWrite.setInformation("Basin Divide as captured by Cuencas");
 
-        metaPolyToWrite.writeKmlPolygon(fileSalida,uniqueIdentifier, myDescription);
+        metaPolyToWrite.writeKmlPolygon(fileSalida,uniqueIdentifier);
 
         byte[][] basMask=myCuenca.getBasinMask();
 
@@ -170,8 +170,9 @@ public class MetaNetToKML_Eric {
         for(int i=Math.max(linksStructure.basinOrder-3, 1);i<=linksStructure.basinOrder;i++){
             newfile.write("  <Style id=\"linestyleO"+i+"\">"+ret);
             newfile.write("    <LineStyle>"+ret);
-            newfile.write("      <color>7f"+Integer.toHexString(i*20)+"0000</color>"+ret);
-            newfile.write("      <width>"+i+"</width>"+ret);
+            //newfile.write("      <color>7f"+Integer.toHexString(i*20)+"0000</color>"+ret);
+            newfile.write("      <color>FFFF0000</color>"+ret);
+            newfile.write("      <width>"+Math.max(i-5,1)+"</width>"+ret);
             newfile.write("    </LineStyle>"+ret);
             newfile.write("  </Style>"+ret);
         }

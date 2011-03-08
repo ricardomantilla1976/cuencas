@@ -310,7 +310,45 @@ public class MetaPolygon {
      * @throws java.io.IOException Captures errors while writing the file
      */
     public void writeKmlPolygon(java.io.File newKmlLocation,String label) throws java.io.IOException{
-        writeKmlPolygon(newKmlLocation,label,"N/A");
+
+        String testName=newKmlLocation.getName();
+        if(!testName.contains(".kml")) newKmlLocation=new java.io.File(newKmlLocation.getPath()+".kml");
+
+        float[][] xyContour=(float[][])properties.get("[coordinates lon/lat (deg)]");
+
+        java.io.BufferedWriter writerKml = new java.io.BufferedWriter(new java.io.FileWriter(newKmlLocation));
+
+        String ret="\n";
+
+
+
+        writerKml.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + ret);
+        writerKml.write("<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">");
+        writerKml.write("<Document>" + ret);
+        writerKml.write("<Folder>" + ret);
+        writerKml.write("   <Placemark>" + ret);
+        writerKml.write("      <styleUrl>http://ut.iihr.uiowa.edu/ifis/kml/ifc_style3.kml#polygon</styleUrl>" + ret);
+        writerKml.write("      <Polygon>" + ret);
+        writerKml.write("          <name>" + label + "</name>" + ret);
+        writerKml.write("          <outerBoundaryIs>" + ret);
+        writerKml.write("          <LinearRing>" + ret);
+        writerKml.write("             <coordinates>" + ret);
+        writerKml.write("             ");
+        for (int i = 0; i < xyContour[0].length; i++) {
+            writerKml.write(Math.round(xyContour[0][i]*1e5)/1e5 + "," + Math.round(xyContour[1][i]*1e5)/1e5 + " ");
+        }
+        writerKml.write(ret);
+        writerKml.write("              </coordinates>" + ret);
+        writerKml.write("           </LinearRing>" + ret);
+        writerKml.write("        </outerBoundaryIs>" + ret);
+        writerKml.write("     </Polygon>" + ret);
+        writerKml.write("   </Placemark>" + ret);
+        writerKml.write("</Folder>" + ret);
+        writerKml.write("</Document>" + ret);
+        writerKml.write("</kml>" + ret);
+
+        writerKml.close();
+
     }
     /**
      * Writes an *.kml file in the specified path

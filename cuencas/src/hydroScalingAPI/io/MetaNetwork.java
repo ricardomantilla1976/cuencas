@@ -515,7 +515,7 @@ public class MetaNetwork {
             newfile.write("            <coordinates>"+ret);
             for (int j=0;j<riverPath[0].length;j++){
                 float[] riverNode=(float[])oneStream.get(j);
-                listOfStreams+=(riverNode[0]+","+riverNode[1]+" ");
+                listOfStreams+=(Math.round(riverNode[0]*1e5)/1e5+","+Math.round(riverNode[1]*1e5)/1e5+" ");
             }
             newfile.write("                "+listOfStreams+ret);
             newfile.write("            </coordinates>"+ret);

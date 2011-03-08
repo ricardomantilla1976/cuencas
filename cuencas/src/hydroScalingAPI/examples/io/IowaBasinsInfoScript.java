@@ -395,7 +395,7 @@ public class IowaBasinsInfoScript{
         File[] files = dir.listFiles(new hydroScalingAPI.util.fileUtilities.DirFilter());
         File[] inCity1,inCity2,inCity3,inCity4;
 
-        String tableRadek="City Name;River Name;Latitude;Longitude;File Polygon;File Network;Westernmost Longitude;Southernmost Longitude;Easternmost Longitude;Northernmost Latitude"+ret;
+        String tableRadek="City Name (River Name);Latitude;Longitude;File Polygon;File Network;Westernmost Longitude;Southernmost Longitude;Easternmost Longitude;Northernmost Latitude;Upstream Area [km^2];Response Time [hr]"+ret;
         
         for (int i = 0; i < files.length; i++) {
         
@@ -420,10 +420,11 @@ public class IowaBasinsInfoScript{
                 double latitude=hydroScalingAPI.tools.DMSToDegrees.getDegrees(is.readLine().split(">")[2].trim());
                 double longitude=hydroScalingAPI.tools.DMSToDegrees.getDegrees(is.readLine().split(">")[2].trim());
 
-                is.readLine();
+                double UpstreamArea=Double.parseDouble(is.readLine().split("b>")[2].trim());
+
                 is.readLine();
 
-                double responseTime=Double.parseDouble(is.readLine().split(">")[2].trim());
+                double responseTime=Double.parseDouble(is.readLine().split("b>")[2].trim());
 
                 is.close();
                 xover.close();
@@ -464,6 +465,15 @@ public class IowaBasinsInfoScript{
                 xover = new InputStreamReader(gzis);
                 is = new BufferedReader(xover);
 
+                //********** LINES ADDED TO WRITE LOOKUP TABLES FOR EACH BASIN
+
+                fileSalida=new java.io.File("/Users/ricardo/temp/masks/"+inCity1[j].getName()+".txt");
+
+                outputDir = new java.io.FileOutputStream(fileSalida);
+                bufferout=new java.io.BufferedOutputStream(outputDir);
+                newfile=new java.io.OutputStreamWriter(bufferout);
+
+
                 String line2;
                 String line3;
                 String linarray2[] = null;
@@ -484,6 +494,8 @@ public class IowaBasinsInfoScript{
 
                     int xxx = (int)((xLon-minLon_Rain)/matRes_Rain);
                     int yyy = (int)((yLat-minLat_Rain)/matRes_Rain);
+
+                    newfile.write(""+xxx+" "+yyy+"\n");
 
                     averageValue += matrix[yyy][xxx];
                     numElements++;
@@ -527,6 +539,10 @@ public class IowaBasinsInfoScript{
                 }
 
                 averageValueInches=Math.round(averageValueInches*100)/100.0;
+
+                newfile.close();
+                bufferout.close();
+                outputDir.close();
                 
                 is.close();
                 xover.close();
@@ -550,7 +566,7 @@ public class IowaBasinsInfoScript{
                 is = new BufferedReader(xover);
 
                 fileSalida=new java.io.File(OutputPath+"/polygons/"+webSafeName+".kmz");
-                String polyWebAddress="http://www.iihr.uiowa.edu/~ricardo/temp/iowa_basins_data/"+new java.io.File(OutputPath).getName()+"/polygons/"+webSafeName+".kmz";
+                String polyWebAddress="http://www.iihr.uiowa.edu/~ricardo/temp/iowa_basins_data1/"+new java.io.File(OutputPath).getName()+"/polygons/"+webSafeName+".kmz";
 
                 outputDir = new java.io.FileOutputStream(fileSalida);
                 java.util.zip.ZipOutputStream outputComprim=new java.util.zip.ZipOutputStream(outputDir);
@@ -611,7 +627,7 @@ public class IowaBasinsInfoScript{
 
 
                 fileSalida=new java.io.File(OutputPath+"/networks/"+webSafeName+".kmz");
-                String netWebAddress="http://www.iihr.uiowa.edu/~ricardo/temp/iowa_basins_data/"+new java.io.File(OutputPath).getName()+"/networks/"+webSafeName+".kmz";
+                String netWebAddress="http://www.iihr.uiowa.edu/~ricardo/temp/iowa_basins_data1/"+new java.io.File(OutputPath).getName()+"/networks/"+webSafeName+".kmz";
 
                 outputDir = new java.io.FileOutputStream(fileSalida);
                 outputComprim=new java.util.zip.ZipOutputStream(outputDir);
@@ -633,7 +649,7 @@ public class IowaBasinsInfoScript{
                 xover.close();
                 fin.close();
 
-                tableRadek+=cityName[0]+";"+riverName[0]+";"+latitude+";"+longitude+";"+polyWebAddress+";"+netWebAddress+";"+minX+";"+minY+";"+maxX+";"+maxY+ret;
+                tableRadek+=cityName[0]+" ("+riverName[0]+");"+latitude+";"+longitude+";"+polyWebAddress+";"+netWebAddress+";"+minX+";"+minY+";"+maxX+";"+maxY+";"+UpstreamArea+";"+responseTime+ret;
 
             }
 
@@ -671,27 +687,28 @@ public class IowaBasinsInfoScript{
                                     System.getProperty("java.class.path"),
                                     "hydroScalingAPI.examples.io.IowaBasinsInfoScript",
                                     "reload-rain"};
-            localProcess0=java.lang.Runtime.getRuntime().exec(command);
+//            localProcess0=java.lang.Runtime.getRuntime().exec(command);
+//
+//            String concat0="";
+//
+//            boolean monitor0=true;
+//
+//            while(monitor0){
+//                String s1=new String(new byte[] {Byte.parseByte(""+localProcess0.getInputStream().read())});
+//                concat0+=s1;
+//                if(s1.equalsIgnoreCase("\n")) {
+//                    System.out.print("Processor 0: "+concat0);
+//                    if(concat0.substring(0, Math.min(54,concat0.length())).equalsIgnoreCase(">> Writing Accumulations Files to Web Format completed")) monitor0=false;
+//                    concat0="";
+//                }
+//            }
 
-            String concat0="";
-
-            boolean monitor0=true;
-
-            while(monitor0){
-                String s1=new String(new byte[] {Byte.parseByte(""+localProcess0.getInputStream().read())});
-                concat0+=s1;
-                if(s1.equalsIgnoreCase("\n")) {
-                    System.out.print("Processor 0: "+concat0);
-                    if(concat0.substring(0, Math.min(54,concat0.length())).equalsIgnoreCase(">> Writing Accumulations Files to Web Format completed")) monitor0=false;
-                    concat0="";
-                }
-            }
-
-            String[][] kmlInAndOut=new String[][] {{"/Users/ricardo/rawData/BasinMasks/usgs_gauges/","/Volumes/ricardo/temp/iowa_basins_data/usgs_gauges/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/large_cities/","/Volumes/ricardo/temp/iowa_basins_data/large_cities/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/medium_cities/","/Volumes/ricardo/temp/iowa_basins_data/medium_cities/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data/small_cities/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/ifc_sensors/","/Volumes/ricardo/temp/iowa_basins_data/ifc_sensors/"}
+            String[][] kmlInAndOut=new String[][] {
+                                                   {"/Users/ricardo/rawData/BasinMasks/usgs_gauges/","/Volumes/ricardo/temp/iowa_basins_data1/usgs_gauges/"},
+                                                   {"/Users/ricardo/rawData/BasinMasks/large_cities/","/Volumes/ricardo/temp/iowa_basins_data1/large_cities/"},
+                                                   {"/Users/ricardo/rawData/BasinMasks/medium_cities/","/Volumes/ricardo/temp/iowa_basins_data1/medium_cities/"},
+                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data1/small_cities/"},
+                                                   {"/Users/ricardo/rawData/BasinMasks/ifc_sensors/","/Volumes/ricardo/temp/iowa_basins_data1/ifc_sensors/"}
                                                   };
 
 
@@ -781,7 +798,7 @@ class WebWriter implements Runnable {
         try {
             System.out.println(">> Rewriting Accumulations Files for Web Display");
 
-            OutputPath = "/Volumes/ricardo/temp/iowa_basins_data/";
+            OutputPath = "/Volumes/ricardo/temp/iowa_basins_data1/";
             new java.io.File(OutputPath + "/accumulations/").mkdirs();
 
             float[][] dataFloat=new float[numRow_Rain][numCol_Rain];

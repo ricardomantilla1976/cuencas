@@ -1547,11 +1547,13 @@ public static void main5(String args[]) {
             for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) {
                 float traveledLenght=lenghts[0][i];
                 int arrivalHillslope=mylinksAnalysis.nextLinkArray[i];
+                metaBuffer.write(i+"");
                 while(traveledLenght<tllb&&arrivalHillslope!=-1){
+                    metaBuffer.write(","+arrivalHillslope);
                     traveledLenght+=lenghts[0][arrivalHillslope];
                     arrivalHillslope=mylinksAnalysis.nextLinkArray[arrivalHillslope];
                 }
-                metaBuffer.write(""+arrivalHillslope+"\n");
+                metaBuffer.write("\n");
             }
 
             metaBuffer.close();
