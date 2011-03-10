@@ -1543,9 +1543,8 @@ public static void main5(String args[]) {
 
             //CREATE FILE OF CONVOLUTION FUNCTION
 
-            float[][] lenghts=mylinksAnalysis.getVarValues(1);
-
-            hydroScalingAPI.util.statistics.Stats infoVals=new hydroScalingAPI.util.statistics.Stats(lenghts);
+//            float[][] lenghts=mylinksAnalysis.getVarValues(1);
+//            hydroScalingAPI.util.statistics.Stats infoVals=new hydroScalingAPI.util.statistics.Stats(lenghts);
 //            System.out.println(infoVals.minValue);
 //            System.out.println(infoVals.maxValue);
 //            System.out.println(infoVals.meanValue);

@@ -45,7 +45,7 @@ public class IowaBasinsInfoScript2{
 
     String KMLsPath, OutputPath;
 
-    int forecastHorizon=500;
+    int forecastHorizon=200;
     int dicretizationOfHour=3;
 
     int nColsMP,nRowsMP,maxIndex;
@@ -117,7 +117,7 @@ public class IowaBasinsInfoScript2{
 
         java.util.Vector<String> availableMapsOfRain=new java.util.Vector<String>();
 
-        file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/quality/60/archive.txt");
+        file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/archive.txt");
         urlConn = file.openConnection();
 
 
@@ -144,14 +144,16 @@ public class IowaBasinsInfoScript2{
 
         matrix_rain=new float[numRow_Rain][numCol_Rain];
 
+        float[] maxWidthFunction=new float[maxIndex];
+
         int kk=0;
 
         for (int ff = numMaps-forecastHorizon; ff < numMaps; ff++) {
 
             String mostRecentFile=availableMapsOfRain.get(ff);
 
-            System.out.println(">> Opening connection: "+"http://s-iihr57.iihr.uiowa.edu/ricardo/quality/60/"+mostRecentFile);
-            file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/quality/60/"+mostRecentFile);
+            System.out.println(">> Opening connection: "+"http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/"+mostRecentFile);
+            file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/"+mostRecentFile);
             urlConn = file.openConnection();
 
 
@@ -302,13 +304,28 @@ public class IowaBasinsInfoScript2{
             bufferout=new BufferedOutputStream(outputDir);
             newOutputStream=new DataOutputStream(bufferout);
 
-            for (int i = 0; i < nextLinkArray.length; i++) newOutputStream.writeFloat(currentValues[i]);
+            for (int i = 0; i < nextLinkArray.length; i++) {
+                newOutputStream.writeFloat(currentValues[i]);
+                maxWidthFunction[i]=Math.max(currentValues[i], maxWidthFunction[i]);
+            }
 
             newOutputStream.close();
             bufferout.close();
             outputDir.close();
 
         }
+
+        outputDir = new FileOutputStream(dirOut.getPath()+"/ConvolutionFiles/floodIndex-0");
+        bufferout=new BufferedOutputStream(outputDir);
+        newOutputStream=new DataOutputStream(bufferout);
+
+        for (int i = 0; i < nextLinkArray.length; i++) {
+            newOutputStream.writeFloat(maxWidthFunction[i]);
+        }
+
+        newOutputStream.close();
+        bufferout.close();
+        outputDir.close();
 
     }
 
@@ -527,8 +544,9 @@ public class IowaBasinsInfoScript2{
         try{
 
             float[] accumulators=new float[maxIndex];
+            java.util.Arrays.fill(accumulators,1.0f);
 
-            java.util.Arrays.fill(accumulators,1);
+            float[] maxWidthFunction=new float[maxIndex];
 
             System.out.println(">> Creating Index Convolution Files");
 
@@ -550,8 +568,6 @@ public class IowaBasinsInfoScript2{
 
                 float[] currentValues=new float[nextLinkArray.length];
                 float[] previousValues=new float[nextLinkArray.length];
-
-                if(j<dicretizationOfHour) currentValues=accumulators;
 
                 System.out.println(">> Creating Index Convolution File # "+j);
 
@@ -575,13 +591,28 @@ public class IowaBasinsInfoScript2{
                 bufferout=new BufferedOutputStream(outputDir);
                 newOutputStream=new DataOutputStream(bufferout);
 
-                for (int i = 0; i < nextLinkArray.length; i++) newOutputStream.writeFloat(currentValues[i]);
+                for (int i = 0; i < nextLinkArray.length; i++) {
+                    newOutputStream.writeFloat(currentValues[i]);
+                    maxWidthFunction[i]=Math.max(currentValues[i], maxWidthFunction[i]);
+                }
 
                 newOutputStream.close();
                 bufferout.close();
                 outputDir.close();
 
             }
+
+            outputDir = new FileOutputStream(dirOut.getPath()+"/IndexConvolution/floodIndex-0");
+            bufferout=new BufferedOutputStream(outputDir);
+            newOutputStream=new DataOutputStream(bufferout);
+
+            for (int i = 0; i < nextLinkArray.length; i++) {
+                newOutputStream.writeFloat(maxWidthFunction[i]);
+            }
+
+            newOutputStream.close();
+            bufferout.close();
+            outputDir.close();
 
         }
         catch(MalformedURLException e){
@@ -593,9 +624,9 @@ public class IowaBasinsInfoScript2{
     public static void main(String[] args) throws IOException {
 
         IowaBasinsInfoScript2 bigScript=new IowaBasinsInfoScript2();
-        bigScript.Reset();
+        //bigScript.Reset();
         //bigScript.Update();
-        //bigScript.CreateIndex();
+        bigScript.CreateIndex();
         System.exit(0);
 
     }
