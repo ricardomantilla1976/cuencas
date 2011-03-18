@@ -785,7 +785,6 @@ public class IowaBasinsInfoScript2{
 
             int forecast=0;
             for(int kk=0;kk<rowCount;kk++) {
-                System.out.println(dbID_linkID[1][kk]+" "+peakRatios[dbID_linkID[1][kk]]);
                 forecast=peakRatios[dbID_linkID[1][kk]]<1?0:peakRatios[dbID_linkID[1][kk]]>2?2:1;
                 st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now() WHERE id="+dbID_linkID[0][kk]);
             }
