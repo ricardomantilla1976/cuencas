@@ -47,7 +47,7 @@ public class IowaBasinsInfoScript2{
 
     String KMLsPath, OutputPath;
 
-    int forecastHorizon=10;
+    int forecastHorizon=500;
     int dicretizationOfHour=3;
 
     int nColsMP,nRowsMP,maxIndex;
@@ -134,7 +134,7 @@ public class IowaBasinsInfoScript2{
         while(line != null){
             availableMapsOfRain.add(line);
             line = is.readLine();
-            if(line.equalsIgnoreCase("H99999999_R6007_G_09AUG2010_130000.out.gz")) break;
+            //if(line.equalsIgnoreCase("H99999999_R6007_G_09AUG2010_130000.out.gz")) break;
         }
 
         is.close();
@@ -710,7 +710,7 @@ public class IowaBasinsInfoScript2{
         float[] peakValues=new float[nextLinkArray.length];
         float[] peakRatios=new float[nextLinkArray.length];
 
-        for(int j=(forecastHorizon-0)*dicretizationOfHour;j<forecastHorizon*dicretizationOfHour*2;j++){
+        for(int j=(forecastHorizon-12)*dicretizationOfHour;j<(forecastHorizon+24*5)*dicretizationOfHour;j++){
 
             System.out.println(">> Checking Convolution File # "+j);
 
@@ -792,6 +792,8 @@ public class IowaBasinsInfoScript2{
             st.executeBatch();
 
             conn.close();
+            
+            System.out.println(">> Database Update Successfull");
 
         } catch (SQLException ex) {
             System.out.println("Connection to UT server failed");
