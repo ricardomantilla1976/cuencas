@@ -86,7 +86,6 @@ public class EsriASCIIToCRas extends Object {
         
         for (int i=0;i<rows;i++) {
             linea = buffer.readLine();
-            System.out.println(linea);
             tokens = new StringTokenizer(linea);
             for (int j=0;j<columns;j++) {
                 try{

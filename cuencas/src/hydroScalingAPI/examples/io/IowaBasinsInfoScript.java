@@ -438,11 +438,11 @@ public class IowaBasinsInfoScript{
                 dataPath=new java.io.FileInputStream("/Users/ricardo/rawData/RainfallAccumulations/Current/accum"+fileIndex);
                 dataBuffer=new java.io.BufferedInputStream(dataPath);
                 dataDataStream=new java.io.DataInputStream(dataBuffer);
-
-                for (int ii=0;ii<numRow_Rain;ii++) for(int jj=0;jj<numCol_Rain;jj++) {
-                    matrix[ii][jj]=dataDataStream.readFloat();
-                    //matrix[ii][jj] = (float)Math.random()+(float)ii/(float)numRow_Rain*10.0f;
-                }
+//
+//                for (int ii=0;ii<numRow_Rain;ii++) for(int jj=0;jj<numCol_Rain;jj++) {
+//                    matrix[ii][jj]=dataDataStream.readFloat();
+//                    //matrix[ii][jj] = (float)Math.random()+(float)ii/(float)numRow_Rain*10.0f;
+//                }
 
 
                 dataBuffer.close();
@@ -485,40 +485,40 @@ public class IowaBasinsInfoScript{
                 float maxX=-Float.MAX_VALUE;
                 float maxY=-Float.MAX_VALUE;
 
-                while ((line2 = is.readLine()) != null) {
-                    linarray2 = line2.split(",");
-
-                    float xLon=Float.parseFloat(linarray2[0].trim());
-                    float yLat=Float.parseFloat(linarray2[1].trim());
-                    int tTime=(int)Math.floor(Float.parseFloat(linarray2[2].trim())*1000/0.75/3600.0)+1;
-
-                    int xxx = (int)((xLon-minLon_Rain)/matRes_Rain);
-                    int yyy = (int)((yLat-minLat_Rain)/matRes_Rain);
-
-                    newfile.write(""+xxx+" "+yyy+"\n");
-
-                    averageValue += matrix[yyy][xxx];
-                    numElements++;
-
-                    minX=Math.min(minX, xLon);
-                    minY=Math.min(minY, yLat);
-                    maxX=Math.max(maxX, xLon);
-                    maxY=Math.max(maxY, yLat);
-
-                    if(numElements%10==0){
-
-                        if(tTime > 1){
-                            accumFiles[tTime].seek(4*(yyy*matrix[0].length+xxx));
-                            accumFiles[tTime-1].seek(4*(yyy*matrix[0].length+xxx));
-                            averageValueTimeMachine+=(float) (accumFiles[tTime].readFloat()-accumFiles[tTime-1].readFloat());
-                        } else {
-                            accumFiles[tTime].seek(4*(yyy*matrix[0].length+xxx));
-                            averageValueTimeMachine+=(float) accumFiles[tTime].readFloat();
-                        }
-
-                    }
-
-                }
+//                while ((line2 = is.readLine()) != null) {
+//                    linarray2 = line2.split(",");
+//
+//                    float xLon=Float.parseFloat(linarray2[0].trim());
+//                    float yLat=Float.parseFloat(linarray2[1].trim());
+//                    int tTime=(int)Math.floor(Float.parseFloat(linarray2[2].trim())*1000/0.75/3600.0)+1;
+//
+//                    int xxx = (int)((xLon-minLon_Rain)/matRes_Rain);
+//                    int yyy = (int)((yLat-minLat_Rain)/matRes_Rain);
+//
+//                    newfile.write(""+xxx+" "+yyy+"\n");
+//
+//                    averageValue += matrix[yyy][xxx];
+//                    numElements++;
+//
+//                    minX=Math.min(minX, xLon);
+//                    minY=Math.min(minY, yLat);
+//                    maxX=Math.max(maxX, xLon);
+//                    maxY=Math.max(maxY, yLat);
+//
+//                    if(numElements%10==0){
+//
+//                        if(tTime > 1){
+//                            accumFiles[tTime].seek(4*(yyy*matrix[0].length+xxx));
+//                            accumFiles[tTime-1].seek(4*(yyy*matrix[0].length+xxx));
+//                            averageValueTimeMachine+=(float) (accumFiles[tTime].readFloat()-accumFiles[tTime-1].readFloat());
+//                        } else {
+//                            accumFiles[tTime].seek(4*(yyy*matrix[0].length+xxx));
+//                            averageValueTimeMachine+=(float) accumFiles[tTime].readFloat();
+//                        }
+//
+//                    }
+//
+//                }
 
                 averageValue/=numElements;
                 averageValueTimeMachine/=(numElements/10);
@@ -705,10 +705,10 @@ public class IowaBasinsInfoScript{
 
             String[][] kmlInAndOut=new String[][] {
                                                    {"/Users/ricardo/rawData/BasinMasks/usgs_gauges/","/Volumes/ricardo/temp/iowa_basins_data1/usgs_gauges/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/large_cities/","/Volumes/ricardo/temp/iowa_basins_data1/large_cities/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/medium_cities/","/Volumes/ricardo/temp/iowa_basins_data1/medium_cities/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data1/small_cities/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/ifc_sensors/","/Volumes/ricardo/temp/iowa_basins_data1/ifc_sensors/"}
+//                                                   {"/Users/ricardo/rawData/BasinMasks/large_cities/","/Volumes/ricardo/temp/iowa_basins_data1/large_cities/"},
+//                                                   {"/Users/ricardo/rawData/BasinMasks/medium_cities/","/Volumes/ricardo/temp/iowa_basins_data1/medium_cities/"},
+//                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data1/small_cities/"},
+//                                                   {"/Users/ricardo/rawData/BasinMasks/ifc_sensors/","/Volumes/ricardo/temp/iowa_basins_data1/ifc_sensors/"}
                                                   };
 
 

@@ -207,17 +207,17 @@ public class MetaNetToKML_Eric {
                             "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
                             "/Users/ricardo/rawData/BasinMasks/usgs_gauges/"};
 
-        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_medium_cities.log",
-                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
-                            "/Users/ricardo/rawData/BasinMasks/medium_cities/"};
-
-        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_small_cities.log",
-                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
-                            "/Users/ricardo/rawData/BasinMasks/small_cities/"};
-
-        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_sensors.log",
-                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
-                            "/Users/ricardo/rawData/BasinMasks/ifc_sensors/"};
+//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_medium_cities.log",
+//                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
+//                            "/Users/ricardo/rawData/BasinMasks/medium_cities/"};
+//
+//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_small_cities.log",
+//                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
+//                            "/Users/ricardo/rawData/BasinMasks/small_cities/"};
+//
+//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_sensors.log",
+//                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
+//                            "/Users/ricardo/rawData/BasinMasks/ifc_sensors/"};
 
         main1(args);
     }
