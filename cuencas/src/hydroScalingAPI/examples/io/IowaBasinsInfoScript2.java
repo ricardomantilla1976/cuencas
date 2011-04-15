@@ -106,7 +106,7 @@ public class IowaBasinsInfoScript2{
 
     }
 
-    public void Reset() throws java.io.IOException{
+    public void ExecuteIndexReset() throws java.io.IOException{
 
 
         System.out.println(">> Reseting Rainfall Remapping and Current Convolution Files");
@@ -122,7 +122,7 @@ public class IowaBasinsInfoScript2{
 
         java.util.Vector<String> availableMapsOfRain=new java.util.Vector<String>();
 
-        file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/quality/60/archive.txt");
+        file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/archive.txt");
         urlConn = file.openConnection();
 
 
@@ -156,8 +156,8 @@ public class IowaBasinsInfoScript2{
 
             String mostRecentFile=availableMapsOfRain.get(ff);
 
-            System.out.println(">> Opening connection: "+"http://s-iihr57.iihr.uiowa.edu/ricardo/quality/60/"+mostRecentFile);
-            file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/quality/60/"+mostRecentFile);
+            System.out.println(">> Opening connection: "+"http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/"+mostRecentFile);
+            file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/"+mostRecentFile);
             urlConn = file.openConnection();
 
 
@@ -226,39 +226,37 @@ public class IowaBasinsInfoScript2{
             
             for (int i=0;i<maxIndex;i++) accumulators[i]/=counters[i];
             
-            for(int ll=0;ll<dicretizationOfHour;ll++){
-                System.out.println(">> Writting Remapped Rainfall from File # "+kk);
+            System.out.println(">> Writting Remapped Rainfall from File # "+kk);
 
-                outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/rain"+kk);
-                bufferout=new BufferedOutputStream(outputDir);
-                newOutputStream=new DataOutputStream(bufferout);
+            outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/rain"+kk);
+            bufferout=new BufferedOutputStream(outputDir);
+            newOutputStream=new DataOutputStream(bufferout);
 
-                for (int i=0;i<maxIndex;i++){
-                    newOutputStream.writeFloat(accumulators[i]/(float)dicretizationOfHour);
-                }
-
-                newOutputStream.close();
-                bufferout.close();
-                outputDir.close();
-
-                outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/count"+kk);
-                bufferout=new BufferedOutputStream(outputDir);
-                newOutputStream=new DataOutputStream(bufferout);
-
-                for (int i=0;i<maxIndex;i++){
-                    newOutputStream.writeFloat((accumulators[i]>0?1:0));
-                }
-
-                newOutputStream.close();
-                bufferout.close();
-                outputDir.close();
-
-                kk++;
+            for (int i=0;i<maxIndex;i++){
+                newOutputStream.writeFloat(accumulators[i]);
             }
+
+            newOutputStream.close();
+            bufferout.close();
+            outputDir.close();
+
+            outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/count"+kk);
+            bufferout=new BufferedOutputStream(outputDir);
+            newOutputStream=new DataOutputStream(bufferout);
+
+            for (int i=0;i<maxIndex;i++){
+                newOutputStream.writeFloat((accumulators[i]>0?1:0));
+            }
+
+            newOutputStream.close();
+            bufferout.close();
+            outputDir.close();
+
+            kk++;
 
         }
 
-        int totalConvolutionPeriod=kk;
+        int totalConvolutionPeriod=kk*dicretizationOfHour;
 
         System.out.println(">> Remapping of Rainfall Files Completed");
 
@@ -288,11 +286,11 @@ public class IowaBasinsInfoScript2{
 
             if(j<totalConvolutionPeriod){
 
-                dataPath=new java.io.FileInputStream(dirOut.getPath()+"/RemappedRainfall/rain"+j);
+                dataPath=new java.io.FileInputStream(dirOut.getPath()+"/RemappedRainfall/rain"+j/dicretizationOfHour);
                 dataBuffer=new java.io.BufferedInputStream(dataPath);
                 dataDataStream=new java.io.DataInputStream(dataBuffer);
 
-                for (int i = 0; i < nextLinkArray.length; i++) currentValues[i]=dataDataStream.readFloat();
+                for (int i = 0; i < nextLinkArray.length; i++) currentValues[i]=dataDataStream.readFloat()/(float)dicretizationOfHour;
 
                 dataBuffer.close();
                 dataDataStream.close();
@@ -356,7 +354,7 @@ public class IowaBasinsInfoScript2{
 
             if(j<totalConvolutionPeriod){
 
-                dataPath=new java.io.FileInputStream(dirOut.getPath()+"/RemappedRainfall/count"+j);
+                dataPath=new java.io.FileInputStream(dirOut.getPath()+"/RemappedRainfall/count"+j/dicretizationOfHour);
                 dataBuffer=new java.io.BufferedInputStream(dataPath);
                 dataDataStream=new java.io.DataInputStream(dataBuffer);
 
@@ -399,7 +397,7 @@ public class IowaBasinsInfoScript2{
 
     }
 
-    public void Update() throws IOException {
+    public void ExecuteIndexUpdate() throws IOException {
 
         try{
 
@@ -422,7 +420,7 @@ public class IowaBasinsInfoScript2{
             is.close();
             xover.close();
 
-            int kk=(forecastHorizon+1)*dicretizationOfHour;
+            int kk=forecastHorizon;
 
             System.out.println(">> Opening connection: "+"http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/"+mostRecentFile);
             file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/"+mostRecentFile);
@@ -493,39 +491,36 @@ public class IowaBasinsInfoScript2{
 
             for (int i=0;i<maxIndex;i++) accumulators[i]/=counters[i];
 
-            for(int ll=0;ll<dicretizationOfHour;ll++){
+            System.out.println(">> Writting Remapped Rainfall from File # "+kk);
 
-                System.out.println(">> Writting Remapped Rainfall from File # "+(kk+ll));
+            outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/rain"+kk);
+            bufferout=new BufferedOutputStream(outputDir);
+            newOutputStream=new DataOutputStream(bufferout);
 
-                outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/rain"+(kk+ll));
-                bufferout=new BufferedOutputStream(outputDir);
-                newOutputStream=new DataOutputStream(bufferout);
-
-                for (int i=0;i<maxIndex;i++){
-                    accumulators[i]/=counters[i];
-                    newOutputStream.writeFloat(accumulators[i]/(float)dicretizationOfHour);
-                }
-
-                newOutputStream.close();
-                bufferout.close();
-                outputDir.close();
-
-                outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/count"+kk);
-                bufferout=new BufferedOutputStream(outputDir);
-                newOutputStream=new DataOutputStream(bufferout);
-
-                for (int i=0;i<maxIndex;i++){
-                    newOutputStream.writeFloat((accumulators[i]>0?1:0));
-                }
-
-                newOutputStream.close();
-                bufferout.close();
-                outputDir.close();
-
+            for (int i=0;i<maxIndex;i++){
+                accumulators[i]/=counters[i];
+                newOutputStream.writeFloat(accumulators[i]);
             }
 
+            newOutputStream.close();
+            bufferout.close();
+            outputDir.close();
+
+            outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/count"+kk);
+            bufferout=new BufferedOutputStream(outputDir);
+            newOutputStream=new DataOutputStream(bufferout);
+
+            for (int i=0;i<maxIndex;i++){
+                newOutputStream.writeFloat((accumulators[i]>0?1:0));
+            }
+
+            newOutputStream.close();
+            bufferout.close();
+            outputDir.close();
 
             System.out.println(">> Updating Convolution Files");
+
+            kk=forecastHorizon*dicretizationOfHour;
 
             new java.io.File(dirOut.getPath()+"/ConvolutionFiles/").mkdirs();
 
@@ -538,11 +533,11 @@ public class IowaBasinsInfoScript2{
 
                 if(j<dicretizationOfHour*(forecastHorizon+1)){
 
-                    dataPath=new java.io.FileInputStream(dirOut.getPath()+"/RemappedRainfall/rain"+j);
+                    dataPath=new java.io.FileInputStream(dirOut.getPath()+"/RemappedRainfall/rain"+j/dicretizationOfHour);
                     dataBuffer=new java.io.BufferedInputStream(dataPath);
                     dataDataStream=new java.io.DataInputStream(dataBuffer);
 
-                    for (int i = 0; i < nextLinkArray.length; i++) currentValues[i]=dataDataStream.readFloat();
+                    for (int i = 0; i < nextLinkArray.length; i++) currentValues[i]=dataDataStream.readFloat()/(float)dicretizationOfHour;
 
                     dataBuffer.close();
                     dataDataStream.close();
@@ -578,20 +573,19 @@ public class IowaBasinsInfoScript2{
 
             }
 
+            for(int i=0;i<dicretizationOfHour;i++){
+
+                System.out.println(">> Deleting Convolution File # "+i);
+
+                new java.io.File(dirOut.getPath()+"/ConvolutionFiles/convol-"+i).delete();
+
+            }
+
             for(int i=dicretizationOfHour;i<forecastHorizon*dicretizationOfHour*2;i++){
 
                 System.out.println(">> Translating Convolution File # "+i+" to Convolution File "+(i-dicretizationOfHour));
 
-                java.nio.channels.FileChannel inChannel = new
-                    FileInputStream(new java.io.File(dirOut.getPath()+"/ConvolutionFiles/convol-"+i)).getChannel();
-                java.nio.channels.FileChannel outChannel = new
-                    FileOutputStream(new java.io.File(dirOut.getPath()+"/ConvolutionFiles/convol-"+(i-dicretizationOfHour))).getChannel();
-
-                inChannel.transferTo(0, inChannel.size(),
-                        outChannel);
-
-                if (inChannel != null) inChannel.close();
-                if (outChannel != null) outChannel.close();
+                new java.io.File(dirOut.getPath()+"/ConvolutionFiles/convol-"+i).renameTo(new java.io.File(dirOut.getPath()+"/ConvolutionFiles/convol-"+(i-dicretizationOfHour)));
 
             }
 
@@ -626,7 +620,7 @@ public class IowaBasinsInfoScript2{
 
                 if(j<dicretizationOfHour*(forecastHorizon+1)){
 
-                    dataPath=new java.io.FileInputStream(dirOut.getPath()+"/RemappedRainfall/count"+j);
+                    dataPath=new java.io.FileInputStream(dirOut.getPath()+"/RemappedRainfall/count"+j/dicretizationOfHour);
                     dataBuffer=new java.io.BufferedInputStream(dataPath);
                     dataDataStream=new java.io.DataInputStream(dataBuffer);
 
@@ -666,20 +660,19 @@ public class IowaBasinsInfoScript2{
 
             }
 
+            for(int i=0;i<dicretizationOfHour;i++){
+
+                System.out.println(">> Deleting Count Convolution File # "+i);
+
+                new java.io.File(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+i).delete();
+
+            }
+
             for(int i=dicretizationOfHour;i<forecastHorizon*dicretizationOfHour*2;i++){
 
                 System.out.println(">> Translating Count Convolution File # "+i+" to Count Convolution File "+(i-dicretizationOfHour));
 
-                java.nio.channels.FileChannel inChannel = new
-                    FileInputStream(new java.io.File(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+i)).getChannel();
-                java.nio.channels.FileChannel outChannel = new
-                    FileOutputStream(new java.io.File(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+(i-dicretizationOfHour))).getChannel();
-
-                inChannel.transferTo(0, inChannel.size(),
-                        outChannel);
-
-                if (inChannel != null) inChannel.close();
-                if (outChannel != null) outChannel.close();
+                new java.io.File(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+i).renameTo(new java.io.File(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+(i-dicretizationOfHour)));
 
             }
 
@@ -725,7 +718,7 @@ public class IowaBasinsInfoScript2{
             for (int i = 0; i < nextLinkArray.length; i++) {
                 float val1=dataDataStream.readFloat();
                 float val2=dataDataStream2.readFloat();
-                if(val1 > peakValues[i]){
+                if(val1 > peakValues[i] && val2 > 0){
                     peakValues[i] = val1;
                     peakRatios[i] = val1/val2;
                     peakLocations[i]=j;
@@ -785,8 +778,8 @@ public class IowaBasinsInfoScript2{
 
             int forecast=0;
             for(int kk=0;kk<rowCount;kk++) {
-                forecast=peakRatios[dbID_linkID[1][kk]]<1?0:peakRatios[dbID_linkID[1][kk]]>2?2:1;
-                st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now() WHERE id="+dbID_linkID[0][kk]);
+                forecast=peakRatios[dbID_linkID[1][kk]]<1?0:peakRatios[dbID_linkID[1][kk]]>2.0?2:1;
+                st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakRatios[dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
             }
 
             st.executeBatch();
@@ -794,6 +787,11 @@ public class IowaBasinsInfoScript2{
             conn.close();
             
             System.out.println(">> Database Update Successfull");
+
+            java.util.Date endTime = new java.util.Date();
+            System.out.println(">> Update time Time: " + endTime.toString());
+
+
 
         } catch (SQLException ex) {
             System.out.println("Connection to UT server failed");
@@ -879,10 +877,9 @@ public class IowaBasinsInfoScript2{
     public static void main(String[] args) throws IOException {
 
         IowaBasinsInfoScript2 bigScript=new IowaBasinsInfoScript2();
-        if(args[0].equalsIgnoreCase("reset")) bigScript.Reset();
-        if(args[0].equalsIgnoreCase("update")) bigScript.Update();
+        if(args[0].equalsIgnoreCase("reset")) bigScript.ExecuteIndexReset();
+        if(args[0].equalsIgnoreCase("update")) bigScript.ExecuteIndexUpdate();
         if(args[0].equalsIgnoreCase("index")) bigScript.CreateIndex();
-        System.exit(0);
 
     }
 
