@@ -37,7 +37,7 @@ public class ReadRainfallData {
                                     "[Units]",
                                     "[Information]"
                                 };
-    public ReadRainfallData() throws java.io.IOException {
+    public ReadRainfallData(String dirIn) throws java.io.IOException {
         
         java.io.File theFile=new java.io.File("/Users/ricardo/rawData/IowaConnectivity/linksMask.metaVHC");
         hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
@@ -67,7 +67,7 @@ public class ReadRainfallData {
             }
         }
         
-        java.io.File dirOut=new java.io.File("/Users/ricardo/rawData/NCEP_Level_IV_Iowa/ascii2002hourly/");
+        java.io.File dirOut=new java.io.File(dirIn);
         hydroScalingAPI.util.fileUtilities.DotFilter myFiltro=new hydroScalingAPI.util.fileUtilities.DotFilter("gz");
         java.io.File[] lasQueSi=dirOut.listFiles(myFiltro);
 
@@ -224,7 +224,7 @@ public class ReadRainfallData {
     public static void main(String[] args) {
 
         try{
-            new hydroScalingAPI.examples.io.ReadRainfallData();
+            new hydroScalingAPI.examples.io.ReadRainfallData("/Users/ricardo/rawData/NCEP_Level_IV_Iowa/ascii2010hourly/");
         }catch(java.io.IOException ioe){
             System.err.println("error");
             ioe.printStackTrace();

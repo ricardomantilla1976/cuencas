@@ -108,7 +108,7 @@ public class IowaBasinsInfoScript{
 
         java.util.Vector<String> availableMapsOfRain=new java.util.Vector<String>();
 
-        file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/quality/60/archive.txt");
+        file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/archive.txt");
         urlConn = file.openConnection();
 
 
@@ -137,8 +137,8 @@ public class IowaBasinsInfoScript{
 
             String mostRecentFile=availableMapsOfRain.get(ff);
 
-            System.out.println(">> Opening connection: "+"http://s-iihr57.iihr.uiowa.edu/ricardo/quality/60/"+mostRecentFile);
-            file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/quality/60/"+mostRecentFile);
+            System.out.println(">> Opening connection: "+"http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/"+mostRecentFile);
+            file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/"+mostRecentFile);
             urlConn = file.openConnection();
 
 

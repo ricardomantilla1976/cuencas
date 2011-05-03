@@ -58,6 +58,8 @@ public class IowaBasinsInfoScript2{
 
     int[][] dbID_linkID;
 
+    float[] peakIndex;
+
 
     public IowaBasinsInfoScript2() throws IOException{
 
@@ -96,6 +98,8 @@ public class IowaBasinsInfoScript2{
             }
         }
 
+        System.out.println(">> Creating Counters");
+
         counters=new float[maxIndex];
 
         for (int i=0;i<nRowsMP;i++){
@@ -104,13 +108,30 @@ public class IowaBasinsInfoScript2{
             }
         }
 
+        System.out.println(">> Loading Flood Index");
+
+        peakIndex=new float[nextLinkArray.length];
+
+        dataPath=new java.io.FileInputStream("/Users/ricardo/rawData/IowaConnectivity/indexReferenceValue.xdr");
+        dataBuffer=new java.io.BufferedInputStream(dataPath);
+        dataDataStream=new java.io.DataInputStream(dataBuffer);
+
+        for (int i = 0; i < nextLinkArray.length; i++) {
+            peakIndex[i] = dataDataStream.readFloat();
+        }
+
+        dataBuffer.close();
+        dataDataStream.close();
+
+
+
     }
 
     public void ExecuteIndexReset() throws java.io.IOException{
 
 
         System.out.println(">> Reseting Rainfall Remapping and Current Convolution Files");
-        
+
         System.out.println(">> Loading Rainfall Files List");
 
         URLConnection urlConn = null;
@@ -134,7 +155,7 @@ public class IowaBasinsInfoScript2{
         while(line != null){
             availableMapsOfRain.add(line);
             line = is.readLine();
-            //if(line.equalsIgnoreCase("H99999999_R6007_G_09AUG2010_130000.out.gz")) break;
+            if(line.equalsIgnoreCase("H99999999_R6007_G_25AUG2010_000000.out.gz")) break;
         }
 
         is.close();
@@ -223,9 +244,9 @@ public class IowaBasinsInfoScript2{
                     if(matrizPintada[i][j]>0) if(matrix_rain[iData][jData]>0) accumulators[matrizPintada[i][j]-1]+=matrix_rain[iData][jData];
                 }
             }
-            
+
             for (int i=0;i<maxIndex;i++) accumulators[i]/=counters[i];
-            
+
             System.out.println(">> Writting Remapped Rainfall from File # "+kk);
 
             outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/rain"+kk);
@@ -312,7 +333,7 @@ public class IowaBasinsInfoScript2{
                     currentValues[nextLinkArray[i]]+=previousValues[i];
                 }
             }
-            
+
             outputDir = new FileOutputStream(dirOut.getPath()+"/ConvolutionFiles/convol-"+j);
             bufferout=new BufferedOutputStream(outputDir);
             newOutputStream=new DataOutputStream(bufferout);
@@ -606,7 +627,7 @@ public class IowaBasinsInfoScript2{
                 outputDir.close();
 
             }
-            
+
             System.out.println(">> Updating Count Convolution Files");
 
             new java.io.File(dirOut.getPath()+"/ConvolutionFiles/").mkdirs();
@@ -701,7 +722,6 @@ public class IowaBasinsInfoScript2{
 
         int[] peakLocations=new int[nextLinkArray.length];
         float[] peakValues=new float[nextLinkArray.length];
-        float[] peakRatios=new float[nextLinkArray.length];
 
         for(int j=(forecastHorizon-12)*dicretizationOfHour;j<(forecastHorizon+24*5)*dicretizationOfHour;j++){
 
@@ -711,22 +731,13 @@ public class IowaBasinsInfoScript2{
             dataBuffer=new java.io.BufferedInputStream(dataPath);
             dataDataStream=new java.io.DataInputStream(dataBuffer);
 
-            dataPath2=new java.io.FileInputStream(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+j);
-            dataBuffer2=new java.io.BufferedInputStream(dataPath2);
-            dataDataStream2=new java.io.DataInputStream(dataBuffer2);
-
             for (int i = 0; i < nextLinkArray.length; i++) {
                 float val1=dataDataStream.readFloat();
-                float val2=dataDataStream2.readFloat();
-                if(val1 > peakValues[i] && val2 > 0){
-                    peakValues[i] = val1;
-                    peakRatios[i] = val1/val2;
+                if(val1 > peakValues[i]*peakIndex[i]){
+                    peakValues[i] = val1/peakIndex[i];
                     peakLocations[i]=j;
                 }
             }
-
-            dataBuffer2.close();
-            dataDataStream2.close();
 
             dataBuffer.close();
             dataDataStream.close();
@@ -778,8 +789,8 @@ public class IowaBasinsInfoScript2{
 
             int forecast=0;
             for(int kk=0;kk<rowCount;kk++) {
-                forecast=peakRatios[dbID_linkID[1][kk]]<1?0:peakRatios[dbID_linkID[1][kk]]>2.0?2:1;
-                st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakRatios[dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
+                forecast=peakValues[dbID_linkID[1][kk]]<0.8?0:peakValues[dbID_linkID[1][kk]]>1.2?2:1;
+                st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakValues[dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
             }
 
             st.executeBatch();
@@ -877,6 +888,10 @@ public class IowaBasinsInfoScript2{
     public static void main(String[] args) throws IOException {
 
         IowaBasinsInfoScript2 bigScript=new IowaBasinsInfoScript2();
+
+        bigScript.ExecuteIndexReset();
+
+        System.exit(0);
         if(args[0].equalsIgnoreCase("reset")) bigScript.ExecuteIndexReset();
         if(args[0].equalsIgnoreCase("update")) bigScript.ExecuteIndexUpdate();
         if(args[0].equalsIgnoreCase("index")) bigScript.CreateIndex();

@@ -471,10 +471,10 @@ public class RSNDecomposition {
 
         args=new String[] {"WalnutGulch_AZ  82 260  walnutGulchUpdated"};
         
-        subMain1(args); //writes generators and geoemtric properties to files.  This algortithm is called
+        //subMain1(args); //writes generators and geoemtric properties to files.  This algortithm is called
                         //by runAllBasinsRSN.sh
         
-        //subMain2(args); //Test for Extended Horton Laws
+        subMain2(args); //Test for Extended Horton Laws
         
         //subMain3(args); //Basin Shape invariance as a function of generator type
 
@@ -711,7 +711,7 @@ public class RSNDecomposition {
 
         java.util.StringTokenizer tokenizer = new java.util.StringTokenizer(args[0]);
         String path = "/CuencasDataBases/Continental_US_database/Rasters/";
-        String filepath = path + "Topography/Dd_Basins_30_ArcSec/" + tokenizer.nextToken();
+        String filepath = path + "Topography/Dd_Basins_1_ArcSec/" + tokenizer.nextToken();
         int x_outlet = Integer.parseInt(tokenizer.nextToken());
         int y_outlet = Integer.parseInt(tokenizer.nextToken());
         String filename = filepath + "/" + tokenizer.nextToken();
