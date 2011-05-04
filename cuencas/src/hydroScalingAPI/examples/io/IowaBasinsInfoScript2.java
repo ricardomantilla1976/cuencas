@@ -155,7 +155,7 @@ public class IowaBasinsInfoScript2{
         while(line != null){
             availableMapsOfRain.add(line);
             line = is.readLine();
-            if(line.equalsIgnoreCase("H99999999_R6007_G_25AUG2010_000000.out.gz")) break;
+            //if(line.equalsIgnoreCase("H99999999_R6007_G_25AUG2010_000000.out.gz")) break;
         }
 
         is.close();
@@ -888,10 +888,6 @@ public class IowaBasinsInfoScript2{
     public static void main(String[] args) throws IOException {
 
         IowaBasinsInfoScript2 bigScript=new IowaBasinsInfoScript2();
-
-        bigScript.ExecuteIndexReset();
-
-        System.exit(0);
         if(args[0].equalsIgnoreCase("reset")) bigScript.ExecuteIndexReset();
         if(args[0].equalsIgnoreCase("update")) bigScript.ExecuteIndexUpdate();
         if(args[0].equalsIgnoreCase("index")) bigScript.CreateIndex();
