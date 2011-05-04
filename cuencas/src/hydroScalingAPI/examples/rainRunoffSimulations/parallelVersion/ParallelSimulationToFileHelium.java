@@ -72,7 +72,16 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
         v_o = ((Float) routingParams.get("v_o")).floatValue();
         WorkD = WD;
 
-        WorkD = WD;
+        java.io.File Workdir = new java.io.File(WorkD);
+
+        java.io.File[] files = Workdir.listFiles();
+        for (java.io.File file : files) {
+            file.delete();
+        }
+        System.out.println("delete all files from " + WorkD);
+        String idd = WorkD.substring(WorkD.lastIndexOf("s") + 1, WorkD.length() - 1);
+        System.out.println("idd" + idd);
+
         int dynaIndex = 0;
 
         //System.exit(0);
@@ -176,7 +185,7 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
             System.out.println(java.util.Arrays.toString(connectionIDs));
             System.out.println(java.util.Arrays.toString(corrections));
 
-            externalExecutors[i] = new hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.ExternalTileToFileHelium("Elem " + i, WorkD, md.getLocationMeta().getAbsolutePath(), xOutlet, yOutlet, xSource, ySource, decompScale, routingType, lam1, lam2, v_o, stormFile.getAbsolutePath(), infiltRate, outputDirectory.getAbsolutePath(), connectionString, correctionString, this, zeroSimulationTime.getTimeInMillis(), endingSimulationTime.getTimeInMillis(), dynaIndex, routingParams);
+            externalExecutors[i] = new hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.ExternalTileToFileHelium("El " + i + "-" + idd, WorkD, md.getLocationMeta().getAbsolutePath(), xOutlet, yOutlet, xSource, ySource, decompScale, routingType, lam1, lam2, v_o, stormFile.getAbsolutePath(), infiltRate, outputDirectory.getAbsolutePath(), connectionString, correctionString, this, zeroSimulationTime.getTimeInMillis(), endingSimulationTime.getTimeInMillis(), dynaIndex, routingParams);
         }
 
         boolean allNodesDone = true;
@@ -186,9 +195,10 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
         System.out.println("Parallel Code Begins");
 
         float currentDtoO = maxDtoO;
-
+        //int LimProcesses=400;
         // System.exit(0);
-        int count=0;
+        int count = 0;
+        int nprocer = 0;
         do {
             System.out.print(">> Processes on Hold: ");
             System.out.println("externalExecutors.length = " + externalExecutors.length + "\n");
@@ -200,15 +210,15 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                 if (new java.io.File(outputDirectory.getAbsolutePath() + "/Tile_" + xOutlet + "_" + yOutlet + ".done").exists()) {
                     externalExecutors[i].completed = true;
                     externalExecutors[i].executing = false;
+
                 } else {
                     externalExecutors[i].check_in_s++;
                 }
 
                 int indexProc = processList.get((String) v.get(i));
-                System.out.println("indexProc = " + indexProc +" ");
+                System.out.println("indexProc = " + indexProc + " ");
 
-                System.out.println("completed = " + externalExecutors[indexProc].completed +"  executing = " + externalExecutors[indexProc].executing + "\n");
-
+                System.out.println("completed = " + externalExecutors[indexProc].completed + "  executing = " + externalExecutors[indexProc].executing + "\n");
                 if (externalExecutors[indexProc].completed == false && externalExecutors[indexProc].executing == false) {
                     boolean required = true;
                     for (int j = 0; j < connectionTopology[indexProc].length; j++) {
@@ -221,6 +231,7 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                         System.out.println();
                         System.out.println(">> Process " + indexProc + " is being launched");
                         externalExecutors[indexProc].executeCommand();
+                        count = 0;
                         externalExecutors[indexProc].executing = true;
 
                     } else {
@@ -238,20 +249,24 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                 }
             }
             System.out.println();
+            // wait for ten second
+            new visad.util.Delay(10000);
+            count = count + 1;
+            if (count > 10 * 36) {
+                System.out.println("More than " + 10 * 36 * 10000 / 3600 + "waiting --- " + " check processes that already run");
+                for (int i = 0; i < externalExecutors.length; i++) {
 
-            new visad.util.Delay(1000);
-            count=count+1;
-            if(count>3600000){
-             for (int i = 0; i < externalExecutors.length; i++) {
-                externalExecutors[i].executing=false;
-                externalExecutors[i].completed=false;
-
-            }}
+                    externalExecutors[i].executing = false;
+                    externalExecutors[i].completed = false;
+                    System.out.println("Did not Run - start over" + i + "\n");
+                }
+                count = 0;
+            }
             allNodesDone = true;
             for (int i = 0; i < externalExecutors.length; i++) {
                 allNodesDone &= externalExecutors[i].completed;
             }
-
+            //System.exit(1);
         } while (!allNodesDone);
 
         System.out.println("Parallel Code Ends");
@@ -269,8 +284,8 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 
 
         try {
-            //subMainALL(args);
-            subMainDEM_TTime(args);
+            subMainALL(args);
+            //subMainDEM_TTime(args);
         } catch (java.io.IOException IOE) {
             System.out.print(IOE);
             System.exit(0);
@@ -289,13 +304,13 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 //          String[] AllSimName = {"30DEMUSGS","10DEMLIDAR","ASTER",};
 
 
-        String WorkDir = "/Users/rmantill/qsubBin/tempScripts/";
+        String WorkDir = "/scratch/qsubBin/tempScripts/";
         java.io.File WorkDirectory = new java.io.File(WorkDir);
         int n = 1;
         while (WorkDirectory.exists() == true) {
             //System.out.println("file exists" + WorkDir);
             n = n + 1;
-            WorkDir = "/Users/rmantill/qsubBin/tempScripts" + n + "/";
+            WorkDir = "/scratch/qsubBin/tempScripts" + n + "/";
             WorkDirectory = new java.io.File(WorkDir);
         }
 
@@ -305,12 +320,10 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 
 
         String[] AllSimName = {"90DEMUSGS"};
+        String[] AllRain = {"3Turkey2008test_2"};
 
-        String[] AllRain = {"3CCreekCreek2008"};
-
-
-//,"3VolgaNOBIASCORR"
         int nsim = AllSimName.length;
+
         int nbas = AllRain.length;
 
         for (int i = 0; i < nsim; i++) {
@@ -321,118 +334,42 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 
                 String SimName = AllSimName[i];
                 String BasinName = AllRain[ib];
-                String DEM = "error";
-
-                // DEFINE THE DEM
-                int xOut = 2817;
-                int yOut = 713; //90METERDEMClear Creek - coralville
-
-                if (SimName.equals("ASTER")) {
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM";
-                    xOut = 1596;
-                    yOut = 298;
-                }
-                if (SimName.equals("5DEMLIDAR")) {
-                    xOut = 8052;
-                    yOut = 497;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/5meters/5meterc1.metaDEM";
-                }
-                if (SimName.equals("10DEMLIDAR")) {
-                    xOut = 4025;
-                    yOut = 244;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/10meters/10meterc1.metaDEM";
-                }
-                if (SimName.equals("20DEMLIDAR")) {
-                    xOut = 2013;
-                    yOut = 122;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/20meters/20meterc1.metaDEM";
-                }
-                if (SimName.equals("30DEMLIDAR")) {
-                    xOut = 1341;
-                    yOut = 82;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/30meters/30meterc1.metaDEM";
-                }
-                if (SimName.equals("60DEMLIDAR")) {
-                    xOut = 670;
-                    yOut = 41;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/60meters/60meterc1.metaDEM";
-                }
-                if (SimName.equals("90DEMLIDAR")) {
-                    xOut = 447;
-                    yOut = 27;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/90meterc1.metaDEM";
-                }
-                if (SimName.equals("90DEMUSGS")) {
-                    xOut = 2817;
-                    yOut = 713;
-                    DEM = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                }
-
-                if (SimName.equals("30DEMUSGS")) {
-                    xOut = 1541;
-                    yOut = 92;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/30USGS/ned_1.metaDEM";
-                }
-
-                if (SimName.equals("10DEMUSGS")) {
-                    xOut = 4624;
-                    yOut = 278;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/10USGS/ned_1_3.metaDEM";
-                }
-
-                if (BasinName.indexOf("Cedar") >= 0) {
-                    xOut = 2734;
-                    yOut = 1069; //Cedar Rapids
-                    DEM = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                }
+                java.io.File outputDirectory;
 
 
-                if (BasinName.indexOf("Iowa") >= 0) {
-                    xOut = 2885;
-                    yOut = 690;
-                    DEM = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                }
+                // DEFINE DEM
+                String[] StringDEM = {"error", "error", "error"};
+                StringDEM = defineDEMxy(BasinName, SimName);
+                System.out.println("StringDEM = " + StringDEM[0]);
+                System.out.println("x = " + StringDEM[1] + "    y" + StringDEM[2]);
+                String DEM = StringDEM[0];
+                int xOut = Integer.parseInt(StringDEM[1]);//   .getInteger(StringDEM[1]);
+                int yOut = Integer.parseInt(StringDEM[2]);
 
-
-                if (BasinName.indexOf("Turkey") >= 0) {
-
-                    xOut = 3053;
-                    yOut = 2123;
-                    DEM = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                }
-
-                if (BasinName.indexOf("Volga") >= 0) {
-                    xOut = 3091;
-                    yOut = 2004;
-                    DEM = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                }
+                //System.exit(1);
 
                 java.io.File theFile = new java.io.File(DEM);
-                //java.io.File theFile=new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM");
-//        java.io.File theFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/10meters/10meterc1.metaDEM");
-//         int xOut = 4025; int yOut = 244;//10METERDEMClear Creek - coralville
-//        java.io.File theFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/90meterc1.metaDEM");
-//  int xOut =  447; int yOut = 27;//90METERDEMClear Creek - coralville
                 hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(theFile);
                 metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".dir"));
                 metaModif.setFormat("Byte");
                 byte[][] matDirs = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
-
                 metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".magn"));
                 metaModif.setFormat("Integer");
                 int[][] magnitudes = new hydroScalingAPI.io.DataRaster(metaModif).getInt();
-
                 metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".horton"));
                 metaModif.setFormat("Byte");
                 byte[][] horOrders = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
 
+                //DEFINE DISCRETIZATION FOR PARALLEL CODE
+
+                int disc = 4;
+                disc = definedisc(BasinName, SimName);
+                System.out.println("disc =  " + disc);
+                // DEFINE THE STORM FILE
                 java.io.File stormFile;
                 java.util.Hashtable routingParams = new java.util.Hashtable();
 
-
-                // DEFINE THE STORM FILE - IF PRECIPITATION IS NOT CONSTANT
-
-                //stormFile=new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune26/hydroNexrad.metaVHC");
+                stormFile = new java.io.File(definestorm(BasinName, SimName));
 
                 // DEFINE THE INITIAL TIME OF THE SIMULATION
                 java.util.Calendar alphaSimulationTime = java.util.Calendar.getInstance();
@@ -459,120 +396,29 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                 }
 
 
-                java.io.File outputDirectory;
+                int index_2 = BasinName.indexOf("20");
 
-
-                //int xOut =  1341;int yOut =  82;//30METERDEMClear Creek - coralville
-
-
-                int disc = 4;
-                if (BasinName.indexOf("Cedar") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 5;
-                }
-
-                if (BasinName.indexOf("Turkey") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 4;
-                }
-
-                if (BasinName.indexOf("Volga") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 4;
-                }
-
-                if (BasinName.indexOf("Water") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 4;
-                }
-
-                if (BasinName.indexOf("Iowa") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 4;
-                }
-
-                if (BasinName.indexOf("Janes") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 4;
-                }
-
-                if (BasinName.indexOf("Clear") > 0 && BasinName.indexOf("2009") > 0) {
-                    disc = 3;
-                }
-
-                if (BasinName.indexOf("disc4") > 0) {
-                    disc = 4;
-                }
-//        int xOut = 2734;
-//        int yOut = 1069; //Cedar Rapids
-//        int disc=5;
-//        String BasinName="3CedarRapids";
-                //1 space and 15 time
-                stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/15min/Time/Bin/hydroNexrad.metaVHC");
-                //1 space and 180 time
-                if (BasinName.indexOf("1_180") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/180min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                //6 space and 15 time
-                if (BasinName.indexOf("6_15") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/15min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                //6 space and 180 tim
-                if (BasinName.indexOf("6_180") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/180min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("15_15") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/15/15min/Time/Bin/hydroNexrad.metaVHC");
-                }
-
-                if (BasinName.indexOf("15_180") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/15/180min/Time/Bin/hydroNexrad.metaVHC");
-                }
-
-                if (BasinName.indexOf("6_180") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/180min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("1_60") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/60min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("2_60") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/2/60min/Time/Bin/hydroNexrad.metaVHC");
-                }
-
-                if (BasinName.indexOf("6_60") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/60min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("15_60") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/15/60min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("ori") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune26/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("PERS") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/PERSIANN/May29Jun17/PERSIANN_3h.metaVHC");
-                }
-                if (BasinName.indexOf("TRMM") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/SatelliteData/RC1.00/bin/rain17/prec.metaVHC");
-                }
-                if (BasinName.indexOf("NOBIASCORR") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/DataGenNov_2010/Radar_merged_Vhc/NEXRAD_BC.metaVHC");
-                }
-
-                if (BasinName.indexOf("Adv") > 0) {
-                    if (BasinName.indexOf("May") > 0) {
-
-                        stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/May2009_AdvectionVHC/NEXRAD_BC.metaVHC");
-                        if (BasinName.indexOf("No") > 0) {
-                            stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/May2009_NoAdvectionVHC/NEXRAD_BC.metaVHC");
-                        }
+                if (BasinName.indexOf("20") > 0) {
+                    String timeStamp = BasinName.substring(index_2, index_2 + 4);
+                    int yr = java.lang.Integer.parseInt(timeStamp);
+                    alphaSimulationTime.set(yr, 4, 01, 0, 0, 0);// from may 01
+                    omegaSimulationTime.set(yr, 7, 10, 0, 0, 0);// to agost 10
+                    if (BasinName.indexOf("test") > 0) {
+                        alphaSimulationTime.set(2008, 4, 29, 0, 0, 0);// from may 01
+                        omegaSimulationTime.set(2008, 6, 2, 0, 0, 0);
+                        stormFile = new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii2008VHCtest/NEXRAD_BC.metaVHC");
                     }
-                    if (BasinName.indexOf("Mar") > 0) {
-                        stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/March2009_AdvectionVHC/NEXRAD_BC.metaVHC");
-                        if (BasinName.indexOf("No") > 0) {
-                            stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/March2009_NoAdvectionVHC/NEXRAD_BC.metaVHC");
-                        }
-                    }
-                    if (BasinName.indexOf("Jun") > 0) {
-                        stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/Jun2009_AdvectionVHC/NEXRAD_BC.metaVHC");
-                        if (BasinName.indexOf("No") > 0) {
-                            stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/Jun2009_NoAdvectionVHC/NEXRAD_BC.metaVHC");
-                        }
-                    }
+
                 }
+
+                if (BasinName.indexOf("BO") > 0) {
+                    alphaSimulationTime.set(2002, 7, 20, 0, 0, 0);// from may 01
+                    omegaSimulationTime.set(2002, 7, 26, 0, 0, 0);
+                }
+
+                alphaSimulationTime.getTimeInMillis();
+                omegaSimulationTime.getTimeInMillis();
+                System.out.println("storm = " + stormFile.getAbsolutePath());
 
                 routingParams.put("v_o", 0.88f);
                 routingParams.put("lambda1", 0.25f);
@@ -610,17 +456,25 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 
                     routingParams.put("Basin_sim", bflag); // Cedar river - define Land cover and soil parameter
                     //float[] vsAr = {0.0002f,0.0005f};
-                    float[] vsAr = {0.0001f, 0.001f, 0.01f};
-                    float[] PH = {0.0f, 0.25f, 0.5f, 0.75f, 1.f};
-                    float[] Phi = {0.0f, 0.25f, 0.5f, 0.75f, 1.f};
+                    float[] vsAr = {};
+                    float[] PH = {0.0f};
+                    float[] Phi = {0.0f};
                     float[] IaAre = {0.4f};
                     float[] IaArc = {0.0f};
                     float[] l1Ar = {0.25f};
-//                    float[] rcAr = {0.5f};
-                    float[] vhAr = {50.f, 100.f};
-                    float[] Coefvo = {0.5f};
-                    float[] HSAr = {0.f, 1.f, 3.f, 5.f};
-                    float[] CteSAr = {-9.f, 10.f, 50.f, 100.f, 300.f};
+                    //float[] rcAr = {-9.f};
+                    //float[] vhAr = {-9.f};
+
+                    float[] rcAr = {0.5f, 0.6f, 0.8f, 1.0f, -9.f};
+                    float[] vhAr = {36.f, -9.f};
+                    float[] Coefvo = {1.0f};
+                    float[] HSAr = {0.f};
+                    float[] CteSAr = {-9f};
+                    float[] VostdAr = {0.0f};
+                    float[] kf1Ar = {0.1f};
+
+
+
 
                     for (float l11 : l1Ar) {
 
@@ -629,115 +483,152 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                             float l1 = l11;
                             float l2 = -0.82f * l11 + 0.1025f;
                             float vo = cvo * (0.42f - 0.29f * l11 - 3.1f * l2);
+                            l1 =0.25f;
+                            l2 =-0.15f;
+                            vo = 0.88f;
 
-                            for (float voo : vsAr) {
-                                float vsub = voo;
-                                for (float in1 : PH) {
-                                    float p1 = in1;
-                                    for (float in2 : Phi) {
-                                        float p2 = in2;
-                                        for (float ia1e : IaAre) {
-                                            float iae = ia1e;
-                                            for (float ia1c : IaArc) {
-                                                float iac = ia1c;
+                            for (float Kf1 : kf1Ar) {
 
-//                                                for (float rc1 : rcAr) {
-//                                                    float rc = rc1;
-                                                    for (float vh1 : vhAr) {
-                                                        float vh = vh1;
-                                                        for (float hs1 : HSAr) {
-                                                            float hs = hs1;
-                                                            for (float cts1 : CteSAr) {
-                                                                float cts = cts1;
-                                                                //C999999 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - spattially constant
-                                                                routingParams.put("Vconst", vo); // CHANGE IN THE NETWORKEQUATION CLA
-                                                                routingParams.put("v_o", vo);
-                                                                routingParams.put("lambda1", l11);
-                                                                routingParams.put("lambda2", l2);
-                                                                routingParams.put("PorcHSaturated", p1);
-                                                                routingParams.put("vssub", vsub);
-                                                                routingParams.put("PorcPhiUnsat", p2);
-                                                                routingParams.put("lambdaSCSMethod", iae);
-                                                                routingParams.put("BaseFlowCoef", iac); // define a constant number or -9.9 for vel=f(land Cover)
-                                                                routingParams.put("BaseFlowExp", iae); // define a constant number or -9.9 for vel=f(land Cover)
-                                                                routingParams.put("RoutingT", 5); // check NetworkEquationsLuciana.java for definitions
-                                                                routingParams.put("HillT", 5);  // check NetworkEquationsLuciana.java for definitions
-                                                                routingParams.put("hillshapeparamflag", hs);
-                                                                routingParams.put("ConstSoilStorage", cts);  // check NetworkEquationsLuciana.java for definitions
+                                for (float ia1e : IaAre) {
+                                    float iae = ia1e;
+                                    for (float ia1c : IaArc) {
+                                        float iac = ia1c;
 
-                                                                if (vh == -9) {
-                                                                    routingParams.put("HillVelocityT", 4);  // check NetworkEquationsLuciana.java for definitions
-                                                                    routingParams.put("vrunoff", vh);
-                                                                } else {
-                                                                    routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
-                                                                    routingParams.put("vrunoff", vh); // define a constant number or -9.9 for vel=f(land Cover)
+                                        for (float rc1 : rcAr) {
+                                            float rc = rc1;
+                                            for (float vh1 : vhAr) {
+                                                float vh = vh1;
+                                                for (float hs1 : HSAr) {
+                                                    float hs = hs1;
+                                                    for (float cts1 : CteSAr) {
+                                                        float cts = cts1;
+
+
+                                                        for (float in1 : PH) {
+                                                            float p1 = in1;
+                                                            for (float in2 : Phi) {
+                                                                float p2 = in2;
+
+                                                                for (float voo : vsAr) {
+                                                                    float vsub = voo;
+
+                                                                    for (float Vostd : VostdAr) {
+
+                                                                        //C999999 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - spattially constant
+                                                                        if (rc > 0.f) {
+                                                                            routingParams.put("HillT", 1);  // check NetworkEquationsLuciana.java for definitions
+                                                                            routingParams.put("RunoffCoefficient", rc); // reservoir position:
+                                                                        } else {
+                                                                            routingParams.put("HillT", 6);
+                                                                            routingParams.put("RunoffCoefficient", -9.f); // reservoir position:
+                                                                        }                                                         //                         routingParams.put("lambda1", l11);
+
+                                                                        routingParams.put("Vostd", Vostd);
+                                                                        routingParams.put("Vconst", vo); // CHANGE IN THE NETWORKEQUATION CLA
+                                                                        routingParams.put("v_o", vo);
+                                                                        routingParams.put("lambda1", l11);
+                                                                        routingParams.put("lambda2", l2);
+                                                                        routingParams.put("PorcHSaturated", p1);
+                                                                        routingParams.put("vssub", vsub);
+                                                                        routingParams.put("PorcPhiUnsat", p2);
+                                                                        routingParams.put("lambdaSCSMethod", iae);
+                                                                        routingParams.put("BaseFlowCoef", iac); // define a constant number or -9.9 for vel=f(land Cover)
+                                                                        routingParams.put("BaseFlowExp", iae); // define a constant number or -9.9 for vel=f(land Cover)
+                                                                        routingParams.put("RoutingT", 5); // check NetworkEquationsLuciana.java for definitions
+                                                                        routingParams.put("hillshapeparamflag", hs);
+                                                                        routingParams.put("floodplaincte", Kf1);  // check NetworkEquationsLuciana.java for definitions
+                                                                        routingParams.put("ConstSoilStorage", cts);  // check NetworkEquationsLuciana.java for definitions
+
+                                                                        if (vh == -8) {
+                                                                            routingParams.put("HillVelocityT", 2);  // check NetworkEquationsLuciana.java for definitions
+                                                                            routingParams.put("vrunoff", vh);
+                                                                        } else if (vh == -9) {
+                                                                            routingParams.put("HillVelocityT", 4);  // check NetworkEquationsLuciana.java for definitions
+                                                                            routingParams.put("vrunoff", vh);
+                                                                        } else {
+                                                                            routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
+                                                                            routingParams.put("vrunoff", vh); // define a constant number or -9.9 for vel=f(land Cover)
+                                                                        }
+
+                                                                        //routingParams.put("RunoffCoefficient", rc); // reservoir position:ccc
+                                                                        // + "/BFExp" + ((Float) routingParams.get("BaseFlowExp")).floatValue()
+                                                                        //                                                                     + "/BFCoef" + ((Float) routingParams.get("BaseFlowCoef")).floatValue()
+
+                                                                        // outputDirectory = new java.io.File("/scratch/results_cuencas/Helium_version/" + BasinName + "/" + SimName + "/" + bflag + "/"
+
+                                                                        outputDirectory = new java.io.File("/scratch/results_cuencas/MultipleYears/" + BasinName + "/" + SimName + "/" + bflag + "/"
+                                                                                + "RoutT_" + ((Integer) routingParams.get("RoutingT")).intValue() + "/"
+                                                                                + "HillT_" + ((Integer) routingParams.get("HillT")).intValue() + "/"
+                                                                                + "HillVelT_" + ((Integer) routingParams.get("HillVelocityT")).intValue()
+                                                                                + "Vostd_" + ((Float) routingParams.get("Vostd")).floatValue()
+                                                                                + "/VS" + ((Float) routingParams.get("vssub")).floatValue()
+                                                                                + "/RC" + ((Float) routingParams.get("RunoffCoefficient")).floatValue()
+                                                                                + "/UnsO" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
+                                                                                + "/PH" + ((Float) routingParams.get("PorcHSaturated")).floatValue()
+                                                                                + "/SCS_" + ((Float) routingParams.get("ConstSoilStorage")).floatValue()
+                                                                                + "/vh_" + ((Float) routingParams.get("vrunoff")).floatValue()
+                                                                                + "/hh_" + ((Float) routingParams.get("hillshapeparamflag")).floatValue()
+                                                                                + "/kf1_" + ((Float) routingParams.get("floodplaincte")).floatValue()
+                                                                                + "/vo_" + ((Float) routingParams.get("v_o")).floatValue() + "_" + ((Float) routingParams.get("lambda1")).floatValue() + "_" + ((Float) routingParams.get("lambda2")).floatValue());
+                                                                        //FAST TEST
+                                                                        //outputDirectory = new java.io.File("/scratch/luciana/Parallel/testHeliumversion/");
+                                                                        // alphaSimulationTime.set(2010, 0, 0, 0, 0, 0);
+                                                                        // omegaSimulationTime.set(2010, 0, 2, 0, 0, 0);
+                                                                        // stormFile = new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/constant/thesis2/60mm/15min/vhc/60mm15min.metaVHC");
+
+                                                                        int rrt = ((Integer) routingParams.get("RoutingT")).intValue();
+                                                                        outputDirectory.mkdirs();
+
+                                                                        new ParallelSimulationToFileHelium(xOut, yOut, matDirs, magnitudes, horOrders, metaModif, stormFile, 0.0f, rrt, routingParams, outputDirectory, alphaSimulationTime, omegaSimulationTime, disc, WorkDir);
+
+                                                                        //System.exit(0);
+                                                                    }
                                                                 }
-
-                                                                //routingParams.put("RunoffCoefficient", rc); // reservoir position:
-
-
-                                                                outputDirectory = new java.io.File("/Users/rmantill/luciana/Parallel/Helium_version/" + BasinName + "/" + SimName + "/" + bflag + "/"
-                                                                        + "RoutT_" + ((Integer) routingParams.get("RoutingT")).intValue() + "/"
-                                                                        + "HillT_" + ((Integer) routingParams.get("HillT")).intValue() + "/"
-                                                                        + "HillVelT_" + ((Integer) routingParams.get("HillVelocityT")).intValue()
-                                                                        + "/BFExp" + ((Float) routingParams.get("BaseFlowExp")).floatValue()
-                                                                        + "/BFCoef" + ((Float) routingParams.get("BaseFlowCoef")).floatValue()
-                                                                        + "/VS" + ((Float) routingParams.get("vssub")).floatValue()
-                                                                        + "/UnsO" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
-                                                                        + "/PH" + ((Float) routingParams.get("PorcHSaturated")).floatValue()
-                                                                        + "/SCS_" + ((Float) routingParams.get("ConstSoilStorage")).floatValue()
-                                                                        + "/vh_" + ((Float) routingParams.get("vrunoff")).floatValue()
-                                                                        + "/hh_" + ((Float) routingParams.get("hillshapeparamflag")).floatValue()
-                                                                        + "/vo_" + ((Float) routingParams.get("v_o")).floatValue() + "_" + ((Float) routingParams.get("lambda1")).floatValue() + "_" + ((Float) routingParams.get("lambda2")).floatValue());
-                                                               //FAST TEST
-                                                               //outputDirectory = new java.io.File("/Users/rmantill/luciana/Parallel/testHeliumversion/");
-                                                               // alphaSimulationTime.set(2010, 0, 0, 0, 0, 0);
-                                                               // omegaSimulationTime.set(2010, 0, 2, 0, 0, 0);
-                                                               // stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/constant/thesis2/60mm/15min/vhc/60mm15min.metaVHC");
-
-                                                                int rrt = ((Integer) routingParams.get("RoutingT")).intValue();
-                                                                outputDirectory.mkdirs();
-                                                                new ParallelSimulationToFileHelium(xOut, yOut, matDirs, magnitudes, horOrders, metaModif, stormFile, 0.0f, rrt, routingParams, outputDirectory, alphaSimulationTime, omegaSimulationTime, disc, WorkDir);
-
-                                                                //System.exit(0);
                                                             }
-//                                                        }
 
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            }
 
+                            }
                         }
                     }
 
-
-                    float[] vsAr2 = {};
-                    //float[] vsAr = {0.0001f,0.0005f,0.001f,0.005f,0.01f};
-                    float[] PH2 = {0.0f, 0.5f};
-                    float[] Phi2 = {0.0f, 0.5f};
+                    float[] vsAr2 = {0.001f};
+                    //
+                    float[] PH2 = {0.0f};
+                    float[] Phi2 = {0.0f};
                     float[] IaAre2 = {1.0f};
 
                     float[] IaArc2 = {0.0f};
                     //float[] IaArc = {0.0f,0.1f,1.0f};
 
-                    float[] voAr2 = {0.6f, 0.8f, 1.0f};
-                    float[] rcAr2 = {0.5f};
-                    float[] vhAr2 = {10.f, 50.f};
-                    float[] HSAr2 = {0.f, 1.f, 3.f, 5.f};
-                    float[] CteSAr2 = {-9.f, 10.f, 50.f, 100.f, 300.f};
+                    float[] voAr2 = {0.75f,1.0f};
 
-                    for (float vo1 : voAr2) {
-                        float vo = vo1;
-                        //                   float l1 = l11;
-                        //                   float l2 = -0.82f * l11 + 0.1025f;
-                        //                   float vo = 0.42f - 0.29f * l11 - 3.1f * l2;
+                    //float[] rcAr2 = {-9.f};
+                    //float[] vhAr2 = {-9.f};
 
-                        for (float voo : vsAr2) {
-                            float vsub = voo;
+                    float[] rcAr2 = {0.5f, 0.6f, 0.8f, 1.0f, -9.f};
+                    float[] vhAr2 = {36.f, -9.f};
+
+
+                    float[] HSAr2 = {0.f};
+                    float[] CteSAr2 = {-9f};
+
+                    //                   float l1 = l11;
+                    //                   float l2 = -0.82f * l11 + 0.1025f;
+                    //                   float vo = 0.42f - 0.29f * l11 - 3.1f * l2;
+
+                    for (float voo : vsAr2) {
+                        float vsub = voo;
+
+                        for (float vh1 : vhAr2) {
+                            float vh = vh1;
+
                             for (float in1 : PH2) {
                                 float p1 = in1;
                                 for (float in2 : Phi2) {
@@ -749,49 +640,68 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 
                                             for (float rc1 : rcAr2) {
                                                 float rc = rc1;
-                                                for (float vh1 : vhAr2) {
-                                                    float vh = vh1;
-                                                    for (float hs1 : HSAr2) {
-                                                        float hs = hs1;
-                                                        for (float cts1 : CteSAr2) {
-                                                                float cts = cts1;
-                                                        //C999999 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - spattially constant
-                                                        routingParams.put("Vconst", vo); // CHANGE IN THE NETWORKEQUATION CLA
-                                                        routingParams.put("v_o", vo);
-                                                    routingParams.put("hillshapeparamflag", hs);
-                                                        //                         routingParams.put("lambda1", l11);
-                                                        //                         routingParams.put("lambda2", l2);
-                                                        routingParams.put("PorcHSaturated", p1);
-                                                        routingParams.put("vssub", vsub);
-                                                        routingParams.put("PorcPhiUnsat", p2);
-                                                        routingParams.put("lambdaSCSMethod", iae);
-                                                        routingParams.put("BaseFlowCoef", iac); // define a constant number or -9.9 for vel=f(land Cover)
-                                                        routingParams.put("BaseFlowExp", iae); // define a constant number or -9.9 for vel=f(land Cover)
-                                                        routingParams.put("RoutingT", 2); // check NetworkEquationsLuciana.java for definitions
-                                                        routingParams.put("HillT", 5);  // check NetworkEquationsLuciana.java for definitions
-                                                        routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
-                                                        routingParams.put("ConstSoilStorage", cts);  // check NetworkEquationsLuciana.java for definitions
-                                                        routingParams.put("vrunoff", vh); // define a constant number or -9.9 for vel=f(land Cover)
-                                                        outputDirectory = new java.io.File("/Users/rmantill/luciana/Parallel/Helium_version/" + BasinName + "/" + SimName + "/" + bflag + "/"
-                                                                + "RT_" + ((Integer) routingParams.get("RoutingT")).intValue() + "/"
-                                                                + "HT_" + ((Integer) routingParams.get("HillT")).intValue() + "/"
-                                                                + "HVT_" + ((Integer) routingParams.get("HillVelocityT")).intValue()
-                                                                + "/BFE" + ((Float) routingParams.get("BaseFlowExp")).floatValue()
-                                                                + "/BFC" + ((Float) routingParams.get("BaseFlowCoef")).floatValue()
-                                                                + "/VS" + ((Float) routingParams.get("vssub")).floatValue()
-                                                                + "/UnsO" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
-                                                                + "/WT" + ((Float) routingParams.get("PorcHSaturated")).floatValue()
-                                                                + "/vh_" + ((Float) routingParams.get("vrunoff")).floatValue()
-                                                                + "/hh_" + ((Float) routingParams.get("hillshapeparamflag")).floatValue()
-                                                                + "/vcte_" + ((Float) routingParams.get("v_o")).floatValue());
+                                                for (float hs1 : HSAr2) {
+                                                    float hs = hs1;
+                                                    for (float cts1 : CteSAr2) {
+                                                        float cts = cts1;
+                                                        for (float vo1 : voAr2) {
+                                                            float vo = vo1;
+                                                            //C999999 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - spattially constant
+
+                                                            routingParams.put("Vconst", vo); // CHANGE IN THE NETWORKEQUATION CLA
+                                                            routingParams.put("v_o", vo);
+                                                            routingParams.put("hillshapeparamflag", hs);
+                                                            routingParams.put("HillT", 6);  // check NetworkEquationsLuciana.java for definitions
+                                                            routingParams.put("RoutingT", 2); // check NetworkEquationsLuciana.java for definitions
+
+                                                            if (rc > 0.f) {
+                                                                routingParams.put("HillT", 1);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("RunoffCoefficient", rc); // reservoir position:
+                                                            } else {
+                                                                routingParams.put("HillT", 6);
+                                                                routingParams.put("RunoffCoefficient", -9.f); // reservoir position:
+                                                            }                                                         //                         routingParams.put("lambda1", l11);
+                                                            //                         routingParams.put("lambda2", l2);
+                                                            routingParams.put("PorcHSaturated", p1);
+                                                            routingParams.put("vssub", vsub);
+                                                            routingParams.put("PorcPhiUnsat", p2);
+                                                            routingParams.put("lambdaSCSMethod", iae);
+                                                            routingParams.put("BaseFlowCoef", iac); // define a constant number or -9.9 for vel=f(land Cover)
+                                                            routingParams.put("BaseFlowExp", iae); // define a constant number or -9.9 for vel=f(land Cover)
+
+                                                            if (vh == -8) {
+                                                                routingParams.put("HillVelocityT", 2);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("vrunoff", vh);
+                                                            } else if (vh == -9) {
+                                                                routingParams.put("HillVelocityT", 4);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("vrunoff", vh);
+                                                            } else {
+                                                                routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("vrunoff", vh); // define a constant number or -9.9 for vel=f(land Cover)
+                                                            }
+                                                            routingParams.put("ConstSoilStorage", cts);  // check NetworkEquationsLuciana.java for definitions
+                                                            routingParams.put("vrunoff", vh); // define a constant number or -9.9 for vel=f(land Cover)
+
+                                                            outputDirectory = new java.io.File("/scratch/results_cuencas/MultipleYears/" + BasinName + "/" + SimName + "/" + bflag + "/"
+                                                                    + "RoutT_" + ((Integer) routingParams.get("RoutingT")).intValue() + "/"
+                                                                    + "HillT_" + ((Integer) routingParams.get("HillT")).intValue() + "/"
+                                                                    + "HillVelT_" + ((Integer) routingParams.get("HillVelocityT")).intValue()
+                                                                    + "/VS" + ((Float) routingParams.get("vssub")).floatValue()
+                                                                    + "/RC" + ((Float) routingParams.get("RunoffCoefficient")).floatValue()
+                                                                    + "/UnsO" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
+                                                                    + "/PH" + ((Float) routingParams.get("PorcHSaturated")).floatValue()
+                                                                    + "/SCS_" + ((Float) routingParams.get("ConstSoilStorage")).floatValue()
+                                                                    + "/vh_" + ((Float) routingParams.get("vrunoff")).floatValue()
+                                                                    + "/hh_" + ((Float) routingParams.get("hillshapeparamflag")).floatValue()
+                                                                    + "/vcte_" + ((Float) routingParams.get("v_o")).floatValue());
 
 //                                            + "RR_" + ((Float) routingParams.get("RunoffCoefficient")).floatValue() +"/"
-                                                        // + "VHILL_" + ((Float) routingParams.get("vrunoff")).floatValue()
+                                                            // + "VHILL_" + ((Float) routingParams.get("vrunoff")).floatValue()
 
-                                                        int rrt = ((Integer) routingParams.get("RoutingT")).intValue();
-                                                        outputDirectory.mkdirs();
-                                                        new ParallelSimulationToFileHelium(xOut, yOut, matDirs, magnitudes, horOrders, metaModif, stormFile, 0.0f, rrt, routingParams, outputDirectory, alphaSimulationTime, omegaSimulationTime, disc, WorkDir);
-}
+                                                            int rrt = ((Integer) routingParams.get("RoutingT")).intValue();
+                                                            outputDirectory.mkdirs();
+                                                            new ParallelSimulationToFileHelium(xOut, yOut, matDirs, magnitudes, horOrders, metaModif, stormFile, 0.0f, rrt, routingParams, outputDirectory, alphaSimulationTime, omegaSimulationTime, disc, WorkDir);
+                                                        }
                                                     }
 
                                                 }
@@ -807,411 +717,332 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
         }
     }
 
-    public static void subMainDEM_TTime(String args[]) throws java.io.IOException, VisADException {
+    public static String[] defineDEMxy(String BasinName, String SimName) {
 
-
-
-        String WorkDir = "/Users/rmantill/qsubBin/tempScripts/";
-        java.io.File WorkDirectory = new java.io.File(WorkDir);
-        int n = 1;
-        while (WorkDirectory.exists() == true) {
-            //System.out.println("file exists" + WorkDir);
-            n = n + 1;
-            WorkDir = "/Users/rmantill/qsubBin/tempScripts" + n + "/";
-            WorkDirectory = new java.io.File(WorkDir);
+        // DEFINE THE DEM and x and y
+        int xOut = 2817;
+        int yOut = 713; //90METERDEMClear Creek - coralville
+        String[] OUTPUT = {"error", "errorx", "errory"};
+        if (SimName.contains("ASTER")) {
+            OUTPUT[0] = "/scratch/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM";
+            xOut = 1596;
+            yOut = 298;
+        }
+        if (SimName.equals("5DEMLIDAR")) {
+            xOut = 8052;
+            yOut = 497;
+            OUTPUT[0] = "/scratch/CuencasDataBases/ClearCreek/Rasters/Topography/5meters/5meterc1.metaDEM";
+        }
+        if (SimName.equals("10DEMLIDAR")) {
+            xOut = 4025;
+            yOut = 244;
+            OUTPUT[0] = "/scratch/CuencasDataBases/ClearCreek/Rasters/Topography/10meters/10meterc1.metaDEM";
+        }
+        if (SimName.equals("20DEMLIDAR")) {
+            xOut = 2013;
+            yOut = 122;
+            OUTPUT[0] = "/scratch/CuencasDataBases/ClearCreek/Rasters/Topography/20meters/20meterc1.metaDEM";
+        }
+        if (SimName.equals("30DEMLIDAR")) {
+            xOut = 1341;
+            yOut = 82;
+            OUTPUT[0] = "/scratch/CuencasDataBases/ClearCreek/Rasters/Topography/30meters/30meterc1.metaDEM";
+        }
+        if (SimName.equals("60DEMLIDAR")) {
+            xOut = 670;
+            yOut = 41;
+            OUTPUT[0] = "/scratch/CuencasDataBases/ClearCreek/Rasters/Topography/60meters/60meterc1.metaDEM";
+        }
+        if (SimName.equals("90DEMLIDAR")) {
+            xOut = 447;
+            yOut = 27;
+            OUTPUT[0] = "/scratch/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/90meterc1.metaDEM";
+        }
+        if (SimName.equals("90DEMUSGS")) {
+            xOut = 2817;
+            yOut = 713;
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
         }
 
-        System.out.println("file does not exist, Create: " + WorkDir);
+        if (SimName.equals("30DEMUSGS")) {
+            xOut = 1541;
+            yOut = 92;
+            OUTPUT[0] = "/scratch/CuencasDataBases/ClearCreek/Rasters/Topography/30USGS/ned_1.metaDEM";
+        }
 
-        WorkDirectory.mkdirs();
+        if (SimName.equals("10DEMUSGS")) {
+            xOut = 4624;
+            yOut = 278;
+            OUTPUT[0] = "/scratch/CuencasDataBases/ClearCreek/Rasters/Topography/10USGS/ned_1_3.metaDEM";
+        }
 
-//          String[] AllSimName = {"30DEMUSGS","10DEMLIDAR","ASTER",};
+        if (BasinName.indexOf("Cedar") >= 0) {
+            xOut = 2734;
+            yOut = 1069; //Cedar Rapids
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
 
-        String[] AllSimName = {"10DEMLIDAR"};
+        if (BasinName.indexOf("Waverly") >= 0) {
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+            xOut = 1770;
+            yOut = 1987;
+        }
 
-        String[] AllRain = {"3ClearCreekTTime"};
+        if (BasinName.indexOf("Iowa") >= 0) {
+            xOut = 2885;
+            yOut = 690;
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+
+        if (BasinName.indexOf("Turkey") >= 0) {
+
+            xOut = 3053;
+            yOut = 2123;
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+        if (BasinName.indexOf("Volga") >= 0) {
+            xOut = 3091;
+            yOut = 2004;
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+        if (BasinName.indexOf("Hoover") >= 0) {
+            xOut = 3113;
+            yOut = 705;
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+
+        if (SimName.indexOf("120DEMUSGS") >= 0) {
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs120m.metaDEM";
+            if (BasinName.indexOf("Clear") >= 0) {
+                xOut = 2113;
+                yOut = 535;
+            }
+            if (BasinName.indexOf("Iowa") >= 0) {
+                xOut = 2164;
+                yOut = 517;
+            }
+
+            if (BasinName.indexOf("Cedar") >= 0) {
+                xOut = 2050;
+                yOut = 802;
+            }
+        }
+
+
+        if (SimName.indexOf("180DEMUSGS") >= 0) {
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs180m.metaDEM";
+            if (BasinName.indexOf("Clear") >= 0) {
+                xOut = 1409;
+                yOut = 356;
+            }
+            if (BasinName.indexOf("Cedar") >= 0) {
+                xOut = 1367;
+                yOut = 534;
+            }
+
+            if (BasinName.indexOf("Iowa") >= 0) {
+                xOut = 1443;
+                yOut = 345;
+            }
+
+        }
+
+        if (SimName.indexOf("90DEMASTER") >= 0) {
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/90master.metaDEM";
+            if (BasinName.indexOf("Clear") >= 0) {
+                xOut = 2807;
+                yOut = 643;
+            }
+            if (BasinName.indexOf("Cedar") >= 0) {
+                xOut = 2723;
+                yOut = 997;
+            }
+
+            if (BasinName.indexOf("Iowa") >= 0) {
+                xOut = 2873;
+                yOut = 617;
+            }
+
+        }
+
+        if (SimName.indexOf("30DEMUSGS") >= 0) {
+
+            if (BasinName.indexOf("Clear") >= 0) {
+                OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM";
+                xOut = 8288;
+                yOut = 1029;
+            }
+
+            if (BasinName.indexOf("Cedar") >= 0) {
+                OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.metaDEM";
+                xOut = 7875;
+                yOut = 1361;
+            }
+
+            if (BasinName.indexOf("Iowa") >= 0) {
+                OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM";
+                xOut = 8443;
+                yOut = 1029;
+
+            }
+
+            if (BasinName.indexOf("Waverly") >= 0) {
+                OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.metaDEM";
+                xOut = 5468;
+                yOut = 3237;
+            }
+
+        }
+        OUTPUT[1] = Integer.toString(xOut);
+        OUTPUT[2] = Integer.toString(yOut);
+
+        System.out.println("OUTPUT[0] = " + OUTPUT[0]);
+        System.out.println("OUTPUT[1] = " + OUTPUT[1]);
+        System.out.println("OUTPUT[2] = " + OUTPUT[2]);
+        return OUTPUT;
+    }
+
+    public static int definedisc(String BasinName, String SimName) {
+        int disc = 4;
+        if (BasinName.indexOf("Cedar") > 0 && SimName.indexOf("USGS") > 0) {
+            disc = 5;
+        }
+
+
+        if (BasinName.indexOf("Turkey") > 0 && SimName.indexOf("USGS") > 0) {
+            disc = 4;
+        }
 
 
 
+        if (BasinName.indexOf("Volga") > 0 && SimName.indexOf("USGS") > 0) {
+            disc = 4;
+        }
 
-//,"3VolgaNOBIASCORR"
-        int nsim = AllSimName.length;
-        int nbas = AllRain.length;
+        if (BasinName.indexOf("Water") > 0 && SimName.indexOf("USGS") > 0) {
+            disc = 4;
+        }
 
-        for (int i = 0; i < nsim; i++) {
-            for (int ib = 0; ib < nbas; ib++) {
+        if (BasinName.indexOf("Iowa") > 0 && SimName.indexOf("USGS") > 0) {
+            disc = 4;
+        }
 
-                System.out.println("Running BASIN " + AllSimName[i]);
-                System.out.println("Running BASIN " + AllRain[ib]);
+        if (BasinName.indexOf("Janes") > 0 && SimName.indexOf("USGS") > 0) {
+            disc = 4;
+        }
 
-                String SimName = AllSimName[i];
-                String BasinName = AllRain[ib];
-                String DEM = "error";
+        if (BasinName.indexOf("Clear") > 0 && BasinName.indexOf("2009") > 0) {
+            disc = 3;
+        }
 
-                // DEFINE THE DEM
-                int xOut = 2817;
-                int yOut = 713; //90METERDEMClear Creek - coralville
+        if (BasinName.indexOf("disc4") > 0) {
+            disc = 4;
+        }
 
-                if (SimName.equals("ASTER")) {
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM";
-                    xOut = 1596;
-                    yOut = 298;
+        if (BasinName.indexOf("Hoover") > 0) {
+            disc = 2;
+        }
+        return disc;
+    }
+
+    public static String definestorm(String BasinName, String SimName) {
+        String stormFile = "error";
+        stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/15min/Time/Bin/hydroNexrad.metaVHC";
+        //1 space and 180 time
+        if (BasinName.indexOf("1_180") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/180min/Time/Bin/hydroNexrad.metaVHC";
+        }
+        //6 space and 15 time
+        if (BasinName.indexOf("6_15") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/15min/Time/Bin/hydroNexrad.metaVHC";
+        }
+        //6 space and 180 tim
+        if (BasinName.indexOf("6_180") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/180min/Time/Bin/hydroNexrad.metaVHC";
+        }
+        if (BasinName.indexOf("15_15") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/15/15min/Time/Bin/hydroNexrad.metaVHC";
+        }
+
+        if (BasinName.indexOf("15_180") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/15/180min/Time/Bin/hydroNexrad.metaVHC";
+        }
+
+        if (BasinName.indexOf("6_180") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/180min/Time/Bin/hydroNexrad.metaVHC";
+        }
+        if (BasinName.indexOf("1_60") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/60min/Time/Bin/hydroNexrad.metaVHC";
+        }
+        if (BasinName.indexOf("2_60") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/2/60min/Time/Bin/hydroNexrad.metaVHC";
+        }
+
+        if (BasinName.indexOf("6_60") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/60min/Time/Bin/hydroNexrad.metaVHC";
+        }
+        if (BasinName.indexOf("15_60") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/15/60min/Time/Bin/hydroNexrad.metaVHC";
+        }
+        if (BasinName.indexOf("ori") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune26/hydroNexrad.metaVHC";
+        }
+        if (BasinName.indexOf("PERS") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/PERSIANN/May29Jun17/PERSIANN_3h.metaVHC";
+        }
+        if (BasinName.indexOf("TRMM") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/SatelliteData/RC1.00/bin/rain17/prec.metaVHC";
+        }
+        if (BasinName.indexOf("NOBIASCORR") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/DataGenNov_2010/Radar_merged_Vhc/NEXRAD_BC.metaVHC";
+        }
+        if (BasinName.indexOf("BO") > 0) {
+            stormFile = "//scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/20Aug2002_24Aug2002VHC/NEXRAD_BC.metaVHC";
+        }
+
+        if (BasinName.indexOf("Adv") > 0) {
+            if (BasinName.indexOf("May") > 0) {
+
+                stormFile = "/scratch/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/May2009_AdvectionVHC/NEXRAD_BC.metaVHC";
+                if (BasinName.indexOf("No") > 0) {
+                    stormFile = "/scratch/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/May2009_NoAdvectionVHC/NEXRAD_BC.metaVHC";
                 }
-                if (SimName.equals("5DEMLIDAR")) {
-                    xOut = 8052;
-                    yOut = 497;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/5meters/5meterc1.metaDEM";
+            }
+            if (BasinName.indexOf("Mar") > 0) {
+                stormFile = "/scratch/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/March2009_AdvectionVHC/NEXRAD_BC.metaVHC";
+                if (BasinName.indexOf("No") > 0) {
+                    stormFile = "/scratch/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/March2009_NoAdvectionVHC/NEXRAD_BC.metaVHC";
                 }
-                if (SimName.equals("10DEMLIDAR")) {
-                    xOut = 4025;
-                    yOut = 244;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/10meters/10meterc1.metaDEM";
-                }
-                if (SimName.equals("20DEMLIDAR")) {
-                    xOut = 2013;
-                    yOut = 122;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/20meters/20meterc1.metaDEM";
-                }
-                if (SimName.equals("30DEMLIDAR")) {
-                    xOut = 1341;
-                    yOut = 82;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/30meters/30meterc1.metaDEM";
-                }
-                if (SimName.equals("60DEMLIDAR")) {
-                    xOut = 670;
-                    yOut = 41;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/60meters/60meterc1.metaDEM";
-                }
-                if (SimName.equals("90DEMLIDAR")) {
-                    xOut = 447;
-                    yOut = 27;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/90meterc1.metaDEM";
-                }
-                if (SimName.equals("90DEMUSGS")) {
-                    xOut = 2817;
-                    yOut = 713;
-                    DEM = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                }
-
-                if (SimName.equals("30DEMUSGS")) {
-                    xOut = 1541;
-                    yOut = 92;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/30USGS/ned_1.metaDEM";
-                }
-
-                if (SimName.equals("10DEMUSGS")) {
-                    xOut = 4624;
-                    yOut = 278;
-                    DEM = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/10USGS/ned_1_3.metaDEM";
-                }
-
-                if (BasinName.indexOf("Cedar") >= 0) {
-                    xOut = 2734;
-                    yOut = 1069; //Cedar Rapids
-                    DEM = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                }
-
-
-                if (BasinName.indexOf("Iowa") >= 0) {
-                    xOut = 2885;
-                    yOut = 690;
-                    DEM = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                }
-
-
-                if (BasinName.indexOf("Turkey") >= 0) {
-
-                    xOut = 3053;
-                    yOut = 2123;
-                    DEM = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                }
-
-                if (BasinName.indexOf("Volga") >= 0) {
-                    xOut = 3091;
-                    yOut = 2004;
-                    DEM = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                }
-
-                java.io.File theFile = new java.io.File(DEM);
-                //java.io.File theFile=new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM");
-//        java.io.File theFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/10meters/10meterc1.metaDEM");
-//         int xOut = 4025; int yOut = 244;//10METERDEMClear Creek - coralville
-//        java.io.File theFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/90meterc1.metaDEM");
-//  int xOut =  447; int yOut = 27;//90METERDEMClear Creek - coralville
-                hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(theFile);
-                metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".dir"));
-                metaModif.setFormat("Byte");
-                byte[][] matDirs = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
-
-                metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".magn"));
-                metaModif.setFormat("Integer");
-                int[][] magnitudes = new hydroScalingAPI.io.DataRaster(metaModif).getInt();
-
-                metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".horton"));
-                metaModif.setFormat("Byte");
-                byte[][] horOrders = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
-
-                java.io.File stormFile;
-                java.util.Hashtable routingParams = new java.util.Hashtable();
-
-
-                // DEFINE THE STORM FILE - IF PRECIPITATION IS NOT CONSTANT
-
-                //stormFile=new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune26/hydroNexrad.metaVHC");
-
-                // DEFINE THE INITIAL TIME OF THE SIMULATION
-                java.util.Calendar alphaSimulationTime = java.util.Calendar.getInstance();
-                alphaSimulationTime.set(2008, 4, 29, 0, 0, 0);
-
-
-                // DEFINE THE FINAL TIME OF THE SIMULATION
-                java.util.Calendar omegaSimulationTime = java.util.Calendar.getInstance();
-                omegaSimulationTime.set(2008, 6, 2, 0, 0, 0);
-
-
-                if (BasinName.indexOf("TTime") >= 0) {
-                    alphaSimulationTime.set(2010, 0, 1, 0, 0, 0);
-                    omegaSimulationTime.set(2010, 0, 3, 0, 0, 0);
-                }
-
-
-
-                java.io.File outputDirectory;
-
-
-                //int xOut =  1341;int yOut =  82;//30METERDEMClear Creek - coralville
-
-
-                int disc = 4;
-                if (BasinName.indexOf("Cedar") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 5;
-                }
-
-                if (BasinName.indexOf("Turkey") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 4;
-                }
-
-                if (BasinName.indexOf("Volga") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 4;
-                }
-
-                if (BasinName.indexOf("Water") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 4;
-                }
-
-                if (BasinName.indexOf("Iowa") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 4;
-                }
-
-                if (BasinName.indexOf("Janes") > 0 && SimName.indexOf("USGS") > 0) {
-                    disc = 4;
-                }
-
-                if (BasinName.indexOf("Clear") > 0 && BasinName.indexOf("2009") > 0) {
-                    disc = 3;
-                }
-
-                if (BasinName.indexOf("disc4") > 0) {
-                    disc = 4;
-                }
-//        int xOut = 2734;
-//        int yOut = 1069; //Cedar Rapids
-//        int disc=5;
-//        String BasinName="3CedarRapids";
-                //1 space and 15 time
-                stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/15min/Time/Bin/hydroNexrad.metaVHC");
-                //1 space and 180 time
-                if (BasinName.indexOf("1_180") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/180min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                //6 space and 15 time
-                if (BasinName.indexOf("6_15") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/15min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                //6 space and 180 tim
-                if (BasinName.indexOf("6_180") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/180min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("15_15") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/15/15min/Time/Bin/hydroNexrad.metaVHC");
-                }
-
-                if (BasinName.indexOf("15_180") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/15/180min/Time/Bin/hydroNexrad.metaVHC");
-                }
-
-                if (BasinName.indexOf("6_180") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/180min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("1_60") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/60min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("2_60") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/2/60min/Time/Bin/hydroNexrad.metaVHC");
-                }
-
-                if (BasinName.indexOf("6_60") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/60min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("15_60") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/15/60min/Time/Bin/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("ori") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune26/hydroNexrad.metaVHC");
-                }
-                if (BasinName.indexOf("PERS") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/PERSIANN/May29Jun17/PERSIANN_3h.metaVHC");
-                }
-                if (BasinName.indexOf("TRMM") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/SatelliteData/RC1.00/bin/rain17/prec.metaVHC");
-                }
-                if (BasinName.indexOf("NOBIASCORR") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/DataGenNov_2010/Radar_merged_Vhc/NEXRAD_BC.metaVHC");
-                }
-
-                if (BasinName.indexOf("TTime") > 0) {
-                    stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/constant/thesis2/0mm/15min/vhc/0mm15min.metaVHC");
-                }
-
-                if (BasinName.indexOf("2009") > 0) {
-                    if (BasinName.indexOf("May") > 0) {
-
-                        stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/May2009_AdvectionVHC/NEXRAD_BC.metaVHC");
-                        if (BasinName.indexOf("No") > 0) {
-                            stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/May2009_NoAdvectionVHC/NEXRAD_BC.metaVHC");
-                        }
-                    }
-                    if (BasinName.indexOf("Mar") > 0) {
-                        stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/March2009_AdvectionVHC/NEXRAD_BC.metaVHC");
-                        if (BasinName.indexOf("No") > 0) {
-                            stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/March2009_NoAdvectionVHC/NEXRAD_BC.metaVHC");
-                        }
-                    }
-                    if (BasinName.indexOf("Jun") > 0) {
-                        stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/Jun2009_AdvectionVHC/NEXRAD_BC.metaVHC");
-                        if (BasinName.indexOf("No") > 0) {
-                            stormFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/Jun2009_NoAdvectionVHC/NEXRAD_BC.metaVHC");
-                        }
-                    }
-                }
-
-                routingParams.put("v_o", 0.88f);
-                routingParams.put("lambda1", 0.25f);
-                routingParams.put("lambda2", -0.15f);
-
-                routingParams.put("widthCoeff", 1.0f);
-                routingParams.put("widthExponent", 0.4f);
-                routingParams.put("widthStdDev", 0.0f);
-                routingParams.put("chezyCoeff", 14.2f);
-                routingParams.put("chezyExponent", -1 / 3.0f);
-                routingParams.put("vrunoff", 50.f); // define a constant number or -9.9 for vel=f(land Cover)
-                routingParams.put("vssub", 1.0f);
-                routingParams.put("SoilMoisture", 2.f);
-                routingParams.put("lambdaSCSMethod", 0.0f);
-                routingParams.put("Vconst", 0.5f); // CHANGE IN THE NETWORKEQUATION CLA
-                routingParams.put("P5Condition", -9.0f); // Porcentage of the soil filled up with water
-                routingParams.put("ReserVolume", 0.0f); // m3/km2 of reservation
-                routingParams.put("ReserVolumetType", 1.0f); // reservoir position:
-                routingParams.put("RunoffCoefficient", 1.0f); // reservoir position:
-                routingParams.put("PondedWater", 25.4f); // surface initial condition [mm]:
-
-                routingParams.put("dynaIndex", 3);
-                //               Initial condition
-                routingParams.put("PorcHSaturated", 0.8f); // define a constant number or -9.9 for vel=f(land Cover)
-                routingParams.put("PorcPhiUnsat", 0.8f); // define a constant number or -9.9 for vel=f(land Cover)
-                routingParams.put("BaseFlowCoef", 0.0f); // define a constant number or -9.9 for vel=f(land Cover)
-                routingParams.put("BaseFlowExp", 0.40f); // define a constant number or -9.9 for vel=f(land Cover)
-                routingParams.put("hillshapeparamflag", 0.f);
-
-//C1111111 RT=2 (cte vel). HillT=0 (const runoff), HillVel=0 (no hill delay), RR=1.0
-
-
-                float[] BasinFlagAr = {0.0f};
-                for (float BF : BasinFlagAr) {
-
-                    float bflag = BF;
-
-                    routingParams.put("Basin_sim", bflag); // Cedar river - define Land cover and soil parameter
-
-                    float[] vsAr2 = {0.001f};
-                    //float[] vsAr = {0.0001f,0.0005f,0.001f,0.005f,0.01f};
-                    float[] PH2 = {0.0f};
-                    float[] Phi2 = {0.0f};
-                    float[] IaAre2 = {1.0f};
-
-                    float[] IaArc2 = {0.0f};
-                    //float[] IaArc = {0.0f,0.1f,1.0f};
-// float[] voAr2 = {0.5f}; // in m/s
-                    float[] voAr2 = {4.0f}; // in m/s
-                    //float[] rcAr2 = {1.0f};
-                    //float[] vhAr2 = {0.1f*3600f}; // in m/h
-                    float[] vhAr2 = {0.01f * 3600.f, 0.02f * 3600f, 0.05f * 3600f, 0.1f * 3600f}; // in m/h
-
-
-                    for (float vo1 : voAr2) {
-                        float vo = vo1;
-                        //                   float l1 = l11;
-                        //                   float l2 = -0.82f * l11 + 0.1025f;
-                        //                   float vo = 0.42f - 0.29f * l11 - 3.1f * l2;
-
-                        for (float voo : vsAr2) {
-                            float vsub = voo;
-                            for (float in1 : PH2) {
-                                float p1 = in1;
-                                for (float in2 : Phi2) {
-                                    float p2 = in2;
-                                    for (float ia1e : IaAre2) {
-                                        float iae = ia1e;
-                                        for (float ia1c : IaArc2) {
-                                            float iac = ia1c;
-
-                                            //for (float rc1 : rcAr2) {
-                                            //    float rc = rc1;
-                                                for (float vh1 : vhAr2) {
-                                                    float vh = vh1;
-                                                    //C999999 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - spattially constant
-                                                    routingParams.put("Vconst", vo); // CHANGE IN THE NETWORKEQUATION CLA
-                                                    routingParams.put("v_o", vo);
-                                                    routingParams.put("vrunoff", vh);
-                                                    //                         routingParams.put("lambda1", l11);
-                                                    //                         routingParams.put("lambda2", l2);
-                                                    routingParams.put("PorcHSaturated", p1);
-                                                    routingParams.put("vssub", vsub);
-                                                    routingParams.put("PorcPhiUnsat", p2);
-                                                    routingParams.put("lambdaSCSMethod", iae);
-                                                    routingParams.put("BaseFlowCoef", iac); // define a constant number or -9.9 for vel=f(land Cover)
-                                                    routingParams.put("BaseFlowExp", iae); // define a constant number or -9.9 for vel=f(land Cover)
-                                                    routingParams.put("RoutingT", 2); // check NetworkEquationsLuciana.java for definitions
-                                                    routingParams.put("HillT", 1);  // check NetworkEquationsLuciana.java for definitions
-                                                    routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
-                                                    routingParams.put("ConstSoilStorage", -9.f);  // check NetworkEquationsLuciana.java for definitions
-
-                                                    outputDirectory = new java.io.File("/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/" + BasinName + "/" + SimName + "/" + BF + "/"
-                                                            + "RoutT_" + ((Integer) routingParams.get("RoutingT")).intValue() + "/"
-                                                            + "HillT_" + ((Integer) routingParams.get("HillT")).intValue() + "/"
-                                                            + "HillVelT_" + ((Integer) routingParams.get("HillVelocityT")).intValue()
-                                                            + "/VS" + ((Float) routingParams.get("vssub")).floatValue()
-                                                            + "/vhill_" + ((Float) routingParams.get("vrunoff")).floatValue()
-                                                            + "/vcte_" + ((Float) routingParams.get("v_o")).floatValue());
-
-//                                            + "RR_" + ((Float) routingParams.get("RunoffCoefficient")).floatValue() +"/"
-                                                    // + "VHILL_" + ((Float) routingParams.get("vrunoff")).floatValue()
-
-                                                    int rrt = ((Integer) routingParams.get("RoutingT")).intValue();
-                                                    outputDirectory.mkdirs();
-                                                    new ParallelSimulationToFileHelium(xOut, yOut, matDirs, magnitudes, horOrders, metaModif, stormFile, 0.0f, rrt, routingParams, outputDirectory, alphaSimulationTime, omegaSimulationTime, disc, WorkDir);
-
-                                               // }
-
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+            }
+            if (BasinName.indexOf("Jun") > 0) {
+                stormFile = "/scratch/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/Jun2009_AdvectionVHC/NEXRAD_BC.metaVHC";
+                if (BasinName.indexOf("No") > 0) {
+                    stormFile = "/scratch/CuencasDataBases/ClearCreek/Rasters/Hydrology/event_2009/Jun2009_NoAdvectionVHC/NEXRAD_BC.metaVHC";
                 }
             }
         }
+
+        //stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/15min/Time/Bin/hydroNexrad.metaVHC";
+        int index_2 = BasinName.indexOf("20");
+
+        if (BasinName.indexOf("20") > 0) {
+            String timeStamp = BasinName.substring(index_2, index_2 + 4);
+            int yr = java.lang.Integer.parseInt(timeStamp);
+
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii" + yr + "VHC/NEXRAD_BC.metaVHC";
+
+            if (BasinName.indexOf("PER") > 0) {
+                stormFile = "//scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/PERSIANN/vhc_sim_period/" + yr + "/PERSIANN_3h.metaVHC";
+            }
+            System.out.println("year  " + yr);
+
+//
+        }
+        return stormFile;
+
     }
 }

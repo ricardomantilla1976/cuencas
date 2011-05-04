@@ -346,6 +346,8 @@ public class NetworkExtractionModule implements Runnable {
         //printDebug=true;
         metaDEM=metaDEM1;
         inicio(dataDEM1);
+        System.out.println("Finish inicio");
+
         OpProc = new hydroScalingAPI.modules.networkExtraction.widgets.ExtractionOptions(this);
         taskDIR=true; taskRED=true; taskGEO=false; taskVECT=false;
         
@@ -354,7 +356,10 @@ public class NetworkExtractionModule implements Runnable {
         
         pixPodado = 0.05f/(float)dy/(float)dxm;
         
+        System.out.println(" start Corrige DEM");
         corrigeDEM();
+        System.out.println(" finish Corrige DEM");
+
         OpProc.dispose();
     }
     
@@ -1081,8 +1086,8 @@ public class NetworkExtractionModule implements Runnable {
         
  
 System.out.print("ASTER");
-        Arguments=new String[] { "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/asterdem.metaDEM",
-                                 "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/asterdem.dem"};
+        Arguments=new String[] { "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/cedar_aster.metaDEM",
+                                 "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/cedar_aster.dem"};
 //
 //System.out.print("5meter");
 //        Arguments=new String[] { "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/5meters/5meterc1.metaDEM",

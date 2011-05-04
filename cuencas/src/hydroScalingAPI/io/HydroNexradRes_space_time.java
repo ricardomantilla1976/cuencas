@@ -411,9 +411,9 @@ public class HydroNexradRes_space_time extends Object {
 
 
         /*****DEFINE DESIRED RESOLUTION IN SPACE (ARCMIN) AND TIME (MIN)*******/
-        int[] space = {2,6};
+        int[] space = {4};
         //int[] space = {1};
-        int[] time = {60,180};
+        int[] time = {60};
         //int[] time = {180};
 
         float missing = 0.0f;

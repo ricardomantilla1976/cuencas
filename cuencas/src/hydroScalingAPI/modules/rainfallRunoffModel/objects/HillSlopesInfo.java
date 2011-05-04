@@ -374,6 +374,11 @@ public class HillSlopesInfo extends java.lang.Object {
     public double Soil_SCS(int HillNumber){
         return thisSCSData.getMaxHillSOIL(HillNumber);
     }
+
+    public double MaxInfRate(int HillNumber) {
+        return thisSCSData.maxInfiltrationRate[HillNumber];
+    }
+
     /* Luciana Cunha Edition - SCS Manager - Object for Network Equations using SCSmethod
      * @param HillNumber The index of the desired hillslope
      * @return The porcentage of the dominant soil hydrologic group - from 0 (lower infiltration) to 3 (higher infiltration)

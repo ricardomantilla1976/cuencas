@@ -13,38 +13,51 @@ import java.io.*;
 import java.io.*;
 import java.util.*;
  
-public class HydroNexradToCRas extends Object {
+public class HydroNexradToCRasCropped extends Object {
     
     private  String[]         variables = new String[8];
     private  String[]         metaInfo = new String[12];
     private  String           fileName;
     private  float[][]        matrix;
-    private  int              columns,rows; 
-    
-    public HydroNexradToCRas(java.io.File inputFile, java.io.File outputFile, int numRow, int numCol) throws java.io.IOException {
+    private  int              columns,rows;
+    private  int              finicol,finirow;
+
+    private  int              fendcol,fendrow;
+
+
+    public HydroNexradToCRasCropped(java.io.File inputFile, java.io.File outputFile, int numRow, int numCol, int iniRow, int endRow, int iniCol,int endCol) throws java.io.IOException {
         
         java.io.FileReader ruta;
         java.io.BufferedReader buffer;
         
         java.util.StringTokenizer tokens;
         String linea=null, basura, nexttoken;
-        System.out.println("test1");
+        //System.out.println("test1");
         ruta = new FileReader(inputFile);
         buffer=new BufferedReader(ruta);         
         
         columns = numCol;
-        rows = numRow;        
+        rows = numRow;
+             
+        finirow = iniRow;
+        finicol = iniCol;
+        int fnrow=endRow-iniRow;
+        fendrow=endRow;
+        fendcol=endCol;
         matrix = new float[rows][columns];
         
+        
         for (int i=0;i<6;i++) buffer.readLine();
-        System.out.println("test2");
+        //System.out.println("test2");
+
+
         for (int i=0;i<rows;i++) {
             
             linea = buffer.readLine();
 
             if(linea==null) {
                 
-                for (int j=0;j<columns;j++) {
+                   for (int j=0;j<columns;j++) {
                     matrix[i][j] = -99.00f;
                     System.out.println(matrix[i][j]);
                 }}
@@ -54,14 +67,14 @@ public class HydroNexradToCRas extends Object {
             for (int j=0;j<columns;j++) {
                 try{
                     matrix[i][j] = new Float(tokens.nextToken()).floatValue();
-                    matrix[i][j]=matrix[i][j];
+                    
                 } catch (NumberFormatException NFE){
                     matrix[i][j] = -99.00f;
                 }
             }}
         }
         buffer.close();
-        System.out.println("test3");
+        //System.out.println("test3");
         fileName=inputFile.getName();
         String fileBinoutputDir=outputFile.getAbsolutePath();
                 
@@ -77,18 +90,16 @@ public class HydroNexradToCRas extends Object {
         outputDir = new FileOutputStream(BinaryFile);
         bufferout=new BufferedOutputStream(outputDir);
         newfile=new DataOutputStream(bufferout);
-        
-        for (int i=rows-1;i>-1;i--) for (int j=0;j<columns;j++) {
+
+        for (int i=fendrow-2;i>finirow-2;i--) for (int j=finicol;j<fendcol;j++) {
             newfile.writeFloat(matrix[i][j]);
-            if(matrix[i][j]>200 || matrix[i][j]<-99 )
-            {
-                System.out.println("row" + i + "column" + j + "value" + matrix[i][j] + "file" + outputDir.toString());
-                System.exit(1);
-            }
-            }
+            if(matrix[i][j]>200) System.out.println("row"+i+"column"+j+ "value" + matrix[i][j] + "file" +outputDir.toString());
+        }
         newfile.close();
         bufferout.close();
         outputDir.close();
+
+        
     }
     
     public static ArrayList<File> getFileList(File dir) throws FileNotFoundException{
@@ -101,18 +112,17 @@ public class HydroNexradToCRas extends Object {
         return result;
     }
     
- public static void createMetaFile(File directory, int newsresol, int newtresol, int Finalrows, int Finalcolumns) {
+ public static void createMetaFile(File directory, int newsresol, int newtresol, int Finalrows, int Finalcolumns,double lat,double longitude) {
         try {
             File saveFile = new File(directory.getPath() + File.separator + "NEXRAD_BC.metaVHC");
-            System.out.print(saveFile);
-       
+            System.out.print(saveFile+"\n");
             // String F=directory.getPath()+File.separator+"/bin/"+"prec.metaVHC";
             PrintWriter writer = new PrintWriter(new FileWriter(saveFile));
             // System.out.println("file = "+ F);
             // System.out.println("in metafile function new_s_res = "+ newsresol+"new_t_res = "+newtresol+"Frows = "+Finalrows + "Fcolumns = "+Finalcolumns);
             writer.println("[Name]");
             // writer.println("Precipitation Radar Data From KICT - basin mode");
-            writer.println("PRECIPITATION PROVIDED BY BO - got on HYDRO-NEXRAD");
+            writer.println("PRECIPITATION PROVIDED BY BONG CHUL _ RADAR PAPER");
             //writer.println("Precipitation Radar Data From KICT");
             //writer.println("Precipitation Radar Data From KTLX");
             //writer.println("Precipitation Radar Data From KINX");
@@ -120,15 +130,23 @@ public class HydroNexradToCRas extends Object {
             //writer.println("37:38:00.00 N"); // KICT radar
             //writer.println("35:36:00.00 N"); // KICT radar
             //writer.println("41:38:30.00 N"); // Iowa River
-            writer.println("40:57:36.00 N"); // Iowa River
+
+            int latdegree=(int)Math.floor(lat);
+
+            int latmin=(int) Math.round((lat-(double)latdegree)*60);
+
+            writer.println(latdegree + ":"+latmin+ ":00.00 N"); // Iowa River
             //writer.println("33:13:00.00 N"); // KTLX radar
             //writer.println("34:07:00.00 N"); // KINX radar
             writer.println("[Westernmost Longitude]");
-
+         int longdegree=(int)Math.floor(Math.abs(longitude));
+            int longmin=(int) Math.round((Math.abs(longitude)-(double)longdegree)*60);
+ System.out.println(latdegree + ":"+latmin+ ":00.00 N");
             //writer.println("97:18:00.00 W"); // KICT basin
             //writer.println("97:18:00.00 W"); // KICT radar
-            writer.println("93:57:36.00 W"); //Iowa River
-             //writer.println("98:08:00.00 W");// KINX radar
+            writer.println(longdegree + ":"+longmin+ ":00.00 W"); //Iowa River
+   System.out.println(longdegree + ":"+longmin+ ":00.00 W");
+            //writer.println("98:08:00.00 W");// KINX radar
             // writer.println("100:04:00.00 W"); // KICT radar
             //writer.println("99:19:00.00 W"); // KTLX radar
             //writer.println("98:08:00.00 W");// KINX radar
@@ -162,7 +180,7 @@ public class HydroNexradToCRas extends Object {
 
     }
         public static String Outfilename(String fileName) {
-        System.out.println("fileName - FROM");
+        System.out.println("fileName");
             System.out.println(fileName);
             String[] months={"January","February","March","April","May","June","July","August","September","October","November","December"};
             String[] months2={"JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"};      
@@ -185,56 +203,93 @@ public class HydroNexradToCRas extends Object {
 //        timeStamp[3]=fileName.substring(28,30); // hour
 //        System.out.println(timeStamp[3]);
 //        timeStamp[4]=fileName.substring(30,32); // min
-         int index=fileName.lastIndexOf("_15_") + 4;
-         System.out.println("index    =     " + index);
-              timeStamp[0]=fileName.substring(index+5,index+9); // year
-        System.out.println(timeStamp[0]);
-        timeStamp[1]=fileName.substring(index+2,index+5);  // month
-        //int mon=java.lang.Integer.parseInt(timeStamp[1]);
-        System.out.println(timeStamp[1]);
-        //monthString=months[mon-1];
-        monthString=months[0];
-        for (int ii=0;ii<=11;ii++)
-        {        if(timeStamp[1].compareTo(months2[ii])==0)
-                 {monthString=months[ii];}
-        }
 
-        timeStamp[2]=fileName.substring(index,index+2);  // day
-        System.out.println(timeStamp[2]);
-        timeStamp[3]=fileName.substring(index+10,index+12); // hour
-        System.out.println(timeStamp[3]);
-        timeStamp[4]=fileName.substring(index+12,index+14);; // min
+              timeStamp[0]=fileName.substring(13,17); // year
+        System.out.println("year"+timeStamp[0]);
+        timeStamp[1]=fileName.substring(17,19);  // month
+        int mon=java.lang.Integer.parseInt(timeStamp[1]);
+        //System.out.println(timeStamp[1]);
+        monthString=months[mon-1];
+//        monthString=months[0];
+//        for (int ii=0;ii<=11;ii++)
+//        {        if(timeStamp[1].compareTo(months2[ii])==0)
+//                 {monthString=months[ii];}
+//        }
+//
+        timeStamp[2]=fileName.substring(19,21);  // day
+       System.out.println("day"+timeStamp[2]);
+        timeStamp[3]=fileName.substring(21,23); // hour
+        System.out.println("hour"+timeStamp[3]);
+        timeStamp[4]="00"; // min
 
-        System.out.println(timeStamp[4]);//      String monthString=months[(Integer.parseInt(timeStamp[1])-1)];
+        //System.out.println(timeStamp[4]);//      String monthString=months[(Integer.parseInt(timeStamp[1])-1)];
         
         String vhcFilename="NEXRAD_BC."+timeStamp[3]+timeStamp[4]+"00."+timeStamp[2]+"."+monthString+"."+timeStamp[0]+".vhc";
-        System.out.println(" to "+vhcFilename);
+        //System.out.println(" to "+vhcFilename);
        return vhcFilename;
     }
         
     public static void main(String[] args) throws java.io.IOException{
-        
+
+        for (int iy=2002;iy<2010;iy++){
         java.io.File AsciiFile;
        // File folder = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/1996/");
-        File folder = new File("//scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/20Aug2002_24Aug2002/");
-
+        File folder = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii"+ iy+ "hourly/");
+System.out.println("Folder"+folder.getAbsolutePath());
  	try{
-	ArrayList<File> files = HydroNexradToCRas.getFileList(folder);
+	ArrayList<File> files = HydroNexradToCRasCropped.getFileList(folder);
 	Iterator i = files.iterator();
         
 //        String OutputDir="/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/1996VHC/";         String OutputDir="/Users/rmantill";
-        String OutputDir="//scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/20Aug2002_24Aug2002VHC/";
+        String OutputDir=("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii"+ iy+ "VHC/");
 
         new File(OutputDir).mkdirs();
-        int nr=184;
-        int ncol=199;
-                 createMetaFile(new java.io.File(OutputDir), 60, 60, nr,ncol);
-	while (i.hasNext()){
+        int o_nr=264;
+        int o_ncol=435;
+        double o_latS=40.133333;
+        double o_longW=-97.183333;
+        double res=60./3600.;
+        double o_latN=o_latS+(double)o_nr*res;
+        double o_longE=o_longW+(double)o_ncol*res;
+
+        double f_latS=41.;
+        double f_latN=44.;
+        double f_longE=-91.;
+        double f_longW=-94.;
+
+        int inirow=(int)Math.abs(Math.floor((o_latN-f_latN)/res));
+        int finalrow=(int)Math.abs(Math.floor((o_latN-f_latS)/res));
+
+        int inicol=(int)Math.abs(Math.floor((o_longW-f_longW)/res));
+        int finalcol=(int)Math.abs(Math.floor((o_longW-f_longE)/res));
+
+        int f_nr=finalrow-inirow;
+        int f_ncol=finalcol-inicol;
+        double ff_latS=o_latS+res*(double)(o_nr-finalrow);
+        double ff_longW=o_longW+res*(double)(inicol);
+
+        System.out.println("Outdir"+OutputDir);
+
+ System.out.println("f_nr=" + f_nr +"      f_ncol"+f_ncol);
+
+
+        System.out.println("o_latN" + o_latN +"o_longE"+o_longE + "res" + res);
+           System.out.println("inirow" + inirow +"finalrow"+finalrow);
+    System.out.println("inirow" + inicol +"finalrow"+finalcol);
+    System.out.println("ff_latS" + ff_latS +"   ff_longW  "+ff_longW);
+
+       // System.exit(0);
+        
+                 createMetaFile(new java.io.File(OutputDir), 60, 60, f_nr,f_ncol,ff_latS,ff_longW);
+        
+        
+                 while (i.hasNext()){
+
             File temp = (File) i.next();
             
             String FileAscIn =temp.getAbsolutePath();
             AsciiFile = new java.io.File(FileAscIn);
-       
+            
   ///////////////////////////////
   /// Define the name of the output file          
         String fileName=AsciiFile.getPath().substring(AsciiFile.getPath().lastIndexOf(File.separator)+1);
@@ -244,8 +299,10 @@ public class HydroNexradToCRas extends Object {
         ////////////////////////////////////////
             try {  
                  System.out.println(temp.getAbsolutePath());
-                 new HydroNexradToCRas(AsciiFile,BinaryOutName,nr,ncol);
-             } catch (Exception IOE){
+if(BinaryOutName.getAbsolutePath().indexOf("May")>0){
+                 new HydroNexradToCRasCropped(AsciiFile,BinaryOutName,o_nr,o_ncol,inirow,finalrow,inicol,finalcol);
+             }
+            } catch (Exception IOE) {
                  System.err.print(IOE);
                  System.exit(0);
              }
@@ -254,7 +311,7 @@ public class HydroNexradToCRas extends Object {
             System.err.println("problem creating file list:");
             e.printStackTrace();
         }
-    }    
+    }    }
  }
 
 

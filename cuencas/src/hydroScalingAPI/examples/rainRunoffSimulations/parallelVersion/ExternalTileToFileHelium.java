@@ -82,7 +82,7 @@ import java.io.IOException;
 
         if(dynaIndex==3) {command=new String[] {
                                 System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
-                                "-Xmx1500m",
+                                "-Xmx2000m",
                                 "-Xrs",
                                 "-classpath",
                                 "\""+System.getProperty("java.class.path")+"\"",
@@ -146,11 +146,16 @@ import java.io.IOException;
 
 
             newfile.write("#!/bin/bash"+"\n");
-
+            
             newfile.write("#$ -o " + WorkDir + "$JOB_ID.out"+"\n");
             newfile.write("#$ -pe orte 1"+"\n");
             newfile.write("#$ -V"+"\n");
+            //newfile.write("#$ -q all.q" +"\n");
+
             newfile.write("#$ -q IFC"+"\n");
+            //newfile.write("#$ -q all.q@@killgroup"+"\n");
+            //newfile.write("#$ -ckpt user"+"\n");
+            //newfile.write("#$ -q all.q"+"\n");
             newfile.write("#$ -l ib=1"+"\n");
             newfile.write("#$ -cwd"+"\n");
             newfile.write("#$ -l mf=16G"+"\n");

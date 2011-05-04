@@ -410,7 +410,7 @@ public static void subMainManning(String args[]) throws java.io.IOException, Vis
 
         ///// DEM DATA /////
 
-        String pathinput = "E:/CUENCAS/Iowa_river/Rasters/Topography/3_arcSec/";
+        String pathinput = "/scratch/CuencasDataBases/Iowa_Rivers_DB//Rasters/Topography/3_arcSec/";
         java.io.File theFile=new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".metaDEM");
         hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
         metaModif.setLocationBinaryFile(new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".dir"));
@@ -450,19 +450,21 @@ public static void subMainManning(String args[]) throws java.io.IOException, Vis
               new_t_res=it;
  /*****DEFINE THE FOLDER WITH NEXRAD DATA AND OUTPUT FOLDER*******/           
               //String stormstring ="E:/CUENCAS/CedarRapids/Rainfall/resolution_study/Results_new/test/1_180/"+"H00070802_R1504_G_.metaVHC";
-              String stormstring ="E:/CUENCAS/CedarRapids/Rainfall/resolution_study/Results_new/WithGeomBias/"+NDecRes+"/"+new_t_res+"min/"+"/Time/Bin/"+"H00070802_R1504_G_.metaVHC";
+              //String stormstring ="E:/CUENCAS/CedarRapids/Rainfall/resolution_study/Results_new/WithGeomBias/"+NDecRes+"/"+new_t_res+"min/"+"/Time/Bin/"+"H00070802_R1504_G_.metaVHC";
+
+              String stormstring ="/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/Iowa_StageV_2008/test2008/"+"NEXRAD_BC.metaVHC";
               java.io.File stormFile;
               stormFile=new java.io.File(stormstring);
-              
-              LandCoverName="lcOri.metaVHC";
-              SoilName="soilorifinal.metaVHC";
-              Dir="D:/CUENCAS/Charlote/Rasters/Land_surface_Data/LandCover_original/";
-              new java.io.File(Dir+"/test/").mkdirs();
+//
+//              LandCoverName="lcOri.metaVHC";
+//              SoilName="soilorifinal.metaVHC";
+//              Dir="E:/CUENCAS/Iowa_river/Rasters/Land_surface_Data/LandCover_original/";
+//              new java.io.File(Dir+"/test/").mkdirs();
               String OutputDir=Dir+"/test/";
-              String LandUse = Dir+LandCoverName;
-              String Soil = Dir+SoilName;
+//              String LandUse = Dir+LandCoverName;
+//              String Soil = Dir+SoilName;
                            
-              OutputDir="E:/CUENCAS/CedarRapids/Rainfall/resolution_study/Results_new/WithGeomBias/";
+              OutputDir="/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/Iowa_StageV_2008/";
               
               String OutputFile=NDecRes+"_"+new_t_res+"min_";
               String path = OutputDir;

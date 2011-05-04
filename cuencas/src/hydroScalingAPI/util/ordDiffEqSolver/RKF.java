@@ -269,8 +269,10 @@ public class RKF extends java.lang.Object {
 ////   out.write("-------------> " + "Yval   " + Yprob + "Yvalprob    " + Ystarprob+"\n");
 //
 //out.close();
-//            System.out.println("    --> "+timeStep+" "+epsilon+" "+Delta+" "+factor+" "+newTimeStep+" ("+java.util.Calendar.getInstance().getTime()+")");
-            if (newTimeStep < 0.01 / 60.) {
+  //        System.out.println("nlink" +IC.length/4 + "prob"+ problink + "--> "+timeStep+" "+epsilon+" "+Delta+" "+factor+" "+newTimeStep+" ("+java.util.Calendar.getInstance().getTime()+")");
+  //        System.out.println("Yprob" +Yprob + "Yprob"+ Ystarprob + "--> "+timeStep+" "+epsilon+" "+Delta+" "+factor+" "+newTimeStep+" ("+java.util.Calendar.getInstance().getTime()+")");
+
+          if (newTimeStep < 0.01 / 60.) {
                 newTimeStep = 0.01 / 60.;
             }
             return stepSCS(currentTime, IC, newTimeStep, true);
@@ -1445,11 +1447,12 @@ public class RKF extends java.lang.Object {
 
         java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-        System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
-
+        System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID] );
+        //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " soil: " + IC[54]);
+        //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
         outputStream1.write(currentTime + "," + IC[ouletID] + "\n");
-        outputStream2.write(currentTime + "," + IC[nlinks + ouletID] + "," + IC[2 * nlinks + ouletID] + "," + IC[3 * nlinks + ouletID] + "\n");
+        //outputStream2.write(currentTime + "," + IC[nlinks + ouletID] + "," + IC[2 * nlinks + ouletID] + "," + IC[3 * nlinks + ouletID] + "\n");
 
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
         //System.out.println();

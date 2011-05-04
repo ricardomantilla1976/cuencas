@@ -116,9 +116,10 @@ public class SCS {
         newfile.write("LC,");//29
         newfile.write("vh3,");//30
         newfile.write("vh4,");//31
+        newfile.write("vh5,");//33
 
-        newfile.write("vh4time,");//32
-        newfile.write("format_flag,");//33
+        newfile.write("vh4time,");//34
+        newfile.write("format_flag,");//35
         newfile.write("\n");
         //
 
@@ -172,7 +173,7 @@ public class SCS {
             newfile.write(vH1_1 + ",");//25
             double vH1_10 = (1 / SCSObj.getAverManning(i)) * Math.pow(SCSObj.getavehillBasedSlope(i), 0.5) * Math.pow(10 / 1000, (2 / 3)) * 3600;
             newfile.write(vH1_10 + ",");//26
-         double vH1_25 = (1 / SCSObj.getAverManning(i)) * Math.pow(SCSObj.getavehillBasedSlope(i), 0.5) * Math.pow(10 / 1000, (2 / 3)) * 3600;
+         double vH1_25 = (1 / SCSObj.getAverManning(i)) * Math.pow(SCSObj.getavehillBasedSlope(i), 0.5) * Math.pow(25 / 1000, (2 / 3)) * 3600;
             newfile.write(vH1_25 + ",");//27
 
            double VH2=-9;
@@ -217,9 +218,10 @@ public class SCS {
             newfile.write(vH3 + ",");//30
             double vH4 = (SCSObj.getAverK_NRCS(i)) * Math.pow((SCSObj.getavehillBasedSlope(i)/100), 0.5)  * 0.3048*3600;
             newfile.write(vH4 + ",");//31
-
+            double vH5 = (SCSObj.getAverK_NRCS(i))* Math.pow((SCSObj.getavehillBasedSlope(i)), 0.5) * 0.3048*3600; //(m/h)
             double tt4 = dist / vH4;
-            newfile.write(tt4 + ",");//32
+            newfile.write(vH5 + ",");//32
+            newfile.write(tt4 + ",");//33
 
             double format;
             format = SCSObj.getHillReliefMin(i) + ((SCSObj.getHillReliefMax(i) - SCSObj.getHillReliefMin(i)) / 2);
@@ -233,7 +235,14 @@ public class SCS {
             if (format == SCSObj.getHillReliefAve(i)) {
                 format_flag = 0;
             }
-            newfile.write(format_flag + ","); //33
+            newfile.write(format_flag + ","); //34
+            System.out.println("LC   " + LC + "   Slope"+ SCSObj.getavehillBasedSlope(i)); //33
+            System.out.println("Manning         - vH1_1=" + vH1_1 + ", vH1_2="+vH1_10 + ", vH1_25="+vH1_10); //33
+            System.out.println("Constant for LC - vH2=" + VH2); //33
+            System.out.println("Hillvel3        - vH3=" + vH3); //33
+            System.out.println("Hillvel4        - vH4=" + vH4); //33
+            System.out.println("Hillvel correct - vH5=" + vH5); //33
+            
             //newfile.write(SCSObj.getTerm(i,0)+",");//25
             //newfile.write(SCSObj.getTerm(i,1)+",");//26
             //newfile.write(SCSObj.getTerm(i,2)+",");//26
@@ -510,12 +519,12 @@ public class SCS {
         //int[] Res = {90, 60, 30, 20, 10, 5};
 
 
-        int[] Res = {60};
+        int[] Res = {30};
 
         //int[] XX = {447, 670, 1341, 2013, 4025, 8052,-9};
         //int[] YY = {27, 41, 82, 122, 244, 497,-9};
-        int[] XX = {50};
-        int[] YY = {50};
+        int[] XX = {1341};
+        int[] YY = {122};
         int j = 0;
         for (int ir : Res) {
 
@@ -538,11 +547,11 @@ public class SCS {
            int x = XX[j];
             int y = YY[j]; //Clear Creek - coralville
      int BasinFlag=0;
-     DEMFile=new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-       OutputDir= "/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/Basin_Info/TestBasin/";
-       new java.io.File(OutputDir).mkdirs();
-       x = 2858;
-      y = 742;
+   //  DEMFile=new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+   //    OutputDir= "/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/Basin_Info/TestBasin/";
+     //  new java.io.File(OutputDir).mkdirs();
+    //   x = 2858;
+   //   y = 742;
       //x=2885;
       //y=690;
 

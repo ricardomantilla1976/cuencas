@@ -59,6 +59,7 @@ public class SCSManager {
     double[] minHillBasedHydCond;
     double[] maxHillBased_K_NRCS;  // [link]//
     double[] minHillBased_K_NRCS;  // [link]//
+    double[] maxInfiltrationRate;  // [link]//
 
     // Estimate the curvature of the hillslope - 5 classes
     double[][] HillslopeReliefArea; //[link][class]
@@ -237,6 +238,7 @@ public class SCSManager {
             HillslopeReliefArea = new double[linksStructure.contactsArray.length][5];
             hillclasses = new double[linksStructure.contactsArray.length][10]; //[link][class]
             HillslopeRelief = new double[linksStructure.contactsArray.length]; //[link]
+            maxInfiltrationRate= new double[linksStructure.contactsArray.length];
 
             maxHillBasedH = new double[linksStructure.contactsArray.length];
             double PixelCN;
@@ -458,6 +460,11 @@ public class SCSManager {
                         MaxHillBasedSOIL[j] = n;
                     }
                 }
+                if(MaxHillBasedSOIL[j]==0) maxInfiltrationRate[j]=25.4*5.;
+                if(MaxHillBasedSOIL[j]==1) maxInfiltrationRate[j]=25.4*4.;
+                if(MaxHillBasedSOIL[j]==2) maxInfiltrationRate[j]=25.4*3.;
+                if(MaxHillBasedSOIL[j]==3) maxInfiltrationRate[j]=25.4*2.;
+                if(MaxHillBasedSOIL[j]==4 || MaxHillBasedSOIL[j]==5) maxInfiltrationRate[j]=0.;
 
                 newfile.write(MaxHillBasedSOIL[j] + " ");
                 newfile.write(MaxHillBasedSOILPerc[j] + " ");
@@ -605,7 +612,7 @@ public class SCSManager {
                 java.util.Vector<hydroScalingAPI.util.polysolve.Pair> userDataVector;
                 userDataVector = new java.util.Vector<hydroScalingAPI.util.polysolve.Pair>();
                 userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(0, 0));
-                System.out.println("regression " + j);
+                
 
                 if(currentHillNumPixels[j]<5){
                         userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(0.2, 0.2));
@@ -622,7 +629,7 @@ public class SCSManager {
                     //Relief = (ih + 1) * (HillslopeRelief[j] / 5);
                     Relief = ((double)ih + 1.0) / 5.0;
                         userDataVector.add(new hydroScalingAPI.util.polysolve.Pair(Relief, accum));
-              //      System.out.println("link" + j + "  n pixels"+currentHillNumPixels[j]+"  ih" + ih + "   accum"+ accum+ "  Relief " + Relief + "HillslopeReliefArea[j][ih]" +HillslopeReliefArea[j][ih]);
+                    //System.out.println("link" + j + "  n pixels"+currentHillNumPixels[j]+"  ih" + ih + "   accum"+ accum+ "  Relief " + Relief + "HillslopeReliefArea[j][ih]" +HillslopeReliefArea[j][ih]);
                    //userDataVector.add(new hydroScalingAPI.polysolve.Pair((ih+1)*0.2,accum));
                 }}
                 hydroScalingAPI.util.polysolve.MatrixFunctions mfunct;
@@ -630,10 +637,26 @@ public class SCSManager {
                 hydroScalingAPI.util.polysolve.Pair[] userData;
                 userData = userDataVector.toArray(new hydroScalingAPI.util.polysolve.Pair[]{});
                 terms[j] = mfunct.polyregress(userData, 3);
+               
+
+                }
+                 if(HillslopeRelief[j]==0){terms[j][0]=1;
+                    terms[j][1]=0;
+                    terms[j][2]=0;
+                    terms[j][3]=0;
                 }
 
+                for(int it=0;it<terms[j].length;it++){
+                    if(Double.isNaN(terms[j][it])) {terms[j][0]=0;
+                    terms[j][1]=1;
+                    terms[j][2]=0;
+                    terms[j][3]=0;
+                }
+               }
+                
+             //System.out.println("regression " + j);
 
-                //System.out.println("A " + terms[j][0] + " B " + terms[j][1] + " C " + terms[j][2] + " D " + terms[j][3]);
+            //System.out.println("A " + terms[j][0] + " B " + terms[j][1] + " C " + terms[j][2] + " D " + terms[j][3]);
             }
 
 //     double result_cc = mfunct.corr_coeff(userData, terms[j]);
@@ -1077,6 +1100,7 @@ public class SCSManager {
         return MaxHillBasedSOIL[HillNumber];
     }
 
+
     public float getMaxHillSOILPerc(int HillNumber) {
         return MaxHillBasedSOILPerc[HillNumber];
     }
@@ -1122,7 +1146,9 @@ public class SCSManager {
     public double getavehillBasedSlope(int HillNumber) {
         return avehillBasedSlope[HillNumber];
     }
-
+    public double getmaxInfRate(int HillNumber) {
+        return maxInfiltrationRate[HillNumber];
+    }
     /**
      * @param args the command line arguments
      */

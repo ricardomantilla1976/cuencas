@@ -26,6 +26,8 @@ package hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion;
 import java.io.IOException;
 import visad.*;
 import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -210,7 +212,8 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         if (routingParams.get("BaseFlowCoef")!= null)   BaseFlowCoef = ((Float) routingParams.get("BaseFlowCoef")).floatValue();
         if (routingParams.get("BaseFlowExp")!= null)   BaseFlowExp = ((Float) routingParams.get("BaseFlowExp")).floatValue();
         if (routingParams.get("PondedWater")!= null)  PoundedW=((Float) routingParams.get("PondedWater")).floatValue();
-
+        float kf1=0.1f;
+        if (routingParams.get("floodplaincte")!= null) kf1= ((Float) routingParams.get("floodplaincte")).floatValue();
         //System.out.println("lam1 " + lam1 +"lam2" + lam2 + "v_o" + v_o);
 
         // Modified SCS
@@ -383,31 +386,31 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         // did not find a way to pass that without change ExternalTileToFile
         // This has to be fixed
         if (BasinFlag == 0) {
-            LandUse = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
-            SoilData = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+            SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
         }
 
         if (BasinFlag == 1) {
-            LandUse = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverIntenseAgriculture_90_2.metaVHC";
-            SoilData = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverIntenseAgriculture_90_2.metaVHC";
+            SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
         }
 
 
         if (BasinFlag == 2) {
-            LandUse = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverRestoringCropsTo10percentGrassland_90_2.metaVHC";
-            SoilData = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverRestoringCropsTo10percentGrassland_90_2.metaVHC";
+            SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
         }
 
 
         if (BasinFlag == 3) {
-            LandUse = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverRestoringPastureTo10percentForest_90_2.metaVHC";
-            SoilData = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverRestoringPastureTo10percentForest_90_2.metaVHC";
+            SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
         }
 
 
         if (BasinFlag == 4) {
-            LandUse = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverBaseline_90_2.metaVHC";
-            SoilData = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverBaseline_90_2.metaVHC";
+            SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
         }
         System.out.println("LandUse  " + LandUse + "\n");
         System.out.println("SoilData  " + SoilData + "\n");
@@ -530,6 +533,8 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
    
             initialCondition = new double[NLI * 4];
+            if(HillType==7 || HillType==8) initialCondition = new double[NLI * 5];
+            else initialCondition = new double[NLI * 4];
       
         System.out.println("Start Initial condition");
 
@@ -537,8 +542,20 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
            
             initialCondition[i] = BaseFlowCoef * Math.pow(thisNetworkGeom.upStreamArea(i), BaseFlowExp);
             initialCondition[i + 1 * NLI] = PoundedW;
-            initialCondition[i + 2 * NLI] = thisHillsInfo.SCS_S2(i) + IniHSatPorc * 1000 * thisHillsInfo.HillRelief(i);
+            ////   float Wtable=0;
+//            if
+//     float PorcAreaCalc=100.f;
+//     float h=0;
+//     float a=
+//     PorcAreaCalc=0.0f;
+//         while(Math.abs(PorcArea-PorcAreaCalc)<0.05) {
+//             h=h+0.01f;
+//             PorcAreaCalc=thisHillsInfo.basinHillSlopesInfo.getArea_ReliefParam(i, 0);
+//         }
+            //initialCondition[i + 2 * NLI] =FindWaterTable(IniHSatPorc,thisHillsInfo.HillRelief(i));
+            initialCondition[i + 2 * NLI] = IniHSatPorc * 1000 * thisHillsInfo.HillRelief(i);
             initialCondition[i + 3 * NLI] = IniUnSatPorc;
+            if(HillType==7 || HillType==8) initialCondition[i + 4 * NLI] = 0.0;
             
             //System.out.println("initialCondition[i]"+initialCondition[i]+"initialCondition[i + 1 * NLI]"+initialCondition[i + 1 * NLI]+"initialCondition[i + 2 * NLI]"+initialCondition[i + 2 * NLI]+"initialCondition[i + 3 * NLI]"+initialCondition[i + 3 * NLI]);
   
@@ -590,6 +607,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
             rainRunoffRaining.jumpsRunCompleteToAsciiFileSCS(storm.stormInitialTimeInMinutes() + numPeriods * storm.stormRecordResolutionInMinutes(), finalSimulationTime.getTimeInMillis()/1000.0/60.0, outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile3);
         newfile1.close();
         bufferout1.close();
+
         newfile3.close();
         bufferout3.close();
         System.out.println("Termina simulacion RKF");
@@ -659,7 +677,6 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         newfile.close();
         bufferout.close();
 
-
         interTime = new java.util.Date();
         System.out.println("Finish writing precipitation," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
 
@@ -670,12 +687,16 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         System.out.println("Termina escritura de Resultados");
         writeReportFile(outputDirectory.getAbsolutePath(),x,y);
         return;
+      
+
 
     }
 
     private void writeReportFile(String outputDir, int x, int y) throws java.io.IOException{
         new java.io.File(outputDir+"/Tile_"+x+"_"+y+".done").createNewFile();
     }
+
+
 
     public void run() {
 

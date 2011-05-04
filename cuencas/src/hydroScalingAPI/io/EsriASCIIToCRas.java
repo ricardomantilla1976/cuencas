@@ -86,6 +86,7 @@ public class EsriASCIIToCRas extends Object {
         
         for (int i=0;i<rows;i++) {
             linea = buffer.readLine();
+
             tokens = new StringTokenizer(linea);
             for (int j=0;j<columns;j++) {
                 try{
@@ -180,27 +181,27 @@ public class EsriASCIIToCRas extends Object {
     public static void main(String args[]) {
 
       
-System.out.print("2meter");
+System.out.print("30ASTER");
 
            try {
-            new EsriASCIIToCRas( new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/2meterc1cliped/2meterc1cliped.asc"),
-                                new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/2meterc1cliped/"),0);
+            new EsriASCIIToCRas( new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/iowa30aster.txt"),
+                                new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/"),0);
 
         } catch (Exception IOE){
             System.out.print(IOE);
             System.exit(0);
         }
 
-System.out.print("3meter");
-           try {
-            new EsriASCIIToCRas( new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/3meterc1cliped/3meterc1cliped.asc"),
-                                new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/3meterc1cliped/"),0);
-
-        } catch (Exception IOE){
-            System.out.print(IOE);
-            System.exit(0);
-        }
-
+//System.out.print("3meter");
+//           try {
+//            new EsriASCIIToCRas( new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/3meterc1cliped/3meterc1cliped.asc"),
+//                                new java.io.File("/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/3meterc1cliped/"),0);
+//
+//        } catch (Exception IOE){
+//            System.out.print(IOE);
+//            System.exit(0);
+//        }
+//
 
 
 

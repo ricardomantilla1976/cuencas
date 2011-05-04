@@ -214,7 +214,9 @@ public class StormManager {
             for (int i=0;i<arCron.length;i++){
                 //Cargo cada uno
                 metaStorm.setLocationBinaryFile(arCron[i].fileName);
-                System.out.println("--> Loading data from "+arCron[i].fileName.getName());
+
+            //    System.out.println("--> Loading data from "+arCron[i].fileName.getName());
+
                 dataSnapShot=new hydroScalingAPI.io.DataRaster(metaStorm).getDouble();
 
 
@@ -275,7 +277,7 @@ public class StormManager {
                     currentHillNumPixels[j]=0.0f;
                 }
 
-                //System.out.println("-----------------Done with this snap-shot----------------");
+            //    System.out.println("-----------------Done with this snap-shot----------------");
 
             }
 
@@ -287,7 +289,9 @@ public class StormManager {
 
             success=true;
 
+
             System.out.println("-----------------Done with Files Reading----------------");
+
 
             recordResolutionInMinutes=metaStorm.getTemporalScale()/1000.0/60.0;
 
