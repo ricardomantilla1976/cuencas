@@ -1317,7 +1317,7 @@ public class ParalelVersionReader extends Object {
 //String[] AllSimName = {"90DEMUSGS"};
         String[] AllSimName = {"90DEMUSGS"};
 
-        String[] AllRain = {"3Turkey_2"};
+        String[] AllRain = {"3Turkey2008test_2"};
 
         int nsim = AllSimName.length;
         int nbas = AllRain.length;
@@ -1342,7 +1342,7 @@ public class ParalelVersionReader extends Object {
                 final Collection<File> all = new ArrayList<File>();
                 //addFilesRecursively(new File("/scratch/results_cuencas/EGU/"+BasinName + "/" + SimName + "/"), all);
 
-               addFilesRecursively(new File("/scratch/results_cuencas/MultipleYears/"+BasinName + "/" + SimName + "/0.0/RoutT_2/"), all);
+               addFilesRecursively(new File("/scratch/results_cuencas/MultipleYears/"+BasinName + "/" + SimName + "/0.0/"), all);
                //scratch/results_cuencas/EGU/3CedarRapids/90DEMUSGS/0.0/RoutT_2/HillT_0/HillVelT_4/VS0.0010/RC0.9/UnsO0.5/PH0.0/SCS_-9.0/vh_-9.0/hh_0.0
                //addFilesRecursively(new File("/Users/rmantill/luciana/Parallel/Helium_version/"+ BasinName + "/" + SimName + "/"), all);
                //addFilesRecursively(new File("//Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/3ClearCreek2009MarchAdvdisc4/"), all);

@@ -837,7 +837,10 @@ System.out.println("routingType" + routingType);
 
 
 /* the links*/                  output[i] = 60 * K_Q * ((1 / 3.6 * ((aH[0][i] * qc_f)+(aH[0][i] * qs_l))) + Q_trib - input[i]); //[m3/s]/min
-                                if(Double.isNaN(output[i])) output[i]=0.0;
+                                //Ricardo's version
+                             // output[i]=60*K_Q*(1/3.6*areasHillArray[0][i]*qs+Q_trib-input[i]-chanLoss);
+
+if(Double.isNaN(output[i])) output[i]=0.0;
 /*surface hillslope reservoir*/ output[i + nLi] = (1 / 60.) * (qp - qp_l - qp_u); //output[mm/h/min]
                                 if(Double.isNaN(output[i + nLi])) output[i + nLi]=0.0;
 /* depth - saturated area*/
@@ -864,10 +867,17 @@ System.out.println("routingType" + routingType);
         // Evaluate the output flow for the upstream links - do not change with rainfall-runoff model
         for (int k = 0; k < upFlows.length; k++) {
             int i = connectingLink;
+            //Ricardo
+            // K_Q = CkArray[0][i] * Math.pow(input[i], lamda1) * Math.pow(upAreasArray[0][i], lamda2) * Math.pow(lengthArray[0][i], -1) / (1 - lamda1);
+
+
+            //output[i] += 60 * K_Q * (upFlows[k].evaluate(time));
 
             K_Q = RoutingType(routingType, i, input[i]);
 
             output[i] += 60 * K_Q * (upFlows[k].evaluate(time));
+
+
         }
 
         //if (Math.random() > 0.99) if (maxInt>0) System.out.println("      --> The Max precipitation intensity is: "+maxInt);
@@ -946,6 +956,11 @@ System.out.println("routingType" + routingType);
                 break;
             case 5:
                 K_Q = CkArray[0][i] * Math.pow(Qchannel, lamda1) * Math.pow(upAreasArray[0][i], lamda2) * Math.pow(lengthArray[0][i], -1) / (1 - lamda1);
+                // Ricardo's version
+          //case 5:
+              //K_Q = CkArray[0][i]*Math.pow(input[i],   lamda1) * Math.pow(upAreasArray[0][i], lamda2) * Math.pow(lengthArray[0][i], -1) / (1 - lamda1);
+
+
                 break;
 
            case 6:

@@ -320,7 +320,7 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 
 
         String[] AllSimName = {"90DEMUSGS"};
-        String[] AllRain = {"3Turkey2008test_2"};
+        String[] AllRain = {"3Turkey_2"};
 
         int nsim = AllSimName.length;
 
@@ -456,12 +456,12 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 
                     routingParams.put("Basin_sim", bflag); // Cedar river - define Land cover and soil parameter
                     //float[] vsAr = {0.0002f,0.0005f};
-                    float[] vsAr = {};
+                    float[] vsAr = {0.001f};
                     float[] PH = {0.0f};
                     float[] Phi = {0.0f};
                     float[] IaAre = {0.4f};
                     float[] IaArc = {0.0f};
-                    float[] l1Ar = {0.25f};
+                    float[] l1Ar = {0.32f};
                     //float[] rcAr = {-9.f};
                     //float[] vhAr = {-9.f};
 
@@ -483,9 +483,9 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                             float l1 = l11;
                             float l2 = -0.82f * l11 + 0.1025f;
                             float vo = cvo * (0.42f - 0.29f * l11 - 3.1f * l2);
-                            l1 =0.25f;
-                            l2 =-0.15f;
-                            vo = 0.88f;
+                            l1 =0.32f;
+                            l2 =-0.13f;
+                            vo = 0.63f;
 
                             for (float Kf1 : kf1Ar) {
 
@@ -598,7 +598,7 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                         }
                     }
 
-                    float[] vsAr2 = {0.001f};
+                    float[] vsAr2 = {};
                     //
                     float[] PH2 = {0.0f};
                     float[] Phi2 = {0.0f};
