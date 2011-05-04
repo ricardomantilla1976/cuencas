@@ -67,28 +67,28 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
     int writeorder;
 
     /** Creates new simulationsRep3 */
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory, float LandUseFileFlag, float SoilFileFlag,int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory, float LandUseFileFlag, float SoilFileFlag, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
         this(x, y, direcc, magnitudes, md, rainIntensity, rainDuration, null, null, infiltRate, 0, null, outputDirectory, LandUseFileFlag, null, SoilFileFlag, null, writeorder, routingParams);
     }
 
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory, float LandUseFileFlag, float SoilFileFlag,int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory, float LandUseFileFlag, float SoilFileFlag, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
         this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, null, infiltRate, 0, null, outputDirectory, LandUseFileFlag, null, SoilFileFlag, null, writeorder, routingParams);
     }
 
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile,int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
         this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, null, infiltRate, 0, null, outputDirectory, 0.0f, LandUseFile, 0.0f, SoilFile, writeorder, routingParams);
     }
 
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, int greenroof, java.io.File GreenFile, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile,int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, int greenroof, java.io.File GreenFile, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
         this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, null, infiltRate, greenroof, GreenFile, outputDirectory, 0.0f, LandUseFile, 0.0f, SoilFile, writeorder, routingParams);
     }
 
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile,int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
         this(x, y, direcc, magnitudes, md, rainIntensity, rainDuration, null, null, infiltRate, 0, null, outputDirectory, 0.0f, LandUseFile, 0.0f, SoilFile, writeorder, routingParams);
     }
 
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, hydroScalingAPI.io.MetaRaster infiltMetaRaster, int greenroof, java.io.File GreenFile, java.io.File outputDirectory, float LandUseFileFlag, java.io.File LandUseFile, float SoilFileFlag, java.io.File SoilFile,int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
-        this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, infiltMetaRaster, 0.0f, greenroof, GreenFile, outputDirectory, LandUseFileFlag, null, SoilFileFlag, null, writeorder,routingParams);
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, hydroScalingAPI.io.MetaRaster infiltMetaRaster, int greenroof, java.io.File GreenFile, java.io.File outputDirectory, float LandUseFileFlag, java.io.File LandUseFile, float SoilFileFlag, java.io.File SoilFile, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+        this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, infiltMetaRaster, 0.0f, greenroof, GreenFile, outputDirectory, LandUseFileFlag, null, SoilFileFlag, null, writeorder, routingParams);
     }
 
     public SimulationToFileSerialVersion(int xx, int yy, byte[][] direcc, int[][] magnitudesOR,
@@ -121,7 +121,7 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
         routingParams = rP;
         greenroof = GreenRoofOptionOR;
         GreenFile = GreenFileOR;
-        writeorder=WriteOrderOR;
+        writeorder = WriteOrderOR;
     }
 
     public void executeSimulation() throws java.io.IOException, VisADException {
@@ -241,8 +241,12 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
         thisHillsInfo.setLandUseManager(LandUse);
         hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
         java.io.File DEMFile = metaDatos.getLocationMeta();
+        float hillshape = 0.f;
+        if (routingParams.get("hillshapeparamflag") != null) {
+            hillshape = ((Float) routingParams.get("hillshapeparamflag")).floatValue();
+        }
 
-        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes,HillShapeFlag);
+        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes, hillshape);
         thisHillsInfo.setSCSManager(SCSObj);
         java.text.DecimalFormat fourPlaces = new java.text.DecimalFormat("0.0000");
 
@@ -273,15 +277,15 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
         for (int i = 0; i < nLi; i++) {
             //if(thisNetworkGeom.linkOrder(i) > 1){
             newfile.write(i + ",");
-            newfile.write(thisHillsInfo.HillRelief(i)+ ",");
+            newfile.write(thisHillsInfo.HillRelief(i) + ",");
             newfile.write(thisHillsInfo.Area(i) + ",");
             newfile.write(thisNetworkGeom.Length(i) + ",");
             newfile.write(thisNetworkGeom.upStreamArea(i) + ",");
             newfile.write(thisHillsInfo.getHillslope(i) + ",");
             newfile.write(thisHillsInfo.SCS_S2(i) + ",");
-            newfile.write(thisHillsInfo.Hill_K_NRCS(i)+ ",");
-            double tempVh=thisHillsInfo.Hill_K_NRCS(i)*(Math.pow(thisHillsInfo.getHillslope(i)*100,2))*0.3048;
-            newfile.write(tempVh+ ",");
+            newfile.write(thisHillsInfo.Hill_K_NRCS(i) + ",");
+            double tempVh = thisHillsInfo.Hill_K_NRCS(i) * (Math.pow(thisHillsInfo.getHillslope(i) * 100, 2)) * 0.3048;
+            newfile.write(tempVh + ",");
             newfile.write(thisHillsInfo.getArea_ReliefParam(i, 0) + ",");
             newfile.write(thisHillsInfo.getArea_ReliefParam(i, 1) + ",");
             newfile.write(thisHillsInfo.getArea_ReliefParam(i, 2) + ",");
@@ -477,7 +481,7 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
         if (infiltMetaRaster == null) {
             theFile = new java.io.File(outputDirectory.getAbsolutePath() + "/" + demName + "_" + x + "_" + y + "-" + stormFile.getName() + "-IR_" + infiltRate + "-Routing_" + routingString + "_params_" + lam1 + "_" + lam2 + "_" + v_o + ".csv");//theFile=new java.io.File(Directory+demName+"_"+x+"_"+y++"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+widthCoeff+"_"+widthExponent+"_"+widthStdDev+"_"+chezyCoeff+"_"+chezyExponent+".dat");
         } else {
-            theFile = new java.io.File(outputDirectory.getAbsolutePath() + "/" + demName + "_" + x + "_" + y + "-" + stormFile.getName() + "-IR_" + infiltMetaRaster.getLocationMeta().getName().substring(0, infiltMetaRaster.getLocationMeta().getName().lastIndexOf(".metaVHC")) + "-Routing_" + routingString + "_params_" + lam1 + "_" + lam2 + "QP.csv");
+            theFile = new java.io.File(outputDirectory.getAbsolutePath() + "/" + demName + "_" + x + "_" + y + "-" + stormFile.getName() + "-IR_" + infiltMetaRaster.getLocationMeta().getName().substring(0, infiltMetaRaster.getLocationMeta().getName().lastIndexOf(".metaVHC")) + "-Routing_" + routingString + "_params_" + lam1 + "_" + lam2 + ".csv");
         }
         System.out.println(theFile);
 //
@@ -598,7 +602,7 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
             initialCondition[i] = BaseFlowCoef * Math.pow(thisNetworkGeom.upStreamArea(i), BaseFlowExp);
             //initialCondition[i] = 1.0;
             initialCondition[i + 1 * NLI] = 0.0;
-            initialCondition[i + 2 * NLI] = thisHillsInfo.SCS_S2(i) + IniHSatPorc * 1000 * thisHillsInfo.HillRelief(i);
+            initialCondition[i + 2 * NLI] = IniHSatPorc * 1000 * thisHillsInfo.HillRelief(i);
             initialCondition[i + 3 * NLI] = IniUnSatPorc;
             initialCondition[i + 4 * NLI] = 0.0;
             initialCondition[i + 5 * NLI] = 0.0;
@@ -637,7 +641,7 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
         // double extraSimTime=240D*Math.pow(1.5D,(basinOrder-1));
         //double extraSimTime = 300D * Math.pow(1.5D, (9 - 1));
         //double extraSimTime=50D*Math.pow(1.5D,(9-1));
-        double extraSimTime = 2 * 24 * 60; // 2 days
+        double extraSimTime = 4 * 24 * 60; // 2 days
         // original - double extraSimTime=240D*Math.pow(2.0D,(basinOrder-1));
         System.out.println("numPeriods" + numPeriods);
 
@@ -680,8 +684,23 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
             }
         }
 
+        newfile1.write("\n");
+        newfile1.write("HillRelief" + ",");
 
+        for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
+            if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) >= writeorder) {
+                newfile1.write(thisHillsInfo.HillRelief(linksStructure.completeStreamLinksArray[i]) + ",");
+            }
+        }
 
+       newfile1.write("\n");
+        newfile1.write("HillLength" + ",");
+
+        for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
+            if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) >= writeorder) {
+                newfile1.write(thisNetworkGeom.Length(linksStructure.completeStreamLinksArray[i])+ ",");
+            }
+        }
 
         newfile1.write("\n");
         newfile1.write("SCS" + ",");
@@ -709,7 +728,7 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
         for (int k = 0; k < numPeriods; k++) {
             System.out.println("Period " + (k + 1) + " of " + numPeriods);
 
-            rainRunoffRaining.jumpsRunCompleteToAsciiFileSCSSerial(storm.stormInitialTimeInMinutes() + k * storm.stormRecordResolutionInMinutes(), storm.stormInitialTimeInMinutes() + (k + 1) * storm.stormRecordResolutionInMinutes(), outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile2, newfilerc, newfile_aux,writeorder);
+            rainRunoffRaining.jumpsRunCompleteToAsciiFileSCSSerial(storm.stormInitialTimeInMinutes() + k * storm.stormRecordResolutionInMinutes(), storm.stormInitialTimeInMinutes() + (k + 1) * storm.stormRecordResolutionInMinutes(), outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile2, newfilerc, newfile_aux, writeorder);
 
             initialCondition = rainRunoffRaining.finalCond;
             rainRunoffRaining.setBasicTimeStep(10 / 60.);
@@ -724,7 +743,7 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
         if (outputTimeStep > 60) {
             outputTimeStep = 60;
         }
-        rainRunoffRaining.jumpsRunCompleteToAsciiFileSCSSerial(storm.stormInitialTimeInMinutes() + numPeriods * storm.stormRecordResolutionInMinutes(), (storm.stormInitialTimeInMinutes() + (numPeriods + 1) * storm.stormRecordResolutionInMinutes()) + extraSimTime, outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile2, newfilerc, newfile_aux,writeorder);
+        rainRunoffRaining.jumpsRunCompleteToAsciiFileSCSSerial(storm.stormInitialTimeInMinutes() + numPeriods * storm.stormRecordResolutionInMinutes(), (storm.stormInitialTimeInMinutes() + (numPeriods + 1) * storm.stormRecordResolutionInMinutes()) + extraSimTime, outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile2, newfilerc, newfile_aux, writeorder);
 
 
 
@@ -1217,7 +1236,7 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
 
         String[] AllSimName = {"90DEMUSGS"};
 
-        String[] AllRain = {"HillslopeTest"};
+        String[] AllRain = {"TestBasin"};
 
         int[] Volume = {60};
         int[] Duration = {60};
@@ -1262,21 +1281,28 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
                         }
 
 
-                        if (BasinName.indexOf("Test") > 0) {
+//                        if (BasinName.indexOf("Test") > 0) {
+//                            System.out.println("Running FOR HillslopeTest ");
+//                            xOut = 2372;
+//                            yOut = 791; //Cedar Rapids
+//                            DEM = "/Users/luciana-cunha/Documents/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+//                        }
+//
+//
+                        if (BasinName.indexOf("TestBasin") >= 0) {
                             System.out.println("Running FOR HillslopeTest ");
-                            xOut = 2372;
-                            yOut = 791; //Cedar Rapids
+                            xOut = 2858;
+                            yOut = 742; //Cedar Rapids
                             DEM = "/Users/luciana-cunha/Documents/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
                         }
-
-                        if (BasinName.indexOf("loo") > 0) {
+                        if (BasinName.indexOf("loo") >= 0) {
                             System.out.println("Running FOR WATERLOO ");
                             xOut = 1932;
                             yOut = 1695; //Waterloo
                             DEM = "/Users/luciana-cunha/Documents/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
                         }
 
-                        if (BasinName.indexOf("ville") > 0) {
+                        if (BasinName.indexOf("ville") >= 0) {
                             System.out.println("Running FOR Janesville ");
                             xOut = 1775;
                             yOut = 1879; //Waterloo
@@ -1317,10 +1343,6 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
                         System.out.println("SoilData  " + SoilData + "\n");
                         System.out.println("Start SCS processes \n");
 
-                        routingParams.put("v_o", 0.8f);
-                        routingParams.put("lambda1", 0.3f);
-                        routingParams.put("lambda2", -0.16f);
-
                         routingParams.put("widthCoeff", 1.0f);
                         routingParams.put("widthExponent", 0.4f);
                         routingParams.put("widthStdDev", 0.0f);
@@ -1342,127 +1364,126 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
                         routingParams.put("PorcPhiUnsat", 0.8f); // define a constant number or -9.9 for vel=f(land Cover)
                         routingParams.put("BaseFlowCoef", 0.0f); // define a constant number or -9.9 for vel=f(land Cover)
                         routingParams.put("BaseFlowExp", 0.40f); // define a constant number or -9.9 for vel=f(land Cover)
-
-                        routingParams.put("RoutingT", 5.f); // check NetworkEquationsLuciana.java for definitions
-                        routingParams.put("HillT", 3.f);  // check NetworkEquationsLuciana.java for definitions
-                        routingParams.put("HillVelocityT", 3.f);  // check NetworkEquationsLuciana.java for definitions
-                        routingParams.put("RunoffCoefficient", 0.0f); // reservoir position:
+                        routingParams.put("RunoffCoefficient", 1.0f); // reservoir position:
 
                         java.io.File outputDirectory = new java.io.File("/null/");
 
                         ////                   outputDirectory.mkdirs();
                         //                 new SimulationToFileSerialVersion(xOut, yOut, matDirs, magnitudes, metaModif, stormFile, 0.0f, outputDirectory, new java.io.File(LandUse), new java.io.File(SoilData), routingParams).executeSimulation();
+                        routingParams.put("lambdaSCSMethod", 0.02f);
 
-                        float[] vsAr = {0.0025f};
-                        float[] PH = {0.0f,0.5f,1.0f};
-                        float[] Phi = {0.0f,0.5f,1.0f};
-                        float[] IaAr = {0.02f};
 
-                        for (float voo : vsAr) {
-                            float vsub = voo;
-                            for (float in1 : PH) {
-                                float p1 = in1;
-                                for (float in2 : Phi) {
-                                    float p2 = in2;
-                                    for (float ia1 : IaAr) {
-                                        float ia = ia1;
+                        routingParams.put("RoutingT", 5.f); // check NetworkEquationsLuciana.java for definitions
+                        routingParams.put("HillT", 6.f);  // check NetworkEquationsLuciana.java for definitions
+                        routingParams.put("HillVelocityT", 4.f);
 
-                                        routingParams.put("PorcHSaturated", p1);
-                                        routingParams.put("vssub", vsub);
+                        float[] vsAr = {0.001f};
+                        float[] HSAr = {1.f};
+                        float[] SAr = {-9.f};
+                        float[] PH = {0.0f};
+                        float[] Phi = {0.0f};
+                        float[] l1Ar = {0.25f};
+                        float[] vocAr = {1.0f};
+                        float[] vhillAr = {50.f};
+
+//                                 float[] vsAr = {0.0001f,0.0005f,0.001f};
+//                        float[] HSAr = {0.f,1.f,2.f,3.f,4.f,5.f};
+//                        float[] SAr = {-9.f,10.f,50.f,100.f,150.f,300.f};
+//                        float[] PH = {0.0f,0.5f,1.0f};
+//                        float[] Phi = {0.0f,0.5f,1.0f};
+//                        float[] l1Ar = {0.1f,0.2f,0.3f};
+//                        float[] vocAr = {1.0f};
+//                        float[] vhillAr = {-9.f,10.f,50.f,100.f,200.f};
+//
+                        for (float voc : vocAr) {
+
+                        for (float l11 : l1Ar) {
+//                            float l1 = l11;
+//                            float l2 = -0.82f * l1 + 0.1025f;
+//                            float vo = voc*(0.42f - 0.29f * l1 - 3.1f * l2);
+
+                            float l1 = l11;
+                            float l2 = -0.1f;
+                            float vo = 0.66f;
+
+                            for (float vhill : vhillAr) {
+
+                                if (vhill == -9) {
+                                    routingParams.put("HillVelocityT", 4.f);
+                                } else {
+                                    routingParams.put("vrunoff", vhill); // define a constant number or -9.9 for vel=f(land Cover)
+                                    routingParams.put("HillVelocityT", 0.f);
+                                }
+                            System.out.print("vh" + vhill);
+
+                            routingParams.put("v_o", vo);
+                            routingParams.put("lambda1", l1);
+                            routingParams.put("lambda2", l2);
+
+                            for (float voo : vsAr) {
+                                float vsub = voo;
+                                routingParams.put("vssub", vsub);
+
+                                for (float in1 : PH) {
+                                    float p1 = in1;
+                                    routingParams.put("PorcHSaturated", p1);
+
+                                    for (float in2 : Phi) {
+                                        float p2 = in2;
                                         routingParams.put("PorcPhiUnsat", p2);
-                                        routingParams.put("lambdaSCSMethod", ia);
+
+                                        for (float hs1 : HSAr) {
+                                            float hs = hs1;
+                                            routingParams.put("hillshapeparamflag", hs);
+
+                                            for (float s1 : SAr) {
+                                                float s = s1;
+                                                routingParams.put("ConstSoilStorage", s);  // check NetworkEquationsLuciana.java for definitions
+
+                                                //0 use the param specified by the DEM
+                                                //1 model concave 1 (0+0.6h-1.6h^2+2.0*h^3)
+                                                //2 model concave 2 (0+0.5h-0.1h^2+0.6*h^3)
+                                                //3 model linear (h)
+                                                //4 model convex 1 (0+2.3h-2.1h^2+0.8*h^3)
+                                                //5 model convex 2 (0+3.5h-4.4h^2+1.9*h^3)
+                                                // check NetworkEquationsLuciana.java for definitions
 
 
-                                        routingParams.put("RoutingT", 5.f); // check NetworkEquationsLuciana.java for definitions
-                                        routingParams.put("HillT", 2.f);  // check NetworkEquationsLuciana.java for definitions
-                                        routingParams.put("HillVelocityT", 3.f);  // check NetworkEquationsLuciana.java for definitions
-                                        routingParams.put("ConstSoilStorage", -9.0f);  // check NetworkEquationsLuciana.java for definitions
+                                                outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/ModelComp_invEq3/Const_Precipitation/" + BasinName + "/" + SimName + "/"
+                                                        + "/Vol_" + vol + "Dur_" + dur
+                                                        + "Rout_" + ((Float) routingParams.get("RoutingT")).floatValue() + "HillT_" + ((Float) routingParams.get("HillT")).floatValue() + "HVel_" + ((Float) routingParams.get("HillVelocityT")).floatValue()
+                                                        + "VS_" + ((Float) routingParams.get("vssub")).floatValue()
+                                                        + "HS_" + ((Float) routingParams.get("hillshapeparamflag")).floatValue()
+                                                        + "SCS_" + ((Float) routingParams.get("ConstSoilStorage")).floatValue()
+                                                        + "PH_" + ((Float) routingParams.get("PorcHSaturated")).floatValue()
+                                                        + "UnsO_" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
+                                                        + "L1_" + ((Float) routingParams.get("lambda1")).floatValue()
+                                                        + "vco_" + voc
+                                                        + "vhill_" + vhill);
 
 
-                                        outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/ModelComp_invEq3/Const_Precipitation/" + BasinName + "/" + SimName + "/"
-                                                + "/CNDataRout" + ((Float) routingParams.get("RoutingT")).floatValue() + "HillT" + ((Float) routingParams.get("HillT")).floatValue() + "HillDelayT" + ((Float) routingParams.get("HillVelocityT")).floatValue()
-                                                + "/" + vol + "mm_" + dur + "min/"
-                                                + "/IA" + ((Float) routingParams.get("lambdaSCSMethod")).floatValue()
-                                                + "VS" + ((Float) routingParams.get("vssub")).floatValue()
-                                                + "UnsO" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
-                                                + "PH" + ((Float) routingParams.get("PorcHSaturated")).floatValue());
-                                        outputDirectory.mkdirs();
-                                        //outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/ModelComp_inv/Const_Precipitation/" + BasinName + "/" + SimName + "/"
-                                        //        + "/test/");
+                                                outputDirectory.mkdirs();
+                                                int WriteOrder = 1;
+                                                new SimulationToFileSerialVersion(xOut, yOut, matDirs, magnitudes, metaModif, stormFile, 0.0f, outputDirectory, new java.io.File(LandUse), new java.io.File(SoilData), WriteOrder, routingParams).executeSimulation();
 
-                                        outputDirectory.mkdirs();
-                                        int WriteOrder=1;
-                                        new SimulationToFileSerialVersion(xOut, yOut, matDirs, magnitudes, metaModif, stormFile, 0.0f, outputDirectory, new java.io.File(LandUse), new java.io.File(SoilData),WriteOrder, routingParams).executeSimulation();
-//
-//                                        routingParams.put("ConstSoilStorage", 100.0f);  // check NetworkEquationsLuciana.java for definitions
-//
-//                                        outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/ModelComp_invEq3/Const_Precipitation/" + BasinName + "/" + SimName + "/"
-//                                                + "/CND100Rout" + ((Float) routingParams.get("RoutingT")).floatValue() + "HillT" + ((Float) routingParams.get("HillT")).floatValue() + "HillDelayT" + ((Float) routingParams.get("HillVelocityT")).floatValue()
-//                                                + "/" + vol + "mm_" + dur + "min/"
-//                                                + "/IA" + ((Float) routingParams.get("lambdaSCSMethod")).floatValue()
-//                                                + "VS" + ((Float) routingParams.get("vssub")).floatValue()
-//                                                + "UnsO" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
-//                                                + "PH" + ((Float) routingParams.get("PorcHSaturated")).floatValue());
-//                                        outputDirectory.mkdirs();
-//                                        //outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/ModelComp_inv/Const_Precipitation/" + BasinName + "/" + SimName + "/"
-//                                        //        + "/test/");
-//
-//                                        outputDirectory.mkdirs();
-//
-//                                        new SimulationToFileSerialVersion(xOut, yOut, matDirs, magnitudes, metaModif, stormFile, 0.0f, outputDirectory, new java.io.File(LandUse), new java.io.File(SoilData),WriteOrder, routingParams).executeSimulation();
-//
-//
-//                                        routingParams.put("ConstSoilStorage", 25.0f);  // check NetworkEquationsLuciana.java for definitions
-//
-//                                        outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/ModelComp_invEq3/Const_Precipitation/" + BasinName + "/" + SimName + "/"
-//                                                + "/CND25Rout" + ((Float) routingParams.get("RoutingT")).floatValue() + "HillT" + ((Float) routingParams.get("HillT")).floatValue() + "HillDelayT" + ((Float) routingParams.get("HillVelocityT")).floatValue()
-//                                                + "/" + vol + "mm_" + dur + "min/"
-//                                                + "/IA" + ((Float) routingParams.get("lambdaSCSMethod")).floatValue()
-//                                                + "VS" + ((Float) routingParams.get("vssub")).floatValue()
-//                                                + "UnsO" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
-//                                                + "PH" + ((Float) routingParams.get("PorcHSaturated")).floatValue());
-//                                        outputDirectory.mkdirs();
-//                                        //outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/ModelComp_inv/Const_Precipitation/" + BasinName + "/" + SimName + "/"
-//                                        //        + "/test/");
-//
-//                                        outputDirectory.mkdirs();
-//
-//                                        new SimulationToFileSerialVersion(xOut, yOut, matDirs, magnitudes, metaModif, stormFile, 0.0f, outputDirectory, new java.io.File(LandUse), new java.io.File(SoilData),WriteOrder, routingParams).executeSimulation();
-//
-//
-//                                        routingParams.put("ConstSoilStorage", 400.0f);  // check NetworkEquationsLuciana.java for definitions
-//
-//                                        outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/ModelComp_invEq3/Const_Precipitation/" + BasinName + "/" + SimName + "/"
-//                                                + "/CND400Rout" + ((Float) routingParams.get("RoutingT")).floatValue() + "HillT" + ((Float) routingParams.get("HillT")).floatValue() + "HillDelayT" + ((Float) routingParams.get("HillVelocityT")).floatValue()
-//                                                + "/" + vol + "mm_" + dur + "min/"
-//                                                + "/IA" + ((Float) routingParams.get("lambdaSCSMethod")).floatValue()
-//                                                + "VS" + ((Float) routingParams.get("vssub")).floatValue()
-//                                                + "UnsO" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
-//                                                + "PH" + ((Float) routingParams.get("PorcHSaturated")).floatValue());
-//                                        outputDirectory.mkdirs();
-//                                        //outputDirectory = new java.io.File("/Users/luciana-cunha/Documents/CUENCAS_results/ModelComp_inv/Const_Precipitation/" + BasinName + "/" + SimName + "/"
-//                                        //        + "/test/");
-//
-//                                        outputDirectory.mkdirs();
-//
-//                                        new SimulationToFileSerialVersion(xOut, yOut, matDirs, magnitudes, metaModif, stormFile, 0.0f, outputDirectory, new java.io.File(LandUse), new java.io.File(SoilData),WriteOrder, routingParams).executeSimulation();
+                                                java.io.File theSummary;
 
-                                        java.io.File theSummary;
+                                                theSummary = new java.io.File(outputDirectory.getAbsolutePath() + "/" + "SimulationParam" + ".txt");
 
-                                        theSummary = new java.io.File(outputDirectory.getAbsolutePath() + "/" + "SimulationParam" + ".txt");
+                                                System.out.println(theSummary);
 
-                                        System.out.println(theSummary);
+                                                java.io.FileOutputStream salidaSum = new java.io.FileOutputStream(theSummary);
+                                                java.io.BufferedOutputStream bufferoutSum = new java.io.BufferedOutputStream(salidaSum);
+                                                java.io.OutputStreamWriter newfileSum = new java.io.OutputStreamWriter(bufferoutSum);
 
-                                        java.io.FileOutputStream salidaSum = new java.io.FileOutputStream(theSummary);
-                                        java.io.BufferedOutputStream bufferoutSum = new java.io.BufferedOutputStream(salidaSum);
-                                        java.io.OutputStreamWriter newfileSum = new java.io.OutputStreamWriter(bufferoutSum);
+                                                newfileSum.write(routingParams.toString() + " ");
 
-                                        newfileSum.write(routingParams.toString() + " ");
-                                    
 
-                                               newfileSum.close();
-                                               bufferoutSum.close();
-
+                                                newfileSum.close();
+                                                bufferoutSum.close();
+                                            }}
+                                            }
+                                        }
                                     }
                                 }
                             }

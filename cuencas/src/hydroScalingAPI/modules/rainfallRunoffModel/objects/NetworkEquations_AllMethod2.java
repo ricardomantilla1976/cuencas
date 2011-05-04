@@ -1,4 +1,5 @@
 /*
+/*
 CUENCAS is a River Network Oriented GIS
 Copyright (C) 2005  Ricardo Mantilla
 
@@ -674,6 +675,7 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
                             q12 = 0;
                         }
                     } else { // if qacum<IA - qd=0;
+                        C=-1.0;
                         q01 = 0;
                         q12 = 0;
                     }
@@ -935,3 +937,6 @@ public class NetworkEquations_AllMethod2 implements hydroScalingAPI.util.ordDiff
         return K_Q;
     }
 }
+
+
+

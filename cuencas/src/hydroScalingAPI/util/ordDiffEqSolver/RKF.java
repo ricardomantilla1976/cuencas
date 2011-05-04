@@ -1596,6 +1596,8 @@ public class RKF extends java.lang.Object {
         DecimalFormat df1 = new DecimalFormat("###.#");
         DecimalFormat df2 = new DecimalFormat("###.##");
         DecimalFormat df3 = new DecimalFormat("###.###");
+        DecimalFormat df4 = new DecimalFormat("###.####");
+
         //DecimalFormat df10 = new DecimalFormat("###.##########");
 
         int ouletID = linksStructure.getOutletID();
@@ -1616,7 +1618,7 @@ public class RKF extends java.lang.Object {
         for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
             int nl = linksStructure.completeStreamLinksArray[i];
             if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
-                outputStream1.write(df2.format(IC[nl]) + ",");
+                outputStream1.write(df4.format(IC[nl]) + ",");
                 outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
                 outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df2.format(IC[9 * nlinks + nl]) + ",");
                 outputStream4.write(df2.format(IC[10 * nlinks + nl]) + "," + df2.format(IC[11 * nlinks + nl]) + "," + df2.format(IC[12 * nlinks + nl]) + "," + df2.format(IC[13 * nlinks + nl]) + ",");
@@ -1674,10 +1676,10 @@ public class RKF extends java.lang.Object {
                     for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
                         int nl = linksStructure.completeStreamLinksArray[i];
                         if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
-                            outputStream1.write(df2.format(IC[nl]) + ",");
-                            outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
-                            outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df2.format(IC[9 * nlinks + nl]) + ",");
-                            outputStream4.write(df2.format(IC[10 * nlinks + nl]) + "," + df2.format(IC[11 * nlinks + nl]) + "," + df2.format(IC[12 * nlinks + nl]) + "," + df2.format(IC[13 * nlinks + nl]) + ",");
+                    outputStream1.write(df4.format(IC[nl]) + ",");
+                    outputStream2.write(df3.format(IC[nlinks + nl]) + "," + df3.format(IC[2 * nlinks + nl]) + "," + df3.format(IC[3 * nlinks + nl]) + ",");
+                    outputStream3.write(df3.format(IC[4 * nlinks + nl]) + "," + df3.format(IC[5 * nlinks + nl]) + "," + df3.format(IC[6 * nlinks + nl]) + "," + df3.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df3.format(IC[9 * nlinks + nl]) + ",");
+                    outputStream4.write(df3.format(IC[10 * nlinks + nl]) + "," + df3.format(IC[11 * nlinks + nl]) + "," + df3.format(IC[12 * nlinks + nl]) + "," + df3.format(IC[13 * nlinks + nl]) + ",");
 
                         }
                     }
@@ -1730,10 +1732,10 @@ public class RKF extends java.lang.Object {
             for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
                 int nl = linksStructure.completeStreamLinksArray[i];
                 if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
-                    outputStream1.write(df2.format(IC[nl]) + ",");
-                    outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
-                    outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df2.format(IC[9 * nlinks + nl]) + ",");
-                    outputStream4.write(df2.format(IC[10 * nlinks + nl]) + "," + df2.format(IC[11 * nlinks + nl]) + "," + df2.format(IC[12 * nlinks + nl]) + "," + df2.format(IC[13 * nlinks + nl]) + ",");
+                    outputStream1.write(df4.format(IC[nl]) + ",");
+                    outputStream2.write(df3.format(IC[nlinks + nl]) + "," + df3.format(IC[2 * nlinks + nl]) + "," + df3.format(IC[3 * nlinks + nl]) + ",");
+                    outputStream3.write(df3.format(IC[4 * nlinks + nl]) + "," + df3.format(IC[5 * nlinks + nl]) + "," + df3.format(IC[6 * nlinks + nl]) + "," + df3.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df3.format(IC[9 * nlinks + nl]) + ",");
+                    outputStream4.write(df3.format(IC[10 * nlinks + nl]) + "," + df3.format(IC[11 * nlinks + nl]) + "," + df3.format(IC[12 * nlinks + nl]) + "," + df3.format(IC[13 * nlinks + nl]) + ",");
 
                 }
             }

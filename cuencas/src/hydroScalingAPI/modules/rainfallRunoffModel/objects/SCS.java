@@ -120,6 +120,11 @@ public class SCS {
 
         newfile.write("vh4time,");//34
         newfile.write("format_flag,");//35
+      newfile.write("term1,");//27
+        newfile.write("term2,");//27
+        newfile.write("term3,");//27
+        newfile.write("term4,");//27
+
         newfile.write("\n");
         //
 
@@ -243,10 +248,10 @@ public class SCS {
             System.out.println("Hillvel4        - vH4=" + vH4); //33
             System.out.println("Hillvel correct - vH5=" + vH5); //33
             
-            //newfile.write(SCSObj.getTerm(i,0)+",");//25
-            //newfile.write(SCSObj.getTerm(i,1)+",");//26
-            //newfile.write(SCSObj.getTerm(i,2)+",");//26
-            //newfile.write(SCSObj.getTerm(i,3)+",");//26
+            newfile.write(SCSObj.getTerm(i,0)+",");//25
+            newfile.write(SCSObj.getTerm(i,1)+",");//26
+            newfile.write(SCSObj.getTerm(i,2)+",");//26
+            newfile.write(SCSObj.getTerm(i,3)+",");//26
 
             //newfile.write(SCSObj.getHillReliefPorc(i,0)+",");//28
             //newfile.write(SCSObj.getHillReliefPorc(i,1)+",");//29
@@ -512,9 +517,9 @@ public class SCS {
     public static void subMain1(String args[]) throws java.io.IOException {
 
         ///// DEM DATA /////
-        String Dir = "/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/Summary/";
+        String Dir = "/Users/luciana-cunha/Documents/CuencasDataBases/temp/Topography/Summary/";
+        new java.io.File(Dir).mkdirs();
 
-        //new java.io.File(Dir).mkdirs();
 
         //int[] Res = {90, 60, 30, 20, 10, 5};
 
@@ -535,10 +540,11 @@ public class SCS {
             if(ir==-11) OutputDir= Dir + "/30USGS/";
             if(ir==-12) OutputDir= Dir + "/10USGS/";
             if(ir==-13) OutputDir= Dir + "/30USGS/";
+            if(ir==-13) OutputDir= Dir + "/30USGS/";
             new java.io.File(OutputDir).mkdirs();
 
             java.io.File DEMFile;
-            DEMFile = new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/" + ir + "meters/" + ir + "meterc1.metaDEM");
+               DEMFile=new java.io.File("/Users/luciana-cunha/Documents/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
             if(ir==-9) DEMFile=new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
             if(ir==-10) DEMFile=new java.io.File("/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM");
             if(ir==-11) DEMFile=new java.io.File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM");
@@ -556,6 +562,13 @@ public class SCS {
       //y=690;
 
 //
+            if(ir==-9) DEMFile=new java.io.File("/Users/luciana-cunha/Documents/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+            if(ir==-10) DEMFile=new java.io.File("/Users/luciana-cunha/Documents/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM");
+            if(ir==-11) DEMFile=new java.io.File("/Users/luciana-cunha/Documents/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM");
+            if(ir==-12) DEMFile=new java.io.File("/Users/luciana-cunha/Documents/CuencasDataBases/ClearCreek/Rasters/Topography/10USGS/ned_1_3.metaDEM");
+            if(ir==-13) DEMFile=new java.io.File("/Users/luciana-cunha/Documents/CuencasDataBases/ClearCreek/Rasters/Topography/30USGS/ned_1.metaDEM");
+
+
 
             hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(DEMFile);
             metaModif.setLocationBinaryFile(new java.io.File(DEMFile.getPath().substring(0, DEMFile.getPath().lastIndexOf(".")) + ".dir"));
@@ -570,8 +583,10 @@ public class SCS {
             metaModif.setFormat("Byte");
             byte[][] horOrders = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
 
-
-             if(ir==-9) {x=2817;
+ //Clear Creek - coralville
+             x = 2372;
+                            y = 791; //Cedar Rapids
+            if(ir==-9) {x=2817;
             y=713;}
             if(ir==-10) {x=1596;
             y=298;}
@@ -584,9 +599,8 @@ public class SCS {
 
  
 
-            String LandUse = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
-            String SoilData = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
-
+            String LandUse = "/Users/luciana-cunha/Documents/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+            String SoilData = "/Users/luciana-cunha/Documents/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
                    if (BasinFlag == 0) {
             LandUse = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
             SoilData = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";

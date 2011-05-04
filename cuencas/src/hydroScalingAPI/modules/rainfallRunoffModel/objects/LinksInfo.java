@@ -244,7 +244,7 @@ public class LinksInfo extends java.lang.Object {
      * @return The link length in meters
      */
     public double Length(int LinkNumber){
-        return (double) (lengthArray[0][LinkNumber]*1000.0);
+        return (double) (lengthArray[0][LinkNumber]);
     }
 
     public void setLength(int LinkNumber,float newLength){
