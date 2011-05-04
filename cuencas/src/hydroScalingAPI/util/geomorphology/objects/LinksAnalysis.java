@@ -881,8 +881,8 @@ public class LinksAnalysis extends java.lang.Object {
         //main3(args);
         //main5(args);
         //main4(args);
-        //main6(args);  // Writing connectivity for a DEM and map of hillslopes
-        main6_1(args);  // Writing connectivity for a DEM and map of hillslopes
+        main6(args);  // Writing connectivity for a DEM and map of hillslopes
+        //main6_1(args);  // Writing connectivity for a DEM and map of hillslopes
         //main7(args);  //Writing connectivity for Clear Creek to share with The Mathematicians
         //main8(args);  //Writing connectivity for Cedar River at Cedar Rapids to share with The Mathematicians
         //main9(args);  // Writing connectivity for a DEM including all the embedded basins... Multiple outlet concept
@@ -1427,7 +1427,7 @@ public static void main5(String args[]) {
                         int x=Integer.parseInt(basLabel[0].split(",")[0].split("x:")[1].trim());
                         int y=Integer.parseInt(basLabel[0].split(",")[1].split("y:")[1].trim());
 
-                        System.out.println(basLabel[1].split(":")[0]+","+x+","+y+","+matrizPintada[y][x]);
+                        System.out.println(basLabel[1].split(":")[0]+";"+x+";"+y+";"+matrizPintada[y][x]);
 
                     }
                 }
