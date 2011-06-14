@@ -261,18 +261,6 @@ public class IowaBasinsInfoScript2{
             bufferout.close();
             outputDir.close();
 
-            outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/count"+kk);
-            bufferout=new BufferedOutputStream(outputDir);
-            newOutputStream=new DataOutputStream(bufferout);
-
-            for (int i=0;i<maxIndex;i++){
-                newOutputStream.writeFloat((accumulators[i]>0?1:0));
-            }
-
-            newOutputStream.close();
-            bufferout.close();
-            outputDir.close();
-
             kk++;
 
         }
@@ -341,73 +329,6 @@ public class IowaBasinsInfoScript2{
             for (int i = 0; i < nextLinkArray.length; i++) {
                 newOutputStream.writeFloat(currentValues[i]);
                 maxWidthFunction[i]=Math.max(currentValues[i], maxWidthFunction[i]);
-            }
-
-            newOutputStream.close();
-            bufferout.close();
-            outputDir.close();
-
-        }
-
-        System.out.println(">> Creating Counting Convolution Files");
-
-        new java.io.File(dirOut.getPath()+"/ConvolutionFiles/").mkdirs();
-
-        System.out.println(">> Creating Counting Convolution File # "+0);
-
-        inChannel = new
-            FileInputStream(new java.io.File(dirOut.getPath()+"/RemappedRainfall/count0")).getChannel();
-        outChannel = new
-            FileOutputStream(new java.io.File(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+0)).getChannel();
-
-        inChannel.transferTo(0, inChannel.size(),
-                outChannel);
-
-        if (inChannel != null) inChannel.close();
-        if (outChannel != null) outChannel.close();
-
-        for(int j=1;j<totalConvolutionPeriod*2;j++){
-
-            float[] currentValues=new float[nextLinkArray.length];
-            float[] previousValues=new float[nextLinkArray.length];
-
-            System.out.println(">> Creating Counting Convolution File # "+j);
-
-            if(j<totalConvolutionPeriod){
-
-                dataPath=new java.io.FileInputStream(dirOut.getPath()+"/RemappedRainfall/count"+j/dicretizationOfHour);
-                dataBuffer=new java.io.BufferedInputStream(dataPath);
-                dataDataStream=new java.io.DataInputStream(dataBuffer);
-
-                for (int i = 0; i < nextLinkArray.length; i++) currentValues[i]=dataDataStream.readFloat();
-
-                dataBuffer.close();
-                dataDataStream.close();
-            }
-
-            dataPath=new java.io.FileInputStream(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+(j-1));
-            dataBuffer=new java.io.BufferedInputStream(dataPath);
-            dataDataStream=new java.io.DataInputStream(dataBuffer);
-
-            for (int i = 0; i < nextLinkArray.length; i++) previousValues[i]=dataDataStream.readFloat();
-
-
-            dataBuffer.close();
-            dataDataStream.close();
-
-
-            for (int i = 0; i < nextLinkArray.length; i++) {
-                if(nextLinkArray[i] != -1) {
-                    currentValues[nextLinkArray[i]]+=previousValues[i];
-                }
-            }
-
-            outputDir = new FileOutputStream(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+j);
-            bufferout=new BufferedOutputStream(outputDir);
-            newOutputStream=new DataOutputStream(bufferout);
-
-            for (int i = 0; i < nextLinkArray.length; i++) {
-                newOutputStream.writeFloat(currentValues[i]);
             }
 
             newOutputStream.close();
@@ -510,8 +431,6 @@ public class IowaBasinsInfoScript2{
                 }
             }
 
-            for (int i=0;i<maxIndex;i++) accumulators[i]/=counters[i];
-
             System.out.println(">> Writting Remapped Rainfall from File # "+kk);
 
             outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/rain"+kk);
@@ -521,18 +440,6 @@ public class IowaBasinsInfoScript2{
             for (int i=0;i<maxIndex;i++){
                 accumulators[i]/=counters[i];
                 newOutputStream.writeFloat(accumulators[i]);
-            }
-
-            newOutputStream.close();
-            bufferout.close();
-            outputDir.close();
-
-            outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRainfall/count"+kk);
-            bufferout=new BufferedOutputStream(outputDir);
-            newOutputStream=new DataOutputStream(bufferout);
-
-            for (int i=0;i<maxIndex;i++){
-                newOutputStream.writeFloat((accumulators[i]>0?1:0));
             }
 
             newOutputStream.close();
@@ -628,98 +535,11 @@ public class IowaBasinsInfoScript2{
 
             }
 
-            System.out.println(">> Updating Count Convolution Files");
-
-            new java.io.File(dirOut.getPath()+"/ConvolutionFiles/").mkdirs();
-
-            for(int j=kk;j<forecastHorizon*dicretizationOfHour*2;j++){
-
-                float[] currentValues=new float[nextLinkArray.length];
-                float[] previousValues=new float[nextLinkArray.length];
-
-                System.out.println(">> Updating Count Convolution File # "+j);
-
-                if(j<dicretizationOfHour*(forecastHorizon+1)){
-
-                    dataPath=new java.io.FileInputStream(dirOut.getPath()+"/RemappedRainfall/count"+j/dicretizationOfHour);
-                    dataBuffer=new java.io.BufferedInputStream(dataPath);
-                    dataDataStream=new java.io.DataInputStream(dataBuffer);
-
-                    for (int i = 0; i < nextLinkArray.length; i++) currentValues[i]=dataDataStream.readFloat();
-
-                    dataBuffer.close();
-                    dataDataStream.close();
-
-                    System.out.println(">> Leyo Lluvia!!");
-                }
-
-                dataPath=new java.io.FileInputStream(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+(j-1));
-                dataBuffer=new java.io.BufferedInputStream(dataPath);
-                dataDataStream=new java.io.DataInputStream(dataBuffer);
-
-                for (int i = 0; i < nextLinkArray.length; i++) previousValues[i]=dataDataStream.readFloat();
-
-
-                dataBuffer.close();
-                dataDataStream.close();
-
-                for (int i = 0; i < nextLinkArray.length; i++) {
-                    if(nextLinkArray[i] != -1) {
-                        currentValues[nextLinkArray[i]]+=previousValues[i];
-                    }
-                }
-
-                outputDir = new FileOutputStream(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+j);
-                bufferout=new BufferedOutputStream(outputDir);
-                newOutputStream=new DataOutputStream(bufferout);
-
-                for (int i = 0; i < nextLinkArray.length; i++) newOutputStream.writeFloat(currentValues[i]);
-
-                newOutputStream.close();
-                bufferout.close();
-                outputDir.close();
-
-            }
-
-            for(int i=0;i<dicretizationOfHour;i++){
-
-                System.out.println(">> Deleting Count Convolution File # "+i);
-
-                new java.io.File(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+i).delete();
-
-            }
-
-            for(int i=dicretizationOfHour;i<forecastHorizon*dicretizationOfHour*2;i++){
-
-                System.out.println(">> Translating Count Convolution File # "+i+" to Count Convolution File "+(i-dicretizationOfHour));
-
-                new java.io.File(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+i).renameTo(new java.io.File(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+(i-dicretizationOfHour)));
-
-            }
-
-            for(int ll=forecastHorizon*dicretizationOfHour*2-dicretizationOfHour;ll<forecastHorizon*dicretizationOfHour*2;ll++){
-
-                System.out.println(">> Zeroing Count Convolution File # "+ll);
-
-                outputDir = new FileOutputStream(dirOut.getPath()+"/ConvolutionFiles/countConvol-"+ll);
-                bufferout=new BufferedOutputStream(outputDir);
-                newOutputStream=new DataOutputStream(bufferout);
-
-                for (int i=0;i<maxIndex;i++){
-                    newOutputStream.writeFloat(0.0f);
-                }
-
-                newOutputStream.close();
-                bufferout.close();
-                outputDir.close();
-
-            }
-
         }
         catch(MalformedURLException e){
            e.printStackTrace();
         }
-
+//
         int[] peakLocations=new int[nextLinkArray.length];
         float[] peakValues=new float[nextLinkArray.length];
 
@@ -789,16 +609,18 @@ public class IowaBasinsInfoScript2{
 
             int forecast=0;
             for(int kk=0;kk<rowCount;kk++) {
-                forecast=peakValues[dbID_linkID[1][kk]]<0.8?0:peakValues[dbID_linkID[1][kk]]>1.2?2:1;
-                st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakValues[dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
+                if(dbID_linkID[1][kk] < peakValues.length){
+                    forecast=peakValues[dbID_linkID[1][kk]]<0.8?0:peakValues[dbID_linkID[1][kk]]>1.2?2:1;
+                    st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakValues[dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
+                }
             }
 
             st.executeBatch();
 
             conn.close();
             
-            System.out.println(">> Database Update Successfull");
-
+            System.out.println(">> Database IFIS-1 Update Successfull");
+            
             java.util.Date endTime = new java.util.Date();
             System.out.println(">> Update time Time: " + endTime.toString());
 
@@ -808,10 +630,64 @@ public class IowaBasinsInfoScript2{
             System.out.println("Connection to UT server failed");
             ex.printStackTrace();
         }
+        
+        url = "jdbc:postgresql://ut.iihr.uiowa.edu/ifis";
+        props = new java.util.Properties();
+        props.setProperty("user","ifc_user");
+        props.setProperty("password","ifc.iihr2008");
+        props.setProperty("loginTimeout","2");
 
-        System.exit(0);
+        try {
+
+            Connection conn = DriverManager.getConnection(url, props);
+
+            System.out.println(">> Obtaining Object's list");
+
+            Statement st = conn.createStatement();
+
+            ResultSet rs;
+
+            rs = st.executeQuery("SELECT count(*) FROM pois_adv");
+            rs.next();
+            int rowCount = rs.getInt(1);
+
+            dbID_linkID=new int[2][rowCount];
+
+            rs = st.executeQuery("SELECT id,link_id FROM pois_adv");
+            java.util.Vector avaObjects=new java.util.Vector<String>();
+            for(int kk=0;kk<rowCount;kk++) {
+                rs.next();
+                dbID_linkID[0][kk]=rs.getInt(1);
+                dbID_linkID[1][kk]=rs.getInt(2);
+            }
+            rs.close();
+
+            st = conn.createStatement();
+
+            int forecast=0;
+            for(int kk=0;kk<rowCount;kk++) {
+                if(dbID_linkID[1][kk] < peakValues.length){
+                    forecast=peakValues[dbID_linkID[1][kk]]<0.8?0:peakValues[dbID_linkID[1][kk]]>1.2?2:1;
+                    st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakValues[dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
+                }
+            }
+
+            st.executeBatch();
+
+            conn.close();
+            
+            System.out.println(">> Database IFIS-2 Update Successfull");
+            
+            java.util.Date endTime = new java.util.Date();
+            System.out.println(">> Update time Time: " + endTime.toString());
 
 
+
+        } catch (SQLException ex) {
+            System.out.println("Connection to UT server failed");
+            ex.printStackTrace();
+        }
+        
     }
 
     public void CreateIndex() throws IOException {
@@ -891,6 +767,8 @@ public class IowaBasinsInfoScript2{
         if(args[0].equalsIgnoreCase("reset")) bigScript.ExecuteIndexReset();
         if(args[0].equalsIgnoreCase("update")) bigScript.ExecuteIndexUpdate();
         if(args[0].equalsIgnoreCase("index")) bigScript.CreateIndex();
+        
+        System.exit(0);
 
     }
 

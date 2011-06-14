@@ -485,26 +485,31 @@ public class IowaBasinsInfoScript{
                 float maxX=-Float.MAX_VALUE;
                 float maxY=-Float.MAX_VALUE;
 
-//                while ((line2 = is.readLine()) != null) {
-//                    linarray2 = line2.split(",");
-//
-//                    float xLon=Float.parseFloat(linarray2[0].trim());
-//                    float yLat=Float.parseFloat(linarray2[1].trim());
-//                    int tTime=(int)Math.floor(Float.parseFloat(linarray2[2].trim())*1000/0.75/3600.0)+1;
-//
-//                    int xxx = (int)((xLon-minLon_Rain)/matRes_Rain);
-//                    int yyy = (int)((yLat-minLat_Rain)/matRes_Rain);
-//
-//                    newfile.write(""+xxx+" "+yyy+"\n");
-//
-//                    averageValue += matrix[yyy][xxx];
-//                    numElements++;
-//
-//                    minX=Math.min(minX, xLon);
-//                    minY=Math.min(minY, yLat);
-//                    maxX=Math.max(maxX, xLon);
-//                    maxY=Math.max(maxY, yLat);
-//
+                while ((line2 = is.readLine()) != null) {
+                    linarray2 = line2.split(",");
+
+                    float xLon=Float.parseFloat(linarray2[0].trim());
+                    float yLat=Float.parseFloat(linarray2[1].trim());
+                    int tTime=(int)Math.floor(Float.parseFloat(linarray2[2].trim())*1000/0.75/3600.0)+1;
+
+                    int xxx = (int)((xLon-minLon_Rain)/matRes_Rain);
+                    int yyy = (int)((yLat-minLat_Rain)/matRes_Rain);
+                    
+                    //UNCOMMENT TO WRITE Lat-Longs
+                    //newfile.write(""+xLon+" "+yLat+"\n");
+
+                    
+                    //UNCOMMENT TO WRITE RAINFALL LOOKUP TABLE
+                    newfile.write(""+xxx+" "+yyy+"\n");
+
+                    averageValue += matrix[yyy][xxx];
+                    numElements++;
+
+                    minX=Math.min(minX, xLon);
+                    minY=Math.min(minY, yLat);
+                    maxX=Math.max(maxX, xLon);
+                    maxY=Math.max(maxY, yLat);
+
 //                    if(numElements%10==0){
 //
 //                        if(tTime > 1){
@@ -517,8 +522,8 @@ public class IowaBasinsInfoScript{
 //                        }
 //
 //                    }
-//
-//                }
+
+                }
 
                 averageValue/=numElements;
                 averageValueTimeMachine/=(numElements/10);
@@ -671,6 +676,8 @@ public class IowaBasinsInfoScript{
         outputDir.close();
 
         System.out.println(">> Current Update Completed");
+        
+        System.exit(0);
     }
 
     public static void main(String[] args) throws IOException {
@@ -705,10 +712,11 @@ public class IowaBasinsInfoScript{
 
             String[][] kmlInAndOut=new String[][] {
                                                    {"/Users/ricardo/rawData/BasinMasks/usgs_gauges/","/Volumes/ricardo/temp/iowa_basins_data1/usgs_gauges/"},
-//                                                   {"/Users/ricardo/rawData/BasinMasks/large_cities/","/Volumes/ricardo/temp/iowa_basins_data1/large_cities/"},
-//                                                   {"/Users/ricardo/rawData/BasinMasks/medium_cities/","/Volumes/ricardo/temp/iowa_basins_data1/medium_cities/"},
-//                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data1/small_cities/"},
-//                                                   {"/Users/ricardo/rawData/BasinMasks/ifc_sensors/","/Volumes/ricardo/temp/iowa_basins_data1/ifc_sensors/"}
+                                                   {"/Users/ricardo/rawData/BasinMasks/usace_gauges/","/Volumes/ricardo/temp/iowa_basins_data1/usace_gauges/"},
+                                                   {"/Users/ricardo/rawData/BasinMasks/large_cities/","/Volumes/ricardo/temp/iowa_basins_data1/large_cities/"},
+                                                   {"/Users/ricardo/rawData/BasinMasks/medium_cities/","/Volumes/ricardo/temp/iowa_basins_data1/medium_cities/"},
+                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data1/small_cities/"},
+                                                   {"/Users/ricardo/rawData/BasinMasks/ifc_sensors/","/Volumes/ricardo/temp/iowa_basins_data1/ifc_sensors/"}
                                                   };
 
 
