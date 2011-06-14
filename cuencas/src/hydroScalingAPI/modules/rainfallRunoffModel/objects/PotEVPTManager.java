@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
 /*
- * stormManager.java
+ * PotEVPTManager.java
  *
  * Created on July 10, 2002, 6:00 PM
  */
@@ -27,27 +27,27 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 package hydroScalingAPI.modules.rainfallRunoffModel.objects;
 
 /**
- * This class handles the precipitation over a basin.  It takes in a group of
+ * This class handles the PotEVPTipitation over a basin.  It takes in a group of
  * raster files that represent snapshots of the rainfall fields and projects those
  * fields over the hillslope map to obtain hillslope-based rainfall time series.
  * @author Ricardo Mantilla
  */
-public class StormManager {
+public class PotEVPTManager {
 
-    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] precOnBasin,accumPrecOnBasin;
+    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] PotEVPTOnBasin,accumPotEVPTOnBasin;
     private boolean success=false,veryFirstDrop=true;
-    private hydroScalingAPI.io.MetaRaster metaStorm;
+    private hydroScalingAPI.io.MetaRaster metaPotEVPT;
     private java.util.Calendar firstWaterDrop,lastWaterDrop;
-    private float[][] totalPixelBasedPrec;
-    private float[] totalHillBasedPrec;
-    private float[] totalHillBasedPrecmm;
+    private float[][] totalPixelBasedPotEVPT;
+    private float[] totalHillBasedPotEVPT;
+    private float[] totalHillBasedPotEVPTmm;
     private hydroScalingAPI.util.fileUtilities.ChronoFile[] arCron;
 
     int[][] matrizPintada;
 
     private double recordResolutionInMinutes;
 
-    private String thisStormName;
+    private String thisPotEVPTName;
 
     private int ncol;   // create
     private int nrow;   // create
@@ -58,13 +58,13 @@ public class StormManager {
 
 
     /**
-     * Creates a new instance of StormManager (with constant rainfall rate
+     * Creates a new instance of PotEVPTManager (with constant rainfall rate
      * over the basin during a given period of time)
      * @param linksStructure The topologic structure of the river network
      * @param rainIntensity The uniform intensity to be applied over the basinb
      * @param rainDuration The duration of the event with the given intensity
      */
-    public StormManager(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, float rainIntensity, float rainDuration) {
+    public PotEVPTManager(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, float rainIntensity, float rainDuration) {
 
         java.util.Calendar date=java.util.Calendar.getInstance();
         date.clear();
@@ -73,27 +73,27 @@ public class StormManager {
         firstWaterDrop=date;
         lastWaterDrop=date;
 
-        precOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
-        accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
-        for (int i=0;i<precOnBasin.length;i++){
-            precOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
-            precOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
+        PotEVPTOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
+        accumPotEVPTOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+        for (int i=0;i<PotEVPTOnBasin.length;i++){
+            PotEVPTOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
+            PotEVPTOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
             ////// this is wrong, should be accumulated
-            accumPrecOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
-            accumPrecOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
+            accumPotEVPTOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
+            accumPotEVPTOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
 
         }
 
         recordResolutionInMinutes=rainDuration;
 
-        thisStormName="UniformEvent_INT_"+rainIntensity+"_DUR_"+rainDuration;
+        thisPotEVPTName="UniformEvent_INT_"+rainIntensity+"_DUR_"+rainDuration;
 
         success=true;
 
     }
 
     /**
-     * Creates a new instance of StormManager (with spatially and temporally variable rainfall
+     * Creates a new instance of PotEVPTManager (with spatially and temporally variable rainfall
      * rates over the basin) based in a set of raster maps of rainfall intensities
      * @param locFile The path to the raster files
      * @param myCuenca The {@link hydroScalingAPI.util.geomorphology.objects.Basin} object describing the
@@ -103,7 +103,7 @@ public class StormManager {
      * @param matDir The directions matrix of the DEM that contains the basin
      * @param magnitudes The magnitudes matrix of the DEM that contains the basin
      */
-    public StormManager(java.io.File locFile, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes) {
+    public PotEVPTManager(java.io.File locFile, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes) {
 
         //System.out.println("locFile.getParentFile()" + locFile.getParentFile());
         int temp=locFile.getName().lastIndexOf(".");
@@ -133,19 +133,19 @@ public class StormManager {
 
         try{
 
-            metaStorm=new hydroScalingAPI.io.MetaRaster(locFile);
-            nrow=metaStorm.getNumRows();
-            ncol=metaStorm.getNumCols();
-            xllcorner=metaStorm.getMinLon();
-            yllcorner=metaStorm.getMinLat();
-            cellsize=metaStorm.getResLat();
+            metaPotEVPT=new hydroScalingAPI.io.MetaRaster(locFile);
+            nrow=metaPotEVPT.getNumRows();
+            ncol=metaPotEVPT.getNumCols();
+            xllcorner=metaPotEVPT.getMinLon();
+            yllcorner=metaPotEVPT.getMinLat();
+            cellsize=metaPotEVPT.getResLat();
 
 
             /****** OJO QUE ACA PUEDE HABER UN ERROR (POR LA CUESTION DE LA COBERTURA DEL MAPA SOBRE LA CUENCA)*****************/
-            if (metaStorm.getMinLon() > metaDatos.getMinLon()+myCuenca.getMinX()*metaDatos.getResLon()/3600.0 ||
-                metaStorm.getMinLat() > metaDatos.getMinLat()+myCuenca.getMinY()*metaDatos.getResLat()/3600.0 ||
-                metaStorm.getMaxLon() < metaDatos.getMinLon()+(myCuenca.getMaxX()+2)*metaDatos.getResLon()/3600.0 ||
-                metaStorm.getMaxLat() < metaDatos.getMinLat()+(myCuenca.getMaxY()+2)*metaDatos.getResLat()/3600.0) {
+            if (metaPotEVPT.getMinLon() > metaDatos.getMinLon()+myCuenca.getMinX()*metaDatos.getResLon()/3600.0 ||
+                metaPotEVPT.getMinLat() > metaDatos.getMinLat()+myCuenca.getMinY()*metaDatos.getResLat()/3600.0 ||
+                metaPotEVPT.getMaxLon() < metaDatos.getMinLon()+(myCuenca.getMaxX()+2)*metaDatos.getResLon()/3600.0 ||
+                metaPotEVPT.getMaxLat() < metaDatos.getMinLat()+(myCuenca.getMaxY()+2)*metaDatos.getResLat()/3600.0) {
                     System.out.println("Not Area Coverage");
                     return;
             }
@@ -179,25 +179,25 @@ public class StormManager {
                 }
             }
 
-            precOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
-            accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+            PotEVPTOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+            accumPotEVPTOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
 //////////////////////////////////////// stopped here - be sure accumulated is being calculated correctly
-            int regInterval=metaStorm.getTemporalScale();
-            float regIntervalmm=((float)metaStorm.getTemporalScale())/(1000.0f*60.0f);
+            int regInterval=metaPotEVPT.getTemporalScale();
+            float regIntervalmm=((float)metaPotEVPT.getTemporalScale())/(1000.0f*60.0f);
 
             System.out.println("Time interval for this file: "+regInterval);
 
-            totalHillBasedPrec=new float[precOnBasin.length];
-            totalHillBasedPrecmm=new float[precOnBasin.length];
+            totalHillBasedPotEVPT=new float[PotEVPTOnBasin.length];
+            totalHillBasedPotEVPTmm=new float[PotEVPTOnBasin.length];
 
-                double[] currentHillBasedPrec=new double[precOnBasin.length];
-                float[] currentHillNumPixels=new float[precOnBasin.length];
+                double[] currentHillBasedPotEVPT=new double[PotEVPTOnBasin.length];
+                float[] currentHillNumPixels=new float[PotEVPTOnBasin.length];
 
-                for (int i=0;i<precOnBasin.length;i++){
-                precOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
-                accumPrecOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
-                totalHillBasedPrecmm[i]=0.0f;
-                currentHillBasedPrec[i]=0.0D;
+                for (int i=0;i<PotEVPTOnBasin.length;i++){
+                PotEVPTOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
+                accumPotEVPTOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
+                totalHillBasedPotEVPTmm[i]=0.0f;
+                currentHillBasedPotEVPT[i]=0.0D;
                 currentHillNumPixels[i]=0.0f;
                 }
 
@@ -207,20 +207,20 @@ public class StormManager {
 
             System.out.println("-----------------Start of Files Reading----------------");
 
-            totalPixelBasedPrec=new float[matDirBox.length][matDirBox[0].length];
+            totalPixelBasedPotEVPT=new float[matDirBox.length][matDirBox[0].length];
 
 
 
             for (int i=0;i<arCron.length;i++){
                 //Cargo cada uno
-                metaStorm.setLocationBinaryFile(arCron[i].fileName);
+                metaPotEVPT.setLocationBinaryFile(arCron[i].fileName);
 
                 //System.out.println("--> Loading data from "+arCron[i].fileName.getName());
 
-                dataSnapShot=new hydroScalingAPI.io.DataRaster(metaStorm).getDouble();
+                dataSnapShot=new hydroScalingAPI.io.DataRaster(metaPotEVPT).getDouble();
 
 
-                hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaStorm.getMissing()).doubleValue());
+                hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaPotEVPT.getMissing()).doubleValue());
                 //System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
 
 
@@ -235,45 +235,45 @@ public class StormManager {
                 int basinMinX=myCuenca.getMinX();
                 int basinMinY=myCuenca.getMinY();
 
-                double stormMinLon=metaStorm.getMinLon();
-                double stormMinLat=metaStorm.getMinLat();
-                double stormResLon=metaStorm.getResLon();
-                double stormResLat=metaStorm.getResLat();
+                double PotEVPTMinLon=metaPotEVPT.getMinLon();
+                double PotEVPTMinLat=metaPotEVPT.getMinLat();
+                double PotEVPTResLon=metaPotEVPT.getResLon();
+                double PotEVPTResLat=metaPotEVPT.getResLat();
 
                 for (int j=0;j<matrizPintada.length;j++) for (int k=0;k<matrizPintada[0].length;k++){
                     
                     evalSpot=new double[] {demMinLon+(basinMinX+k-1)*demResLon/3600.0,
                                            demMinLat+(basinMinY+j-1)*demResLat/3600.0};
 
-                    MatX=(int) Math.floor((evalSpot[0]-stormMinLon)/stormResLon*3600.0);
-                    MatY=(int) Math.floor((evalSpot[1]-stormMinLat)/stormResLat*3600.0);
+                    MatX=(int) Math.floor((evalSpot[0]-PotEVPTMinLon)/PotEVPTResLon*3600.0);
+                    MatY=(int) Math.floor((evalSpot[1]-PotEVPTMinLat)/PotEVPTResLat*3600.0);
 
                     if (matrizPintada[j][k] > 0){
-                        currentHillBasedPrec[matrizPintada[j][k]-1]+=dataSnapShot[MatY][MatX];
+                        currentHillBasedPotEVPT[matrizPintada[j][k]-1]+=dataSnapShot[MatY][MatX];
                         currentHillNumPixels[matrizPintada[j][k]-1]++;
                     }
 
-                    totalPixelBasedPrec[j][k]+=(float) dataSnapShot[MatY][MatX];
+                    totalPixelBasedPotEVPT[j][k]+=(float) dataSnapShot[MatY][MatX];
 
                 }
 
                 for (int j=0;j<linksStructure.contactsArray.length;j++){
-                    if (currentHillBasedPrec[j] > 0) {
+                    if (currentHillBasedPotEVPT[j] > 0) {
                         if (veryFirstDrop){
                             firstWaterDrop=arCron[i].getDate();
                             veryFirstDrop=false;
                         }
 //System.out.println(arCron[i].getDate());
-                        precOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(currentHillBasedPrec[j]/currentHillNumPixels[j])); //
-                        totalHillBasedPrecmm[j]+=(currentHillBasedPrec[j]/currentHillNumPixels[j])*(regIntervalmm/60);
-                        totalHillBasedPrec[j]+=currentHillBasedPrec[j]/currentHillNumPixels[j];
+                        PotEVPTOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(currentHillBasedPotEVPT[j]/currentHillNumPixels[j])); //
+                        totalHillBasedPotEVPTmm[j]+=(currentHillBasedPotEVPT[j]/currentHillNumPixels[j])*(regIntervalmm/60);
+                        totalHillBasedPotEVPT[j]+=currentHillBasedPotEVPT[j]/currentHillNumPixels[j];
                         lastWaterDrop=arCron[i].getDate();
-                    } else{totalHillBasedPrecmm[j]=0.0f;}
+                    } else{totalHillBasedPotEVPTmm[j]=0.0f;}
                     
 
-                    accumPrecOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(totalHillBasedPrecmm[j])); //
-       //             System.out.println(arCron[i].getDate()+"Rain file " + i + "link " +j + "totalHillBasedPrecmm[j] = " + totalHillBasedPrecmm[j]);
-                    currentHillBasedPrec[j]=0.0D;
+                    accumPotEVPTOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(totalHillBasedPotEVPTmm[j])); //
+       //             System.out.println(arCron[i].getDate()+"Rain file " + i + "link " +j + "totalHillBasedPotEVPTmm[j] = " + totalHillBasedPotEVPTmm[j]);
+                    currentHillBasedPotEVPT[j]=0.0D;
                     currentHillNumPixels[j]=0.0f;
                 }
 
@@ -282,10 +282,10 @@ public class StormManager {
             }
 
             for (int j=0;j<linksStructure.contactsArray.length;j++){
-                totalHillBasedPrec[j]/=precOnBasin[j].getSize();
+                totalHillBasedPotEVPT[j]/=PotEVPTOnBasin[j].getSize();
             }
 
-            thisStormName=metaStorm.getLocationBinaryFile().getName().substring(0,metaStorm.getLocationBinaryFile().getName().lastIndexOf("."));
+            thisPotEVPTName=metaPotEVPT.getLocationBinaryFile().getName().substring(0,metaPotEVPT.getLocationBinaryFile().getName().lastIndexOf("."));
 
             success=true;
 
@@ -293,14 +293,14 @@ public class StormManager {
             System.out.println("-----------------Done with Files Reading----------------");
 
 
-            recordResolutionInMinutes=metaStorm.getTemporalScale()/1000.0/60.0;
+            recordResolutionInMinutes=metaPotEVPT.getTemporalScale()/1000.0/60.0;
 
             if(lastWaterDrop == null){
                 firstWaterDrop=arCron[0].getDate();
                 lastWaterDrop=arCron[0].getDate();
                 for (int j=0;j<linksStructure.contactsArray.length;j++){
-                    precOnBasin[j].addDateAndValue(arCron[0].getDate(),0.0f); //
-                    totalHillBasedPrec[j]=0;
+                    PotEVPTOnBasin[j].addDateAndValue(arCron[0].getDate(),0.0f); //
+                    totalHillBasedPotEVPT[j]=0;
                 }
             }
 
@@ -315,9 +315,9 @@ public class StormManager {
      * @param dateRequested The time for which the rain is desired
      * @return Returns the rainfall rate in mm/h
      */
-    public float getPrecOnHillslope(int HillNumber,java.util.Calendar dateRequested){
+    public float getPotEVPTOnHillslope(int HillNumber,java.util.Calendar dateRequested){
 
-        return precOnBasin[HillNumber].getRecord(dateRequested);
+        return PotEVPTOnBasin[HillNumber].getRecord(dateRequested);
 
     }
 
@@ -327,62 +327,62 @@ public class StormManager {
      * @param dateRequested The time for which the rain is desired
      * @return Returns the rainfall rate in mm/h
      */
-    public double getAcumPrecOnHillslope(int HillNumber,java.util.Calendar dateRequested){
+    public double getAcumPotEVPTOnHillslope(int HillNumber,java.util.Calendar dateRequested){
 
 
-        return accumPrecOnBasin[HillNumber].getRecord(dateRequested);
+        return accumPotEVPTOnBasin[HillNumber].getRecord(dateRequested);
 
 //        double Acum=0.0f;
 //        long dateRequestedMil=dateRequested.getTimeInMillis();
 //        double timemin=dateRequestedMil/1000./60.;
-//        double inc=stormRecordResolutionInMinutes();
+//        double inc=PotEVPTRecordResolutionInMinutes();
 //        java.util.Calendar currtime=java.util.Calendar.getInstance();
 //        currtime.clear();
 //        currtime.set(1971, 6, 1, 6, 0, 0);
 //        currtime.setTimeInMillis(dateRequestedMil);
 //        long j=0;
-//        if (timemin==stormInitialTimeInMinutes()) Acum =0;
-//        if (timemin>stormInitialTimeInMinutes()){
-//           j=(long)stormInitialTimeInMinutes()*1000*60;
-//           for (double i=stormInitialTimeInMinutes()+inc;i<=timemin;i=i+inc)
+//        if (timemin==PotEVPTInitialTimeInMinutes()) Acum =0;
+//        if (timemin>PotEVPTInitialTimeInMinutes()){
+//           j=(long)PotEVPTInitialTimeInMinutes()*1000*60;
+//           for (double i=PotEVPTInitialTimeInMinutes()+inc;i<=timemin;i=i+inc)
 //           {
 //               j=(long)i*1000*60;
 //               currtime.setTimeInMillis(j);
-//               Acum = Acum + precOnBasin[HillNumber].getRecord(currtime)*(inc/60);
+//               Acum = Acum + PotEVPTOnBasin[HillNumber].getRecord(currtime)*(inc/60);
 //           }
 //
 //           long dif=dateRequestedMil-j;
 //           currtime.setTimeInMillis(j);
-//           Acum=Acum + precOnBasin[HillNumber].getRecord(currtime)*((dif/1000./60.)/60);
+//           Acum=Acum + PotEVPTOnBasin[HillNumber].getRecord(currtime)*((dif/1000./60.)/60);
 //        }
 //        return Acum;
 
     }
 
     /**
-     * Returns the maximum value of precipitation recorded for a given hillslope
+     * Returns the maximum value of PotEVPTipitation recorded for a given hillslope
      * @param HillNumber The index of the desired hillslope
      * @return The maximum rainfall rate in mm/h
      */
-    public float getMaxPrecOnHillslope(int HillNumber){
+    public float getMaxPotEVPTOnHillslope(int HillNumber){
 
-        return precOnBasin[HillNumber].getMaxRecord();
+        return PotEVPTOnBasin[HillNumber].getMaxRecord();
 
     }
 
     /**
-     * Returns the maximum value of precipitation recorded for a given hillslope
+     * Returns the maximum value of PotEVPTipitation recorded for a given hillslope
      * @param HillNumber The index of the desired hillslope
      * @return The average rainfall rate in mm/h
      */
-    public float getMeanPrecOnHillslope(int HillNumber){
+    public float getMeanPotEVPTOnHillslope(int HillNumber){
 
-        return precOnBasin[HillNumber].getMeanRecord();
+        return PotEVPTOnBasin[HillNumber].getMeanRecord();
 
     }
 
     /**
-     *  A boolean flag indicating if the precipitation files were fully read
+     *  A boolean flag indicating if the PotEVPTipitation files were fully read
      * @return A flag for the constructor success
      */
     public boolean isCompleted(){
@@ -390,69 +390,69 @@ public class StormManager {
     }
 
     /**
-     * Returns the name of this storm event
-     * @return A String that describes this storm
+     * Returns the name of this PotEVPT event
+     * @return A String that describes this PotEVPT
      */
-    public String stormName(){
-        return thisStormName;
+    public String PotEVPTName(){
+        return thisPotEVPTName;
     }
 
     /**
-     * The storm temporal resolution in milliseconds
+     * The PotEVPT temporal resolution in milliseconds
      * @return A float with the temporal resolution
      */
-    public float stormRecordResolution(){
+    public float PotEVPTRecordResolution(){
 
-        return metaStorm.getTemporalScale();
+        return metaPotEVPT.getTemporalScale();
 
     }
 
     /**
-     * The initial storm time as a {@link java.util.Calendar} object
+     * The initial PotEVPT time as a {@link java.util.Calendar} object
      * @return A {@link java.util.Calendar} object indicating when the first drop of water fell
      * on the basin
      */
-    public void setStormInitialTime(java.util.Calendar iniDate){
+    public void setPotEVPTInitialTime(java.util.Calendar iniDate){
 
         firstWaterDrop=iniDate;
     }
 
     /**
-     * The initial storm time as a {@link java.util.Calendar} object
+     * The initial PotEVPT time as a {@link java.util.Calendar} object
      * @return A {@link java.util.Calendar} object indicating when the first drop of water fell
      * on the basin
      */
-    public java.util.Calendar stormInitialTime(){
+    public java.util.Calendar PotEVPTInitialTime(){
 
         return firstWaterDrop;
     }
 
     /**
-     * The initial storm time as a double in milliseconds obtained from the method getTimeInMillis()
+     * The initial PotEVPT time as a double in milliseconds obtained from the method getTimeInMillis()
      * of the {@link java.util.Calendar} object
      * @return A double indicating when the first drop of water fell over the basin
      * on the basin
      */
-    public double stormInitialTimeInMinutes(){
+    public double PotEVPTInitialTimeInMinutes(){
 
         return firstWaterDrop.getTimeInMillis()/1000./60.;
     }
 
     /**
-     * The final storm time as a double in milliseconds obtained from the method getTimeInMillis()
+     * The final PotEVPT time as a double in milliseconds obtained from the method getTimeInMillis()
      * of the {@link java.util.Calendar} object
      * @return A double indicating when the last drop of water fell over the basin
      * on the basin
      */
-    public double stormFinalTimeInMinutes(){
-        return lastWaterDrop.getTimeInMillis()/1000./60.+stormRecordResolutionInMinutes();
+    public double PotEVPTFinalTimeInMinutes(){
+        return lastWaterDrop.getTimeInMillis()/1000./60.+PotEVPTRecordResolutionInMinutes();
     }
 
     /**
-     * The storm record time resolution in minutes
+     * The PotEVPT record time resolution in minutes
      * @return A double indicating the time series time step
      */
-    public double stormRecordResolutionInMinutes(){
+    public double PotEVPTRecordResolutionInMinutes(){
 
         return recordResolutionInMinutes;
 
@@ -462,11 +462,11 @@ public class StormManager {
      * The total rainfall over a given pixel of the original raster fields
      * @param i The row number of the desired location
      * @param j The column number of the desired location
-     * @return The accumulated rain over the entire storm period
+     * @return The accumulated rain over the entire PotEVPT period
      */
-    public float getTotalPixelBasedPrec(int i, int j){
+    public float getTotalPixelBasedPotEVPT(int i, int j){
 
-        return totalPixelBasedPrec[i][j];
+        return totalPixelBasedPotEVPT[i][j];
 
     }
 
@@ -487,9 +487,9 @@ public class StormManager {
      * @param HillNumber The index of the desired hillslope
      * @return The value of rainfall intensity
      */
-    public float getTotalHillSlopeBasedPrec(int HillNumber){
+    public float getTotalHillSlopeBasedPotEVPT(int HillNumber){
 
-        return totalHillBasedPrec[HillNumber];
+        return totalHillBasedPotEVPT[HillNumber];
 
     }
 

@@ -49,18 +49,18 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
     }
 
     public ParallelSimulationToFileHelium(int x, int y, byte[][] direcc, int[][] magnitudes, byte[][] horOrders, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, int routingType, java.util.Hashtable routingParams, java.io.File outputDirectory, java.util.Calendar zST, java.util.Calendar eST, int dscale, String WD) throws java.io.IOException, VisADException {
-        this(x, y, direcc, magnitudes, horOrders, md, rainIntensity, rainDuration, null, null, infiltRate, routingType, routingParams, outputDirectory, zST, eST, dscale, WD);
+        this(x, y, direcc, magnitudes, horOrders, md, rainIntensity, rainDuration, null, null, null, infiltRate, routingType, routingParams, outputDirectory, zST, eST, dscale, WD);
     }
 
-    public ParallelSimulationToFileHelium(int x, int y, byte[][] direcc, int[][] magnitudes, byte[][] horOrders, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, hydroScalingAPI.io.MetaRaster infiltMetaRaster, int routingType, java.util.Hashtable routingParams, java.io.File outputDirectory, java.util.Calendar zST, java.util.Calendar eST, int dscale, String WD) throws java.io.IOException, VisADException {
-        this(x, y, direcc, magnitudes, horOrders, md, 0.0f, 0.0f, stormFile, infiltMetaRaster, 0.0f, routingType, routingParams, outputDirectory, zST, eST, dscale, WD);
+    public ParallelSimulationToFileHelium(int x, int y, byte[][] direcc, int[][] magnitudes, byte[][] horOrders, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, java.io.File PotEVPTFile, hydroScalingAPI.io.MetaRaster infiltMetaRaster, int routingType, java.util.Hashtable routingParams, java.io.File outputDirectory, java.util.Calendar zST, java.util.Calendar eST, int dscale, String WD) throws java.io.IOException, VisADException {
+        this(x, y, direcc, magnitudes, horOrders, md, 0.0f, 0.0f, stormFile,  PotEVPTFile, infiltMetaRaster, 0.0f, routingType, routingParams, outputDirectory, zST, eST, dscale, WD);
     }
 
-    public ParallelSimulationToFileHelium(int x, int y, byte[][] direcc, int[][] magnitudes, byte[][] horOrders, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, int routingType, java.util.Hashtable routingParams, java.io.File outputDirectory, java.util.Calendar zST, java.util.Calendar eST, int dscale, String WD) throws java.io.IOException, VisADException {
-        this(x, y, direcc, magnitudes, horOrders, md, 0.0f, 0.0f, stormFile, null, infiltRate, routingType, routingParams, outputDirectory, zST, eST, dscale, WD);
+    public ParallelSimulationToFileHelium(int x, int y, byte[][] direcc, int[][] magnitudes, byte[][] horOrders, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, java.io.File PotEVPTFile, float infiltRate, int routingType, java.util.Hashtable routingParams, java.io.File outputDirectory, java.util.Calendar zST, java.util.Calendar eST, int dscale, String WD) throws java.io.IOException, VisADException {
+        this(x, y, direcc, magnitudes, horOrders, md, 0.0f, 0.0f, stormFile, PotEVPTFile, null, infiltRate, routingType, routingParams, outputDirectory, zST, eST, dscale, WD);
     }
 
-    public ParallelSimulationToFileHelium(int x, int y, byte[][] direcc, int[][] magnitudes, byte[][] horOrders, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, java.io.File stormFile, hydroScalingAPI.io.MetaRaster infiltMetaRaster, float infiltRate, int routingType, java.util.Hashtable routingParams, java.io.File outputDirectory, java.util.Calendar zST, java.util.Calendar eST, int dscale, String WD) throws java.io.IOException, VisADException {
+    public ParallelSimulationToFileHelium(int x, int y, byte[][] direcc, int[][] magnitudes, byte[][] horOrders, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, java.io.File stormFile, java.io.File PotEVPTFile, hydroScalingAPI.io.MetaRaster infiltMetaRaster, float infiltRate, int routingType, java.util.Hashtable routingParams, java.io.File outputDirectory, java.util.Calendar zST, java.util.Calendar eST, int dscale, String WD) throws java.io.IOException, VisADException {
 
         zeroSimulationTime = zST;
         endingSimulationTime = eST;
@@ -185,7 +185,7 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
             System.out.println(java.util.Arrays.toString(connectionIDs));
             System.out.println(java.util.Arrays.toString(corrections));
 
-            externalExecutors[i] = new hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.ExternalTileToFileHelium("El " + i + "-" + idd, WorkD, md.getLocationMeta().getAbsolutePath(), xOutlet, yOutlet, xSource, ySource, decompScale, routingType, lam1, lam2, v_o, stormFile.getAbsolutePath(), infiltRate, outputDirectory.getAbsolutePath(), connectionString, correctionString, this, zeroSimulationTime.getTimeInMillis(), endingSimulationTime.getTimeInMillis(), dynaIndex, routingParams);
+            externalExecutors[i] = new hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.ExternalTileToFileHelium("El " + i + "-" + idd, WorkD, md.getLocationMeta().getAbsolutePath(), xOutlet, yOutlet, xSource, ySource, decompScale, routingType, lam1, lam2, v_o, stormFile.getAbsolutePath(), PotEVPTFile.getAbsolutePath(), infiltRate, outputDirectory.getAbsolutePath(), connectionString, correctionString, this, zeroSimulationTime.getTimeInMillis(), endingSimulationTime.getTimeInMillis(), dynaIndex, routingParams);
         }
 
         boolean allNodesDone = true;
@@ -252,16 +252,16 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
             // wait for ten second
             new visad.util.Delay(10000);
             count = count + 1;
-            if (count > 10 * 36) {
-                System.out.println("More than " + 10 * 36 * 10000 / 3600 + "waiting --- " + " check processes that already run");
-                for (int i = 0; i < externalExecutors.length; i++) {
-
-                    externalExecutors[i].executing = false;
-                    externalExecutors[i].completed = false;
-                    System.out.println("Did not Run - start over" + i + "\n");
-                }
-                count = 0;
-            }
+//            if (count > 10 * 36) {
+//                System.out.println("More than " + 10 * 36 * 10000 / 3600 + "waiting --- " + " check processes that already run");
+//                for (int i = 0; i < externalExecutors.length; i++) {
+//
+//                    externalExecutors[i].executing = false;
+//                    externalExecutors[i].completed = false;
+//                    System.out.println("Did not Run - start over" + i + "\n");
+//                }
+//                count = 0;
+//            }
             allNodesDone = true;
             for (int i = 0; i < externalExecutors.length; i++) {
                 allNodesDone &= externalExecutors[i].completed;
@@ -320,7 +320,15 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 
 
         String[] AllSimName = {"90DEMUSGS"};
-        String[] AllRain = {"3Turkey_2"};
+        
+        String[] AllRain = {"3IowaCity2002"};
+        //,"3CedarRapids2005","3CedarRapids2004","3CedarRapids2003","3CedarRapids2002","3CedarRapids2007","3CedarRapids2008","3CedarRapids2009"
+        
+        String Direc="MultipleYears6";
+       
+        //"3ClearCreekBOhour2_2", ,"3ClearCreekBOSTAGEIV_2"
+        int HillT=12;
+        int flaghill=22;
 
         int nsim = AllSimName.length;
 
@@ -335,7 +343,6 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                 String SimName = AllSimName[i];
                 String BasinName = AllRain[ib];
                 java.io.File outputDirectory;
-
 
                 // DEFINE DEM
                 String[] StringDEM = {"error", "error", "error"};
@@ -367,9 +374,13 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                 System.out.println("disc =  " + disc);
                 // DEFINE THE STORM FILE
                 java.io.File stormFile;
+                java.io.File PotEVPTFile;
+                
+                
                 java.util.Hashtable routingParams = new java.util.Hashtable();
 
                 stormFile = new java.io.File(definestorm(BasinName, SimName));
+                PotEVPTFile = new java.io.File(definePotEVPT(BasinName, SimName));
 
                 // DEFINE THE INITIAL TIME OF THE SIMULATION
                 java.util.Calendar alphaSimulationTime = java.util.Calendar.getInstance();
@@ -456,36 +467,38 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 
                     routingParams.put("Basin_sim", bflag); // Cedar river - define Land cover and soil parameter
                     //float[] vsAr = {0.0002f,0.0005f};
-                    float[] vsAr = {0.001f};
+                    float[] vsAr = {};
+                    //-8 is with average VS
+                    //-9is with minimal VS
                     float[] PH = {0.0f};
                     float[] Phi = {0.0f};
                     float[] IaAre = {0.4f};
                     float[] IaArc = {0.0f};
-                    float[] l1Ar = {0.32f};
+                    float[] l1Ar = {0.15f};
                     //float[] rcAr = {-9.f};
                     //float[] vhAr = {-9.f};
 
-                    float[] rcAr = {0.5f, 0.6f, 0.8f, 1.0f, -9.f};
-                    float[] vhAr = {36.f, -9.f};
+                    float[] rcAr = {-9.f};
+                    float[] vhAr = {-9.f};
                     float[] Coefvo = {1.0f};
                     float[] HSAr = {0.f};
                     float[] CteSAr = {-9f};
                     float[] VostdAr = {0.0f};
-                    float[] kf1Ar = {0.1f};
+                    float[] kf1Ar = {1.0f};
+                    float[] EVAr = {1.0f};
 
 
 
 
                     for (float l11 : l1Ar) {
-
+                        for (float ev : EVAr) {
                         for (float vo1 : Coefvo) {
                             float cvo = vo1;
                             float l1 = l11;
                             float l2 = -0.82f * l11 + 0.1025f;
                             float vo = cvo * (0.42f - 0.29f * l11 - 3.1f * l2);
-                            l1 =0.32f;
-                            l2 =-0.13f;
-                            vo = 0.63f;
+                            l2=0.05f;
+                            vo=cvo *0.18f;
 
                             for (float Kf1 : kf1Ar) {
 
@@ -513,16 +526,26 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                                                                     float vsub = voo;
 
                                                                     for (float Vostd : VostdAr) {
-
+                                                                        
+                                                                        routingParams.put("CQflood", 8.0f); // reservoir position:
+                                                                        
+                                                                        routingParams.put("EQflood", 0.51f); // reservoir position:
+                                                          
                                                                         //C999999 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - spattially constant
-                                                                        if (rc > 0.f) {
+                                                                        if (rc >= 0.f) {
+                                                                            if(flaghill==1){
                                                                             routingParams.put("HillT", 1);  // check NetworkEquationsLuciana.java for definitions
-                                                                            routingParams.put("RunoffCoefficient", rc); // reservoir position:
+                                                                            routingParams.put("RunoffCoefficient", rc);} // reservoir position:
+                                                                            else {
+                                                                            routingParams.put("HillT", 22);  // check NetworkEquationsLuciana.java for definitions
+                                                                            routingParams.put("RunoffCoefficient", rc); // reservoir position:  
+                                                                            }  
                                                                         } else {
-                                                                            routingParams.put("HillT", 6);
+                                                                            routingParams.put("HillT", HillT);
                                                                             routingParams.put("RunoffCoefficient", -9.f); // reservoir position:
                                                                         }                                                         //                         routingParams.put("lambda1", l11);
-
+                                                                        routingParams.put("EVcoef", ev); // reservoir position:
+                
                                                                         routingParams.put("Vostd", Vostd);
                                                                         routingParams.put("Vconst", vo); // CHANGE IN THE NETWORKEQUATION CLA
                                                                         routingParams.put("v_o", vo);
@@ -532,6 +555,7 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                                                                         routingParams.put("vssub", vsub);
                                                                         routingParams.put("PorcPhiUnsat", p2);
                                                                         routingParams.put("lambdaSCSMethod", iae);
+                                                                        
                                                                         routingParams.put("BaseFlowCoef", iac); // define a constant number or -9.9 for vel=f(land Cover)
                                                                         routingParams.put("BaseFlowExp", iae); // define a constant number or -9.9 for vel=f(land Cover)
                                                                         routingParams.put("RoutingT", 5); // check NetworkEquationsLuciana.java for definitions
@@ -540,15 +564,22 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                                                                         routingParams.put("ConstSoilStorage", cts);  // check NetworkEquationsLuciana.java for definitions
 
                                                                         if (vh == -8) {
-                                                                            routingParams.put("HillVelocityT", 2);  // check NetworkEquationsLuciana.java for definitions
-                                                                            routingParams.put("vrunoff", vh);
-                                                                        } else if (vh == -9) {
-                                                                            routingParams.put("HillVelocityT", 4);  // check NetworkEquationsLuciana.java for definitions
-                                                                            routingParams.put("vrunoff", vh);
-                                                                        } else {
-                                                                            routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
-                                                                            routingParams.put("vrunoff", vh); // define a constant number or -9.9 for vel=f(land Cover)
-                                                                        }
+                                                                routingParams.put("HillVelocityT", 2);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("vrunoff", vh);
+                                                            } else if (vh == -9) {
+                                                                routingParams.put("HillVelocityT", 4);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("vrunoff", vh);
+                                                            } else {
+                                                                routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("vrunoff", vh); // define a constant number or -9.9 for vel=f(land Cover)
+                                                            }
+                                                            if (vh == -7) {
+                                                                 routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("vrunoff", vh);
+                                                                routingParams.put("HillT", 0);
+                                                                routingParams.put("RunoffCoefficient", rc); 
+                                                            }
+                                                            
 
                                                                         //routingParams.put("RunoffCoefficient", rc); // reservoir position:ccc
                                                                         // + "/BFExp" + ((Float) routingParams.get("BaseFlowExp")).floatValue()
@@ -556,10 +587,12 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 
                                                                         // outputDirectory = new java.io.File("/scratch/results_cuencas/Helium_version/" + BasinName + "/" + SimName + "/" + bflag + "/"
 
-                                                                        outputDirectory = new java.io.File("/scratch/results_cuencas/MultipleYears/" + BasinName + "/" + SimName + "/" + bflag + "/"
-                                                                                + "RoutT_" + ((Integer) routingParams.get("RoutingT")).intValue() + "/"
+                                                                        outputDirectory = new java.io.File("/scratch/results_cuencas/" + Direc + "/" + BasinName + "/" + SimName + "/" + bflag + "/"
+                                                                                + "RoutT_" + ((Integer) routingParams.get("RoutingT")).intValue() + "/"                                                                         
                                                                                 + "HillT_" + ((Integer) routingParams.get("HillT")).intValue() + "/"
                                                                                 + "HillVelT_" + ((Integer) routingParams.get("HillVelocityT")).intValue()
+                                                                                + "CQf_" + ((Float) routingParams.get("CQflood")).floatValue() + "/"
+                                                                                + "EV_" + ((Float) routingParams.get("EVcoef")).floatValue() + "/"                                                            
                                                                                 + "Vostd_" + ((Float) routingParams.get("Vostd")).floatValue()
                                                                                 + "/VS" + ((Float) routingParams.get("vssub")).floatValue()
                                                                                 + "/RC" + ((Float) routingParams.get("RunoffCoefficient")).floatValue()
@@ -579,10 +612,11 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                                                                         int rrt = ((Integer) routingParams.get("RoutingT")).intValue();
                                                                         outputDirectory.mkdirs();
 
-                                                                        new ParallelSimulationToFileHelium(xOut, yOut, matDirs, magnitudes, horOrders, metaModif, stormFile, 0.0f, rrt, routingParams, outputDirectory, alphaSimulationTime, omegaSimulationTime, disc, WorkDir);
+                                                                        new ParallelSimulationToFileHelium(xOut, yOut, matDirs, magnitudes, horOrders, metaModif, stormFile, PotEVPTFile, 0.0f, rrt, routingParams, outputDirectory, alphaSimulationTime, omegaSimulationTime, disc, WorkDir);
 
                                                                         //System.exit(0);
                                                                     }
+                                                                }
                                                                 }
                                                             }
 
@@ -597,35 +631,37 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                             }
                         }
                     }
-
-                    float[] vsAr2 = {};
-                    //
-                    float[] PH2 = {0.0f};
+                    float[] vsAr2 = {-9.f};
+                     float[] PH2 = {0.0f};
                     float[] Phi2 = {0.0f};
-                    float[] IaAre2 = {1.0f};
+                    float[] IaAre2 = {0.02f};
 
                     float[] IaArc2 = {0.0f};
                     //float[] IaArc = {0.0f,0.1f,1.0f};
 
-                    float[] voAr2 = {0.75f,1.0f};
+                    float[] voAr2 = {0.6f};
 
                     //float[] rcAr2 = {-9.f};
                     //float[] vhAr2 = {-9.f};
 
-                    float[] rcAr2 = {0.5f, 0.6f, 0.8f, 1.0f, -9.f};
-                    float[] vhAr2 = {36.f, -9.f};
+                    float[] rcAr2 = {-9.f};
+                    float[] vhAr2 = {-6.f};
 
 
                     float[] HSAr2 = {0.f};
-                    float[] CteSAr2 = {-9f};
+                    float[] CteSAr2 = {-9.f};
+                    float[] EVAr2 = {1.0f};
 
                     //                   float l1 = l11;
                     //                   float l2 = -0.82f * l11 + 0.1025f;
                     //                   float vo = 0.42f - 0.29f * l11 - 3.1f * l2;
-
-                    for (float voo : vsAr2) {
+         for (float cts1 : CteSAr2) {
+                                                        float cts = cts1;
+                      for (float rc1 : rcAr2) {
+                                                float rc = rc1;                       
+                           for (float voo : vsAr2) {
                         float vsub = voo;
-
+                        for (float ev1 : EVAr2) {
                         for (float vh1 : vhAr2) {
                             float vh = vh1;
 
@@ -638,29 +674,38 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                                         for (float ia1c : IaArc2) {
                                             float iac = ia1c;
 
-                                            for (float rc1 : rcAr2) {
-                                                float rc = rc1;
+                                          
                                                 for (float hs1 : HSAr2) {
                                                     float hs = hs1;
-                                                    for (float cts1 : CteSAr2) {
-                                                        float cts = cts1;
                                                         for (float vo1 : voAr2) {
                                                             float vo = vo1;
+                                                     
                                                             //C999999 RT=5 (cte vel). HillT=3 , HillVel=1 (hill veloc cte), SCS method - spattially constant
-
+    routingParams.put("CQflood", 4.0f); // reservoir position:
+                                                             
+                                                                      
+                                                           routingParams.put("EQflood", 0.51f); // reservoir position:
+                                                          
                                                             routingParams.put("Vconst", vo); // CHANGE IN THE NETWORKEQUATION CLA
                                                             routingParams.put("v_o", vo);
                                                             routingParams.put("hillshapeparamflag", hs);
-                                                            routingParams.put("HillT", 6);  // check NetworkEquationsLuciana.java for definitions
+                                                            routingParams.put("HillT", HillT);  // check NetworkEquationsLuciana.java for definitions
                                                             routingParams.put("RoutingT", 2); // check NetworkEquationsLuciana.java for definitions
 
-                                                            if (rc > 0.f) {
-                                                                routingParams.put("HillT", 1);  // check NetworkEquationsLuciana.java for definitions
-                                                                routingParams.put("RunoffCoefficient", rc); // reservoir position:
-                                                            } else {
-                                                                routingParams.put("HillT", 6);
+                                                              if (rc >= 0.f) {
+                                                                            if(flaghill==1){
+                                                                            routingParams.put("HillT", 1);  // check NetworkEquationsLuciana.java for definitions
+                                                                            routingParams.put("RunoffCoefficient", rc);} // reservoir position:
+                                                                            else {
+                                                                            routingParams.put("HillT", 22);  // check NetworkEquationsLuciana.java for definitions
+                                                                            routingParams.put("RunoffCoefficient", rc); // reservoir position:  
+                                                                            }  
+                                                                      } else {
+                                                                routingParams.put("HillT", HillT);
                                                                 routingParams.put("RunoffCoefficient", -9.f); // reservoir position:
                                                             }                                                         //                         routingParams.put("lambda1", l11);
+                                                              routingParams.put("EVcoef", ev1); // reservoir position:
+                
                                                             //                         routingParams.put("lambda2", l2);
                                                             routingParams.put("PorcHSaturated", p1);
                                                             routingParams.put("vssub", vsub);
@@ -672,20 +717,36 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                                                             if (vh == -8) {
                                                                 routingParams.put("HillVelocityT", 2);  // check NetworkEquationsLuciana.java for definitions
                                                                 routingParams.put("vrunoff", vh);
-                                                            } else if (vh == -9) {
+                                                            } else if (vh == -6) {
+                                                                routingParams.put("HillVelocityT", 1);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("vrunoff", vh);
+                                                            }
+                                                            
+                                                            else if (vh == -9) {
                                                                 routingParams.put("HillVelocityT", 4);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("vrunoff", vh);
+                                                            } else if (vh == -10) {
+                                                                routingParams.put("HillVelocityT", 5);  // check NetworkEquationsLuciana.java for definitions
                                                                 routingParams.put("vrunoff", vh);
                                                             } else {
                                                                 routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
                                                                 routingParams.put("vrunoff", vh); // define a constant number or -9.9 for vel=f(land Cover)
                                                             }
+                                                            if (vh == -7) {
+                                                                 routingParams.put("HillVelocityT", 0);  // check NetworkEquationsLuciana.java for definitions
+                                                                routingParams.put("HillT", 0);
+                                                                routingParams.put("RunoffCoefficient", rc); 
+                                                            }
+                                                            
+                                                            
                                                             routingParams.put("ConstSoilStorage", cts);  // check NetworkEquationsLuciana.java for definitions
                                                             routingParams.put("vrunoff", vh); // define a constant number or -9.9 for vel=f(land Cover)
-
-                                                            outputDirectory = new java.io.File("/scratch/results_cuencas/MultipleYears/" + BasinName + "/" + SimName + "/" + bflag + "/"
+                                                            outputDirectory = new java.io.File("/scratch/results_cuencas/" + Direc + "/"  + BasinName + "/" + SimName + "/" + bflag + "/"
                                                                     + "RoutT_" + ((Integer) routingParams.get("RoutingT")).intValue() + "/"
                                                                     + "HillT_" + ((Integer) routingParams.get("HillT")).intValue() + "/"
                                                                     + "HillVelT_" + ((Integer) routingParams.get("HillVelocityT")).intValue()
+                                                                    + "CQf_" + ((Float) routingParams.get("CQflood")).floatValue() + "/"
+                                                                    + "EV_" + ((Float) routingParams.get("EVcoef")).floatValue() + "/"                                                            
                                                                     + "/VS" + ((Float) routingParams.get("vssub")).floatValue()
                                                                     + "/RC" + ((Float) routingParams.get("RunoffCoefficient")).floatValue()
                                                                     + "/UnsO" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
@@ -694,14 +755,29 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                                                                     + "/vh_" + ((Float) routingParams.get("vrunoff")).floatValue()
                                                                     + "/hh_" + ((Float) routingParams.get("hillshapeparamflag")).floatValue()
                                                                     + "/vcte_" + ((Float) routingParams.get("v_o")).floatValue());
-
+if(HillT==11){
+                                                                     outputDirectory = new java.io.File("/scratch/results_cuencas/" + Direc + "/"  + BasinName + "/" + SimName + "/" + bflag + "/"
+                                                                    + "RoutT_" + ((Integer) routingParams.get("RoutingT")).intValue() + "/"
+                                                                    + "HillT_" + ((Integer) routingParams.get("HillT")).intValue() + "/" 
+                                                                    + "HillVelT_" + ((Integer) routingParams.get("HillVelocityT")).intValue()+ "/"
+                                                                    + "LSCS_" + ((Float) routingParams.get("lambdaSCSMethod")).floatValue() + "/"                                                            
+                                                                    + "/VS" + ((Float) routingParams.get("vssub")).floatValue()
+                                                                    + "/RC" + ((Float) routingParams.get("RunoffCoefficient")).floatValue()
+                                                                    + "/UnsO" + ((Float) routingParams.get("PorcPhiUnsat")).floatValue()
+                                                                    + "/PH" + ((Float) routingParams.get("PorcHSaturated")).floatValue()
+                                                                    + "/SCS_" + ((Float) routingParams.get("ConstSoilStorage")).floatValue()
+                                                                    + "/vh_" + ((Float) routingParams.get("vrunoff")).floatValue()
+                                                                    + "/hh_" + ((Float) routingParams.get("hillshapeparamflag")).floatValue()
+                                                                    + "/vcte_" + ((Float) routingParams.get("v_o")).floatValue());
+                                                        }
 //                                            + "RR_" + ((Float) routingParams.get("RunoffCoefficient")).floatValue() +"/"
                                                             // + "VHILL_" + ((Float) routingParams.get("vrunoff")).floatValue()
 
                                                             int rrt = ((Integer) routingParams.get("RoutingT")).intValue();
                                                             outputDirectory.mkdirs();
-                                                            new ParallelSimulationToFileHelium(xOut, yOut, matDirs, magnitudes, horOrders, metaModif, stormFile, 0.0f, rrt, routingParams, outputDirectory, alphaSimulationTime, omegaSimulationTime, disc, WorkDir);
+                                                            new ParallelSimulationToFileHelium(xOut, yOut, matDirs, magnitudes, horOrders, metaModif, stormFile, PotEVPTFile,0.0f, rrt, routingParams, outputDirectory, alphaSimulationTime, omegaSimulationTime, disc, WorkDir);
                                                         }
+                                                    }
                                                     }
 
                                                 }
@@ -777,9 +853,11 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
         }
 
         if (BasinName.indexOf("Cedar") >= 0) {
+            
             xOut = 2734;
             yOut = 1069; //Cedar Rapids
             OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+            
         }
 
         if (BasinName.indexOf("Waverly") >= 0) {
@@ -814,7 +892,25 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
             OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
         }
 
-
+        if(SimName.indexOf("90DEMUSGS")>=0 && SimName.indexOf("Prun5")>=0)
+        {
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun5/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+             if(SimName.indexOf("90DEMUSGS")>=0 && SimName.indexOf("Prun6")>=0)
+        {
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun6/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+             if(SimName.indexOf("90DEMUSGS")>=0 && SimName.indexOf("Prun7")>=0)
+        {
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun7/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+               if(SimName.indexOf("90DEMUSGS")>=0 && SimName.indexOf("Prun8")>=0)
+        {
+            OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun8/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+               
+        
+                
         if (SimName.indexOf("120DEMUSGS") >= 0) {
             OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs120m.metaDEM";
             if (BasinName.indexOf("Clear") >= 0) {
@@ -889,6 +985,13 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
                 yOut = 1029;
 
             }
+            
+               if (BasinName.indexOf("IowaUps") >= 0) {
+                OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM";
+                xOut = 5505;
+                yOut = 1871;
+
+            }
 
             if (BasinName.indexOf("Waverly") >= 0) {
                 OUTPUT[0] = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.metaDEM";
@@ -935,17 +1038,27 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
             disc = 4;
         }
 
-        if (BasinName.indexOf("Clear") > 0 && BasinName.indexOf("2009") > 0) {
-            disc = 3;
-        }
+     
 
         if (BasinName.indexOf("disc4") > 0) {
             disc = 4;
+        }
+        
+         if (BasinName.indexOf("disc3") > 0) {
+            disc = 3;
         }
 
         if (BasinName.indexOf("Hoover") > 0) {
             disc = 2;
         }
+        
+        if(BasinName.indexOf("Cedar") > 0 && SimName.indexOf("Prun8")>=0) disc=5;
+        if(BasinName.indexOf("Cedar") > 0 && SimName.indexOf("Prun7")>=0) disc=4;
+        if(BasinName.indexOf("Cedar") > 0 && SimName.indexOf("Prun6")>=0) disc=3;
+        if(BasinName.indexOf("Cedar") > 0 && SimName.indexOf("Prun5")>=0) disc=2;
+        if(BasinName.indexOf("Clear") > 0 && SimName.indexOf("Prun8")>=0) disc=3;
+        if(BasinName.indexOf("Clear") > 0 && SimName.indexOf("Prun7")>=0) disc=2;
+        
         return disc;
     }
 
@@ -959,6 +1072,10 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
         //6 space and 15 time
         if (BasinName.indexOf("6_15") > 0) {
             stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/6/15min/Time/Bin/hydroNexrad.metaVHC";
+        }
+        
+         if (BasinName.indexOf("15_360") > 0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/15/360min/Time/Bin/hydroNexrad.metaVHC";
         }
         //6 space and 180 tim
         if (BasinName.indexOf("6_180") > 0) {
@@ -1001,9 +1118,20 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
             stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/DataGenNov_2010/Radar_merged_Vhc/NEXRAD_BC.metaVHC";
         }
         if (BasinName.indexOf("BO") > 0) {
-            stormFile = "//scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/20Aug2002_24Aug2002VHC/NEXRAD_BC.metaVHC";
+            if(BasinName.indexOf("hour")>0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/20Aug2002_24Aug2002VHC/NEXRAD_BC.metaVHC";
+            }
+            if(BasinName.indexOf("hour2")>0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/20Aug2002_24Aug2002VHC2/NEXRAD_BC.metaVHC";
+            }
+            
+            if(BasinName.indexOf("5min")>0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/Rain5minVHCFixed/NEXRAD_BC.metaVHC";
+            }
+            if(BasinName.indexOf("STAGEIV")>0) {
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/RadarSTAGEIV/NEXRAD_BC.metaVHC";
+            }
         }
-
         if (BasinName.indexOf("Adv") > 0) {
             if (BasinName.indexOf("May") > 0) {
 
@@ -1033,7 +1161,7 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
             String timeStamp = BasinName.substring(index_2, index_2 + 4);
             int yr = java.lang.Integer.parseInt(timeStamp);
 
-            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii" + yr + "VHC/NEXRAD_BC.metaVHC";
+            stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/" + yr + "VHC/NEXRAD_BC.metaVHC";
 
             if (BasinName.indexOf("PER") > 0) {
                 stormFile = "//scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/PERSIANN/vhc_sim_period/" + yr + "/PERSIANN_3h.metaVHC";
@@ -1043,6 +1171,37 @@ public class ParallelSimulationToFileHelium extends java.lang.Object {
 //
         }
         return stormFile;
+
+    }
+    
+       public static String definePotEVPT(String BasinName, String SimName) {
+ 
+        String PotEVPTFile = "error";
+        PotEVPTFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/EVPT_MOD16/8DaysData/Data4Sim2/PET/2008Short/IowaPET.metaVHC";
+       
+        if (BasinName.indexOf("BO") > 0) {
+            if(BasinName.indexOf("hour")>0) {
+            PotEVPTFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/EVPT_MOD16/8DaysData/Data4Sim2/PET/2008Short/IowaPET.metaVHC";
+            }
+            
+        }
+        
+     
+
+        //stormFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/1/15min/Time/Bin/hydroNexrad.metaVHC";
+        int index_2 = BasinName.indexOf("20");
+
+        if (BasinName.indexOf("20") > 0) {
+            String timeStamp = BasinName.substring(index_2, index_2 + 4);
+            int yr = java.lang.Integer.parseInt(timeStamp);
+
+            PotEVPTFile = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/EVPT_MOD16/8DaysData/Data4Sim2/PET/"+yr+"/IowaPET.metaVHC";
+
+            System.out.println("year  " + yr);
+
+//
+        }
+        return PotEVPTFile;
 
     }
 }

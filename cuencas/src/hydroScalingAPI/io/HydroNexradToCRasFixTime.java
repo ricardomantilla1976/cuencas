@@ -13,7 +13,7 @@ import java.io.*;
 import java.io.*;
 import java.util.*;
  
-public class HydroNexradToCRas extends Object {
+public class HydroNexradToCRasFixTime extends Object {
     
     private  String[]         variables = new String[8];
     private  String[]         metaInfo = new String[12];
@@ -21,7 +21,7 @@ public class HydroNexradToCRas extends Object {
     private  float[][]        matrix;
     private  int              columns,rows; 
     
-    public HydroNexradToCRas(java.io.File inputFile, java.io.File outputFile, int numRow, int numCol) throws java.io.IOException {
+    public HydroNexradToCRasFixTime(java.io.File inputFile, java.io.File outputFile, int numRow, int numCol) throws java.io.IOException {
         
         java.io.FileReader ruta;
         java.io.BufferedReader buffer;
@@ -79,10 +79,7 @@ public class HydroNexradToCRas extends Object {
         newfile=new DataOutputStream(bufferout);
         
         for (int i=rows-1;i>-1;i--) for (int j=0;j<columns;j++) {
-            float value=0.f;
-            if(matrix[i][j]>=0.f) value=matrix[i][j]*4.0f;
-            else value=matrix[i][j];
-            newfile.writeFloat(value);
+            newfile.writeFloat(matrix[i][j]);
             if(matrix[i][j]>200 || matrix[i][j]<-99 )
             {
                 System.out.println("row" + i + "column" + j + "value" + matrix[i][j] + "file" + outputDir.toString());
@@ -188,7 +185,7 @@ public class HydroNexradToCRas extends Object {
 //        timeStamp[3]=fileName.substring(28,30); // hour
 //        System.out.println(timeStamp[3]);
 //        timeStamp[4]=fileName.substring(30,32); // min
-         int index=fileName.lastIndexOf("_15_") + 4;
+         int index=fileName.lastIndexOf("_00_") + 4;
          System.out.println("index    =     " + index);
               timeStamp[0]=fileName.substring(index+5,index+9); // year
         System.out.println(timeStamp[0]);
@@ -206,11 +203,29 @@ public class HydroNexradToCRas extends Object {
         System.out.println(timeStamp[2]);
         timeStamp[3]=fileName.substring(index+10,index+12); // hour
         System.out.println(timeStamp[3]);
+        float[] possiblemin={2.f,07.f,12.f,17.f,22.f,27.f,32.f,37.f,42.f,47.f,52.f,57.f};
+        String[] pomin={"00","05","10","15","20","25","30","35","40","45","50","55"};
         timeStamp[4]=fileName.substring(index+12,index+14);; // min
-
+        
         System.out.println(timeStamp[4]);//      String monthString=months[(Integer.parseInt(timeStamp[1])-1)];
         timeStamp[5]=fileName.substring(index+14,index+16);; // seg
-        String vhcFilename="NEXRAD_BC."+timeStamp[3]+timeStamp[4]+"00"+"."+timeStamp[2]+"."+monthString+"."+timeStamp[0]+".vhc";
+        
+        float newmin=0;
+        float mindif=100000;
+        //System.out.print()
+        int flag=0;
+        for (int i=0;i<possiblemin.length;i++){
+            
+            float dif=Math.abs(possiblemin[i]-(Float.parseFloat(timeStamp[4])+Float.parseFloat(timeStamp[5])/60.f));
+        
+            if(dif<mindif) 
+            {mindif=dif;
+             newmin=possiblemin[i];
+             flag=i;
+            }
+        }
+        
+        String vhcFilename="NEXRAD_BC."+timeStamp[3]+pomin[flag]+"00"+"."+timeStamp[2]+"."+monthString+"."+timeStamp[0]+".vhc";
         System.out.println(" to "+vhcFilename);
        return vhcFilename;
     }
@@ -219,19 +234,19 @@ public class HydroNexradToCRas extends Object {
         
         java.io.File AsciiFile;
        // File folder = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/1996/");
-        File folder = new File("//scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/20Aug2002_24Aug2002/");
+        File folder = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/Rain5min/");
 
  	try{
-	ArrayList<File> files = HydroNexradToCRas.getFileList(folder);
+	ArrayList<File> files = HydroNexradToCRasFixTime.getFileList(folder);
 	Iterator i = files.iterator();
         
 //        String OutputDir="/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/1996VHC/";         String OutputDir="/Users/rmantill";
-        String OutputDir="//scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/20Aug2002_24Aug2002VHC2/";
+        String OutputDir="/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/Rain5minVHCFixed2/";
 
         new File(OutputDir).mkdirs();
         int nr=184;
         int ncol=199;
-                 createMetaFile(new java.io.File(OutputDir), 60, 15, nr,ncol);
+                 createMetaFile(new java.io.File(OutputDir), 60, 5, nr,ncol);
 	while (i.hasNext()){
             File temp = (File) i.next();
             
@@ -247,7 +262,7 @@ public class HydroNexradToCRas extends Object {
         ////////////////////////////////////////
             try {  
                  System.out.println(temp.getAbsolutePath());
-                 new HydroNexradToCRas(AsciiFile,BinaryOutName,nr,ncol);
+                 new HydroNexradToCRasFixTime(AsciiFile,BinaryOutName,nr,ncol);
              } catch (Exception IOE){
                  System.err.print(IOE);
                  System.exit(0);

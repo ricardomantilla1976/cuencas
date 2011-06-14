@@ -48,7 +48,7 @@ public class StreamFlowTimeSeries {
                     data = fullLine.split(",");
                     if (data[0] != null && data[1] != null) {
                         try {
-                            System.out.println("data[0]" + data[0] + "data[1]" + data[1]);
+                            //System.out.println("data[0]" + data[0] + "data[1]" + data[1]);
                             java.lang.Double.parseDouble(data[0]);
                             recordTimeValue.put(data[0], new Double(data[1]));
                         } catch (java.lang.NumberFormatException nfe) {

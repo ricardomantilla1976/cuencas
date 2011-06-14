@@ -42,7 +42,8 @@ public class PrecipGridToHillslopes_alt extends java.lang.Object {
         metaDatos = md;
 
         java.util.Calendar alphaSimulationTime = java.util.Calendar.getInstance();
-        alphaSimulationTime.set(2008, 4, 29, 0, 0, 0);
+        //alphaSimulationTime.set(2008, 4, 29, 0, 0, 0);
+        alphaSimulationTime.set(2002, 7, 20, 0, 0, 0);
 
         //Here an example of rainfall-runoff in action
         hydroScalingAPI.util.geomorphology.objects.Basin myCuenca = new hydroScalingAPI.util.geomorphology.objects.Basin(x, y, matDir, metaDatos);
@@ -253,7 +254,9 @@ public class PrecipGridToHillslopes_alt extends java.lang.Object {
             "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v2/WithoutGeomBias/15/180min/Time/Bin/hydroNexrad.metaVHC",
             "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/PERSIANN/vhc_sim_period/2008/PERSIANN_3h.metaVHC",
             "//scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/3B41RT/2008/vhc/2008/TRMM3B41RT.metaVHC",
-            "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii2008VHC/NEXRAD_BC.metaVHC"};
+            "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii2008VHC/NEXRAD_BC.metaVHC",
+       "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/Bo_events/Rain5minVHCFixed/NEXRAD_BC.metaVHC"
+      };
 
 
 
@@ -265,11 +268,12 @@ public class PrecipGridToHillslopes_alt extends java.lang.Object {
             "15_180High2008v2",
             "Persiann2008",
              "3B41RT",
-             "StageIV2010"
+             "StageIV2008",
+             "5minBO"   
         };
 
 
-        for (int i = 0; i < ident.length; i++) {
+        for (int i = ident.length-2; i < ident.length; i++) {
             String output_path = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/RainAnalyses/";
             File outfolder = new File(output_path);
             outfolder.mkdir();

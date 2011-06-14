@@ -640,13 +640,16 @@ public class SCSManager {
                
 
                 }
-                 if(HillslopeRelief[j]==0){terms[j][0]=1;
-                    terms[j][1]=0;
+                 if(HillslopeRelief[j]==0){terms[j][0]=0;
+                    terms[j][1]=1;
                     terms[j][2]=0;
                     terms[j][3]=0;
                 }
-
+                terms[j][0]=0;
+               double dif=1-terms[j][1]-terms[j][2]-terms[j][3];     
+                terms[j][1]=terms[j][1]+dif;
                 for(int it=0;it<terms[j].length;it++){
+                    
                     if(Double.isNaN(terms[j][it])) {terms[j][0]=0;
                     terms[j][1]=1;
                     terms[j][2]=0;
@@ -823,7 +826,7 @@ public class SCSManager {
         if (LC == 101) {
             PixelMan = 0.05;
         }
-        if (soil == 1) {
+        
             if (LC == 11 || LC == 12 || LC == 90 || LC == 95 || LC == 92) {
                 PixelMan = 0.01;
             } else if (LC == 21 || LC == 83 || LC == 84 || LC == 85) {
@@ -851,93 +854,96 @@ public class SCSManager {
             } else {
                 PixelMan = 0.03;
             }
-        }
+        
 
         if (soil == 2) {
             if (LC == 11 || LC == 12 || LC == 90 || LC == 95 || LC == 92) {
-                PixelMan = 0.01;
+                PixelMan =PixelMan;
             } else if (LC == 21 || LC == 83 || LC == 84 || LC == 85) {
-                PixelMan = 0.07 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             } else if (LC == 22) {
-                PixelMan = 0.035 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             } else if (LC == 23) {
-                PixelMan = 0.035 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             } else if (LC == 24) {
-                PixelMan = 0.02 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             } else if (LC == 31 || LC == 32) {
-                PixelMan = 0.04 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             } else if (LC == 41 || LC == 42 || LC == 2000 || LC == 43) {
-                PixelMan = 0.08 - 0.002;
+                PixelMan = PixelMan - 0.005;
             } else if (LC == 51 || LC == 52) {
-                PixelMan = 0.04 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             } else if (LC == 71 || LC == 72 || LC == 73 || LC == 74) {
-                PixelMan = 0.05 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             } else if (LC == 101) {
-                PixelMan = 0.05 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             } else if (LC == 81 || LC == 61) {
-                PixelMan = 0.025 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             } else if (LC == 82) {
-                PixelMan = 0.03 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             } else {
-                PixelMan = 0.03 - 0.0025;
+                PixelMan = PixelMan - 0.005;
             }
         }
+       
         if (soil == 3) {
             if (LC == 11 || LC == 12 || LC == 90 || LC == 95 || LC == 92) {
-                PixelMan = 0.01;
+                PixelMan =PixelMan;
             } else if (LC == 21 || LC == 83 || LC == 84 || LC == 85) {
-                PixelMan = 0.07 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else if (LC == 22) {
-                PixelMan = 0.035 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else if (LC == 23) {
-                PixelMan = 0.035 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else if (LC == 24) {
-                PixelMan = 0.02 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else if (LC == 31 || LC == 32) {
-                PixelMan = 0.04 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else if (LC == 41 || LC == 42 || LC == 2000 || LC == 43) {
-                PixelMan = 0.08 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else if (LC == 51 || LC == 52) {
-                PixelMan = 0.04 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else if (LC == 71 || LC == 72 || LC == 73 || LC == 74) {
-                PixelMan = 0.05 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else if (LC == 101) {
-                PixelMan = 0.05 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else if (LC == 81 || LC == 61) {
-                PixelMan = 0.025 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else if (LC == 82) {
-                PixelMan = 0.03 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             } else {
-                PixelMan = 0.03 - 0.005;
+                PixelMan = PixelMan - 0.0075;
             }
         }
+        
+        
         if (soil == 4) {
             if (LC == 11 || LC == 12 || LC == 90 || LC == 95 || LC == 92) {
-                PixelMan = 0.01;
+                PixelMan =PixelMan;
             } else if (LC == 21 || LC == 83 || LC == 84 || LC == 85) {
-                PixelMan = 0.07 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else if (LC == 22) {
-                PixelMan = 0.035 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else if (LC == 23) {
-                PixelMan = 0.035 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else if (LC == 24) {
-                PixelMan = 0.02 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else if (LC == 31 || LC == 32) {
-                PixelMan = 0.04 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else if (LC == 41 || LC == 42 || LC == 2000 || LC == 43) {
-                PixelMan = 0.08 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else if (LC == 51 || LC == 52) {
-                PixelMan = 0.04 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else if (LC == 71 || LC == 72 || LC == 73 || LC == 74) {
-                PixelMan = 0.05 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else if (LC == 101) {
-                PixelMan = 0.05 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else if (LC == 81 || LC == 61) {
-                PixelMan = 0.025 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else if (LC == 82) {
-                PixelMan = 0.03 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             } else {
-                PixelMan = 0.03 - 0.0075;
+                PixelMan = PixelMan - 0.01;
             }
         }
 

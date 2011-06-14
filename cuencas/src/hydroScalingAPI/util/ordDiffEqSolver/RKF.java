@@ -216,6 +216,7 @@ public class RKF extends java.lang.Object {
         Delta = 0;
         for (int i = 0; i < IC.length; i++) {
             //&& Math.abs(newY[i] - newYstar[i])>0.001
+            
             if ((newY[i] + newYstar[i]) > 0.0) {
                 double newdelta = Math.abs(2 * (newY[i] - newYstar[i]) / (newY[i] + newYstar[i]));
                 if (Delta < newdelta) {
@@ -225,6 +226,8 @@ public class RKF extends java.lang.Object {
                     Ystarprob = newYstar[i];
                 }
             }
+            //This was included since non of the variables can be negative
+            //if(newY[i]<0 ||  newYstar[i]<0) Delta =epsilon;
         }
 
         newTimeStep = timeStep;
@@ -1433,7 +1436,7 @@ public class RKF extends java.lang.Object {
      * of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
-    public void jumpsRunCompleteToAsciiFileSCS(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, java.io.OutputStreamWriter outputStream1, java.io.OutputStreamWriter outputStream2) throws java.io.IOException {
+    public void jumpsRunCompleteToAsciiFileSCS(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, java.io.OutputStreamWriter outputStream1, java.io.OutputStreamWriter outputStream2, java.io.OutputStreamWriter outputStream3) throws java.io.IOException {
 
         double currentTime = iniTime, targetTime;
 
@@ -1448,6 +1451,8 @@ public class RKF extends java.lang.Object {
         java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID] );
+        //System.out.println(thisDate.getTime() + " P: " + IC[5*nlinks+ouletID] +" EVPT: " + IC[4*nlinks+ouletID] +" Qfluxes: " + IC[6*nlinks+ouletID]  +" storage: " + IC[7*nlinks+ouletID]);
+  System.out.println(thisDate.getTime() + " Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]+" ImpeArea: " + IC[9*nlinks+ouletID]);
         //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " soil: " + IC[54]);
         //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
@@ -1490,10 +1495,12 @@ public class RKF extends java.lang.Object {
                     thisDate = java.util.Calendar.getInstance();
                     thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
                     System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
-                    //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
+           //System.out.println(thisDate.getTime() + " P: " + IC[5*nlinks+ouletID] +" EVPT: " + IC[4*nlinks+ouletID] +" Qfluxes: " + IC[6*nlinks+ouletID]  +" storage: " + IC[7*nlinks+ouletID]);
+                    //System.out.println(thisDate.getTime() + " Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
                     outputStream1.write(currentTime + "," + IC[ouletID] + "\n");
                     outputStream2.write(currentTime + "," + IC[nlinks + ouletID] + "," + IC[2 * nlinks + ouletID] + "," + IC[3 * nlinks + ouletID] + "\n");
-                }
+               outputStream3.write(currentTime + "," + IC[4*nlinks + ouletID] + "," + IC[5 * nlinks + ouletID] + "," + IC[6 * nlinks + ouletID]+"," + IC[7 * nlinks + ouletID]+"," + IC[8 * nlinks + ouletID]+"," + IC[9 * nlinks + ouletID] + "\n");
+             }
 
 
 
@@ -1528,10 +1535,13 @@ public class RKF extends java.lang.Object {
             thisDate = java.util.Calendar.getInstance();
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            //System.out.println(thisDate.getTime() + " P: " + IC[5*nlinks+ouletID] +" EVPT: " + IC[4*nlinks+ouletID] +" Qfluxes: " + IC[6*nlinks+ouletID]  +" storage: " + IC[7*nlinks+ouletID]);
+            //System.out.println(thisDate.getTime() + " Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
             //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
             outputStream1.write(currentTime + "," + IC[ouletID] + "\n");
             outputStream2.write(currentTime + "," + IC[nlinks + ouletID] + "," + IC[2 * nlinks + ouletID] + "," + IC[3 * nlinks + ouletID] + "\n");
-            //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
+            outputStream3.write(currentTime + "," + IC[4*nlinks + ouletID] + "," + IC[5 * nlinks + ouletID] + "," + IC[6 * nlinks + ouletID]+"," + IC[7 * nlinks + ouletID]+"," + IC[8 * nlinks + ouletID]+"," + IC[9 * nlinks + ouletID] + "\n");
+          //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
         }
@@ -1559,9 +1569,12 @@ public class RKF extends java.lang.Object {
             thisDate = java.util.Calendar.getInstance();
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
-            //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
+            //System.out.println(thisDate.getTime() + " P: " + IC[5*nlinks+ouletID] +" EVPT: " + IC[4*nlinks+ouletID] +" Qfluxes: " + IC[6*nlinks+ouletID]  +" storage: " + IC[7*nlinks+ouletID]);
+            //iSystem.out.println(thisDate.getTime() + " Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
             outputStream1.write(currentTime + "," + IC[ouletID] + "\n");
             outputStream2.write(currentTime + "," + IC[nlinks + ouletID] + "," + IC[2 * nlinks + ouletID] + "," + IC[3 * nlinks + ouletID] + "\n");
+  outputStream3.write(currentTime + "," + IC[4*nlinks + ouletID] + "," + IC[5 * nlinks + ouletID] + "," + IC[6 * nlinks + ouletID]+"," + IC[7 * nlinks + ouletID]+"," + IC[8 * nlinks + ouletID]+"," + IC[9 * nlinks + ouletID] + "\n");
+        
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 

@@ -42,6 +42,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
     float rainIntensity;
     float rainDuration;
     java.io.File stormFile;
+    java.io.File PotEVPTFile;
     hydroScalingAPI.io.MetaRaster infiltMetaRaster;
     float infiltRate;
     int routingType, HillType, HillVelType;
@@ -74,6 +75,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
             float rainIntensityOR,
             float rainDurationOR,
             java.io.File stormFileOR,
+            java.io.File PotEVPTFileOR,
             hydroScalingAPI.io.MetaRaster infiltMetaRasterOR,
             float infiltRateOR,
             int routingTypeOR,
@@ -106,6 +108,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         rainIntensity = rainIntensityOR;
         rainDuration = rainDurationOR;
         stormFile = stormFileOR;
+        PotEVPTFile = PotEVPTFileOR;
         infiltMetaRaster = infiltMetaRasterOR;
         infiltRate = infiltRateOR;
         routingType = routingTypeOR;
@@ -287,19 +290,36 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
             storm = new hydroScalingAPI.modules.rainfallRunoffModel.objects.StormManager(stormFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
         }
 
+       hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager PotEVPT;
 
+
+        if (PotEVPTFile == null) {
+            PotEVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager(linksStructure, rainIntensity, rainDuration);
+        } else {
+            PotEVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager(PotEVPTFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+        }
+        
+        
         interTime = new java.util.Date();
         System.out.println("Storm manager," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
 
         storm.setStormInitialTime(zeroSimulationTime);
+        PotEVPT.setPotEVPTInitialTime(zeroSimulationTime);
         if (!storm.isCompleted()) {
+            return;
+        }
+        if (!PotEVPT.isCompleted()) {
             return;
         }
 
         thisHillsInfo.setStormManager(storm);
+          interTime = new java.util.Date();
+        System.out.println("Set Storm manager," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
+ 
+         thisHillsInfo.setPotEVPTManager(PotEVPT);
 
         interTime = new java.util.Date();
-        System.out.println("Set Storm manager," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
+        System.out.println("Set PotEVPT manager");
 
 
         hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager infilMan = new hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager(linksStructure, 0.0f);
@@ -391,7 +411,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         }
 
         if (BasinFlag == 1) {
-            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverIntenseAgriculture_90_2.metaVHC";
+            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/glomod90.metaVHC";
             SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
         }
 
@@ -444,6 +464,11 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         java.io.FileOutputStream salida3 = new java.io.FileOutputStream(theFile3);
         java.io.BufferedOutputStream bufferout3 = new java.io.BufferedOutputStream(salida3);
         java.io.OutputStreamWriter newfile3 = new java.io.OutputStreamWriter(bufferout3);
+        
+        java.io.File theFile4 = new java.io.File(theFile.getAbsolutePath() + ".Others.csv");
+        java.io.FileOutputStream salida4 = new java.io.FileOutputStream(theFile4);
+        java.io.BufferedOutputStream bufferout4 = new java.io.BufferedOutputStream(salida4);
+        java.io.OutputStreamWriter newfile4 = new java.io.OutputStreamWriter(bufferout4);
 
         DecimalFormat df = new DecimalFormat("###");
         DecimalFormat df1 = new DecimalFormat("###.#");
@@ -473,7 +498,27 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
             newfile.write(df3.format(thisNetworkGeom.upStreamArea(i)) + ",");
         }
 
+     newfile.write("\n");
+        newfile.write("SCS 1 [mm],");
 
+        for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+            newfile.write(df3.format(thisHillsInfo.SCS_S1(i)) + ",");
+        }
+
+        
+     newfile.write("\n");
+        newfile.write("Maximum inf rate 1 [mm/h],");
+
+        for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+            newfile.write(df3.format(thisHillsInfo.MaxInfRate(i)) + ",");
+        }
+        
+        newfile.write("\n");
+        newfile.write("Hill Relief [m],");
+
+        for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+            newfile.write(df3.format(thisHillsInfo.HillRelief(i)) + ",");
+        }
         newfile.write("\n");
         newfile.write("Link Outlet ID,");
 
@@ -493,6 +538,14 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         for (int i = 0; i < linksStructure.contactsArray.length; i++) {
             newfile.write(df2.format(thisNetworkGeom.Length(i)) + ",");
+        }
+        
+        System.out.println("Writing TOTAL RELIEF");
+        newfile.write("\n");
+        newfile.write("Total relief,");
+
+        for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+            newfile.write(df2.format(thisHillsInfo.HillRelief(i)) + ",");
         }
 
 
@@ -520,7 +573,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
 
 
-        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_AllMethodParallel thisBasinEqSys = new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_AllMethodParallel(linksStructure, thisHillsInfo, thisNetworkGeom, connectingLink, filesToAdd, routingParams);
+        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquationsJune12_2011 thisBasinEqSys = new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquationsJune12_2011(linksStructure, thisHillsInfo, thisNetworkGeom, connectingLink, filesToAdd, routingParams);
 
 
         interTime = new java.util.Date();
@@ -532,9 +585,10 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
 
    
-            initialCondition = new double[NLI * 4];
-            if(HillType==7 || HillType==8) initialCondition = new double[NLI * 5];
-            else initialCondition = new double[NLI * 4];
+            initialCondition = new double[NLI * 10];
+//            if(HillType==7 || HillType==8) initialCondition = new double[NLI * 5];
+//            else if (HillType==9) initialCondition = new double[NLI * 6];
+//            else initialCondition = new double[NLI * 4];
       
         System.out.println("Start Initial condition");
 
@@ -553,10 +607,14 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 //             PorcAreaCalc=thisHillsInfo.basinHillSlopesInfo.getArea_ReliefParam(i, 0);
 //         }
             //initialCondition[i + 2 * NLI] =FindWaterTable(IniHSatPorc,thisHillsInfo.HillRelief(i));
-            initialCondition[i + 2 * NLI] = IniHSatPorc * 1000 * thisHillsInfo.HillRelief(i);
+            initialCondition[i + 2 * NLI] = 0.0;
             initialCondition[i + 3 * NLI] = IniUnSatPorc;
-            if(HillType==7 || HillType==8) initialCondition[i + 4 * NLI] = 0.0;
-            
+            initialCondition[i + 4 * NLI] = 0.0;
+            initialCondition[i + 5 * NLI] = 0.0;
+            initialCondition[i + 6 * NLI] = 0.0;
+            initialCondition[i + 7 * NLI] = 0.0;
+            initialCondition[i + 8 * NLI] = 0.0;
+            initialCondition[i + 9 * NLI] = 0.0;
             //System.out.println("initialCondition[i]"+initialCondition[i]+"initialCondition[i + 1 * NLI]"+initialCondition[i + 1 * NLI]+"initialCondition[i + 2 * NLI]"+initialCondition[i + 2 * NLI]+"initialCondition[i + 3 * NLI]"+initialCondition[i + 3 * NLI]);
   
         }
@@ -585,13 +643,14 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         newfile1.write("Time (minutes), Discharge [m3/s] \n");
         newfile3.write("TimeStep:" + outputTimeStep + "\n");
         newfile3.write("Time (minutes), Surface Storage [mm], Soil Storage [mm] \n");
-
+        newfile4.write("TimeStep:" + outputTimeStep + "\n");
+        newfile4.write("Time (minutes), Evaporation, Qp_l, Qs_l,Storages \n");
         interTime = new java.util.Date();
         System.out.println("Start loop," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
 
         for (int k = 0; k < numPeriods; k++) {
             System.out.println("Period " + (k + 1) + " of " + numPeriods);
-                rainRunoffRaining.jumpsRunCompleteToAsciiFileSCS(storm.stormInitialTimeInMinutes() + k * storm.stormRecordResolutionInMinutes(), storm.stormInitialTimeInMinutes() + (k + 1) * storm.stormRecordResolutionInMinutes(), outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile3);
+                rainRunoffRaining.jumpsRunCompleteToAsciiFileSCS(storm.stormInitialTimeInMinutes() + k * storm.stormRecordResolutionInMinutes(), storm.stormInitialTimeInMinutes() + (k + 1) * storm.stormRecordResolutionInMinutes(), outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile3,newfile4);
             initialCondition=rainRunoffRaining.finalCond;
             rainRunoffRaining.setBasicTimeStep(10 / 60.);
         }
@@ -604,12 +663,14 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         outputTimeStep=2*Math.pow(1.5D,(basinOrder-1));
         if(outputTimeStep>60) outputTimeStep=60;
-            rainRunoffRaining.jumpsRunCompleteToAsciiFileSCS(storm.stormInitialTimeInMinutes() + numPeriods * storm.stormRecordResolutionInMinutes(), finalSimulationTime.getTimeInMillis()/1000.0/60.0, outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile3);
+            rainRunoffRaining.jumpsRunCompleteToAsciiFileSCS(storm.stormInitialTimeInMinutes() + numPeriods * storm.stormRecordResolutionInMinutes(), finalSimulationTime.getTimeInMillis()/1000.0/60.0, outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile3, newfile4);
         newfile1.close();
         bufferout1.close();
 
         newfile3.close();
         bufferout3.close();
+        newfile4.close();
+        bufferout4.close();
         System.out.println("Termina simulacion RKF");
         java.util.Date endTime = new java.util.Date();
         System.out.println("End Time:" + endTime.toString());
@@ -673,7 +734,21 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
             newfile.write("\n");
 
         }
+        
+        newfile.write("Evaporation \n");
+        for (int k = 0; k < numPeriods; k++) {
+            double currTime = PotEVPT.PotEVPTInitialTimeInMinutes() + k * storm.stormRecordResolutionInMinutes();
+            newfile.write(df2.format(currTime) + ",");
+            for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+                newfile.write(df2.format(thisHillsInfo.PotEVPT(i,currTime))+",");
+                //newfile.write(df2.format(thisHillsInfo.precipitationacum(i, currTime)) + ",");
 
+            }
+
+            newfile.write("\n");
+
+        }
+        
         newfile.close();
         bufferout.close();
 
@@ -746,7 +821,9 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         byte[][] horOrders = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
 
         java.io.File stormFile;
+        java.io.File PotEVPTFile;
         java.util.Hashtable routingParams = new java.util.Hashtable();
+        
         int routingType = Integer.parseInt(args[6]);
 
         // args 16 contain the param table in the following format
@@ -776,22 +853,23 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         int num_ele = args.length;
         //System.out.println("num_elem  = " + args.length);
-        //while (ig<num_ele) {System.out.println("args[" + ig + "] " + args[ig]); ig=ig+1;}
+        int ig=0;
+       // while (ig<num_ele) {System.out.println("args[" + ig + "] " + args[ig]); ig=ig+1;}
 
-        System.out.println("args[17].length()   = " +args[17].length());
+        //System.out.println("args[18].length()   = " +args[18].length());
 
-        if (args[17].length() > 0) {
-            int indexegual = args[17].indexOf("=", 1);
-            int indexcomma = args[17].indexOf(",", indexegual);
-            String str = args[17].substring(1, (indexegual));
-            String num = args[17].substring((indexegual + 1), (indexcomma));
-            //System.out.println("str " + str);
+        if (args[18].length() > 0) {
+            int indexegual = args[18].indexOf("=", 1);
+            int indexcomma = args[18].indexOf(",", indexegual);
+            String str = args[18].substring(1, (indexegual));
+            String num = args[18].substring((indexegual + 1), (indexcomma));
+           // System.out.println("str " + str);
             float num_f = Float.parseFloat(num);
-            //System.out.println(str + "    num_f " + num_f + "\n");
+           // System.out.println(str + "    num_f " + num_f + "\n");
             routingParams.put(str, num_f);
         }
 
-        int ig = 18;
+        ig = 19;
         while (ig < (num_ele - 1)) {
             int indexegual = args[ig].indexOf("=", 0);
             int indexcomma = args[ig].indexOf(",", indexegual);
@@ -815,31 +893,33 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
             //System.out.println("num_f " + num_f);
             routingParams.put(str, num_f);
         }
-        System.out.println("before define values using  = " + routingParams.toString());
+       // System.out.println("before define values using  = " + routingParams.toString());
 
 
         stormFile = new java.io.File(args[10]);
-
-        float infilRate = Float.parseFloat(args[11]);
-
-        java.io.File outputDirectory = new java.io.File(args[12]);
-
+        PotEVPTFile = new java.io.File(args[11]);
+       //System.out.println("stormFile  " + stormFile.getAbsolutePath());
+       //System.out.println("PotEVPTFile  " + PotEVPTFile.getAbsolutePath());
+        float infilRate = Float.parseFloat(args[12]);
+//System.out.println("infilRate  " +  infilRate);
+        java.io.File outputDirectory = new java.io.File(args[13]);
+//System.out.println("outputDirectory  " +  outputDirectory.getAbsolutePath());
         int[] connO = new int[0];
         float[] corrO = new float[0];
 
-        if (!args[13].equalsIgnoreCase("C")) {
+        if (!args[14].equalsIgnoreCase("C")) {
 
-            args[13] = args[13].substring(2);
             args[14] = args[14].substring(2);
+            args[15] = args[15].substring(2);
 
-            System.out.println(args[13]);
-            System.out.println(args[14]);
+            //System.out.println(args[14]);
+            //System.out.println(args[15]);
 
-            String[] conn = args[13].split(",");
-            String[] corr = args[14].split(",");
+            String[] conn = args[14].split(",");
+            String[] corr = args[15].split(",");
 
-            System.out.println(java.util.Arrays.toString(conn));
-            System.out.println(java.util.Arrays.toString(corr));
+           // System.out.println(java.util.Arrays.toString(conn));
+           // System.out.println(java.util.Arrays.toString(corr));
 
             connO = new int[conn.length];
             for (int i = 0; i < connO.length; i++) {
@@ -853,7 +933,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         // read param files to change these values
 
-        new TileSimulationToAsciiFileSCSMEthod(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), matDirs, magnitudes, horOrders, metaModif, 0.0f, 0.0f, stormFile, null, infilRate, routingType, routingParams, outputDirectory, connO, corrO, Long.parseLong(args[15]),Long.parseLong(args[16])).executeSimulation();
+        new TileSimulationToAsciiFileSCSMEthod(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), matDirs, magnitudes, horOrders, metaModif, 0.0f, 0.0f, stormFile, PotEVPTFile, null, infilRate, routingType, routingParams, outputDirectory, connO, corrO, Long.parseLong(args[16]),Long.parseLong(args[17])).executeSimulation();
 
     }
 

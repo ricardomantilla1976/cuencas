@@ -231,7 +231,7 @@ public class HydroNexradToCRasCropped extends Object {
         
     public static void main(String[] args) throws java.io.IOException{
 
-        for (int iy=2002;iy<2010;iy++){
+        for (int iy=2003;iy<=2010;iy++){
         java.io.File AsciiFile;
        // File folder = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/1996/");
         File folder = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii"+ iy+ "hourly/");
@@ -241,7 +241,7 @@ System.out.println("Folder"+folder.getAbsolutePath());
 	Iterator i = files.iterator();
         
 //        String OutputDir="/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/1996VHC/";         String OutputDir="/Users/rmantill";
-        String OutputDir=("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii"+ iy+ "VHC/");
+        String OutputDir=("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/"+ iy+ "VHC_ALL/");
 
         new File(OutputDir).mkdirs();
         int o_nr=264;
@@ -299,9 +299,9 @@ System.out.println("Folder"+folder.getAbsolutePath());
         ////////////////////////////////////////
             try {  
                  System.out.println(temp.getAbsolutePath());
-if(BinaryOutName.getAbsolutePath().indexOf("May")>0){
+//if(BinaryOutName.getAbsolutePath().indexOf("Aug")>0){
                  new HydroNexradToCRasCropped(AsciiFile,BinaryOutName,o_nr,o_ncol,inirow,finalrow,inicol,finalcol);
-             }
+  //           }
             } catch (Exception IOE) {
                  System.err.print(IOE);
                  System.exit(0);

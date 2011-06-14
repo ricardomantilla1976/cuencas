@@ -58,6 +58,7 @@ import java.io.IOException;
                                     float lambda2,
                                     float v_o,
                                     String stormFile,
+                                    String EVPTFile,
                                     float infilRate,
                                     String outputDirectory,
                                     String connectionsO,
@@ -98,13 +99,14 @@ import java.io.IOException;
                                 ""+lambda2, // args[8]
                                 ""+v_o, // args[9]
                                 stormFile, // args[10]
-                                ""+infilRate, // args[11]
-                                outputDirectory, // args[12]
-                                connectionsO, // args[13]
-                                correctionsO, // args[14]
-                                ""+iniTimeInMilliseconds, // args[15]
-                                ""+endTimeInMilliseconds, // args[15]
-                                routingParams.toString()};} // args[16]
+                                EVPTFile, // args[11]
+                                ""+infilRate, // args[12]
+                                outputDirectory, // args[13]
+                                connectionsO, // args[14]
+                                correctionsO, // args[15]
+                                ""+iniTimeInMilliseconds, // args[16]
+                                ""+endTimeInMilliseconds, // args[17]
+                                routingParams.toString()};} // args[18]
         else  {command=new String[] {
                                 System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
                                 "-Xmx1500m",
@@ -152,10 +154,10 @@ import java.io.IOException;
             newfile.write("#$ -V"+"\n");
             //newfile.write("#$ -q all.q" +"\n");
 
-            newfile.write("#$ -q IFC"+"\n");
-            //newfile.write("#$ -q all.q@@killgroup"+"\n");
-            //newfile.write("#$ -ckpt user"+"\n");
-            //newfile.write("#$ -q all.q"+"\n");
+           //newfile.write("#$ -q IFC"+"\n");
+            
+            newfile.write("#$ -ckpt user"+"\n");
+            newfile.write("#$ -q all.q"+"\n");
             newfile.write("#$ -l ib=1"+"\n");
             newfile.write("#$ -cwd"+"\n");
             newfile.write("#$ -l mf=16G"+"\n");

@@ -46,6 +46,8 @@ public class HillSlopesInfo extends java.lang.Object {
     private float vh;
 
     hydroScalingAPI.modules.rainfallRunoffModel.objects.StormManager thisStormEvent;
+    hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager thisEVPTEvent;
+    hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager thisPotEVPTEvent;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager thisInfiltManager;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.LandUseManager thisLandUse;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager thisSCSData;
@@ -139,13 +141,45 @@ public class HillSlopesInfo extends java.lang.Object {
 //        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
         return thisStormEvent.getPrecOnHillslope(HillNumber,dateRequested);
     }
-
+    
+      public double EVPT(int HillNumber,double timeInMinutes){
+        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
+        dateRequested.clear();
+        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
+//        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
+        return thisEVPTEvent.getEVPTOnHillslope(HillNumber,dateRequested);
+    }
+         public double PotEVPT(int HillNumber,double timeInMinutes){
+        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
+        dateRequested.clear();
+        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
+//        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
+        return thisPotEVPTEvent.getPotEVPTOnHillslope(HillNumber,dateRequested);
+    }
+      
+      
        public double precipitationacum(int HillNumber,double timeInMinutes){
         java.util.Calendar dateRequested =java.util.Calendar.getInstance();
         dateRequested.clear();
         dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
 //        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
         return thisStormEvent.getAcumPrecOnHillslope(HillNumber,dateRequested);
+    }
+
+       public double EVPTacum(int HillNumber,double timeInMinutes){
+        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
+        dateRequested.clear();
+        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
+//        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
+        return thisEVPTEvent.getAcumEVPTOnHillslope(HillNumber,dateRequested);
+    }
+       
+        public double PotEVPTacum(int HillNumber,double timeInMinutes){
+        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
+        dateRequested.clear();
+        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
+//        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
+        return thisPotEVPTEvent.getAcumPotEVPTOnHillslope(HillNumber,dateRequested);
     }
     /**
      * The maximum precipitatation intesity recorded over the hillslope
@@ -154,6 +188,14 @@ public class HillSlopesInfo extends java.lang.Object {
      */
     public float maxPrecipitation(int HillNumber){
         return thisStormEvent.getMaxPrecOnHillslope(HillNumber);
+    }
+    
+     public float maxEVPT(int HillNumber){
+        return thisEVPTEvent.getMaxEVPTOnHillslope(HillNumber);
+    }
+     
+      public float maxPotEVPT(int HillNumber){
+        return thisPotEVPTEvent.getMaxPotEVPTOnHillslope(HillNumber);
     }
 
     /**
@@ -165,7 +207,13 @@ public class HillSlopesInfo extends java.lang.Object {
         return thisStormEvent.getMeanPrecOnHillslope(HillNumber);
     }
 
-
+     public float meanEVPT(int HillNumber){
+        return thisEVPTEvent.getMeanEVPTOnHillslope(HillNumber);
+    }
+     
+       public float meanPotEVPT(int HillNumber){
+        return thisPotEVPTEvent.getMeanPotEVPTOnHillslope(HillNumber);
+    }
     /**
      * Returns the value of infiltration rate in mm/h for a given moment of time
      * @param HillNumber The index of the desired hillslope
@@ -211,7 +259,14 @@ public class HillSlopesInfo extends java.lang.Object {
     public void setStormManager(hydroScalingAPI.modules.rainfallRunoffModel.objects.StormManager storm){
         thisStormEvent=storm;
     }
+    
+      public void setEVPTManager(hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager EVPT){
+        thisEVPTEvent=EVPT;
+    }
 
+         public void setPotEVPTManager(hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager PotEVPT){
+        thisPotEVPTEvent=PotEVPT;
+    }
     /**
      *
      * @param infiltation

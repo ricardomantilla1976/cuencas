@@ -411,9 +411,9 @@ public class HydroNexradRes_space_time extends Object {
 
 
         /*****DEFINE DESIRED RESOLUTION IN SPACE (ARCMIN) AND TIME (MIN)*******/
-        int[] space = {4};
+        int[] space = {15};
         //int[] space = {1};
-        int[] time = {60};
+        int[] time = {360};
         //int[] time = {180};
 
         float missing = 0.0f;
@@ -423,10 +423,10 @@ public class HydroNexradRes_space_time extends Object {
             for (int it : time) {
                 new_t_res = it;
                 /*****DEFINE THE FOLDER WITH NEXRAD DATA AND OUTPUT FOLDER*******/
-                File folder_nexrad = new File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune17/");
-                File inputMetaFile = new File("/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune17/hydroNexrad.metaVHC");
+                File folder_nexrad = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune17/");
+                File inputMetaFile = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune17/hydroNexrad.metaVHC");
                 //File folder_nexrad = new File("C:/CUENCAS/Whitewater_database/scale_rainfall_study/walnut_river/may_event/NEXRAD/");
-                String OutputDir = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithBiasRemoval/" + NDecRes + "/";
+                String OutputDir = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithBiasRemoval/" + NDecRes + "/";
                 new File(OutputDir).mkdirs();
                 OutputDir = OutputDir + "" + new_t_res + "min/";
                 new File(OutputDir).mkdirs();
@@ -439,7 +439,7 @@ public class HydroNexradRes_space_time extends Object {
                 new File(OutputDirt + "asc").mkdirs();
                 new File(OutputDirt + "Bin").mkdirs();
 
-                String OutputDirB = "/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/" + NDecRes + "/";
+                String OutputDirB = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/" + NDecRes + "/";
                 new File(OutputDirB).mkdirs();
                 OutputDirB = OutputDirB + "" + new_t_res + "min/";
                 new File(OutputDirB).mkdirs();

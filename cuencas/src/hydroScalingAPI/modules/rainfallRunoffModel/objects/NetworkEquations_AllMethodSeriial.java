@@ -636,7 +636,7 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
 
 
                     double hrelmax = (hH[0][i]) / 1000; // [m]
-                    double hrel = (hH[0][i] * input[i + 2 * nLi]) / 1000; // [m]
+                    double hrel = (input[i + 2 * nLi]) / 1000; // [m]
                     if (hrel < 0) {
                         hrel = 0;
                     }
