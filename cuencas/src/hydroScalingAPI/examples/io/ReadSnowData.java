@@ -94,7 +94,7 @@ public class ReadSnowData {
             latRes=0.00833333333333300;
             lonRes=0.00833333333333300;
             minLon=-124.729583333332;
-            minLat=52.8704166666656-nRows*latRes;
+            minLat=52.8704166666656-(nRows+1)*latRes;
 
             minLonStr=hydroScalingAPI.tools.DegreesToDMS.getprettyString(minLon,1);
             minLatStr=hydroScalingAPI.tools.DegreesToDMS.getprettyString(minLat,0);

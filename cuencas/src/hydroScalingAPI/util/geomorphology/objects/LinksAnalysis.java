@@ -1440,7 +1440,7 @@ public static void main5(String args[]) {
                 
             }
 
-            System.exit(0);
+            //System.exit(0);
 
             //CREATE FILE WITH CONNECTIVITY STRUCTURE
 
