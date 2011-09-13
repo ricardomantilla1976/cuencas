@@ -77,7 +77,7 @@ public abstract class DMSToDegrees{
      * @param args The command line arguments
      */
     public static void main (String args[]) {
-        System.out.println(hydroScalingAPI.tools.DMSToDegrees.getDegrees("00:00:20.05 N"));
+        System.out.println(hydroScalingAPI.tools.DMSToDegrees.getDegrees("40:40:20.05 N"));
         System.out.println(hydroScalingAPI.tools.DMSToDegrees.getDegrees("60:30:20.05 W"));
         System.exit(0);
     }

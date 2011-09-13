@@ -164,6 +164,12 @@ public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffE
             
             effPrecip=Math.max(hillPrecIntensity-basinHillSlopesInfo.infiltRate(i,time),0.0);
             
+//            if(effPrecip >  0) {
+//                System.out.println(effPrecip);
+//                System.out.println(basinHillSlopesInfo.infiltRate(i,time));
+//                System.exit(0);
+//            }
+            
             qs=vh*lengthArray[0][i]/areasHillArray[0][i]*input[i+nLi]/1e3*3.6;
             
             Q_trib=0.0;

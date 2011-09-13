@@ -129,6 +129,11 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
             infilMan=new hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager(myCuenca,linksStructure,infiltMetaRaster,matDir,magnitudes);
         
         thisHillsInfo.setInfManager(infilMan);
+        
+//        for(int i=0;i<linksStructure.contactsArray.length;i++){
+//            System.out.println(thisHillsInfo.infiltRate(i, 0.0));
+//        }
+//        System.exit(0);
 
         thisHillsInfo.setHillslopeVh(((Float)routingParams.get("v_h")).floatValue());
         
@@ -403,8 +408,8 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
         
         try{
             
-            subMain7(args);   //Case Goodwin Creek
-            
+            subMain1(args);   //Case Goodwin Creek
+            //subMain2(args);   //Randomized Infiltration Rates From Maps
             
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
@@ -418,7 +423,7 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
         
     }
     
-    public static void subMain7(String args[]) throws java.io.IOException, VisADException {
+    public static void subMain1(String args[]) throws java.io.IOException, VisADException {
 
         java.io.File theFile=new java.io.File("/CuencasDataBases/Goodwin_Creek_MS_database/Rasters/Topography/1_ArcSec_USGS/newDEM/goodwinCreek-nov03.metaDEM");
         hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
@@ -461,7 +466,7 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
 //            k++;
 //        }
 
-        int[] event_num={20,11};
+        int[] event_num={3};//,20,11};
         
         for (int i : event_num) {
 
@@ -481,6 +486,78 @@ public class SimulationToAsciiFileGoodwinCreek extends java.lang.Object implemen
         System.exit(0);
 
     }
+    
+    public static void subMain2(String args[]) throws java.io.IOException, VisADException {
+
+        java.io.File theFile=new java.io.File("/CuencasDataBases/Goodwin_Creek_MS_database/Rasters/Topography/1_ArcSec_USGS/newDEM/goodwinCreek-nov03.metaDEM");
+        hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+        metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Goodwin_Creek_MS_database/Rasters/Topography/1_ArcSec_USGS/newDEM/goodwinCreek-nov03.dir"));
+
+        metaModif.setFormat("Byte");
+        byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+        metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+        metaModif.setFormat("Integer");
+        int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+        java.util.Hashtable routingParams=new java.util.Hashtable();
+        routingParams.put("widthCoeff",1.0f);
+        routingParams.put("widthExponent",0.4f);
+        routingParams.put("widthStdDev",0.0f);
+
+        routingParams.put("chezyCoeff",14.2f);
+        routingParams.put("chezyExponent",-1/3.0f);
+
+        routingParams.put("lambda1",0.247677f);
+        routingParams.put("lambda2",-0.136595f);
+        routingParams.put("v_o", 0.605935f);
+        routingParams.put("v_h", 0.05f);
+
+
+        java.io.File stormFile,infiltFile;
+
+        //int[] event_num={1,11,20,106,16,22};
+        //int[] event_num={53,59,68,71,84,129};
+
+//        int iniEvent=114;
+//        int finEvent=148;
+//
+//        int[] event_num=new int[finEvent-iniEvent+1];
+//
+//        int k=0;
+//        for (int i=iniEvent;i<=finEvent;i++) {
+//            event_num[k]=i;
+//            k++;
+//        }
+
+        int[] event_num={3};
+        
+        for (int i : event_num) {
+
+            float infil=(float)infiltrations[i-1];
+
+            String evNUM=(""+(i/1000.+0.0001)).substring(2,5);
+
+            stormFile=new java.io.File("/CuencasDataBases/Goodwin_Creek_MS_database/Rasters/Hydrology/precipitation/storms/interpolated_events/05min_ts/events_singpeakB_rain01/event_"+evNUM+"/precipitation_interpolated_ev"+evNUM+".metaVHC");
+            
+            float evID=0.001f;
+            int numSimulations=10;
+        
+            for (int k = 0; k < numSimulations; k++) {
+                infiltFile=new java.io.File("/CuencasDataBases/Goodwin_Creek_MS_database/Rasters/Hydrology/infiltrationRates/simulated/infiltrationRate_event"+Float.toString(evID).substring(2,4)+".metaVHC");
+                hydroScalingAPI.io.MetaRaster infilMeta=new hydroScalingAPI.io.MetaRaster(infiltFile);
+                new SimulationToAsciiFileGoodwinCreek(44, 111, matDirs, magnitudes, metaModif, stormFile, infilMeta, 5, new java.io.File("/Users/ricardo/simulationResults/GoodwinCreek/RandomInfiltration"), routingParams).executeSimulation();
+                evID+=0.01;
+                System.exit(0);
+            }
+
+        }
+
+        System.exit(0);
+
+    }
+    
+    
 
 //    //IN REALITY THIS ARRAY HAS RUNOFF RATIOS
 //    private static double[] infiltrations=new double[] {        0.077022071,

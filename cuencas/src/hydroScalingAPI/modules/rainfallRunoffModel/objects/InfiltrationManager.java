@@ -56,11 +56,11 @@ public class InfiltrationManager {
      * @param myCuenca The {@link hydroScalingAPI.util.geomorphology.objects.Basin} object describing the
      * basin under consideration
      * @param linksStructure The topologic structure of the river network
-     * @param metaDatos A MetaRaster describing the infiltration map
+     * @param metaInfilt A MetaRaster describing the infiltration map
      * @param matDir The directions matrix of the DEM that contains the basin
      * @param magnitudes The magnitudes matrix of the DEM that contains the basin
      */
-    public InfiltrationManager(hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes) {
+    public InfiltrationManager(hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster infiltMetaRasterOR, byte[][] matDir, int[][] magnitudes) {
         
         //Una vez leidos los archivos:
         //Lleno la matriz de direcciones
@@ -73,12 +73,13 @@ public class InfiltrationManager {
         
         try{
             
-            metaInfilt=metaDatos;
+            metaInfilt=infiltMetaRasterOR;
+            
             /****** OJO QUE ACA PUEDE HABER UN ERROR (POR LA CUESTION DE LA COBERTURA DEL MAPA SOBRE LA CUENCA)*****************/
-            if (metaInfilt.getMinLon() > metaDatos.getMinLon()+myCuenca.getMinX()*metaDatos.getResLon()/3600.0 ||
-                metaInfilt.getMinLat() > metaDatos.getMinLat()+myCuenca.getMinY()*metaDatos.getResLat()/3600.0 ||
-                metaInfilt.getMaxLon() < metaDatos.getMinLon()+(myCuenca.getMaxX()+2)*metaDatos.getResLon()/3600.0 ||
-                metaInfilt.getMaxLat() < metaDatos.getMinLat()+(myCuenca.getMaxY()+2)*metaDatos.getResLat()/3600.0) {
+            if (metaInfilt.getMinLon() > metaInfilt.getMinLon()+myCuenca.getMinX()*metaInfilt.getResLon()/3600.0 ||
+                metaInfilt.getMinLat() > metaInfilt.getMinLat()+myCuenca.getMinY()*metaInfilt.getResLat()/3600.0 ||
+                metaInfilt.getMaxLon() < metaInfilt.getMinLon()+(myCuenca.getMaxX()+2)*metaInfilt.getResLon()/3600.0 ||
+                metaInfilt.getMaxLat() < metaInfilt.getMinLat()+(myCuenca.getMaxY()+2)*metaInfilt.getResLat()/3600.0) {
                     System.out.println("Not Area Coverage");
                     return;
             }
@@ -91,10 +92,10 @@ public class InfiltrationManager {
             for (int i=0;i<linksStructure.contactsArray.length;i++){
                 if (linksStructure.magnitudeArray[i] < linksStructure.basinMagnitude){
 
-                    xOulet=linksStructure.contactsArray[i]%metaDatos.getNumCols();
-                    yOulet=linksStructure.contactsArray[i]/metaDatos.getNumCols();
+                    xOulet=linksStructure.contactsArray[i]%metaInfilt.getNumCols();
+                    yOulet=linksStructure.contactsArray[i]/metaInfilt.getNumCols();
 
-                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDir,magnitudes,metaDatos);
+                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDir,magnitudes,metaInfilt);
                     for (int j=0;j<myHillActual.getXYHillSlope()[0].length;j++){
                         matrizPintada[myHillActual.getXYHillSlope()[1][j]-myCuenca.getMinY()+1][myHillActual.getXYHillSlope()[0][j]-myCuenca.getMinX()+1]=i+1;
                     }
@@ -103,7 +104,7 @@ public class InfiltrationManager {
                     xOulet=myCuenca.getXYBasin()[0][0];
                     yOulet=myCuenca.getXYBasin()[1][0];
 
-                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDir,magnitudes,metaDatos);
+                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDir,magnitudes,metaInfilt);
                     for (int j=0;j<myHillActual.getXYHillSlope()[0].length;j++){
                         matrizPintada[myHillActual.getXYHillSlope()[1][j]-myCuenca.getMinY()+1][myHillActual.getXYHillSlope()[0][j]-myCuenca.getMinX()+1]=i+1;
                     }
@@ -119,13 +120,13 @@ public class InfiltrationManager {
             double[] dx;
             double dy;
             
-            dy = 6378.0*metaDatos.getResLat()*Math.PI/(3600.0*180.0);
-            dx = new double[metaDatos.getNumRows()];
+            dy = 6378.0*metaInfilt.getResLat()*Math.PI/(3600.0*180.0);
+            dx = new double[metaInfilt.getNumRows()];
             /*Se calcula para cada fila del DEMC el valor de la distancia horizontal del pixel 
               y la diagonal, dependiendo de la latitud.*/
-            int nr=metaDatos.getNumRows();
+            int nr=metaInfilt.getNumRows();
             for (int i=0 ; i<nr ; i++){
-              dx[i] = 6378.0*Math.cos(((i+1)*metaDatos.getResLat()/3600.0 + metaDatos.getMinLat())*Math.PI/180.0)*metaDatos.getResLat()*Math.PI/(3600.0*180.0);
+              dx[i] = 6378.0*Math.cos(((i+1)*metaInfilt.getResLat()/3600.0 + metaInfilt.getMinLat())*Math.PI/180.0)*metaInfilt.getResLat()*Math.PI/(3600.0*180.0);
             }
             float[][] upAreaValues=linksStructure.getVarValues(0);
             
@@ -139,10 +140,10 @@ public class InfiltrationManager {
 
             //recorto la seccion que esta en la cuenca (TIENE QUE CONTENERLA)
 
-            double demMinLon=metaDatos.getMinLon();
-            double demMinLat=metaDatos.getMinLat();
-            double demResLon=metaDatos.getResLon();
-            double demResLat=metaDatos.getResLat();
+            double demMinLon=metaInfilt.getMinLon();
+            double demMinLat=metaInfilt.getMinLat();
+            double demResLon=metaInfilt.getResLon();
+            double demResLat=metaInfilt.getResLat();
 
             int basinMinX=myCuenca.getMinX();
             int basinMinY=myCuenca.getMinY();
