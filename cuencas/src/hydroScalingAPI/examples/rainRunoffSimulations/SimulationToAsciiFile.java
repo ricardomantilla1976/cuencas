@@ -379,9 +379,9 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
             //subMain2(args);   //Case for Walnut Gulch
             //subMain3(args);   //Case Upper Rio Puerco
             //subMain4(args);   //Case Whitewater
-            //subMain5(args);   //Case Clear Creek June 3 to 7
+            subMain5(args);   //Case Clear Creek June 3 to 7
 
-            subMain6(args);   //Case Squaw Creek April 20 to May 10
+            //subMain6(args);   //Case Squaw Creek April 20 to May 10
             //subMain7(args);   //Case Goodwin Creek
             
             
@@ -626,7 +626,9 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
 
 
 
-        new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, 0.0f,1.0f, 0.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
+        new SimulationToAsciiFile(778, 368, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
+
+        //new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
 
         System.exit(0);
         
