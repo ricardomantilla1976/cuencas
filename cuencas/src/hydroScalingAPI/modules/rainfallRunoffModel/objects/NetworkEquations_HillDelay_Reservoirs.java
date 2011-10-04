@@ -87,8 +87,7 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
         lambda2=linksHydraulicInfo.getLamda2();
         CkArray=linksHydraulicInfo.getCkArray();
         
-        lambda3=1/(1+lambda1);
-        lambda3=lambda1/(1+lambda1);
+        lambda3=1/(1-lambda1);
         
         vh=basinHillSlopesInfo.getHillslopeVh();
 
@@ -169,17 +168,27 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
             
             qs=vh*lengthArray[0][i]/areasHillArray[0][i]*input[i+nLi]/1e3*3.6;
             
-            Q_trib=0.0;
-            for (int j=0;j<linksConectionStruct.connectionsArray[i].length;j++){
-                Q_trib+=input[linksConectionStruct.connectionsArray[i][j]];
-            }
-            
             switch (routingType) {
                 
-                case 2:     K_Q=lengthArray[0][i]/CkArray[0][i];
+                case 2:     K_Q=CkArray[0][i]/lengthArray[0][i];
                             break;
                 
-                case 5:     K_Q=Math.pow(lengthArray[0][i],lambda3)/Math.pow(CkArray[0][i]*Math.pow(input[i],lambda1)*Math.pow(upAreasArray[0][i],lambda2),lambda3);
+                case 5:     K_Q=Math.pow(CkArray[0][i]*Math.pow(input[i],lambda1)*Math.pow(lengthArray[0][i],-lambda1)*Math.pow(upAreasArray[0][i],lambda2),lambda3)/lengthArray[0][i];
+            }
+            
+            Q_trib=0.0;
+            
+            for (int j=0;j<linksConectionStruct.connectionsArray[i].length;j++){
+                
+                switch (routingType) {
+                
+                    case 2:     K_Q=CkArray[0][linksConectionStruct.connectionsArray[i][j]]/lengthArray[0][linksConectionStruct.connectionsArray[i][j]];
+                                break;
+
+                    case 5:     K_Q=Math.pow(CkArray[0][linksConectionStruct.connectionsArray[i][j]]*Math.pow(input[linksConectionStruct.connectionsArray[i][j]],lambda1)*Math.pow(lengthArray[0][linksConectionStruct.connectionsArray[i][j]],-lambda1)*Math.pow(upAreasArray[0][linksConectionStruct.connectionsArray[i][j]],lambda2),lambda3)/lengthArray[0][linksConectionStruct.connectionsArray[i][j]];
+                }
+                
+                Q_trib+=K_Q*input[linksConectionStruct.connectionsArray[i][j]];
             }
             
             if (input[i] == 0) K_Q=0.000001;
