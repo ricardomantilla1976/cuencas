@@ -351,8 +351,8 @@ public class HillslopeRainAndNetworkToFile {
 
             java.io.File stormFile;
 
-            int iniEvent=1;
-            int finEvent=1;
+            int iniEvent=3;
+            int finEvent=3;
 
             int[] event_num=new int[finEvent-iniEvent+1];
 
