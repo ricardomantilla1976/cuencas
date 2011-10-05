@@ -49,7 +49,7 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
     
     private double lambda1,lambda2,lambda3,lambda4;
 
-    private double generalRunoffCoeff;
+    private hydroScalingAPI.modules.rainfallRunoffModel.objects.ReservoirsManager reservoirsMan;
     
     /**
      * Creates new NetworkEquations_Simple
@@ -64,7 +64,9 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
      * <p>4: Spatially variable Manning coefficient</p>
      * <p>5: Velocity based on parametrization v=Ck*q^lambda1*A^lambda2</p>
      */
-    public NetworkEquations_HillDelay_Reservoirs(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis links, hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo hillinf, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo linkIn, int rt){
+    public NetworkEquations_HillDelay_Reservoirs(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis links, hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo hillinf, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo linkIn, int rt,hydroScalingAPI.modules.rainfallRunoffModel.objects.ReservoirsManager rm){
+        
+        reservoirsMan=rm;
         linksConectionStruct=links;
         basinHillSlopesInfo=hillinf;
         linksHydraulicInfo=linkIn;
@@ -150,8 +152,8 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
         
         double maxInt=0;
         
-        int[] resLocations=new int[] {16,34};
-        float[] s_max=new float[] {1000,1000};
+        int[] resLocations=reservoirsMan.getReservoirLocations();
+        float[] s_max=reservoirsMan.getReservoirMaxStorages();
                 
         for (int i=0;i<nLi;i++){
             

@@ -132,6 +132,9 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         
         thisHillsInfo.setInfManager(infilMan);
         
+        hydroScalingAPI.modules.rainfallRunoffModel.objects.ReservoirsManager rm=new hydroScalingAPI.modules.rainfallRunoffModel.objects.ReservoirsManager();
+        
+        
         //Mapping link ids to locations in space
 //        System.out.println(linksStructure.getResSimID(752, 385)-1);
 //        System.out.println(linksStructure.getResSimID(754, 386)-1);
@@ -256,7 +259,7 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
                 newfile.write("Link-"+linksStructure.completeStreamLinksArray[i]+",");
         }
         
-        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay_Reservoirs thisBasinEqSys=new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay_Reservoirs(linksStructure,thisHillsInfo,thisNetworkGeom,routingType);
+        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay_Reservoirs thisBasinEqSys=new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay_Reservoirs(linksStructure,thisHillsInfo,thisNetworkGeom,routingType,rm);
 
         double[] initialCondition=new double[linksStructure.contactsArray.length*2];
         
@@ -323,14 +326,47 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         
         
         double[] maximumsAchieved=rainRunoffRaining.getMaximumAchieved();
+        double[] maximumsQs=new double[maximumsAchieved.length];
+        
+        int[] resLocations=rm.getReservoirLocations();
+        float[][] upAreasArray=thisNetworkGeom.getUpStreamAreaArray();
+        float[][] lengthArray=thisNetworkGeom.getLengthInKmArray();
+        for (int i=0;i<lengthArray[0].length;i++) lengthArray[0][i]=lengthArray[0][i]*1000;
+        float lambda1=thisNetworkGeom.getLamda1();
+        float lambda2=thisNetworkGeom.getLamda2();
+        float[][] CkArray=thisNetworkGeom.getCkArray();
+        
+        float lambda3=1/(1-lambda1);
+        
         
         newfile.write("\n");
         newfile.write("\n");
-        newfile.write("Maximum Discharge [m^3/s],");
+        newfile.write("Maximum Storage [m^3/s],");
+        for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
+            int kk=linksStructure.completeStreamLinksArray[i];
+            if(thisNetworkGeom.linkOrder(kk) > 0){
+                newfile.write(maximumsAchieved[kk]+",");
+                
+                double K_S=Math.pow(CkArray[0][kk]*Math.pow(lengthArray[0][kk],-lambda1)*Math.pow(maximumsAchieved[kk],lambda1)*Math.pow(upAreasArray[0][kk],lambda2),lambda3)/lengthArray[0][kk];
+                maximumsQs[i]=K_S*maximumsAchieved[linksStructure.completeStreamLinksArray[i]];
+                
+                for(int ll=0;ll<resLocations.length; ll++){
+                    if(i == resLocations[ll]){
+                        
+                        float maxResYield=0;
+                        maximumsQs[i]=maxResYield;
+                        
+                    }
+                }
+            }
+            
+        }
+        newfile.write("Maximum Discharges [m^3/s],");
         for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
             if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0)
-                newfile.write(maximumsAchieved[linksStructure.completeStreamLinksArray[i]]+",");
+                newfile.write(maximumsQs[i]+",");
         }
+        
         
         System.out.println("Inicia escritura de Resultados");
         newfile.write("\n");
@@ -368,8 +404,6 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         System.out.println("Termina escritura de Resultados");
         
         //Here create your code to read the storages file and create a corresponding discharges file
-        
-        
         
     }
     
