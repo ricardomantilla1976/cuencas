@@ -150,6 +150,9 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
         
         double maxInt=0;
         
+        int[] resLocations=new int[] {16,34};
+        float[] s_max=new float[] {1000,1000};
+                
         for (int i=0;i<nLi;i++){
             
             if (input[i] < 0) input[i]=0;
@@ -168,57 +171,90 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
             
             qs=vh*lengthArray[0][i]/areasHillArray[0][i]*input[i+nLi]/1e3*3.6;
             
+            Q_trib=0.0;
+            
+            for (int j=0;j<linksConectionStruct.connectionsArray[i].length;j++){
+                
+                int kk=linksConectionStruct.connectionsArray[i][j];
+                
+                switch (routingType) {
+                
+                    case 2:     K_Q=CkArray[0][kk]/lengthArray[0][kk];
+                                break;
+
+                    case 5:     K_Q=Math.pow(CkArray[0][kk]*Math.pow(lengthArray[0][kk],-lambda1)*Math.pow(input[kk],lambda1)*Math.pow(upAreasArray[0][kk],lambda2),lambda3)/lengthArray[0][kk];
+                }
+                
+                if (input[kk] == 0) K_Q=1e-6;
+                
+                Q_trib+=K_Q*input[kk];
+            }
+            
             switch (routingType) {
                 
                 case 2:     K_Q=CkArray[0][i]/lengthArray[0][i];
                             break;
                 
-                case 5:     K_Q=Math.pow(CkArray[0][i]*Math.pow(input[i],lambda1)*Math.pow(lengthArray[0][i],-lambda1)*Math.pow(upAreasArray[0][i],lambda2),lambda3)/lengthArray[0][i];
+                case 5:     K_Q=Math.pow(CkArray[0][i]*Math.pow(lengthArray[0][i],-lambda1)*Math.pow(input[i],lambda1)*Math.pow(upAreasArray[0][i],lambda2),lambda3)/lengthArray[0][i];
             }
             
-            Q_trib=0.0;
-            
-            for (int j=0;j<linksConectionStruct.connectionsArray[i].length;j++){
-                
-                switch (routingType) {
-                
-                    case 2:     K_Q=CkArray[0][linksConectionStruct.connectionsArray[i][j]]/lengthArray[0][linksConectionStruct.connectionsArray[i][j]];
-                                break;
-
-                    case 5:     K_Q=Math.pow(CkArray[0][linksConectionStruct.connectionsArray[i][j]]*Math.pow(input[linksConectionStruct.connectionsArray[i][j]],lambda1)*Math.pow(lengthArray[0][linksConectionStruct.connectionsArray[i][j]],-lambda1)*Math.pow(upAreasArray[0][linksConectionStruct.connectionsArray[i][j]],lambda2),lambda3)/lengthArray[0][linksConectionStruct.connectionsArray[i][j]];
-                }
-                
-                Q_trib+=K_Q*input[linksConectionStruct.connectionsArray[i][j]];
-            }
-            
-            if (input[i] == 0) K_Q=0.000001;
-            
-            /*if (Math.random() > 0.99) {
-                float typDisch=Math.round(input[i]*10000)/10000.0f;
-                float typVel=Math.round(K_Q*lengthArray[0][i]*100)/100.0f;
-                long typDepth=Math.round(input[i]/typVel/widthArray[0][i]*100);
-                long typWidth=Math.round(widthArray[0][i]*100);
-                System.out.println("  --> !!  When Discharge is "+typDisch+" m^3/s, A typical Velocity-Depth-Width triplet is "+typVel+" m/s - "+typDepth+" cm - "+typWidth+" cm >> for Link "+i+" with upstream area : "+linksHydraulicInfo.upStreamArea(i)+" km^2");
-            }*/
+            if (input[i] == 0) K_Q=1e-6;
             
             
-            //storage of the links
-            output[i]=(1/3.6*areasHillArray[0][i]*qs+Q_trib-K_Q*input[i]);
+            //storage inside the links
+            output[i]=60*(1/3.6*areasHillArray[0][i]*qs+Q_trib-K_Q*input[i]);
             
-            //the hillslopes
+            //the surface of the hillslopes
             output[i+linksConectionStruct.connectionsArray.length]=1/60.*(effPrecip-qs);
             
+            
+            //The following code creates reservoir dynamics
+            
+            //This loops determines if the link is a reservoir and modifies the equation accordingly
+            for(int ll=0;ll<resLocations.length; ll++){
+                if(i == resLocations[ll]){
+                    
+                    //  1 - Determine Reservoir Yield (output discharge)
+            
+                    float reservoirYield=0;//(float)Math.pow(0.1*(input[i]/s_max[i]),0.5);
+            
+                    //  2 - Modify Link Equation to account for Reservoir Yield instead of Natural Outflow
+            
+                    output[i]=(1/3.6*areasHillArray[0][i]*qs+Q_trib-reservoirYield);
+                    
+                }
+            }
+            
+            //This loops determines if the link is downstream from a reservoir and modifies the equation accordingly
+            for(int ll=0;ll<resLocations.length; ll++){
+                if(i == linksConectionStruct.nextLinkArray[resLocations[ll]]){
+                    
+                    //  1 - Determine Reservoir Yield (output discharge)
+            
+                    float reservoirYield=0;//(float)Math.pow(0.1*(input[i]/s_max[i]),0.5);
+            
+                    //  2 - Modify Link Equation to account for Reservoir Yield instead of Natural Outflow
+            
+                    int kk=resLocations[ll];
+                    
+                    switch (routingType) {
+
+                        case 2:     K_Q=CkArray[0][kk]/lengthArray[0][kk];
+                                    break;
+
+                        case 5:     K_Q=Math.pow(CkArray[0][kk]*Math.pow(lengthArray[0][kk],-lambda1)*Math.pow(input[kk],lambda1)*Math.pow(upAreasArray[0][kk],lambda2),lambda3)/lengthArray[0][kk];
+                    }
+
+                    if (input[kk] == 0) K_Q=1e-6;
+
+                    //  2 - Modify Downstream Link Equation to account for Reservoir Yield instead of Natural Outflow
+
+                    output[i]+=1/60.*(reservoirYield-K_Q*input[kk]);
+
+                }
+            }
+            
         }
-        
-        //Creating reservoir
-        
-//        int[] resLocations=new int[] {564,911};
-//        float[] s_max=new float[] {1000,1000};
-//                
-//        for (int i = 0; i < s_max.length; i++) {
-//            float reservoirYield=0;//(float)Math.pow(0.1*(input[i]/s_max[i]),0.5);
-//            output[i]=(1/3.6*areasHillArray[0][i]*qs+Q_trib-reservoirYield);
-//        }
         
         
         //if (Math.random() > 0.99) if (maxInt>0) System.out.println("      --> The Max precipitation intensity is: "+maxInt);

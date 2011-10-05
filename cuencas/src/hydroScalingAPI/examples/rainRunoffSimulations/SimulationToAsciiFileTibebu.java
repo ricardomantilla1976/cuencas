@@ -133,6 +133,10 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         thisHillsInfo.setInfManager(infilMan);
         
         //Mapping link ids to locations in space
+//        System.out.println(linksStructure.getResSimID(752, 385)-1);
+//        System.out.println(linksStructure.getResSimID(754, 386)-1);
+//        System.exit(0);
+//        
 //        System.out.println(linksStructure.getResSimID(1161, 159)-1);
 //        System.out.println(linksStructure.getResSimID(1161, 162)-1);
 //        System.out.println("x="+linksStructure.contactsArray[564]%metaDatos.getNumCols()+" y="+linksStructure.contactsArray[564]/metaDatos.getNumCols());
@@ -363,6 +367,9 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         
         System.out.println("Termina escritura de Resultados");
         
+        //Here create your code to read the storages file and create a corresponding discharges file
+        
+        
         
     }
     
@@ -419,8 +426,8 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         routingParams.put("chezyCoeff",14.2f);
         routingParams.put("chezyExponent",-1/3.0f);
         
-        routingParams.put("lambda1",0.315f);
-        routingParams.put("lambda2",-0.092f);
+        routingParams.put("lambda1",0.3f);
+        routingParams.put("lambda2",-0.1f);
         routingParams.put("v_o", 0.6f);
 
         routingParams.put("v_h", 0.01f);
@@ -428,9 +435,7 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
 
         //Routing type: 2 is constant velocity v=vo, 5 variable v=vo q^l1 A^l2
         
-        new SimulationToAsciiFileTibebu(778, 368, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
-
-        //new SimulationToAsciiFileTibebu(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
+        new SimulationToAsciiFileTibebu(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
 
         System.exit(0);       
         

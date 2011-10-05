@@ -37,7 +37,7 @@ public class RKF extends java.lang.Object {
     hydroScalingAPI.util.ordDiffEqSolver.BasicFunction theFunction;
     /**
      * An array containing the value of the function that was last calculated by the
-     * RKF algoritm
+     * RKF algorithm
      */
     public double[] finalCond;
     double epsilon;
@@ -691,6 +691,8 @@ public class RKF extends java.lang.Object {
         double currentTime = iniTime, targetTime;
 
         int ouletID = linksStructure.getOutletID();
+        
+        ouletID=0;
 
         outputStream.write("\n");
         outputStream.write(currentTime + ",");
@@ -780,9 +782,10 @@ public class RKF extends java.lang.Object {
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
 
-            //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
-            //System.out.println();
-
+//            for (int j=IC.length/2;j<IC.length;j++) System.out.print(IC[j]+" ");
+//            System.out.println();
+//            if(Math.random()<0.2) System.exit(0);
+        
         }
 
         if (currentTime != finalTime && IC[ouletID] > 1e-6) {
@@ -803,8 +806,6 @@ public class RKF extends java.lang.Object {
             thisDate = java.util.Calendar.getInstance();
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
-            //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
-            //System.out.println();
 
         }
 

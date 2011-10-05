@@ -594,7 +594,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         
         java.io.File stormFile;
         stormFile=new java.io.File("/CuencasDataBases/Whitewater_database/Rasters/Hydrology/storms/simulated_events/uniform_030_120.metaVHC");
-        new SimulationToAsciiFile(1063,496,matDirs,magnitudes,metaModif,stormFile,0.0f,2,new java.io.File("/home/ricardo/simulationResults/walnutGulch/"),routingParams).executeSimulation();
+        new SimulationToAsciiFile(1063,496,matDirs,magnitudes,metaModif,stormFile,0.0f,5,new java.io.File("/home/ricardo/simulationResults/walnutGulch/"),routingParams).executeSimulation();
     }
     
     public static void subMain5(String args[]) throws java.io.IOException, VisADException {
@@ -618,17 +618,16 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         routingParams.put("chezyCoeff",14.2f);
         routingParams.put("chezyExponent",-1/3.0f);
         
-        routingParams.put("lambda1",0.315f);
-        routingParams.put("lambda2",-0.092f);
+        routingParams.put("lambda1",0.3f);
+        routingParams.put("lambda2",-0.1f);
         routingParams.put("v_o", 0.6f);
 
-        routingParams.put("v_h", 0.0f);
+        routingParams.put("v_h", 0.01f);
 
 
-
-        new SimulationToAsciiFile(778, 368, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
-
-        //new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
+        //Routing type: 2 is constant velocity v=vo, 5 variable v=vo q^l1 A^l2
+        
+        new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
 
         System.exit(0);
         
