@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
 /*
- * stormManager.java
+ * SOILM040Manager.java
  *
  * Created on July 10, 2002, 6:00 PM
  */
@@ -27,27 +27,27 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 package hydroScalingAPI.modules.rainfallRunoffModel.objects;
 
 /**
- * This class handles the precipitation over a basin.  It takes in a group of
+ * This class handles the SOILM040ipitation over a basin.  It takes in a group of
  * raster files that represent snapshots of the rainfall fields and projects those
  * fields over the hillslope map to obtain hillslope-based rainfall time series.
  * @author Ricardo Mantilla
  */
-public class StormManager {
+public class SoilMoistureManager {
 
-    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] precOnBasin,accumPrecOnBasin;
+    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] SOILM040OnBasin;
     private boolean success=false,veryFirstDrop=true;
-    private hydroScalingAPI.io.MetaRaster metaStorm;
-    private java.util.Calendar firstWaterDrop,lastWaterDrop;
-    private float[][] totalPixelBasedPrec;
-    private float[] totalHillBasedPrec;
-    private float[] totalHillBasedPrecmm;
+    private hydroScalingAPI.io.MetaRaster metaSOILM040;
+    private java.util.Calendar firstSOILM040,lastSOILM040;
+    private float[][] totalPixelBasedSOILM040;
+    private float[] totalHillBasedSOILM040;
+    private float[] totalHillBasedSOILM040mm;
     private hydroScalingAPI.util.fileUtilities.ChronoFile[] arCron;
 
     int[][] matrizPintada;
 
     private double recordResolutionInMinutes;
 
-    private String thisStormName;
+    private String thisSOILM040Name;
 
     private int ncol;   // create
     private int nrow;   // create
@@ -58,42 +58,42 @@ public class StormManager {
 
 
     /**
-     * Creates a new instance of StormManager (with constant rainfall rate
+     * Creates a new instance of SOILM040Manager (with constant rainfall rate
      * over the basin during a given period of time)
      * @param linksStructure The topologic structure of the river network
      * @param rainIntensity The uniform intensity to be applied over the basinb
      * @param rainDuration The duration of the event with the given intensity
      */
-    public StormManager(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, float rainIntensity, float rainDuration) {
+    public SoilMoistureManager(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, float rainIntensity, float rainDuration) {
 
         java.util.Calendar date=java.util.Calendar.getInstance();
         date.clear();
         date.set(1971, 6, 1, 6, 0, 0);
 
-        firstWaterDrop=date;
-        lastWaterDrop=date;
+        firstSOILM040=date;
+        lastSOILM040=date;
 
-        precOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
-        accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
-        for (int i=0;i<precOnBasin.length;i++){
-            precOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
-            precOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
+        SOILM040OnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
+        //accumSOILM040OnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+        for (int i=0;i<SOILM040OnBasin.length;i++){
+            SOILM040OnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
+            SOILM040OnBasin[i].addDateAndValue(date,new Float(rainIntensity));
             ////// this is wrong, should be accumulated
-            //accumPrecOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
-            //accumPrecOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
+            //accumSOILM040OnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
+            //accumSOILM040OnBasin[i].addDateAndValue(date,new Float(rainIntensity));
 
         }
 
         recordResolutionInMinutes=rainDuration;
 
-        thisStormName="UniformEvent_INT_"+rainIntensity+"_DUR_"+rainDuration;
+        thisSOILM040Name="UniformEvent_INT_"+rainIntensity+"_DUR_"+rainDuration;
 
         success=true;
 
     }
 
     /**
-     * Creates a new instance of StormManager (with spatially and temporally variable rainfall
+     * Creates a new instance of SOILM040Manager (with spatially and temporally variable rainfall
      * rates over the basin) based in a set of raster maps of rainfall intensities
      * @param locFile The path to the raster files
      * @param myCuenca The {@link hydroScalingAPI.util.geomorphology.objects.Basin} object describing the
@@ -103,7 +103,7 @@ public class StormManager {
      * @param matDir The directions matrix of the DEM that contains the basin
      * @param magnitudes The magnitudes matrix of the DEM that contains the basin
      */
-    public StormManager(java.io.File locFile, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes) {
+    public SoilMoistureManager(java.io.File locFile, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes) {
 
         //System.out.println("locFile.getParentFile()" + locFile.getParentFile());
         int temp=locFile.getName().lastIndexOf(".");
@@ -123,7 +123,7 @@ public class StormManager {
         //Una vez leidos los archivos:
         //Lleno la matriz de direcciones
 
-        //for (int i=0;i<lasQueSi.length;i++) {System.out.println("File list="+arCron[i].fileName.getName());}
+   //     for (int i=0;i<lasQueSi.length;i++) {System.out.println("File list="+arCron[i].fileName.getName());}
 
         int[][] matDirBox=new int[myCuenca.getMaxY()-myCuenca.getMinY()+3][myCuenca.getMaxX()-myCuenca.getMinX()+3];
 
@@ -133,19 +133,19 @@ public class StormManager {
 
         try{
 
-            metaStorm=new hydroScalingAPI.io.MetaRaster(locFile);
-            nrow=metaStorm.getNumRows();
-            ncol=metaStorm.getNumCols();
-            xllcorner=metaStorm.getMinLon();
-            yllcorner=metaStorm.getMinLat();
-            cellsize=metaStorm.getResLat();
+            metaSOILM040=new hydroScalingAPI.io.MetaRaster(locFile);
+            nrow=metaSOILM040.getNumRows();
+            ncol=metaSOILM040.getNumCols();
+            xllcorner=metaSOILM040.getMinLon();
+            yllcorner=metaSOILM040.getMinLat();
+            cellsize=metaSOILM040.getResLat();
 
 
             /****** OJO QUE ACA PUEDE HABER UN ERROR (POR LA CUESTION DE LA COBERTURA DEL MAPA SOBRE LA CUENCA)*****************/
-            if (metaStorm.getMinLon() > metaDatos.getMinLon()+myCuenca.getMinX()*metaDatos.getResLon()/3600.0 ||
-                metaStorm.getMinLat() > metaDatos.getMinLat()+myCuenca.getMinY()*metaDatos.getResLat()/3600.0 ||
-                metaStorm.getMaxLon() < metaDatos.getMinLon()+(myCuenca.getMaxX()+2)*metaDatos.getResLon()/3600.0 ||
-                metaStorm.getMaxLat() < metaDatos.getMinLat()+(myCuenca.getMaxY()+2)*metaDatos.getResLat()/3600.0) {
+            if (metaSOILM040.getMinLon() > metaDatos.getMinLon()+myCuenca.getMinX()*metaDatos.getResLon()/3600.0 ||
+                metaSOILM040.getMinLat() > metaDatos.getMinLat()+myCuenca.getMinY()*metaDatos.getResLat()/3600.0 ||
+                metaSOILM040.getMaxLon() < metaDatos.getMinLon()+(myCuenca.getMaxX()+2)*metaDatos.getResLon()/3600.0 ||
+                metaSOILM040.getMaxLat() < metaDatos.getMinLat()+(myCuenca.getMaxY()+2)*metaDatos.getResLat()/3600.0) {
                     System.out.println("Not Area Coverage");
                     return;
             }
@@ -179,25 +179,25 @@ public class StormManager {
                 }
             }
 
-            precOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
-            accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+            SOILM040OnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+            //accumSOILM040OnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
 //////////////////////////////////////// stopped here - be sure accumulated is being calculated correctly
-            int regInterval=metaStorm.getTemporalScale();
-            float regIntervalmm=((float)metaStorm.getTemporalScale())/(1000.0f*60.0f);
+            int regInterval=metaSOILM040.getTemporalScale();
+            float regIntervalmm=((float)metaSOILM040.getTemporalScale())/(1000.0f*60.0f);
 
-            System.out.println("Time interval for this file: "+regInterval);
+            //System.out.println("Time interval for this file: "+regInterval);
 
-            totalHillBasedPrec=new float[precOnBasin.length];
-            totalHillBasedPrecmm=new float[precOnBasin.length];
+            totalHillBasedSOILM040=new float[SOILM040OnBasin.length];
+            totalHillBasedSOILM040mm=new float[SOILM040OnBasin.length];
 
-                double[] currentHillBasedPrec=new double[precOnBasin.length];
-                float[] currentHillNumPixels=new float[precOnBasin.length];
+                double[] currentHillBasedSOILM040=new double[SOILM040OnBasin.length];
+                float[] currentHillNumPixels=new float[SOILM040OnBasin.length];
 
-                for (int i=0;i<precOnBasin.length;i++){
-                precOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
-                accumPrecOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
-                totalHillBasedPrecmm[i]=0.0f;
-                currentHillBasedPrec[i]=0.0D;
+                for (int i=0;i<SOILM040OnBasin.length;i++){
+                SOILM040OnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
+                //accumSOILM040OnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
+                totalHillBasedSOILM040mm[i]=0.0f;
+                currentHillBasedSOILM040[i]=0.0D;
                 currentHillNumPixels[i]=0.0f;
                 }
 
@@ -207,21 +207,21 @@ public class StormManager {
 
             System.out.println("-----------------Start of Files Reading----------------");
 
-            totalPixelBasedPrec=new float[matDirBox.length][matDirBox[0].length];
+            totalPixelBasedSOILM040=new float[matDirBox.length][matDirBox[0].length];
 
 
 
             for (int i=0;i<arCron.length;i++){
                 //Cargo cada uno
-                metaStorm.setLocationBinaryFile(arCron[i].fileName);
+                metaSOILM040.setLocationBinaryFile(arCron[i].fileName);
 
-                //System.out.println("--> Loading data from "+arCron[i].fileName.getName());
+                System.out.println("--> Loading data from "+arCron[i].fileName.getName());
 
-                dataSnapShot=new hydroScalingAPI.io.DataRaster(metaStorm).getDouble();
+                dataSnapShot=new hydroScalingAPI.io.DataRaster(metaSOILM040).getDouble();
 
 
-                hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaStorm.getMissing()).doubleValue());
-                //System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
+                hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaSOILM040.getMissing()).doubleValue());
+                System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
 
 
                 //recorto la seccion que esta en la cuenca (TIENE QUE CONTENERLA)
@@ -235,57 +235,57 @@ public class StormManager {
                 int basinMinX=myCuenca.getMinX();
                 int basinMinY=myCuenca.getMinY();
 
-                double stormMinLon=metaStorm.getMinLon();
-                double stormMinLat=metaStorm.getMinLat();
-                double stormResLon=metaStorm.getResLon();
-                double stormResLat=metaStorm.getResLat();
+                double SOILM040MinLon=metaSOILM040.getMinLon();
+                double SOILM040MinLat=metaSOILM040.getMinLat();
+                double SOILM040ResLon=metaSOILM040.getResLon();
+                double SOILM040ResLat=metaSOILM040.getResLat();
 
                 for (int j=0;j<matrizPintada.length;j++) for (int k=0;k<matrizPintada[0].length;k++){
                     
                     evalSpot=new double[] {demMinLon+(basinMinX+k-1)*demResLon/3600.0,
                                            demMinLat+(basinMinY+j-1)*demResLat/3600.0};
 
-                    MatX=(int) Math.floor((evalSpot[0]-stormMinLon)/stormResLon*3600.0);
-                    MatY=(int) Math.floor((evalSpot[1]-stormMinLat)/stormResLat*3600.0);
+                    MatX=(int) Math.floor((evalSpot[0]-SOILM040MinLon)/SOILM040ResLon*3600.0);
+                    MatY=(int) Math.floor((evalSpot[1]-SOILM040MinLat)/SOILM040ResLat*3600.0);
 
                     if (matrizPintada[j][k] > 0){
-                        currentHillBasedPrec[matrizPintada[j][k]-1]+=dataSnapShot[MatY][MatX];
+                        currentHillBasedSOILM040[matrizPintada[j][k]-1]+=dataSnapShot[MatY][MatX];
                         currentHillNumPixels[matrizPintada[j][k]-1]++;
                     }
 
-                    totalPixelBasedPrec[j][k]+=(float) dataSnapShot[MatY][MatX];
+                    totalPixelBasedSOILM040[j][k]+=(float) dataSnapShot[MatY][MatX];
 
                 }
 
                 for (int j=0;j<linksStructure.contactsArray.length;j++){
-                    if (currentHillBasedPrec[j] > 0) {
+                    if (currentHillBasedSOILM040[j] > 0) {
                         if (veryFirstDrop){
-                            firstWaterDrop=arCron[i].getDate();
+                            firstSOILM040=arCron[i].getDate();
                             veryFirstDrop=false;
                         }
 //System.out.println(arCron[i].getDate());
-                        precOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(currentHillBasedPrec[j]/currentHillNumPixels[j])); //
-                        totalHillBasedPrecmm[j]+=(currentHillBasedPrec[j]/currentHillNumPixels[j])*(regIntervalmm/60);
-                        totalHillBasedPrec[j]+=currentHillBasedPrec[j]/currentHillNumPixels[j];
-                        lastWaterDrop=arCron[i].getDate();
-                    } else{totalHillBasedPrecmm[j]=0.0f;}
+                        SOILM040OnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(currentHillBasedSOILM040[j]/currentHillNumPixels[j])); //
+                        totalHillBasedSOILM040mm[j]+=(currentHillBasedSOILM040[j]/currentHillNumPixels[j])*(regIntervalmm/60);
+                        totalHillBasedSOILM040[j]+=currentHillBasedSOILM040[j]/currentHillNumPixels[j];
+                        lastSOILM040=arCron[i].getDate();
+                    } else{totalHillBasedSOILM040mm[j]=0.0f;}
                     
 
-                    accumPrecOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(totalHillBasedPrecmm[j])); //
-       //             System.out.println(arCron[i].getDate()+"Rain file " + i + "link " +j + "totalHillBasedPrecmm[j] = " + totalHillBasedPrecmm[j]);
-                    currentHillBasedPrec[j]=0.0D;
+                    //accumSOILM040OnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(totalHillBasedSOILM040mm[j])); //
+       //             System.out.println(arCron[i].getDate()+"Rain file " + i + "link " +j + "totalHillBasedSOILM040mm[j] = " + totalHillBasedSOILM040mm[j]);
+                    currentHillBasedSOILM040[j]=0.0D;
                     currentHillNumPixels[j]=0.0f;
                 }
 
-                //System.out.println("-----------------Done with this snap-shot----------------");
+            //    System.out.println("-----------------Done with this snap-shot----------------");
 
             }
 
             for (int j=0;j<linksStructure.contactsArray.length;j++){
-                totalHillBasedPrec[j]/=precOnBasin[j].getSize();
+                totalHillBasedSOILM040[j]/=SOILM040OnBasin[j].getSize();
             }
 
-            thisStormName=metaStorm.getLocationBinaryFile().getName().substring(0,metaStorm.getLocationBinaryFile().getName().lastIndexOf("."));
+            thisSOILM040Name=metaSOILM040.getLocationBinaryFile().getName().substring(0,metaSOILM040.getLocationBinaryFile().getName().lastIndexOf("."));
 
             success=true;
 
@@ -293,14 +293,14 @@ public class StormManager {
             System.out.println("-----------------Done with Files Reading----------------");
 
 
-            recordResolutionInMinutes=metaStorm.getTemporalScale()/1000.0/60.0;
+            recordResolutionInMinutes=metaSOILM040.getTemporalScale()/1000.0/60.0;
 
-            if(lastWaterDrop == null){
-                firstWaterDrop=arCron[0].getDate();
-                lastWaterDrop=arCron[0].getDate();
+            if(lastSOILM040 == null){
+                firstSOILM040=arCron[0].getDate();
+                lastSOILM040=arCron[0].getDate();
                 for (int j=0;j<linksStructure.contactsArray.length;j++){
-                    precOnBasin[j].addDateAndValue(arCron[0].getDate(),0.0f); //
-                    totalHillBasedPrec[j]=0;
+                    SOILM040OnBasin[j].addDateAndValue(arCron[0].getDate(),0.0f); //
+                    totalHillBasedSOILM040[j]=0;
                 }
             }
 
@@ -315,9 +315,9 @@ public class StormManager {
      * @param dateRequested The time for which the rain is desired
      * @return Returns the rainfall rate in mm/h
      */
-    public float getPrecOnHillslope(int HillNumber,java.util.Calendar dateRequested){
+    public float getSOILM040OnHillslope(int HillNumber,java.util.Calendar dateRequested){
 
-        return precOnBasin[HillNumber].getRecord(dateRequested);
+        return SOILM040OnBasin[HillNumber].getRecord(dateRequested);
 
     }
 
@@ -327,62 +327,62 @@ public class StormManager {
      * @param dateRequested The time for which the rain is desired
      * @return Returns the rainfall rate in mm/h
      */
-    public double getAcumPrecOnHillslope(int HillNumber,java.util.Calendar dateRequested){
-
-
-        return accumPrecOnBasin[HillNumber].getRecord(dateRequested);
-
-//        double Acum=0.0f;
-//        long dateRequestedMil=dateRequested.getTimeInMillis();
-//        double timemin=dateRequestedMil/1000./60.;
-//        double inc=stormRecordResolutionInMinutes();
-//        java.util.Calendar currtime=java.util.Calendar.getInstance();
-//        currtime.clear();
-//        currtime.set(1971, 6, 1, 6, 0, 0);
-//        currtime.setTimeInMillis(dateRequestedMil);
-//        long j=0;
-//        if (timemin==stormInitialTimeInMinutes()) Acum =0;
-//        if (timemin>stormInitialTimeInMinutes()){
-//           j=(long)stormInitialTimeInMinutes()*1000*60;
-//           for (double i=stormInitialTimeInMinutes()+inc;i<=timemin;i=i+inc)
-//           {
-//               j=(long)i*1000*60;
-//               currtime.setTimeInMillis(j);
-//               Acum = Acum + precOnBasin[HillNumber].getRecord(currtime)*(inc/60);
-//           }
+//    public double getAcumSOILM040OnHillslope(int HillNumber,java.util.Calendar dateRequested){
 //
-//           long dif=dateRequestedMil-j;
-//           currtime.setTimeInMillis(j);
-//           Acum=Acum + precOnBasin[HillNumber].getRecord(currtime)*((dif/1000./60.)/60);
-//        }
-//        return Acum;
-
-    }
+//
+//        return accumSOILM040OnBasin[HillNumber].getRecord(dateRequested);
+//
+////        double Acum=0.0f;
+////        long dateRequestedMil=dateRequested.getTimeInMillis();
+////        double timemin=dateRequestedMil/1000./60.;
+////        double inc=SOILM040RecordResolutionInMinutes();
+////        java.util.Calendar currtime=java.util.Calendar.getInstance();
+////        currtime.clear();
+////        currtime.set(1971, 6, 1, 6, 0, 0);
+////        currtime.setTimeInMillis(dateRequestedMil);
+////        long j=0;
+////        if (timemin==SOILM040InitialTimeInMinutes()) Acum =0;
+////        if (timemin>SOILM040InitialTimeInMinutes()){
+////           j=(long)SOILM040InitialTimeInMinutes()*1000*60;
+////           for (double i=SOILM040InitialTimeInMinutes()+inc;i<=timemin;i=i+inc)
+////           {
+////               j=(long)i*1000*60;
+////               currtime.setTimeInMillis(j);
+////               Acum = Acum + SOILM040OnBasin[HillNumber].getRecord(currtime)*(inc/60);
+////           }
+////
+////           long dif=dateRequestedMil-j;
+////           currtime.setTimeInMillis(j);
+////           Acum=Acum + SOILM040OnBasin[HillNumber].getRecord(currtime)*((dif/1000./60.)/60);
+////        }
+////        return Acum;
+//
+//    }
 
     /**
-     * Returns the maximum value of precipitation recorded for a given hillslope
+     * Returns the maximum value of SOILM040ipitation recorded for a given hillslope
      * @param HillNumber The index of the desired hillslope
      * @return The maximum rainfall rate in mm/h
      */
-    public float getMaxPrecOnHillslope(int HillNumber){
+    public float getMaxSOILM040OnHillslope(int HillNumber){
 
-        return precOnBasin[HillNumber].getMaxRecord();
+        return SOILM040OnBasin[HillNumber].getMaxRecord();
 
     }
 
     /**
-     * Returns the maximum value of precipitation recorded for a given hillslope
+     * Returns the maximum value of SOILM040ipitation recorded for a given hillslope
      * @param HillNumber The index of the desired hillslope
      * @return The average rainfall rate in mm/h
      */
-    public float getMeanPrecOnHillslope(int HillNumber){
+    public float getMeanSOILM040OnHillslope(int HillNumber){
 
-        return precOnBasin[HillNumber].getMeanRecord();
+        return SOILM040OnBasin[HillNumber].getMeanRecord();
 
     }
 
     /**
-     *  A boolean flag indicating if the precipitation files were fully read
+     *  A boolean flag indicating if the SOILM040ipitation files were fully read
      * @return A flag for the constructor success
      */
     public boolean isCompleted(){
@@ -390,72 +390,69 @@ public class StormManager {
     }
 
     /**
-     * Returns the name of this storm event
-     * @return A String that describes this storm
+     * Returns the name of this SOILM040 event
+     * @return A String that describes this SOILM040
      */
-    public String stormName(){
-        return thisStormName;
+    public String SOILM040Name(){
+        return thisSOILM040Name;
     }
 
     /**
-     * The storm temporal resolution in milliseconds
+     * The SOILM040 temporal resolution in milliseconds
      * @return A float with the temporal resolution
      */
-    public float stormRecordResolution(){
+    public float SOILM040RecordResolution(){
 
-        return metaStorm.getTemporalScale();
+        return metaSOILM040.getTemporalScale();
 
     }
 
     /**
-     * The initial storm time as a {@link java.util.Calendar} object
+     * The initial SOILM040 time as a {@link java.util.Calendar} object
      * @return A {@link java.util.Calendar} object indicating when the first drop of water fell
      * on the basin
      */
-    public void setStormInitialTime(java.util.Calendar iniDate){
+    public void setSOILM040InitialTime(java.util.Calendar iniDate){
 
-        firstWaterDrop=iniDate;
+        firstSOILM040=iniDate;
     }
-    public void setStormFinalTime(java.util.Calendar FinalDate){
 
-        lastWaterDrop=FinalDate;
-    }
     /**
-     * The initial storm time as a {@link java.util.Calendar} object
+     * The initial SOILM040 time as a {@link java.util.Calendar} object
      * @return A {@link java.util.Calendar} object indicating when the first drop of water fell
      * on the basin
      */
-    public java.util.Calendar stormInitialTime(){
+    public java.util.Calendar SOILM040InitialTime(){
 
-        return firstWaterDrop;
+        return firstSOILM040;
     }
 
     /**
-     * The initial storm time as a double in milliseconds obtained from the method getTimeInMillis()
+     * The initial SOILM040 time as a double in milliseconds obtained from the method getTimeInMillis()
      * of the {@link java.util.Calendar} object
      * @return A double indicating when the first drop of water fell over the basin
      * on the basin
      */
-    public double stormInitialTimeInMinutes(){
+    public double SOILM040InitialTimeInMinutes(){
 
-        return firstWaterDrop.getTimeInMillis()/1000./60.;
+        return firstSOILM040.getTimeInMillis()/1000./60.;
     }
 
     /**
-     * The final storm time as a double in milliseconds obtained from the method getTimeInMillis()
+     * The final SOILM040 time as a double in milliseconds obtained from the method getTimeInMillis()
      * of the {@link java.util.Calendar} object
      * @return A double indicating when the last drop of water fell over the basin
      * on the basin
      */
-    public double stormFinalTimeInMinutes(){
-        return lastWaterDrop.getTimeInMillis()/1000./60.+stormRecordResolutionInMinutes();
+    public double SOILM040FinalTimeInMinutes(){
+        return lastSOILM040.getTimeInMillis()/1000./60.+SOILM040RecordResolutionInMinutes();
     }
 
     /**
-     * The storm record time resolution in minutes
+     * The SOILM040 record time resolution in minutes
      * @return A double indicating the time series time step
      */
-    public double stormRecordResolutionInMinutes(){
+    public double SOILM040RecordResolutionInMinutes(){
 
         return recordResolutionInMinutes;
 
@@ -465,11 +462,11 @@ public class StormManager {
      * The total rainfall over a given pixel of the original raster fields
      * @param i The row number of the desired location
      * @param j The column number of the desired location
-     * @return The accumulated rain over the entire storm period
+     * @return The accumulated rain over the entire SOILM040 period
      */
-    public float getTotalPixelBasedPrec(int i, int j){
+    public float getTotalPixelBasedSOILM040(int i, int j){
 
-        return totalPixelBasedPrec[i][j];
+        return totalPixelBasedSOILM040[i][j];
 
     }
 
@@ -490,9 +487,9 @@ public class StormManager {
      * @param HillNumber The index of the desired hillslope
      * @return The value of rainfall intensity
      */
-    public float getTotalHillSlopeBasedPrec(int HillNumber){
+    public float getTotalHillSlopeBasedSOILM040(int HillNumber){
 
-        return totalHillBasedPrec[HillNumber];
+        return totalHillBasedSOILM040[HillNumber];
 
     }
 

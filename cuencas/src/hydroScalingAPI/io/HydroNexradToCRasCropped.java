@@ -231,17 +231,17 @@ public class HydroNexradToCRasCropped extends Object {
         
     public static void main(String[] args) throws java.io.IOException{
 
-        for (int iy=2003;iy<=2010;iy++){
+        for (int iy=2008;iy<=2008;iy++){
         java.io.File AsciiFile;
-       // File folder = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/1996/");
-        File folder = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii"+ iy+ "hourly/");
+       // File folder = new File("/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/1996/");
+        File folder = new File("/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/ascii"+ iy+ "hourly/");
 System.out.println("Folder"+folder.getAbsolutePath());
  	try{
 	ArrayList<File> files = HydroNexradToCRasCropped.getFileList(folder);
 	Iterator i = files.iterator();
         
-//        String OutputDir="/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/1996VHC/";         String OutputDir="/Users/rmantill";
-        String OutputDir=("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/"+ iy+ "VHC_ALL/");
+//        String OutputDir="/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010RadarLowRes/1996VHC/";         String OutputDir="/Users/rmantill";
+        String OutputDir=("/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIV/"+ iy+ "VHC_ALLCrop2/");
 
         new File(OutputDir).mkdirs();
         int o_nr=264;
@@ -252,9 +252,9 @@ System.out.println("Folder"+folder.getAbsolutePath());
         double o_latN=o_latS+(double)o_nr*res;
         double o_longE=o_longW+(double)o_ncol*res;
 
-        double f_latS=41.;
+        double f_latS=40.15;
         double f_latN=44.;
-        double f_longE=-91.;
+        double f_longE=-90.;
         double f_longW=-94.;
 
         int inirow=(int)Math.abs(Math.floor((o_latN-f_latN)/res));
@@ -299,9 +299,9 @@ System.out.println("Folder"+folder.getAbsolutePath());
         ////////////////////////////////////////
             try {  
                  System.out.println(temp.getAbsolutePath());
-//if(BinaryOutName.getAbsolutePath().indexOf("Aug")>0){
+if(BinaryOutName.getAbsolutePath().indexOf("Jun")>0){
                  new HydroNexradToCRasCropped(AsciiFile,BinaryOutName,o_nr,o_ncol,inirow,finalrow,inicol,finalcol);
-  //           }
+            }
             } catch (Exception IOE) {
                  System.err.print(IOE);
                  System.exit(0);

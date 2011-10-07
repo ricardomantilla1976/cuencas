@@ -362,6 +362,7 @@ public class DataRaster extends Object {
      * @return Returns an Matrix (Array[n][m]) of Floats.
      */
     public double[][] getDouble(){
+        //  System.out.println("test");
         if (dataDouble != null) return dataDouble;
         
         double[][] aDatosDouble=new double[nr][nc];;
@@ -372,7 +373,7 @@ public class DataRaster extends Object {
             for (int i=0;i<nr;i++) for(int j=0;j<nc;j++) aDatosDouble[i][j]=(double) dataInteger[i][j];
         if (localMetaData.getProperty("[Format]").equalsIgnoreCase("Float"))
             for (int i=0;i<nr;i++) for(int j=0;j<nc;j++) aDatosDouble[i][j]=(double) dataFloat[i][j];
-        
+        //System.out.println("test");
         return aDatosDouble;
     }
     

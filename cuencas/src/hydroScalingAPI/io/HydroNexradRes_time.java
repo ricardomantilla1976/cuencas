@@ -200,9 +200,9 @@ public class HydroNexradRes_time extends Object {
         }
 
     String vhcFilename;
-        System.out.println("vhcFilename=hydroNexrad."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".asc");
-    if (type.equals("Bin")){vhcFilename="hydroNexrad."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".vhc";}
-    else {vhcFilename="hydroNexrad."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".asc";}
+        System.out.println("vhcFilename=MPE_IOWA_ST4."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".asc");
+    if (type.equals("Bin")){vhcFilename="MPE_IOWA_ST4."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".vhc";}
+    else {vhcFilename="MPE_IOWA_ST4."+df.format(time[3])+df.format(time[4])+"00."+df.format(time[2])+"."+monthString+"."+df2.format(time[0])+".asc";}
     return vhcFilename;
     }
 

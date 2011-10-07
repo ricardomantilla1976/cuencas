@@ -67,29 +67,30 @@ public class SimulationToFileLuciana extends java.lang.Object implements Runnabl
     float IniCondition;
     java.io.File outputDirectory;
     java.util.Hashtable routingParams;
-
+    java.io.File SoilHydFile;
+    java.io.File SoilSwa150File;
     /** Creates new simulationsRep3 */
-    public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory, float LandUseFileFlag, float SoilFileFlag,java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
-        this(x,y,direcc,magnitudes,md,rainIntensity,rainDuration,null,null,infiltRate,0,null,outputDirectory,LandUseFileFlag,null,SoilFileFlag,null,routingParams);
+    public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory, float LandUseFileFlag, float SoilFileFlag,java.io.File SoilSwa150File, java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
+        this(x,y,direcc,magnitudes,md,rainIntensity,rainDuration,null,null,infiltRate,0,null,outputDirectory,LandUseFileFlag,null,SoilFileFlag,SoilSwa150File,null,routingParams);
     }
-    public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory,float LandUseFileFlag,float SoilFileFlag,java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
-        this(x,y,direcc,magnitudes,md,0.0f,0.0f,stormFile,null,infiltRate,0,null,outputDirectory,LandUseFileFlag,null,SoilFileFlag,null,routingParams);
-    }
-
-    public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory,java.io.File LandUseFile,java.io.File SoilFile,java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
-        this(x,y,direcc,magnitudes,md,0.0f,0.0f,stormFile,null,infiltRate,0,null,outputDirectory,0.0f,LandUseFile,0.0f,SoilFile,routingParams);
+    public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory,float LandUseFileFlag,float SoilFileFlag,java.io.File SoilSwa150File,java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
+        this(x,y,direcc,magnitudes,md,0.0f,0.0f,stormFile,null,infiltRate,0,null,outputDirectory,LandUseFileFlag,null,SoilFileFlag,SoilSwa150File,null,routingParams);
     }
 
-    public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, int greenroof, java.io.File GreenFile,java.io.File outputDirectory,java.io.File LandUseFile,java.io.File SoilFile,java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
-        this(x,y,direcc,magnitudes,md,0.0f,0.0f,stormFile,null,infiltRate,greenroof,GreenFile,outputDirectory,0.0f,LandUseFile,0.0f,SoilFile,routingParams);
+    public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory,java.io.File LandUseFile,java.io.File SoilFile,java.io.File SoilSwa150File, java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
+        this(x,y,direcc,magnitudes,md,0.0f,0.0f,stormFile,null,infiltRate,0,null,outputDirectory,0.0f,LandUseFile,0.0f,SoilFile,SoilSwa150File,routingParams);
     }
 
-   public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory,java.io.File LandUseFile,java.io.File SoilFile,java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
-        this(x,y,direcc,magnitudes,md,rainIntensity,rainDuration,null,null,infiltRate,0,null,outputDirectory,0.0f,LandUseFile,0.0f,SoilFile,routingParams);
+    public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, int greenroof, java.io.File GreenFile,java.io.File outputDirectory,java.io.File LandUseFile,java.io.File SoilFile,java.io.File SoilSwa150File, java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
+        this(x,y,direcc,magnitudes,md,0.0f,0.0f,stormFile,null,infiltRate,greenroof,GreenFile,outputDirectory,0.0f,LandUseFile,0.0f,SoilFile,SoilSwa150File,routingParams);
     }
 
-    public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, hydroScalingAPI.io.MetaRaster infiltMetaRaster, int greenroof, java.io.File GreenFile,java.io.File outputDirectory,float LandUseFileFlag,java.io.File LandUseFile,float SoilFileFlag,java.io.File SoilFile,java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
-        this(x,y,direcc,magnitudes,md,0.0f,0.0f,stormFile,infiltMetaRaster,0.0f,greenroof,GreenFile,outputDirectory,LandUseFileFlag,null,SoilFileFlag,null,routingParams);
+   public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory,java.io.File LandUseFile,java.io.File SoilFile,java.io.File SoilSwa150File, java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
+        this(x,y,direcc,magnitudes,md,rainIntensity,rainDuration,null,null,infiltRate,0,null,outputDirectory,0.0f,LandUseFile,0.0f,SoilFile,SoilSwa150File,routingParams);
+    }
+
+    public SimulationToFileLuciana(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, hydroScalingAPI.io.MetaRaster infiltMetaRaster, int greenroof, java.io.File GreenFile,java.io.File outputDirectory,float LandUseFileFlag,java.io.File LandUseFile,float SoilFileFlag,java.io.File SoilFile,java.io.File SoilSwa150File, java.util.Hashtable routingParams) throws java.io.IOException, VisADException{
+        this(x,y,direcc,magnitudes,md,0.0f,0.0f,stormFile,infiltMetaRaster,0.0f,greenroof,GreenFile,outputDirectory,LandUseFileFlag,null,SoilFileFlag,SoilSwa150File,null,routingParams);
     }
 
     public SimulationToFileLuciana(int xx, int yy, byte[][] direcc, int[][] magnitudesOR,
@@ -99,6 +100,7 @@ public class SimulationToFileLuciana extends java.lang.Object implements Runnabl
         java.io.File outputDirectoryOR,
         float LandUseFileFlagOR, java.io.File LandUseFileOR,
         float SoilFileFlagOR, java.io.File SoilFileOR,
+        java.io.File SoilSwa150FileOR,
         java.util.Hashtable rP)
         throws java.io.IOException, VisADException{
 
@@ -121,6 +123,8 @@ public class SimulationToFileLuciana extends java.lang.Object implements Runnabl
         routingParams=rP;
         greenroof= GreenRoofOptionOR;
         GreenFile=GreenFileOR;
+        SoilSwa150File = SoilSwa150FileOR;
+        
    }
 
 
@@ -168,7 +172,9 @@ public class SimulationToFileLuciana extends java.lang.Object implements Runnabl
         System.out.println("SET PARAMETERS Initial condition - IC="+IniCondition);
         thisNetworkGeom.setVqParams(v_o,0.0f,lam1,lam2);
         thisNetworkGeom.setCteVel(vconst);
-
+        String SoilHydData = "Error";
+        SoilHydFile= new java.io.File(SoilHydData);
+        
         hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo thisHillsInfo=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo(linksStructure);
         /////////////SET LAND USE INFORMATION AND GENERATE COLOR CODED WIDTH FUNCTION////////////////////////////
         System.out.println("Loading lAND USE ...");
@@ -177,7 +183,8 @@ public class SimulationToFileLuciana extends java.lang.Object implements Runnabl
         thisHillsInfo.setLandUseManager(LandUse);
         hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
         java.io.File DEMFile=metaDatos.getLocationMeta();
-        SCSObj=new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile,LandUseFile,SoilFile,myCuenca,linksStructure,metaDatos,matDir,magnitudes,0);
+        
+        SCSObj=new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile,LandUseFile,SoilFile, SoilHydFile,SoilSwa150File,myCuenca,linksStructure,metaDatos,matDir,magnitudes,0);
         thisHillsInfo.setSCSManager(SCSObj);
         java.text.DecimalFormat fourPlaces=new java.text.DecimalFormat("0.0000");
 
@@ -1200,8 +1207,8 @@ public static void subMainManning(String args[]) throws java.io.IOException, Vis
                            new File(OutputDir).mkdirs();
                            String path = OutputDir;
                            //String rain = RaininputDir+"/bin/"+precname;
-
-                            new SimulationToFileLuciana(x,y,matDirs,magnitudes,metaModif,stormFile,infiltr,new java.io.File(path),new java.io.File(LandUse),new java.io.File(Soil),routingParams).executeSimulation();
+ String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+                            new SimulationToFileLuciana(x,y,matDirs,magnitudes,metaModif,stormFile,infiltr,new java.io.File(path),new java.io.File(LandUse),new java.io.File(Soil),new java.io.File(Soil150SWAData),routingParams).executeSimulation();
                             path = OutputDir+"/logfile.txt";
 
                             //Gen_format(path);
@@ -1352,8 +1359,9 @@ public static void GreenRoof(String args[]) throws java.io.IOException, VisADExc
 
                            //String rain = RaininputDir+"/bin/"+precname;
 
-                            new SimulationToFileLuciana(x,y,matDirs,magnitudes,metaModif,stormFile,infiltr,1,new java.io.File(green),new java.io.File(path),new java.io.File(LandUse),new java.io.File(Soil),routingParams).executeSimulation();
-                            path = OutputDir+"/logfile.txt";
+    String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+                            new SimulationToFileLuciana(x,y,matDirs,magnitudes,metaModif,stormFile,infiltr,new java.io.File(path),new java.io.File(LandUse),new java.io.File(Soil),new java.io.File(Soil150SWAData),routingParams).executeSimulation();
+                         path = OutputDir+"/logfile.txt";
 
                             //Gen_format(path);
 
@@ -1507,8 +1515,9 @@ public static void Reservoir(String args[]) throws java.io.IOException, VisADExc
                            String path = OutputDir;
                            //String rain = RaininputDir+"/bin/"+precname;
 
-                            new SimulationToFileLuciana(x,y,matDirs,magnitudes,metaModif,stormFile,infiltr,new java.io.File(path),new java.io.File(LandUse),new java.io.File(Soil),routingParams).executeSimulation();
-                            path = OutputDir+"/logfile.txt";
+    String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+                            new SimulationToFileLuciana(x,y,matDirs,magnitudes,metaModif,stormFile,infiltr,new java.io.File(path),new java.io.File(LandUse),new java.io.File(Soil),new java.io.File(Soil150SWAData),routingParams).executeSimulation();
+                    path = OutputDir+"/logfile.txt";
 
                             //Gen_format(path);
             }

@@ -59,6 +59,8 @@ import java.io.IOException;
                                     float v_o,
                                     String stormFile,
                                     String EVPTFile,
+                                    String SNOWFile,
+                                    String SOILMFile,
                                     float infilRate,
                                     String outputDirectory,
                                     String connectionsO,
@@ -83,7 +85,7 @@ import java.io.IOException;
 
         if(dynaIndex==3) {command=new String[] {
                                 System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
-                                "-Xmx2000m",
+                                "-Xmx3000m",
                                 "-Xrs",
                                 "-classpath",
                                 "\""+System.getProperty("java.class.path")+"\"",
@@ -100,16 +102,18 @@ import java.io.IOException;
                                 ""+v_o, // args[9]
                                 stormFile, // args[10]
                                 EVPTFile, // args[11]
-                                ""+infilRate, // args[12]
-                                outputDirectory, // args[13]
-                                connectionsO, // args[14]
-                                correctionsO, // args[15]
-                                ""+iniTimeInMilliseconds, // args[16]
-                                ""+endTimeInMilliseconds, // args[17]
-                                routingParams.toString()};} // args[18]
+                                SNOWFile, // args[12]
+                                SOILMFile, // args[12]
+                                ""+infilRate, // args[13]
+                                outputDirectory, // args[14]
+                                connectionsO, // args[15]
+                                correctionsO, // args[16]
+                                ""+iniTimeInMilliseconds, // args[17]
+                                ""+endTimeInMilliseconds, // args[18]
+                                routingParams.toString()};} // args[19]
         else  {command=new String[] {
                                 System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
-                                "-Xmx1500m",
+                                "-Xmx3000m",
                                 "-Xrs",
                                 "-classpath",
                                 System.getProperty("java.class.path"),
@@ -154,13 +158,13 @@ import java.io.IOException;
             newfile.write("#$ -V"+"\n");
             //newfile.write("#$ -q all.q" +"\n");
 
-           //newfile.write("#$ -q IFC"+"\n");
+           // newfile.write("#$ -q IFC"+"\n");
             
             newfile.write("#$ -ckpt user"+"\n");
             newfile.write("#$ -q all.q"+"\n");
             newfile.write("#$ -l ib=1"+"\n");
             newfile.write("#$ -cwd"+"\n");
-            newfile.write("#$ -l mf=16G"+"\n");
+            newfile.write("#$ -l mf=4G"+"\n");
 
             newfile.write("echo \"Got $NSLOTS slots.\""+"\n");
             newfile.write("echo \"TMPDIR=\" $TMPDIR"+"\n");

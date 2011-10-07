@@ -34,7 +34,7 @@ package hydroScalingAPI.modules.rainfallRunoffModel.objects;
  */
 public class EVPTManager {
 
-    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] EVPTOnBasin,accumEVPTOnBasin;
+    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] EVPTOnBasin;
     private boolean success=false,veryFirstDrop=true;
     private hydroScalingAPI.io.MetaRaster metaEVPT;
     private java.util.Calendar firstWaterDrop,lastWaterDrop;
@@ -74,13 +74,13 @@ public class EVPTManager {
         lastWaterDrop=date;
 
         EVPTOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
-        accumEVPTOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+        //accumEVPTOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
         for (int i=0;i<EVPTOnBasin.length;i++){
             EVPTOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
             EVPTOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
             ////// this is wrong, should be accumulated
-            accumEVPTOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
-            accumEVPTOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
+            //accumEVPTOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
+            //accumEVPTOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
 
         }
 
@@ -123,7 +123,7 @@ public class EVPTManager {
         //Una vez leidos los archivos:
         //Lleno la matriz de direcciones
 
-        //for (int i=0;i<lasQueSi.length;i++) {System.out.println("File list="+arCron[i].fileName.getName());}
+   //     for (int i=0;i<lasQueSi.length;i++) {System.out.println("File list="+arCron[i].fileName.getName());}
 
         int[][] matDirBox=new int[myCuenca.getMaxY()-myCuenca.getMinY()+3][myCuenca.getMaxX()-myCuenca.getMinX()+3];
 
@@ -180,12 +180,12 @@ public class EVPTManager {
             }
 
             EVPTOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
-            accumEVPTOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+            //accumEVPTOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
 //////////////////////////////////////// stopped here - be sure accumulated is being calculated correctly
             int regInterval=metaEVPT.getTemporalScale();
             float regIntervalmm=((float)metaEVPT.getTemporalScale())/(1000.0f*60.0f);
 
-            System.out.println("Time interval for this file: "+regInterval);
+            //System.out.println("Time interval for this file: "+regInterval);
 
             totalHillBasedEVPT=new float[EVPTOnBasin.length];
             totalHillBasedEVPTmm=new float[EVPTOnBasin.length];
@@ -195,7 +195,7 @@ public class EVPTManager {
 
                 for (int i=0;i<EVPTOnBasin.length;i++){
                 EVPTOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
-                accumEVPTOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
+                //accumEVPTOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
                 totalHillBasedEVPTmm[i]=0.0f;
                 currentHillBasedEVPT[i]=0.0D;
                 currentHillNumPixels[i]=0.0f;
@@ -271,7 +271,7 @@ public class EVPTManager {
                     } else{totalHillBasedEVPTmm[j]=0.0f;}
                     
 
-                    accumEVPTOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(totalHillBasedEVPTmm[j])); //
+                    //accumEVPTOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(totalHillBasedEVPTmm[j])); //
        //             System.out.println(arCron[i].getDate()+"Rain file " + i + "link " +j + "totalHillBasedEVPTmm[j] = " + totalHillBasedEVPTmm[j]);
                     currentHillBasedEVPT[j]=0.0D;
                     currentHillNumPixels[j]=0.0f;
@@ -327,37 +327,37 @@ public class EVPTManager {
      * @param dateRequested The time for which the rain is desired
      * @return Returns the rainfall rate in mm/h
      */
-    public double getAcumEVPTOnHillslope(int HillNumber,java.util.Calendar dateRequested){
-
-
-        return accumEVPTOnBasin[HillNumber].getRecord(dateRequested);
-
-//        double Acum=0.0f;
-//        long dateRequestedMil=dateRequested.getTimeInMillis();
-//        double timemin=dateRequestedMil/1000./60.;
-//        double inc=EVPTRecordResolutionInMinutes();
-//        java.util.Calendar currtime=java.util.Calendar.getInstance();
-//        currtime.clear();
-//        currtime.set(1971, 6, 1, 6, 0, 0);
-//        currtime.setTimeInMillis(dateRequestedMil);
-//        long j=0;
-//        if (timemin==EVPTInitialTimeInMinutes()) Acum =0;
-//        if (timemin>EVPTInitialTimeInMinutes()){
-//           j=(long)EVPTInitialTimeInMinutes()*1000*60;
-//           for (double i=EVPTInitialTimeInMinutes()+inc;i<=timemin;i=i+inc)
-//           {
-//               j=(long)i*1000*60;
-//               currtime.setTimeInMillis(j);
-//               Acum = Acum + EVPTOnBasin[HillNumber].getRecord(currtime)*(inc/60);
-//           }
+//    public double getAcumEVPTOnHillslope(int HillNumber,java.util.Calendar dateRequested){
 //
-//           long dif=dateRequestedMil-j;
-//           currtime.setTimeInMillis(j);
-//           Acum=Acum + EVPTOnBasin[HillNumber].getRecord(currtime)*((dif/1000./60.)/60);
-//        }
-//        return Acum;
-
-    }
+//
+//        return accumEVPTOnBasin[HillNumber].getRecord(dateRequested);
+//
+////        double Acum=0.0f;
+////        long dateRequestedMil=dateRequested.getTimeInMillis();
+////        double timemin=dateRequestedMil/1000./60.;
+////        double inc=EVPTRecordResolutionInMinutes();
+////        java.util.Calendar currtime=java.util.Calendar.getInstance();
+////        currtime.clear();
+////        currtime.set(1971, 6, 1, 6, 0, 0);
+////        currtime.setTimeInMillis(dateRequestedMil);
+////        long j=0;
+////        if (timemin==EVPTInitialTimeInMinutes()) Acum =0;
+////        if (timemin>EVPTInitialTimeInMinutes()){
+////           j=(long)EVPTInitialTimeInMinutes()*1000*60;
+////           for (double i=EVPTInitialTimeInMinutes()+inc;i<=timemin;i=i+inc)
+////           {
+////               j=(long)i*1000*60;
+////               currtime.setTimeInMillis(j);
+////               Acum = Acum + EVPTOnBasin[HillNumber].getRecord(currtime)*(inc/60);
+////           }
+////
+////           long dif=dateRequestedMil-j;
+////           currtime.setTimeInMillis(j);
+////           Acum=Acum + EVPTOnBasin[HillNumber].getRecord(currtime)*((dif/1000./60.)/60);
+////        }
+////        return Acum;
+//
+//    }
 
     /**
      * Returns the maximum value of EVPTipitation recorded for a given hillslope

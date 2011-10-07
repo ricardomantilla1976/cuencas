@@ -33,7 +33,7 @@ package hydroScalingAPI.io;
  * flow depth and other variables
  * @author Peter Furey
  */
-public class ImportUSGS_waterdataWeb {
+public class ImportUSGS_dailyStreamflow {
     
     String output_dir;
     String state;
@@ -46,7 +46,7 @@ public class ImportUSGS_waterdataWeb {
      * Creates an instance of the ImportUSGS_waterdataWeb
      * @param oDir The directory where the ouput file will be stored
      */
-    public ImportUSGS_waterdataWeb(String oDir) {
+    public ImportUSGS_dailyStreamflow(String oDir) {
         output_dir=oDir;
     }
     
@@ -159,8 +159,7 @@ public class ImportUSGS_waterdataWeb {
             
             switch (record_type) {
                 case 'H' :      // Historical data checked for quality
-                    //java.net.URL remotePath2=new java.net.URL("http://waterdata.usgs.gov/"+state+"/nwis/discharge?site_no="+gaugeid+"&agency_cd=USGS&begin_date=1800-01-01&end_date=2100-01-01&set_logscale_y=1&format=rdb&date_format=YYYY.MM.DD&rdb_compression=&submitted_form=brief_list");
-                    java.net.URL remotePath2=new java.net.URL("http://waterdata.usgs.gov/nwis/dv?referred_module=sw&search_site_no="+gaugeid+"&search_site_no_match_type=exact&site_tp_cd=OC&site_tp_cd=OC-CO&site_tp_cd=ES&site_tp_cd=LK&site_tp_cd=ST&site_tp_cd=ST-CA&site_tp_cd=ST-DCH&site_tp_cd=ST-TS&index_pmcode_00060=1&sort_key=site_no&group_key=NONE&sitefile_output_format=html_table&column_name=agency_cd&column_name=site_no&column_name=station_nm&range_selection=days&period=50000&format=rdb&date_format=YYYY-MM-DD&rdb_compression=value&list_of_search_criteria=search_site_no%2Csite_tp_cd%2Crealtime_parameter_selection");
+                    java.net.URL remotePath2=new java.net.URL("http://waterdata.usgs.gov/"+state+"/nwis/discharge?site_no="+gaugeid+"&agency_cd=USGS&begin_date=1800-01-01&end_date=2100-01-01&set_logscale_y=1&format=rdb&date_format=YYYY.MM.DD&rdb_compression=&submitted_form=brief_list");
                     System.out.println(remotePath2);
                     java.io.InputStream inputRemote2=remotePath2.openStream();
                     java.io.BufferedReader buff2 = new java.io.BufferedReader(new java.io.InputStreamReader(inputRemote2));
@@ -198,7 +197,6 @@ public class ImportUSGS_waterdataWeb {
                     break ;
                     
                 case 'R' :     // Recent data NOT checked for quality
-                    
                     java.net.URL remotePath3=new java.net.URL("http://waterdata.usgs.gov/nwis/dv?dd_cd=03_00060_00003&format=rdb&period=730&site_no="+gaugeid);
                     java.io.InputStream inputRemote3=remotePath3.openStream();
                     java.io.BufferedReader buff3 = new java.io.BufferedReader(new java.io.InputStreamReader(inputRemote3));
@@ -242,53 +240,15 @@ public class ImportUSGS_waterdataWeb {
      */
     public static void main(String[ ] arguments) { //throws java.io.IOException IOE{
         
-        ImportUSGS_waterdataWeb data = new ImportUSGS_waterdataWeb("/scratch/Users/rmantill/DailyData/");
-        //data.StreamFlow("NM","09430500",'H'); //Gila River, Historical
-        
-     //   Site Number 	State
-data.StreamFlow("IA","05411850",'H');
-data.StreamFlow("IA","05412020",'H');
-data.StreamFlow("IA","05412400",'H');
-data.StreamFlow("IA","05412500",'H');
-data.StreamFlow("IA","05451210",'H');
-data.StreamFlow("IA","05451500",'H');
-data.StreamFlow("IA","05451700",'H');
-data.StreamFlow("IA","05451900",'H');
-data.StreamFlow("IA","05452000",'H');
-data.StreamFlow("IA","05452200",'H');
-data.StreamFlow("IA","05453000",'H');
-data.StreamFlow("IA","05453100",'H');
-data.StreamFlow("IA","05454000",'H');
-data.StreamFlow("IA","05454090",'H');
-data.StreamFlow("IA","05454220",'H');
-data.StreamFlow("IA","05454300",'H');
-data.StreamFlow("IA","05455500",'H');
-data.StreamFlow("MN","05457000",'H');
-data.StreamFlow("IA","05457700",'H');
-data.StreamFlow("IA","05458000",'H');
-data.StreamFlow("IA","05458300",'H');
-data.StreamFlow("IA","05458500",'H');
-data.StreamFlow("IA","05458900",'H');
-data.StreamFlow("IA","05459500",'H');
-data.StreamFlow("IA","05462000",'H');
-data.StreamFlow("IA","05463000",'H');
-data.StreamFlow("IA","05463500",'H');
-data.StreamFlow("IA","05464000",'H');
-data.StreamFlow("IA","05464220",'H');
-data.StreamFlow("IA","05464500",'H');
-data.StreamFlow("IA","05464942",'H');
-        
-        
+        ImportUSGS_dailyStreamflow data = new ImportUSGS_dailyStreamflow("/scratch/");
+        data.StreamFlow("NM","09430500",'H'); //Gila River, Historical
         //data.StreamFlow("NM","09430600",'H'); //Mogollon Creek, Historical
         
         //data.StreamFlow("NM","09442680",'H'); //San Francisco near Reserve, Historical
         
         //data.StreamFlow("KS","07147070",'H'); //Towanda, Historical
-        //data.StreamFlow("KS","07147070",'H'); //Towanda, Recent
-        //data.StreamFlow("KS","07146995",'H');  //Rock Creek, Recent
-        
-        
-        
+        //data.StreamFlow("KS","07147070",'R'); //Towanda, Recent
+        //data.StreamFlow("KS","07146995",'R');  //Rock Creek, Recent
         
     }
     

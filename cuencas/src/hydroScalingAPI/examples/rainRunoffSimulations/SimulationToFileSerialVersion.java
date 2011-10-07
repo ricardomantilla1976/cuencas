@@ -65,30 +65,32 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
     float SoilFileFlag;
     float IniCondition;
     int writeorder;
+    java.io.File SoilHydFile;
+     java.io.File SoilSwa150File;
 
     /** Creates new simulationsRep3 */
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory, float LandUseFileFlag, float SoilFileFlag, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
-        this(x, y, direcc, magnitudes, md, rainIntensity, rainDuration, null, null, infiltRate, 0, null, outputDirectory, LandUseFileFlag, null, SoilFileFlag, null, writeorder, routingParams);
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory, float LandUseFileFlag, float SoilFileFlag,java.io.File SoilSwa150File, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+        this(x, y, direcc, magnitudes, md, rainIntensity, rainDuration, null, null, infiltRate, 0, null, outputDirectory, LandUseFileFlag, null, SoilFileFlag, null,SoilSwa150File, writeorder, routingParams);
     }
 
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory, float LandUseFileFlag, float SoilFileFlag, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
-        this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, null, infiltRate, 0, null, outputDirectory, LandUseFileFlag, null, SoilFileFlag, null, writeorder, routingParams);
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory, float LandUseFileFlag, float SoilFileFlag,java.io.File SoilSwa150File, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+        this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, null, infiltRate, 0, null, outputDirectory, LandUseFileFlag, null, SoilFileFlag, null,SoilSwa150File, writeorder, routingParams);
     }
 
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
-        this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, null, infiltRate, 0, null, outputDirectory, 0.0f, LandUseFile, 0.0f, SoilFile, writeorder, routingParams);
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile,java.io.File SoilSwa150File,  int writeorder,java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+        this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, null, infiltRate, 0, null, outputDirectory, 0.0f, LandUseFile, 0.0f, SoilFile,SoilSwa150File, writeorder, routingParams);
     }
 
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, int greenroof, java.io.File GreenFile, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
-        this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, null, infiltRate, greenroof, GreenFile, outputDirectory, 0.0f, LandUseFile, 0.0f, SoilFile, writeorder, routingParams);
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, float infiltRate, int greenroof, java.io.File GreenFile, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile,java.io.File SoilSwa150File, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+        this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, null, infiltRate, greenroof, GreenFile, outputDirectory, 0.0f, LandUseFile, 0.0f, SoilFile,SoilSwa150File, writeorder, routingParams);
     }
 
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
-        this(x, y, direcc, magnitudes, md, rainIntensity, rainDuration, null, null, infiltRate, 0, null, outputDirectory, 0.0f, LandUseFile, 0.0f, SoilFile, writeorder, routingParams);
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, float rainIntensity, float rainDuration, float infiltRate, java.io.File outputDirectory, java.io.File LandUseFile, java.io.File SoilFile,java.io.File SoilSwa150File, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+        this(x, y, direcc, magnitudes, md, rainIntensity, rainDuration, null, null, infiltRate, 0, null, outputDirectory, 0.0f, LandUseFile, 0.0f, SoilFile,SoilSwa150File, writeorder, routingParams);
     }
 
-    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, hydroScalingAPI.io.MetaRaster infiltMetaRaster, int greenroof, java.io.File GreenFile, java.io.File outputDirectory, float LandUseFileFlag, java.io.File LandUseFile, float SoilFileFlag, java.io.File SoilFile, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
-        this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, infiltMetaRaster, 0.0f, greenroof, GreenFile, outputDirectory, LandUseFileFlag, null, SoilFileFlag, null, writeorder, routingParams);
+    public SimulationToFileSerialVersion(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, hydroScalingAPI.io.MetaRaster infiltMetaRaster, int greenroof, java.io.File GreenFile, java.io.File outputDirectory, float LandUseFileFlag, java.io.File LandUseFile, float SoilFileFlag, java.io.File SoilFile,java.io.File SoilSwa150File, int writeorder, java.util.Hashtable routingParams) throws java.io.IOException, VisADException {
+        this(x, y, direcc, magnitudes, md, 0.0f, 0.0f, stormFile, infiltMetaRaster, 0.0f, greenroof, GreenFile, outputDirectory, LandUseFileFlag, null, SoilFileFlag, null,SoilSwa150File, writeorder, routingParams);
     }
 
     public SimulationToFileSerialVersion(int xx, int yy, byte[][] direcc, int[][] magnitudesOR,
@@ -98,6 +100,7 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
             java.io.File outputDirectoryOR,
             float LandUseFileFlagOR, java.io.File LandUseFileOR,
             float SoilFileFlagOR, java.io.File SoilFileOR,
+            java.io.File SoilSwa150FileOR,
             int WriteOrderOR,
             java.util.Hashtable rP)
             throws java.io.IOException, VisADException {
@@ -245,8 +248,9 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
         if (routingParams.get("hillshapeparamflag") != null) {
             hillshape = ((Float) routingParams.get("hillshapeparamflag")).floatValue();
         }
-
-        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes, hillshape);
+        String SoilHydData = "Error";
+        SoilHydFile= new java.io.File(SoilHydData);
+        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile,SoilHydFile,SoilSwa150File, myCuenca, linksStructure, metaDatos, matDir, magnitudes, hillshape);
         thisHillsInfo.setSCSManager(SCSObj);
         java.text.DecimalFormat fourPlaces = new java.text.DecimalFormat("0.0000");
 
@@ -1464,7 +1468,11 @@ public class SimulationToFileSerialVersion extends java.lang.Object implements R
 
                                                 outputDirectory.mkdirs();
                                                 int WriteOrder = 1;
-                                                new SimulationToFileSerialVersion(xOut, yOut, matDirs, magnitudes, metaModif, stormFile, 0.0f, outputDirectory, new java.io.File(LandUse), new java.io.File(SoilData), WriteOrder, routingParams).executeSimulation();
+                                                
+                                                String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+                            
+  
+                                                new SimulationToFileSerialVersion(xOut, yOut, matDirs, magnitudes, metaModif, stormFile, 0.0f, outputDirectory, new java.io.File(LandUse), new java.io.File(SoilData),new java.io.File(Soil150SWAData), WriteOrder, routingParams).executeSimulation();
 
                                                 java.io.File theSummary;
 

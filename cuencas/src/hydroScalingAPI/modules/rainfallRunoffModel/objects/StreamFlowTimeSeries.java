@@ -33,9 +33,21 @@ public class StreamFlowTimeSeries {
             regInterval = Float.parseFloat(fullLine.split(":")[1]);
             fullLine = fileMeta.readLine();
             fullLine = fileMeta.readLine();
-
-            String[] data = {"", ""};
-
+            int flag=0;   
+            String[] data = {"",""};
+            
+               
+               while(flag==0)
+               {
+               String[] test=fullLine.split(",");
+               String[] test2=fullLine.split("\\.");
+               String[] test3=fullLine.split("E");
+               if(test.length==2 && test2.length<=3 && test3.length<=3){
+                flag=1;
+               }else{
+                fullLine = fileMeta.readLine();           
+               }
+               }
             if (fullLine != null) {
                 if (fullLine.contains(",")) {
                     data = fullLine.split(",");
@@ -45,6 +57,10 @@ public class StreamFlowTimeSeries {
 
             while (fullLine != null) {
                 if (fullLine.contains(",")) {
+               String[] test=fullLine.split(",");
+               String[] test2=fullLine.split("\\.");
+               String[] test3=fullLine.split("E");
+               if(test.length==2 && test2.length<=3 && test3.length<=3){
                     data = fullLine.split(",");
                     if (data[0] != null && data[1] != null) {
                         try {
@@ -57,7 +73,7 @@ public class StreamFlowTimeSeries {
 
 
                     }
-
+               }
                 }
                 fullLine = fileMeta.readLine();
             }

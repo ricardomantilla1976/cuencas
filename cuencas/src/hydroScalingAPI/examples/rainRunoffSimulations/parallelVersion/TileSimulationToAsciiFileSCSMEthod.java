@@ -43,6 +43,8 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
     float rainDuration;
     java.io.File stormFile;
     java.io.File PotEVPTFile;
+    java.io.File SNOWFile;
+    java.io.File SOILMFile;
     hydroScalingAPI.io.MetaRaster infiltMetaRaster;
     float infiltRate;
     int routingType, HillType, HillVelType;
@@ -59,6 +61,8 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
     java.io.File GreenFile;
     java.io.File LandUseFile;
     java.io.File SoilFile;
+    java.io.File SoilHydFile;
+    java.io.File Swa150File;
     float LandUseFileFlag;
     float SoilFileFlag;
     float IniCondition;
@@ -76,6 +80,8 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
             float rainDurationOR,
             java.io.File stormFileOR,
             java.io.File PotEVPTFileOR,
+            java.io.File SNOWFileOR,
+            java.io.File SOILMFileOR,
             hydroScalingAPI.io.MetaRaster infiltMetaRasterOR,
             float infiltRateOR,
             int routingTypeOR,
@@ -109,6 +115,8 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         rainDuration = rainDurationOR;
         stormFile = stormFileOR;
         PotEVPTFile = PotEVPTFileOR;
+        SNOWFile = SNOWFileOR;
+        SOILMFile = SOILMFileOR;
         infiltMetaRaster = infiltMetaRasterOR;
         infiltRate = infiltRateOR;
         routingType = routingTypeOR;
@@ -193,7 +201,13 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         float BaseFlowCoef =0.0f;
         float BaseFlowExp = 0.0f;
         float PoundedW = 0.0f;
+        double Tolerance=10e-3;
+        int outflag = 2;
 
+        if (routingParams.get("ETolerance") != null)  Tolerance= (double) ((Float) routingParams.get("ETolerance")).floatValue();
+        
+        if (routingParams.get("OutFlag") != null)  outflag= (int)((Float) routingParams.get("OutFlag")).floatValue();
+   
         if (routingParams.get("widthCoeff") != null)  widthCoeff= ((Float) routingParams.get("widthCoeff")).floatValue();
         if (routingParams.get("widthExponent") != null)   widthExponent = ((Float) routingParams.get("widthExponent")).floatValue();
         if (routingParams.get("widthStdDev") != null)   widthStdDev = ((Float) routingParams.get("widthStdDev")).floatValue();
@@ -218,7 +232,9 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         float kf1=0.1f;
         if (routingParams.get("floodplaincte")!= null) kf1= ((Float) routingParams.get("floodplaincte")).floatValue();
         //System.out.println("lam1 " + lam1 +"lam2" + lam2 + "v_o" + v_o);
-
+        float Outflag=0.f;
+        if (routingParams.get("Outflag")!= null) kf1= ((Float) routingParams.get("Outflag")).floatValue();
+     
         // Modified SCS
 
 
@@ -279,48 +295,145 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         interTime = new java.util.Date();
         System.out.println("Start storm," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
-
+        
 
         hydroScalingAPI.modules.rainfallRunoffModel.objects.StormManager storm;
+        System.out.println("STORM STRING    " + stormFile.toString() + "   " +stormFile.toString().contains("Constant"));    
 
-
-        if (stormFile == null) {
+        if (stormFile.toString().contains("Constant")) {
+            
+            if (routingParams.get("rainIntensity") != null) {
+            rainIntensity =((Float) routingParams.get("rainIntensity")).floatValue();
+            }
+            System.out.println("rainIntensity   " + rainIntensity);   
+             if (routingParams.get("rainDuration") != null) {
+            rainDuration = ((Float) routingParams.get("rainDuration")).floatValue();
+            }
+             System.out.println("rainDuration   " + rainDuration);  
+            //rainIntensity
             storm = new hydroScalingAPI.modules.rainfallRunoffModel.objects.StormManager(linksStructure, rainIntensity, rainDuration);
         } else {
             storm = new hydroScalingAPI.modules.rainfallRunoffModel.objects.StormManager(stormFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+            storm.setStormInitialTime(zeroSimulationTime);
+            storm.setStormFinalTime(finalSimulationTime);
+            
         }
 
        hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager PotEVPT;
+       hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager EVPT;
+     float numPeriodstest= Math.round(((float) storm.stormFinalTimeInMinutes() - (float) storm.stormInitialTimeInMinutes()) / (float) storm.stormRecordResolutionInMinutes());
+         System.out.println("BEFOREnumPeriodstest"+numPeriodstest+" Final" + storm.stormFinalTimeInMinutes() +"Initial" + (float) storm.stormInitialTimeInMinutes() + "res=" + (float) storm.stormRecordResolutionInMinutes());
 
 
         if (PotEVPTFile == null) {
-            PotEVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager(linksStructure, rainIntensity, rainDuration);
-        } else {
+            PotEVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager(linksStructure, 0, 0);
+            //EVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager(linksStructure, rainIntensity, rainDuration);
+            
+        }
+         if (PotEVPTFile.toString().contains("Constant")) {
+            float EVPTIntensity =0.0f;
+            if (routingParams.get("EVPTIntensity") != null) {
+            EVPTIntensity =((Float) routingParams.get("EVPTIntensity")).floatValue();
+            }
+            float EVPTDuration =0.0f;
+            if (routingParams.get("EVPTDuration") != null) {
+            EVPTDuration = ((Float) routingParams.get("EVPTDuration")).floatValue();
+            }
+             
+            //rainIntensity
+             PotEVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager(linksStructure, EVPTIntensity, EVPTDuration);
+             //EVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager(linksStructure, EVPTIntensity, EVPTDuration);
+    
+         }
+        else {
+             System.out.println("EVPT is not constant");
             PotEVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager(PotEVPTFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+          //System.out.println(PotEVPTFile.getAbsolutePath().replace("PET", "ET"));       
+          //EVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager(new java.io.File(PotEVPTFile.getAbsolutePath().replace("PET", "ET")), myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+         
         }
         
-        
+           hydroScalingAPI.modules.rainfallRunoffModel.objects.SnowManager SNOW;
+       
+
+
+        if (SNOWFile == null || SNOWFile.toString().contains("null")) {
+            SNOW = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SnowManager(linksStructure, 0, 10);
+            //EVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager(linksStructure, rainIntensity, rainDuration);
+            
+        }
+         
+        else {
+             System.out.println("SNOW is not constant");
+            SNOW = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SnowManager(SNOWFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+          //System.out.println(PotEVPTFile.getAbsolutePath().replace("PET", "ET"));       
+          //EVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager(new java.io.File(PotEVPTFile.getAbsolutePath().replace("PET", "ET")), myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+         
+        }
+             hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager SOILM;
+       
+
+
+        if (SOILMFile == null || SOILMFile.toString().contains("null")) {
+            SOILM = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager(linksStructure, 0, 10);
+            //EVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager(linksStructure, rainIntensity, rainDuration);
+            
+        }
+         
+        else {
+             System.out.println("SNOW is not constant");
+            SOILM = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager(SOILMFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+          System.out.println(SOILMFile.getAbsolutePath());       
+          //EVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager(new java.io.File(PotEVPTFile.getAbsolutePath().replace("PET", "ET")), myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+         
+        }
+       
+           
         interTime = new java.util.Date();
         System.out.println("Storm manager," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
 
-        storm.setStormInitialTime(zeroSimulationTime);
-        PotEVPT.setPotEVPTInitialTime(zeroSimulationTime);
+        
+        //PotEVPT.setPotEVPTInitialTime(zeroSimulationTime);
+        //IowaPET.000000.06.March.2003.vhc
+        //EVPT.setEVPTInitialTime(zeroSimulationTime);
         if (!storm.isCompleted()) {
+            System.out.println("Problem with Storm");
             return;
         }
+        
         if (!PotEVPT.isCompleted()) {
+            System.out.println("Problem with Pot EVPT");
             return;
         }
-
+          if (!SNOW.isCompleted()) {
+            System.out.println("Problem with SNOW");
+             return;
+        }
+        if (!SOILM.isCompleted()) {
+            System.out.println("Problem with SNOW");
+             return;
+        }
+    numPeriodstest= Math.round(((float) storm.stormFinalTimeInMinutes() - (float) storm.stormInitialTimeInMinutes()) / (float) storm.stormRecordResolutionInMinutes());
+         System.out.println("AFTERnumPeriodstest"+numPeriodstest+" Final" + storm.stormFinalTimeInMinutes() +"Initial" + (float) storm.stormInitialTimeInMinutes() + "res=" + (float) storm.stormRecordResolutionInMinutes());
+       
+        //System.out.println("EVPT INITIAL TIME  " +  EVPT.EVPTInitialTime());
+        
+        //System.out.println("STORM INITIAL TIME  " +  storm.stormInitialTime());
+        
+//        System.out.println("RESOL min  "+EVPT.EVPTRecordResolutionInMinutes());
         thisHillsInfo.setStormManager(storm);
+   
           interTime = new java.util.Date();
         System.out.println("Set Storm manager," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
  
          thisHillsInfo.setPotEVPTManager(PotEVPT);
+         thisHillsInfo.setSnowManager(SNOW);
+         thisHillsInfo.setSoilMoistureManager(SOILM);
 
         interTime = new java.util.Date();
-        System.out.println("Set PotEVPT manager");
-
+        System.out.println("Set PotEVPT and SNOW manager");
+     
+       
 
         hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager infilMan = new hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager(linksStructure, 0.0f);
 
@@ -402,48 +515,86 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         if (routingParams.get("Basin_sim") != null) { BasinFlag = (int) ((Float) routingParams.get("Basin_sim")).floatValue();}
         String LandUse = "Error";
         String SoilData = "Error";
-
+        String SoilHydData = "Error";
+        String Soil150SWAData= "Error";
         // did not find a way to pass that without change ExternalTileToFile
         // This has to be fixed
         if (BasinFlag == 0) {
-            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
-            SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
         }
 
         if (BasinFlag == 1) {
-            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/glomod90.metaVHC";
-            SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
-        }
+            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/glomod90.metaVHC";
+            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+          Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+         }
 
 
         if (BasinFlag == 2) {
-            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverRestoringCropsTo10percentGrassland_90_2.metaVHC";
-            SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverBaseline_90_2.metaVHC";
+            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+         SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+         Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
         }
 
 
         if (BasinFlag == 3) {
-            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverRestoringPastureTo10percentForest_90_2.metaVHC";
-            SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverRestoringPastureTo10percentForest_90_2.metaVHC";
+            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+        SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+        Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
         }
 
 
         if (BasinFlag == 4) {
-            LandUse = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverBaseline_90_2.metaVHC";
-            SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverBaseline_90_2.metaVHC";
+            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
         }
+        
+        
+        if (BasinFlag == 25) {
+            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverTranfrom_25_90_2.metaVHC";
+            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+         SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+         Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+        }
+        
+           
+        if (BasinFlag == 50) {
+            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverTranfrom_50_90_2.metaVHC";
+            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+        }
+        
+           
+        if (BasinFlag == 75) {
+            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverTranfrom_75_90_2.metaVHC";
+            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+        }
+        
         System.out.println("LandUse  " + LandUse + "\n");
         System.out.println("SoilData  " + SoilData + "\n");
         System.out.println("Start SCS processes \n");
         LandUseFile = new java.io.File(LandUse);
         SoilFile = new java.io.File(SoilData);
+        SoilHydFile= new java.io.File(SoilHydData);
+        Swa150File= new java.io.File(Soil150SWAData);
         hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
         java.io.File DEMFile = metaDatos.getLocationMeta();
 
         interTime = new java.util.Date();
         System.out.println("Beg SCSObj," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
 
-        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes,HillShapeFlag);
+        SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, SoilHydFile, Swa150File,myCuenca,linksStructure, metaDatos, matDir, magnitudes,HillShapeFlag);
 
         interTime = new java.util.Date();
         System.out.println("Set MAnager," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
@@ -573,7 +724,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
 
 
-        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquationsJune12_2011 thisBasinEqSys = new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquationsJune12_2011(linksStructure, thisHillsInfo, thisNetworkGeom, connectingLink, filesToAdd, routingParams);
+        hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_AllMethodParallel thisBasinEqSys = new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_AllMethodParallel(linksStructure, thisHillsInfo, thisNetworkGeom, connectingLink, filesToAdd, routingParams);
 
 
         interTime = new java.util.Date();
@@ -585,15 +736,21 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
 
    
-            initialCondition = new double[NLI * 10];
+            initialCondition = new double[NLI * 9];
 //            if(HillType==7 || HillType==8) initialCondition = new double[NLI * 5];
 //            else if (HillType==9) initialCondition = new double[NLI * 6];
 //            else initialCondition = new double[NLI * 4];
       
         System.out.println("Start Initial condition");
-
+float HD = -9.f;
+        if (routingParams.get("ConstSoilStorage") != null) {
+            HD = ((Float) routingParams.get("ConstSoilStorage")).floatValue();
+        }
+        System.out.println("ConstSoilStorage" + HD);
+               
         for (int i = 0; i < NLI; i++) {
            
+            
             initialCondition[i] = BaseFlowCoef * Math.pow(thisNetworkGeom.upStreamArea(i), BaseFlowExp);
             initialCondition[i + 1 * NLI] = PoundedW;
             ////   float Wtable=0;
@@ -607,33 +764,68 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 //             PorcAreaCalc=thisHillsInfo.basinHillSlopesInfo.getArea_ReliefParam(i, 0);
 //         }
             //initialCondition[i + 2 * NLI] =FindWaterTable(IniHSatPorc,thisHillsInfo.HillRelief(i));
-            initialCondition[i + 2 * NLI] = 0.0;
-            initialCondition[i + 3 * NLI] = IniUnSatPorc;
+            double INS=thisHillsInfo.SWA150(i);
+            if (HD ==-1) {
+                INS=thisHillsInfo.SCS_S1(i);}
+                else if (HD ==-2) {
+                INS=thisHillsInfo.SCS_S1(i);}
+            else if (HD ==-3) {
+                INS=thisHillsInfo.SWA150(i);
+            }
+            
+            if(IniHSatPorc>=0) {
+            
+                initialCondition[i + 2 * NLI] = (float) INS+5+IniHSatPorc*thisHillsInfo.HillRelief(i)*1000; // [mm] maximum storage - considering basin was dry
+            } 
+          
+           // else{
+           //     double IniC=SOILM.getSOILM040OnHillslope(i, zeroSimulationTime);
+           //     initialCondition[i + 2 * NLI] = (float) INS+5+IniHSatPorc*(IniC/100)*1000;; // [mm] maximum storage - considering basin was dry
+           // }
+            if(IniUnSatPorc>=0) {
+            initialCondition[i + 3 * NLI] = IniUnSatPorc+0.01;
+            }
+             else{
+                 double IniC=SOILM.getSOILM040OnHillslope(i, zeroSimulationTime);
+                System.out.println(" i  "+i+ "  Inic   "+IniC);
+                 initialCondition[i + 3 * NLI] = IniC/100.;
+                if(initialCondition[i + 3 * NLI]<=0) initialCondition[i + 3 * NLI] =0.01;
+            }
+         
             initialCondition[i + 4 * NLI] = 0.0;
             initialCondition[i + 5 * NLI] = 0.0;
             initialCondition[i + 6 * NLI] = 0.0;
             initialCondition[i + 7 * NLI] = 0.0;
             initialCondition[i + 8 * NLI] = 0.0;
-            initialCondition[i + 9 * NLI] = 0.0;
+            //initialCondition[i + 9 * NLI] = 0.0;
             //System.out.println("initialCondition[i]"+initialCondition[i]+"initialCondition[i + 1 * NLI]"+initialCondition[i + 1 * NLI]+"initialCondition[i + 2 * NLI]"+initialCondition[i + 2 * NLI]+"initialCondition[i + 3 * NLI]"+initialCondition[i + 3 * NLI]);
   
         }
 
-
+        
         interTime = new java.util.Date();
-        System.out.println("Create diff equation,," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
+        System.out.println("Create diff equation," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
 
         System.out.println("Number of Links on this simulation: " + NLI);
         System.out.println("Inicia simulacion RKF");
 
-        hydroScalingAPI.util.ordDiffEqSolver.RKF rainRunoffRaining = new hydroScalingAPI.util.ordDiffEqSolver.RKF(thisBasinEqSys, 1e-3, 10/60.);
+        hydroScalingAPI.util.ordDiffEqSolver.RKF rainRunoffRaining = new hydroScalingAPI.util.ordDiffEqSolver.RKF(thisBasinEqSys, Tolerance, 10/60.);
 
         int numPeriods = Math.round(((float) storm.stormFinalTimeInMinutes() - (float) storm.stormInitialTimeInMinutes()) / (float) storm.stormRecordResolutionInMinutes());
 
         java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeInMillis((long) (storm.stormInitialTimeInMinutes() * 60. * 1000.0));
         System.out.println(thisDate.getTime());
-
+        
+        //for (int k = 0; k < numPeriods; k++) {
+            double TTIme = storm.stormInitialTimeInMinutes() + numPeriods * storm.stormRecordResolutionInMinutes();
+       //     System.out.println("Maximum evaporation  " + "," );
+       //     for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+        //        System.out.println(thisHillsInfo.PotEVPT(i, TTIme)+",");
+                //newfile.write(df2.format(thisHillsInfo.precipitationacum(i, currTime)) + ",");
+         //   }
+        //}
+        
   
          double outputTimeStep=storm.stormRecordResolutionInMinutes();
        // double extraSimTime=240D*Math.pow(1.5D,(basinOrder-1));
@@ -650,12 +842,12 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         for (int k = 0; k < numPeriods; k++) {
             System.out.println("Period " + (k + 1) + " of " + numPeriods);
-                rainRunoffRaining.jumpsRunCompleteToAsciiFileSCS(storm.stormInitialTimeInMinutes() + k * storm.stormRecordResolutionInMinutes(), storm.stormInitialTimeInMinutes() + (k + 1) * storm.stormRecordResolutionInMinutes(), outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile3,newfile4);
+                rainRunoffRaining.jumpsRunCompleteToAsciiFileSCS(storm.stormInitialTimeInMinutes() + k * storm.stormRecordResolutionInMinutes(), storm.stormInitialTimeInMinutes() + (k + 1) * storm.stormRecordResolutionInMinutes(), outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile3,newfile4,outflag);
             initialCondition=rainRunoffRaining.finalCond;
             rainRunoffRaining.setBasicTimeStep(10 / 60.);
         }
 
-
+ 
         interTime = new java.util.Date();
         System.out.println("Running Time:" + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
         System.out.println("Finish first part," + x + "," + y + "," + (.001 * (interTime.getTime() - startTime.getTime())) + " seconds");
@@ -663,7 +855,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         outputTimeStep=2*Math.pow(1.5D,(basinOrder-1));
         if(outputTimeStep>60) outputTimeStep=60;
-            rainRunoffRaining.jumpsRunCompleteToAsciiFileSCS(storm.stormInitialTimeInMinutes() + numPeriods * storm.stormRecordResolutionInMinutes(), finalSimulationTime.getTimeInMillis()/1000.0/60.0, outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile3, newfile4);
+            rainRunoffRaining.jumpsRunCompleteToAsciiFileSCS(storm.stormInitialTimeInMinutes() + numPeriods * storm.stormRecordResolutionInMinutes(), finalSimulationTime.getTimeInMillis()/1000.0/60.0, outputTimeStep, initialCondition, newfile, linksStructure, thisNetworkGeom, newfile1, newfile3, newfile4,outflag);
         newfile1.close();
         bufferout1.close();
 
@@ -692,6 +884,32 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
         for (int i = 0; i < linksStructure.contactsArray.length; i++) {
             newfile.write(df2.format(timeToMaximumsAchieved[i]) + ",");
         }
+        newfile.write("\n");
+        newfile.write("Maximum surface storage [mm],");
+       
+        for (int i = linksStructure.contactsArray.length; i < 2*linksStructure.contactsArray.length; i++) {
+            if(Double.isNaN(maximumsAchieved[i])) maximumsAchieved[i]=-9.9;
+            newfile.write(df3.format(maximumsAchieved[i]) + ",");
+        }
+        
+       newfile.write("\n");
+        newfile.write("Maximum water table [mm],");
+       
+        
+        for (int i = 2*linksStructure.contactsArray.length; i < 3*linksStructure.contactsArray.length; i++) {
+            if(Double.isNaN(maximumsAchieved[i])) maximumsAchieved[i]=-9.9;
+            newfile.write(df3.format(maximumsAchieved[i]) + ",");
+        }
+        
+         newfile.write("\n");
+        newfile.write("Maximum theta [%],");
+       
+        
+        for (int i = 3*linksStructure.contactsArray.length; i < 4*linksStructure.contactsArray.length; i++) {
+            if(Double.isNaN(maximumsAchieved[i])) maximumsAchieved[i]=-9.9;
+            newfile.write(df3.format(maximumsAchieved[i]) + ",");
+        }
+        
         newfile.write("\n");
         newfile.write("\n");
 
@@ -741,6 +959,20 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
             newfile.write(df2.format(currTime) + ",");
             for (int i = 0; i < linksStructure.contactsArray.length; i++) {
                 newfile.write(df2.format(thisHillsInfo.PotEVPT(i,currTime))+",");
+                //newfile.write(df2.format(thisHillsInfo.precipitationacum(i, currTime)) + ",");
+
+            }
+
+            newfile.write("\n");
+
+        }
+        
+         newfile.write("SnowMelt \n");
+        for (int k = 0; k < numPeriods; k++) {
+            double currTime = PotEVPT.PotEVPTInitialTimeInMinutes() + k * storm.stormRecordResolutionInMinutes();
+            newfile.write(df2.format(currTime) + ",");
+            for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+                newfile.write(df2.format(thisHillsInfo.SnowMelt(i,currTime))+",");
                 //newfile.write(df2.format(thisHillsInfo.precipitationacum(i, currTime)) + ",");
 
             }
@@ -822,6 +1054,8 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         java.io.File stormFile;
         java.io.File PotEVPTFile;
+        java.io.File SNOWFile;
+        java.io.File SOILMFile;
         java.util.Hashtable routingParams = new java.util.Hashtable();
         
         int routingType = Integer.parseInt(args[6]);
@@ -858,18 +1092,18 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         //System.out.println("args[18].length()   = " +args[18].length());
 
-        if (args[18].length() > 0) {
-            int indexegual = args[18].indexOf("=", 1);
-            int indexcomma = args[18].indexOf(",", indexegual);
-            String str = args[18].substring(1, (indexegual));
-            String num = args[18].substring((indexegual + 1), (indexcomma));
+        if (args[20].length() > 0) {
+            int indexegual = args[20].indexOf("=", 1);
+            int indexcomma = args[20].indexOf(",", indexegual);
+            String str = args[20].substring(1, (indexegual));
+            String num = args[20].substring((indexegual + 1), (indexcomma));
            // System.out.println("str " + str);
             float num_f = Float.parseFloat(num);
            // System.out.println(str + "    num_f " + num_f + "\n");
             routingParams.put(str, num_f);
         }
 
-        ig = 19;
+        ig = 21;
         while (ig < (num_ele - 1)) {
             int indexegual = args[ig].indexOf("=", 0);
             int indexcomma = args[ig].indexOf(",", indexegual);
@@ -898,25 +1132,27 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         stormFile = new java.io.File(args[10]);
         PotEVPTFile = new java.io.File(args[11]);
+        SNOWFile = new java.io.File(args[12]);
+        SOILMFile = new java.io.File(args[13]);
        //System.out.println("stormFile  " + stormFile.getAbsolutePath());
        //System.out.println("PotEVPTFile  " + PotEVPTFile.getAbsolutePath());
-        float infilRate = Float.parseFloat(args[12]);
+        float infilRate = Float.parseFloat(args[14]);
 //System.out.println("infilRate  " +  infilRate);
-        java.io.File outputDirectory = new java.io.File(args[13]);
+        java.io.File outputDirectory = new java.io.File(args[15]);
 //System.out.println("outputDirectory  " +  outputDirectory.getAbsolutePath());
         int[] connO = new int[0];
         float[] corrO = new float[0];
 
-        if (!args[14].equalsIgnoreCase("C")) {
+        if (!args[16].equalsIgnoreCase("C")) {
 
-            args[14] = args[14].substring(2);
-            args[15] = args[15].substring(2);
+            args[16] = args[16].substring(2);
+            args[17] = args[17].substring(2);
 
             //System.out.println(args[14]);
             //System.out.println(args[15]);
 
-            String[] conn = args[14].split(",");
-            String[] corr = args[15].split(",");
+            String[] conn = args[16].split(",");
+            String[] corr = args[17].split(",");
 
            // System.out.println(java.util.Arrays.toString(conn));
            // System.out.println(java.util.Arrays.toString(corr));
@@ -933,7 +1169,7 @@ public class TileSimulationToAsciiFileSCSMEthod extends java.lang.Object impleme
 
         // read param files to change these values
 
-        new TileSimulationToAsciiFileSCSMEthod(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), matDirs, magnitudes, horOrders, metaModif, 0.0f, 0.0f, stormFile, PotEVPTFile, null, infilRate, routingType, routingParams, outputDirectory, connO, corrO, Long.parseLong(args[16]),Long.parseLong(args[17])).executeSimulation();
+        new TileSimulationToAsciiFileSCSMEthod(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), matDirs, magnitudes, horOrders, metaModif, 0.0f, 0.0f, stormFile, PotEVPTFile, SNOWFile,SOILMFile,null, infilRate, routingType, routingParams, outputDirectory, connO, corrO, Long.parseLong(args[18]),Long.parseLong(args[19])).executeSimulation();
 
     }
 

@@ -79,9 +79,9 @@ public class ImportUSGS_StremMeasubyState {
         
           
             //new java.io.File("/hidrosigDataBases/Whitewater_database/Sites/Locations/"+thisLocation.State+"/"+thisLocation.Type+"/").mkdirs();
-            java.io.File theFile = new java.io.File(output_dir+state+"_sites.txt");
-            java.io.File theFile2 = new java.io.File(output_dir+state+"_data.txt");
-            java.io.File theFile3 = new java.io.File(output_dir+state+"_data_qual.txt");
+            java.io.File theFile = new java.io.File(output_dir+state+"_sites.csv");
+            java.io.File theFile2 = new java.io.File(output_dir+state+"_data.csv");
+            java.io.File theFile3 = new java.io.File(output_dir+state+"_data_qual.csv");
             java.io.FileOutputStream outputLocal=new java.io.FileOutputStream(theFile);
             java.io.FileOutputStream outputLocal2=new java.io.FileOutputStream(theFile2);
             java.io.FileOutputStream outputLocal3=new java.io.FileOutputStream(theFile3);
@@ -119,12 +119,12 @@ public class ImportUSGS_StremMeasubyState {
                     eof1=true;
                 } else {
                     if (lineSite.charAt(0)=='U'){    // U for USGS
-                    System.out.println(lineSite);
+                    //System.out.println(lineSite);
                     
                     String [] linarray=lineSite.split("\t");
 
                     try{
-                    FileWriter fstream = new FileWriter("D:/Lu_docs/PHD/hyd_geome/AllSites.txt",true);
+                    FileWriter fstream = new FileWriter("/scratch/Users/rmantill/hyd_geome/AllSites.csv",true);
                     BufferedWriter out = new BufferedWriter(fstream);
                      gaugeid=linarray[1];
 
@@ -149,7 +149,6 @@ public class ImportUSGS_StremMeasubyState {
                                "\n");
                         
 
-                    System.out.println( linarray[1] + "linarray[2]   " + linarray[2] + "linarray[3] " +linarray[3]+"llinarray[4]   "+linarray[4]+"llinarray[5]   "+linarray[5]+"llinarray[6]   "+linarray[6]+"llinarray[7]   "+linarray[7]+"llinarray[8]   "+linarray[8]+"llinarray[9]   "+linarray[9]+"/n");
                     siteSt[count]=linarray[1];
                     sitecd[count]=Integer.parseInt(linarray[1]);
                     lat[count]=Double.parseDouble(linarray[2]);
@@ -171,13 +170,16 @@ public class ImportUSGS_StremMeasubyState {
 
             }
         
-    
+   FileWriter fstream2 = new FileWriter("/scratch/Users/rmantill//hyd_geome//AllMeasNofilter.csv",true);
+   BufferedWriter out2 = new BufferedWriter(fstream2);
+                   
    for (int is=0;is<count;is++){
        int isite=is+1;    
         count_mea=0;
         System.out.println("state" + state + "site" + siteSt[is] +"is="+ is +"nsites" + count);
-        java.net.URL remotePath2=new java.net.URL("http://waterdata.usgs.gov/nwis/measurements?site_no="+siteSt[is]+"&agency_cd=USGS&format=rdb_expanded&date_format=YYYY");
-        System.out.println("http://waterdata.usgs.gov/nwis/measurements?site_no="+siteSt[is]+"&agency_cd=USGS&format=rdb_expanded&date_format=YYYY");
+        java.net.URL remotePath2=new java.net.URL("http://nwis.waterdata.usgs.gov/nwis/measurements?site_no="+siteSt[is]+"&agency_cd=USGS&format=rdb_expanded&date_format=YYYY");
+        
+        System.out.println("http://nwis.waterdata.usgs.gov/nwis/measurements?site_no="+siteSt[is]+"&agency_cd=USGS&format=rdb_expanded&date_format=YYYY");
         java.io.InputStream inputRemote2=remotePath2.openStream();
         java.io.BufferedReader buff2 = new java.io.BufferedReader(new java.io.InputStreamReader(inputRemote2));
         boolean eof2 = false;
@@ -190,7 +192,10 @@ public class ImportUSGS_StremMeasubyState {
               } else {
                   if (line.charAt(0)=='U'){    // U for USGS
                             
-                  String [] linarray2=line.split("\t");   // System.out.println(line);
+                  String [] linarray2=line.split("\t"); 
+                  
+                  //for (int o=0;o<linarray2.length;o++)
+                  //System.out.println( o  +  "   linarray2   "+linarray2[o]);
                   int control=-9;
                   int qual=-9;
                   int meas_type=-9;
@@ -198,72 +203,143 @@ public class ImportUSGS_StremMeasubyState {
                   int v_type=-9;
                   String year = linarray2[3].substring(0,4);
                      //String year = linarray2[3].substring((linarray2[3].lastIndexOf("/",0)+1),linarray2[3].lastIndexOf("/",0)+5);
-                  if(linarray2.length>=23) {for (int i=0;i<=23;i++) {if(linarray2[i].equals("")) linarray2[i]="-9.9";}
+                 if(linarray2.length>=23) {for (int i=0;i<=23;i++) {if(linarray2[i].equals("")) linarray2[i]="-9.9";}
+                 int ref=-9;
+                 
+                  for (int o=0;o<linarray2.length;o++)
+                 {   
+                  if(linarray2[o].equals("EXCL")|| linarray2[o].equals("GOOD") || linarray2[o].equals("POOR") || linarray2[o].equals("FAIR")) ref=o;
+                 }
+                 if(ref>0 && linarray2.length>ref+6){
+                     
+                 System.out.println("reference    -------------------" + ref);
+                 if(line.contains("UNSP")) qual=0;
+                  if(line.contains("POOR")) qual=1;
+                  if(line.contains("FAIR")) qual=2;
+                  if(line.contains("GOOD")) qual=3;
+                  if(line.contains("EXCL")) qual=4;
 
-                  if(linarray2[10].equals("UNSP")) qual=0;
-                  if(linarray2[10].equals("POOR")) qual=1;
-                  if(linarray2[10].equals("FAIR")) qual=2;
-                  if(linarray2[10].equals("GOOD")) qual=3;
-                  if(linarray2[10].equals("EXCL")) qual=4;
+                  System.out.println( "qual"+linarray2[ref]);
+                
+                   if(line.contains("UNSP")) control = 6;   
+                   if(line.contains("CLER")) control = 0;
+                     if(line.contains("CICE")) control = 1;
+                     if(line.contains("SICE")) control = 2;
+                     if(line.contains("ALGA")) control = 3;
+                     if(line.contains("SUBM")) control = 4;
+                     if(line.contains("HVDB")) control = 5;
+                     
+                     if(line.contains("FILL")) control = 7;
+                     if(line.contains("MALT")) control = 8;
+                     if(line.contains("MAMD")) control = 9;
+                     if(line.contains("AICE")) control = 10;
+                     if(line.contains("SCUR")) control = 11;
+
+  System.out.println( "control"+linarray2[ref+3]);
+
+if(line.contains("UNSP")) meas_type=0;
+if(line.contains("WADE")) meas_type=1;
+if(line.contains("BRUS")) meas_type=2;
+if(line.contains("BRDS")) meas_type=3;
+if(line.contains("CWAY")) meas_type=4;
+if(line.contains("ICE")) meas_type=5;
+if(line.contains("MBOT")) meas_type=6;
+if(line.contains("SBOT")) meas_type=7;
+if(line.contains("RC")) meas_type=8;
+if(line.contains("CRAN")) meas_type=9;
+if(line.contains("BRDS")) meas_type=10;
+if(line.contains("BOAT")) meas_type=11;
+
+//UNSP	Unspecified	Discharge measurement made by an unspecified method
+//WADE	Wading	Discharge measurement made by wading into the water.
+//BRUS	Bridge upstream side	Discharge measurement made from a bridge on the upstream side.
+//BRDS	Bridge downstream side	Discharge measurement made from a bridge on the downstream side.
+//CWAY	Cableway	Discharge measurement made from cableway.
+//ICE	Ice	Discharge measurement made through river ice.
+//MBOT	Manned moving boat	Discharge measurement made from a moving manned boat.
+//SBOT	Stationary boat	Discharge measurement made from a stationary manned boat.
+//RC	Remote control boat	Discharge measurement using a remote control boat.
+//OTHR	Other	Discharge measurement was made by other means.
+//BOAT	Boat	Discharge measurement was made from a boat (only used for tranfer not user-selectable).
+//CRAN	Bridge (crane)	Discharge measurement was made using a bridge crane (only used for tranfer not user-selectable).
 
 
-                     if(linarray2[13].equals("CLER")) control = 0;
-                     if(linarray2[13].equals("CICE")) control = 1;
-                     if(linarray2[13].equals("SICE")) control = 2;
-                     if(linarray2[13].equals("ALGA")) control = 3;
-                     if(linarray2[13].equals("SUBM")) control = 4;
-                     if(linarray2[13].equals("HVDB")) control = 5;
-                     if(linarray2[13].equals("UNSP")) control = 6;
-                     if(linarray2[13].equals("FILL")) control = 7;
-                     if(linarray2[13].equals("MALT")) control = 8;
-                     if(linarray2[13].equals("MAMD")) control = 9;
-                     if(linarray2[13].equals("AICE")) control = 10;
-                     if(linarray2[13].equals("SCUR")) control = 11;
+System.out.println( "meas_type"+linarray2[ref+7]);
 
-if(linarray2[17].equals("WADE")) meas_type=0;
-if(linarray2[17].equals("UNSP")) meas_type=1;
-if(linarray2[17].equals("ICE")) meas_type=2;
-if(linarray2[17].equals("CRAN")) meas_type=3;
-if(linarray2[17].equals("BRDS")) meas_type=4;
-if(linarray2[17].equals("MBOT")) meas_type=5;
-if(linarray2[17].equals("OTHR")) meas_type=6;
-if(linarray2[17].equals("BRUS")) meas_type=7;
-if(linarray2[17].equals("CWAY")) meas_type=8;
-if(linarray2[17].equals("BOAT")) meas_type=9;
-if(linarray2[17].equals("SBOT")) meas_type=10;
+if(line.contains("Q-EST")) q_type = 0;                     
+if(line.contains("QADCP")) q_type = 1;
+if(line.contains("QFLUM")) q_type = 2;
+if(line.contains("QIDIR")) q_type = 3;
+if(line.contains("QUNSP")) q_type = 4;
+if(line.contains("QSCMM")) q_type = 5;
+if(line.contains("QTRAC")) q_type = 6;
+if(line.contains("QUNSP")) q_type = 7;
+if(line.contains("QVOLM")) q_type = 8;
+if(line.contains("QWEIR")) q_type = 9;
+                     
+
+                     
+                     
+
+//Q-EST	SWQM	Discharge, estimated	Discharge, estimated
+//QADCP	SWQM	Disch., meas., ADCP moving boat	Discharge, measured, acoustic doppler current profiler from moving boat
+//QFLUM	SWQM	Disch., meas., flume	Discharge, measured, flume
+//QIDIR	SWQM	Disch., meas., indirect	Discharge, measured, indirect method
+//QSCMM	SWQM	Disch., meas., midsection	Discharge, measured, midsection method
+//QTRAC	SWQM	Disch., meas., tracer dye	Discharge, measured, tracer dye dilution
+//QUNSP	SWQM	Discharge, Unspecified	Discharge measured with an unspecified method
+//QVOLM	SWQM	Disch., meas., volumetric	Discharge, measured, volumetric
+//QWEIR	SWQM	Disch., meas., weir	Discharge, measured, weir
+                     
+System.out.println( "q_type"+linarray2[ref+8]);
 
 
+if(line.contains("VADV")) v_type = 0;
+if(line.contains("VELC")) v_type = 1;
+if(line.contains("VICE")) v_type = 2;
+if(line.contains("VIPAA")) v_type =3;
+if(line.contains("VIPYG")) v_type =4;
+if(line.contains("VOPT")) v_type =5;
+if(line.contains("VOTT")) v_type = 6;
+if(line.contains("VPAA")) v_type = 7;
+if(line.contains("VPYG")) v_type = 8;
+if(line.contains("VRAD")) v_type = 9;
+if(line.contains("VTIME")) v_type =10;
+if(line.contains("VTRNS")) v_type = 11;
+if(line.contains("VULT")) v_type = 12;
+ System.out.println( "v_type"+linarray2[ref+9]);                 
+                  
+                  }
 
-                     if(linarray2[18].equals("QUNSP")) q_type = 1;
-                     if(linarray2[18].equals("QSCMM")) q_type = 2;
-                     if(linarray2[18].equals("QADCP")) q_type = 3;
-                     if(linarray2[18].equals("QIDIR")) q_type = 4;
-                     if(linarray2[18].equals("QFLUM")) q_type = 5;
-                     if(linarray2[18].equals("Q-EST")) q_type = 6;
-
-if(linarray2[19].equals("VADCP")) v_type = 1;
-if(linarray2[19].equals("VADV")) v_type = 2;
-if(linarray2[19].equals("VPAA")) v_type = 3;
-if(linarray2[19].equals("VICE")) v_type = 4;
-if(linarray2[19].equals("VIPAA")) v_type =5;
-if(linarray2[19].equals("VPYG")) v_type = 6;
-if(linarray2[19].equals("VRAD")) v_type = 7;}
-
+                  //VADCP	SWVL	Stream velocity, ADCP	Stream velocity, acoustic doppler current profiler
+//VADV	SWVL	Stream velocity, ADV	Stream velocity, acoustic doppler velocimeter
+//VELC	SWVL	Velocity,Electromagnetic Vel Mtr	Stream velocity measured using an Electromagnetic Velocity Meter
+//VICE	SWVL	Stream Velocity, Ice Vane Meter	Stream velocity measured with Ice Vane Meter
+//VIPAA	SWVL	Velocity, Polymer Cup AA Meter	Stream Velocity measured with a Price AA meter with polymer cups
+//VIPYG	SWVL	Velocity,Polymer Cup Pygmy Meter	Stream Velocity measured with a Price Pygmy meter with polymer cups
+//VOPT	SWVL	Stream velocity, optical current	Velocity measured by a surface velocity stroboscopic device
+//VOTT	SWVL	Stream velocity, horiz. shaft	Stream velocity, horizontal shaft (Ott) meter
+//VPAA	SWVL	Stream velocity, Price AA	Stream velocity, Price AA meter
+//VPYG	SWVL	Stream velocity, pygmy	Stream velocity, Price pygmy meter
+//VRAD	SWVL	Stream velocity, radar	Stream velocity, radar
+//VTIME	SWVL	Stream Velocity, Time of Travel	Stream velocity measured by any time of travel method
+//VTRNS	SWVL	NWIS 4.8 Transferred Velocity	The method used to measure the velocity is not known.
+//VULT	SWVL	Stream velocity, ultrasonic	Stream velocity, ultrasonic meter
+//System.out.println("linarray2[23] "+linarray2[23] +  "linarray2[24] " + linarray2[24] + "linarray2[25]" + linarray2[25] +"linarray2[26]"+linarray2[26]);       
 
                    try{
 
-                    // FileWriter fstream = new FileWriter("D:/Lu_docs/PHD/hyd_geome//AllMeas.txt",true);
+                    // FileWriter fstream = new FileWriter("/scratch/Users/rmantill//hyd_geome//AllMeas.txt",true);
                      //BufferedWriter out = new BufferedWriter(fstream);
-                    FileWriter fstream2 = new FileWriter("D:/Lu_docs/PHD/hyd_geome//AllMeasEG_Cl.txt",true);
-                    BufferedWriter out2 = new BufferedWriter(fstream2);
-                    //out.write(line+ lineSite2+ "\n");
-                    double q=Double.parseDouble(linarray2[20]);
-                    double w=Double.parseDouble(linarray2[21]);               
-                    double a=Double.parseDouble(linarray2[22]);
-                    double v=Double.parseDouble(linarray2[23]);
-                           
-                     if(qual>=3 &&  control == 0 && q>0 && w>0 && v>0 && a>0 && linarray2.length>=23)
-                     {          count_mea=count_mea+1;
+                      //out.write(line+ lineSite2+ "\n");
+                    double q=Double.parseDouble(linarray2[ref+10]);
+                    double w=Double.parseDouble(linarray2[ref+10]);               
+                    double a=Double.parseDouble(linarray2[ref+10]);
+                    double v=Double.parseDouble(linarray2[ref+10]);
+                    //System.out.println("qual "+qual +  "control " + control + " q " + q  + " w " + w + " v "  + v +" a "+a + " linarray2.length>=23"+ linarray2.length);       
+                     if(q>0 && w>0 && v>0 && a>0 && linarray2.length>=23)
+                     {             System.out.println("Writing to file" + count_mea);       
+                count_mea=count_mea+1;
                                 out2.write(
                                 StateCd+
                                  "," + linarray2[1]+ // Site code
@@ -274,21 +350,22 @@ if(linarray2[19].equals("VRAD")) v_type = 7;}
                                  "," + HU[is]+ //drainage area
                                  "," + linarray2[2]+ //meas_no
                                  "," + year+ // meas_year_fix
-                                 "," + linarray2[5]+ // diachrage_VA
-                                 "," + linarray2[6]+ // height
+                                 "," + linarray2[8]+ // diachrage_VA
+                                 "," + linarray2[9]+ // height
                                  "," + qual+ // measu _quality_fix
                                  "," + control+ // control_fix
                                  "," + q_type+ // meas_type_fix
+                                 "," + meas_type+ // meas_type_fix
                                  "," + v_type+ // streamflow method_fix
-                                 "," + linarray2[20]+ // Discharge
-                                 "," + linarray2[21]+ // width
-                                 "," + linarray2[22]+ // velocity
-                                 "," + linarray2[23]+ // area
+                                 "," + linarray2[23]+ // Discharge
+                                 "," + linarray2[24]+ // width
+                                 "," + linarray2[25]+ // velocity
+                                 "," + linarray2[26]+ // area
                                  "\n");
 
                                 dataoutdata2.write(
                                 StateCd+
-                                 "," + linarray2[1]+ // Site code
+                                  "," + linarray2[1]+ // Site code
                                  "," + isite +
                                  "," + lat[is]+ //lat
                                  "," + lon[is]+ //lon
@@ -296,20 +373,20 @@ if(linarray2[19].equals("VRAD")) v_type = 7;}
                                  "," + HU[is]+ //drainage area
                                  "," + linarray2[2]+ //meas_no
                                  "," + year+ // meas_year_fix
-                                 "," + linarray2[5]+ // diachrage_VA
-                                 "," + linarray2[6]+ // height
+                                 "," + linarray2[8]+ // diachrage_VA
+                                 "," + linarray2[9]+ // height
                                  "," + qual+ // measu _quality_fix
                                  "," + control+ // control_fix
                                  "," + q_type+ // meas_type_fix
+                                 "," + meas_type+ // meas_type_fix
                                  "," + v_type+ // streamflow method_fix
-                                 "," + linarray2[20]+ // Discharge
-                                 "," + linarray2[21]+ // width
-                                 "," + linarray2[22]+ // velocity
-                                 "," + linarray2[23]+ // area
+                                 "," + linarray2[23]+ // Discharge
+                                 "," + linarray2[24]+ // width
+                                 "," + linarray2[25]+ // velocity
+                                 "," + linarray2[26]+ // area
                                  "\n");
                                   }
-                     out2.close();
-
+                    
                      if(linarray2.length>=23){
                      dataoutdata.write(
                                 StateCd+
@@ -334,19 +411,21 @@ if(linarray2[19].equals("VRAD")) v_type = 7;}
                                  "\n");}
 
                      }catch (Exception e){//Catch exception if any
-                     if (linarray2.length>=23)System.err.println("Error: do not write disch" + e.getMessage() + " " + linarray2[20] + " " + linarray2[21]+ " " + linarray2[22]+ " " + linarray2[23]);
+                     if (linarray2.length>=23)System.err.println("Error message" + e.getMessage() + " " + linarray2[20] + " " + linarray2[21]+ " " + linarray2[22]+ " " + linarray2[23]);
                      if (linarray2.length<23)System.err.println("Error: do not write disch" + e.getMessage() + "not enough elements");
                      }
-
+                 }
 
                 }
             }
+                   
           }
-
-          buff2.close();         
+           inputRemote2.close();
+           buff2.close();   
+  
 
            try{
-              FileWriter fstream = new FileWriter("D:/Lu_docs/PHD/hyd_geome/AllSiteswithdata.txt",true);
+              FileWriter fstream = new FileWriter("/scratch/Users/rmantill//hyd_geome/AllSiteswithdata.csv",true);
               BufferedWriter out = new BufferedWriter(fstream);
               if(count_mea>0){
               out.write(StateCd+
@@ -361,6 +440,7 @@ if(linarray2[19].equals("VRAD")) v_type = 7;}
 
 
                     //Close the output stream
+              fstream.close();
               out.close();
 
               }catch (Exception e){//Catch exception if any
@@ -375,9 +455,16 @@ if(linarray2[19].equals("VRAD")) v_type = 7;}
             dataoutsite.close();
             dataoutdata.close();
             dataoutdata2.close();
+            out2.close();
+            fstream2.close();
             // Copy data from USGS file to new data file ...
             // Raw USGS discharge values in ft^3/s
            //System.out.println("http://waterdata.usgs.gov/nwis/measurements?site_no="+gaugeid+"&agency_cd=USGS&format=rdb_expanded");
+    
+            outputLocal.close();
+            outputLocal2.close();
+            outputLocal3.close();
+        
     }
 
     
@@ -387,13 +474,14 @@ if(linarray2[19].equals("VRAD")) v_type = 7;}
      */
     public static void main(String[ ] arguments) throws FileNotFoundException, IOException { //throws java.io.IOException IOE{
 
-        String[] states={"al","ak","az","ar","ca","co","ct","de","dc","fl","ga","hi","id","il","in","ia","ks","ky","la","me","md","ma","mi","mn","ms","mo","mt","ne","nv","nh","nj","nm","ny","nc","nd","oh","ok","or","pa","ri","sc","sd","tn","tx","ut","vt","va","wa","wv","wi","wy"};
-        int[] st_array= {4,5,9,15,16,32,33};
+        //String[] states={"al","ak","az","ar","ca","co","ct","de","dc","fl","ga","hi","id","il","in","ia","ks","ky","la","me","md","ma","mi","mn","ms","mo","mt","ne","nv","nh","nj","nm","ny","nc","nd","oh","ok","or","pa","ri","sc","sd","tn","tx","ut","vt","va","wa","wv","wi","wy"};
+        String[] states={"ia","mn"};
+        int[] st_array= {1,2};
      //        for (int i : st_array)
      //{
-        for (int i=43;i>=0;i--){
+        for (int i=1;i>=0;i--){
               String st=states[i];
-              String OutputDir="D:/Lu_docs/PHD/hyd_geome/"+st+"/";
+              String OutputDir="/scratch/Users/rmantill/hyd_geome/"+st+"/";
               new File(OutputDir).mkdirs();
               System.out.println(OutputDir);
               ImportUSGS_StremMeasubyState data = new ImportUSGS_StremMeasubyState(OutputDir);

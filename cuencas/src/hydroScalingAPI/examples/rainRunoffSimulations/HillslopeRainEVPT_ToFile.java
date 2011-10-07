@@ -22,7 +22,7 @@ public class HillslopeRainEVPT_ToFile {
     private byte[][] matDir;
 
     /** Creates a new instance of HillslopeRainEVPT_ToFile */
-    public HillslopeRainEVPT_ToFile(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, java.io.File EVPTFile, java.io.File PotEVPTFile, java.io.File OutputDir) throws java.io.IOException, VisADException {
+    public HillslopeRainEVPT_ToFile(int x, int y, byte[][] direcc, int[][] magnitudes, hydroScalingAPI.io.MetaRaster md, java.io.File stormFile, java.io.File OutputDir) throws java.io.IOException, VisADException {
 
         matDir = direcc;
         metaDatos = md;
@@ -45,28 +45,28 @@ public class HillslopeRainEVPT_ToFile {
         thisHillsInfo.setStormManager(storm);
         System.out.println("Loading EVPT ...");
 
-        hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager EVPT;
-        EVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager(EVPTFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
-        if (!EVPT.isCompleted()) {
-            return;
-        }
-        thisHillsInfo.setEVPTManager(EVPT);
-        System.out.println("Loading PotEVPT ...");
-        hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager PotEVPT;
-        PotEVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager(PotEVPTFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
-        if (!PotEVPT.isCompleted()) {
-            return;
-        }
-        thisHillsInfo.setPotEVPTManager(PotEVPT);
+        //hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager EVPT;
+        //EVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager(EVPTFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+        //if (!EVPT.isCompleted()) {
+        //    return;
+        //}
+        //thisHillsInfo.setEVPTManager(EVPT);
+        //System.out.println("Loading PotEVPT ...");
+        //hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager PotEVPT;
+        //PotEVPT = new hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager(PotEVPTFile, myCuenca, linksStructure, metaDatos, matDir, magnitudes);
+        //if (!PotEVPT.isCompleted()) {
+        //    return;
+       // }
+        //thisHillsInfo.setPotEVPTManager(PotEVPT);
     DecimalFormat df3 = new DecimalFormat("###.###");
    
         System.out.println("Finsihed loading data");
 
         String demName = md.getLocationBinaryFile().getName().substring(0, md.getLocationBinaryFile().getName().lastIndexOf("."));
-        System.out.println(OutputDir + demName + "_" + x + "_" + y + "-" + storm.stormName() + "_" + EVPT.EVPTName() + "rainfall.csv");
+        System.out.println(OutputDir + demName + "_" + x + "_" + y + "-" + storm.stormName() + "_"+"rainfall.csv");
         java.io.File theFile = new java.io.File(OutputDir + "rainfall.csv");
-        java.io.File theFile2 = new java.io.File(OutputDir +  "EVPT.csv");
-        java.io.File theFile3 = new java.io.File(OutputDir +  "PotEVPT.csv");
+        //java.io.File theFile2 = new java.io.File(OutputDir +  "EVPT.csv");
+        //java.io.File theFile3 = new java.io.File(OutputDir +  "PotEVPT.csv");
         java.io.File theFile4 = new java.io.File(OutputDir +  "Summary.csv");
         System.out.println(theFile);
 
@@ -76,70 +76,70 @@ public class HillslopeRainEVPT_ToFile {
         java.io.FileOutputStream salida = new java.io.FileOutputStream(theFile);
         java.io.BufferedOutputStream bufferout = new java.io.BufferedOutputStream(salida);
         java.io.OutputStreamWriter newfile = new java.io.OutputStreamWriter(bufferout);
-        java.io.FileOutputStream salida2 = new java.io.FileOutputStream(theFile2);
-        java.io.BufferedOutputStream bufferout2 = new java.io.BufferedOutputStream(salida2);
-        java.io.OutputStreamWriter newfile2 = new java.io.OutputStreamWriter(bufferout2);
-        java.io.FileOutputStream salida3 = new java.io.FileOutputStream(theFile3);
-        java.io.BufferedOutputStream bufferout3 = new java.io.BufferedOutputStream(salida3);
-        java.io.OutputStreamWriter newfile3 = new java.io.OutputStreamWriter(bufferout3);
+//        java.io.FileOutputStream salida2 = new java.io.FileOutputStream(theFile2);
+//        java.io.BufferedOutputStream bufferout2 = new java.io.BufferedOutputStream(salida2);
+//        java.io.OutputStreamWriter newfile2 = new java.io.OutputStreamWriter(bufferout2);
+//        java.io.FileOutputStream salida3 = new java.io.FileOutputStream(theFile3);
+//        java.io.BufferedOutputStream bufferout3 = new java.io.BufferedOutputStream(salida3);
+//        java.io.OutputStreamWriter newfile3 = new java.io.OutputStreamWriter(bufferout3);
         java.io.FileOutputStream salida4 = new java.io.FileOutputStream(theFile4);
         java.io.BufferedOutputStream bufferout4 = new java.io.BufferedOutputStream(salida4);
         java.io.OutputStreamWriter newfile4 = new java.io.OutputStreamWriter(bufferout4);
 
         newfile.write(linksStructure.contactsArray.length + "\n");
-        newfile2.write(linksStructure.contactsArray.length + "\n");
-        newfile3.write(linksStructure.contactsArray.length + "\n");
+        //newfile2.write(linksStructure.contactsArray.length + "\n");
+        //newfile3.write(linksStructure.contactsArray.length + "\n");
         System.out.println("Writing Total Hillslope Areas");
 
         for (int i = 0; i < linksStructure.contactsArray.length; i++) {
             newfile.write(df3.format(thisHillsInfo.Area(i)) + ",");
-            newfile2.write(df3.format(thisHillsInfo.Area(i)) + ",");
-            newfile3.write(df3.format(thisHillsInfo.Area(i)) + ",");
+            //newfile2.write(df3.format(thisHillsInfo.Area(i)) + ",");
+            //newfile3.write(df3.format(thisHillsInfo.Area(i)) + ",");
         }
 
         newfile.write("\n");
-        newfile2.write("\n");
-        newfile3.write("\n");
+        //newfile2.write("\n");
+        //newfile3.write("\n");
 
 
         System.out.println("Writing Link Magnitude");
 
         for (int i = 0; i < linksStructure.contactsArray.length; i++) {
             newfile.write(df3.format(linksStructure.magnitudeArray[i]) + ",");
-            newfile2.write(df3.format(linksStructure.magnitudeArray[i]) + ",");
-            newfile3.write(df3.format(linksStructure.magnitudeArray[i]) + ",");
+            //newfile2.write(df3.format(linksStructure.magnitudeArray[i]) + ",");
+            //newfile3.write(df3.format(linksStructure.magnitudeArray[i]) + ",");
         }
 
         newfile.write("\n");
-        newfile2.write("\n");
-        newfile3.write("\n");
+        //newfile2.write("\n");
+        //newfile3.write("\n");
 
         System.out.println("Writing Distance to Outlet");
         float[][] dToOutlet = linksStructure.getDistancesToOutlet();
         for (int i = 0; i < linksStructure.contactsArray.length; i++) {
             newfile.write(df3.format(dToOutlet[1][i]) + ",");
-            newfile2.write(df3.format(dToOutlet[1][i]) + ",");
-            newfile3.write(df3.format(dToOutlet[1][i]) + ",");
+            //newfile2.write(df3.format(dToOutlet[1][i]) + ",");
+            //newfile3.write(df3.format(dToOutlet[1][i]) + ",");
         }
         newfile.write("\n");
-        newfile2.write("\n");
-        newfile3.write("\n");
+        //newfile2.write("\n");
+        //newfile3.write("\n");
         System.out.println("Writing Precipitations");
 
         int numPeriods = (int) ((storm.stormFinalTimeInMinutes() - storm.stormInitialTimeInMinutes()) / storm.stormRecordResolutionInMinutes());
         newfile.write(numPeriods + "\n");
-        newfile2.write(numPeriods + "\n");
-        newfile3.write(numPeriods + "\n");
+        //newfile2.write(numPeriods + "\n");
+        //newfile3.write(numPeriods + "\n");
 
         java.util.Date startTime1 = new java.util.Date();
 
         double[] myRain = new double[linksStructure.contactsArray.length];
-        double[] myEVPT = new double[linksStructure.contactsArray.length];
-        double[] myPotEVPT = new double[linksStructure.contactsArray.length];
-        double TOTALEVPT = 0;
-        double TOTALPotEVPT = 0;
-        double TOTALRain = 0;
-
+        //double[] myEVPT = new double[linksStructure.contactsArray.length];
+        //double[] myPotEVPT = new double[linksStructure.contactsArray.length];
+        //double TOTALEVPT = 0;
+        //double TOTALPotEVPT = 0;
+        double AVERain = 0;
+        double MAXRain=0;
         for (int k = 0; k < numPeriods; k++) {
             //System.out.println("Initiating time step "+k);
             double currTime = storm.stormInitialTimeInMinutes() + k * storm.stormRecordResolutionInMinutes();
@@ -147,28 +147,34 @@ public class HillslopeRainEVPT_ToFile {
 //            System.out.print(currTime + ",");
 
             newfile.write(currTime + ",");
-            newfile2.write(currTime + ",");
-            newfile3.write(currTime + ",");
+            //newfile2.write(currTime + ",");
+            //newfile3.write(currTime + ",");
             newfile4.write(currTime + ",");
+            AVERain=0;
+            MAXRain=0;
+            
             for (int i = 0; i < linksStructure.contactsArray.length; i++) {
                 newfile.write(df3.format(thisHillsInfo.precipitation(i, currTime)) + ",");
-                newfile2.write(df3.format(thisHillsInfo.EVPT(i, currTime)) + ",");
-                newfile3.write(df3.format(thisHillsInfo.PotEVPT(i, currTime)) + ",");
-                myRain[i] = thisHillsInfo.precipitation(i, currTime);
-                myEVPT[i] = thisHillsInfo.EVPT(i, currTime);
-                myPotEVPT[i] = thisHillsInfo.PotEVPT(i, currTime);
+                AVERain=AVERain+thisHillsInfo.precipitation(i, currTime);
+                if(thisHillsInfo.precipitation(i, currTime)>MAXRain)
+                    MAXRain=thisHillsInfo.precipitation(i, currTime);
+                //newfile2.write(df3.format(thisHillsInfo.EVPT(i, currTime)) + ",");
+                //newfile3.write(df3.format(thisHillsInfo.PotEVPT(i, currTime)) + ",");
+                //myEVPT[i] = thisHillsInfo.EVPT(i, currTime);
+                //myPotEVPT[i] = thisHillsInfo.PotEVPT(i, currTime);
             }
-            
-           TOTALEVPT = TOTALEVPT+new hydroScalingAPI.util.statistics.Stats(myEVPT).meanValue;
-           TOTALPotEVPT = TOTALPotEVPT+new hydroScalingAPI.util.statistics.Stats(myPotEVPT).meanValue;
-           TOTALRain = TOTALRain+new hydroScalingAPI.util.statistics.Stats(myRain).meanValue;
+            AVERain=AVERain/linksStructure.contactsArray.length;
+            newfile.write(df3.format(AVERain)+","+ MAXRain + "\n");
+                
+           //TOTALEVPT = TOTALEVPT+new hydroScalingAPI.util.statistics.Stats(myEVPT).meanValue;
+           //TOTALPotEVPT = TOTALPotEVPT+new hydroScalingAPI.util.statistics.Stats(myPotEVPT).meanValue;
             
             newfile.write("\n");
-            newfile2.write("\n");
-            newfile3.write("\n");
+            //newfile2.write("\n");
+            //newfile3.write("\n");
            
-            newfile4.write(df3.format(new hydroScalingAPI.util.statistics.Stats(myRain).meanValue) + ","+ df3.format(new hydroScalingAPI.util.statistics.Stats(myEVPT).meanValue) +","+ df3.format(new hydroScalingAPI.util.statistics.Stats(myPotEVPT).meanValue)+","+
-                    df3.format(new hydroScalingAPI.util.statistics.Stats(myRain).standardDeviation) + ","+ df3.format(new hydroScalingAPI.util.statistics.Stats(myEVPT).standardDeviation) +","+ df3.format(new hydroScalingAPI.util.statistics.Stats(myPotEVPT).standardDeviation) +"\n");
+            //newfile4.write(df3.format(new hydroScalingAPI.util.statistics.Stats(myRain).meanValue) + ","+ df3.format(new hydroScalingAPI.util.statistics.Stats(myEVPT).meanValue) +","+ df3.format(new hydroScalingAPI.util.statistics.Stats(myPotEVPT).meanValue)+","+
+            //df3.format(new hydroScalingAPI.util.statistics.Stats(myRain).standardDeviation) + ","+ df3.format(new hydroScalingAPI.util.statistics.Stats(myEVPT).standardDeviation) +","+ df3.format(new hydroScalingAPI.util.statistics.Stats(myPotEVPT).standardDeviation) +"\n");
 //            System.out.print("myRain  " + new hydroScalingAPI.util.statistics.Stats(myRain).meanValue + ", "+ new hydroScalingAPI.util.statistics.Stats(myRain).maxValue +", "+ new hydroScalingAPI.util.statistics.Stats(myRain).total);
 //            System.out.print("EVPT  " + new hydroScalingAPI.util.statistics.Stats(myEVPT).meanValue + ", "+ new hydroScalingAPI.util.statistics.Stats(myEVPT).maxValue +", "+ new hydroScalingAPI.util.statistics.Stats(myEVPT).total);
 //            System.out.print("myPotEVPT  " + new hydroScalingAPI.util.statistics.Stats(myPotEVPT).meanValue + ", "+ new hydroScalingAPI.util.statistics.Stats(myPotEVPT).maxValue +", "+ new hydroScalingAPI.util.statistics.Stats(myPotEVPT).total);
@@ -178,7 +184,7 @@ public class HillslopeRainEVPT_ToFile {
         
           //newfile4.write("0.0,"+TOTALRain + ","+ TOTALEVPT +","+ TOTALPotEVPT+"\n");
        
-        System.out.print("TOTALRain  " + TOTALRain + ", TOTALEVPT"+ TOTALEVPT +", TOTALPotEVPT"+ TOTALPotEVPT);
+        System.out.print("TOTALRain  " + AVERain);
            
        
         java.util.Date endTime1 = new java.util.Date();
@@ -188,10 +194,10 @@ public class HillslopeRainEVPT_ToFile {
 
         newfile.close();
         bufferout.close();
-        newfile2.close();
-        bufferout2.close();
-        newfile3.close();
-        bufferout3.close();
+        //newfile2.close();
+        //bufferout2.close();
+        //newfile3.close();
+        //bufferout3.close();
 
         System.out.println("File Completed");
     }
@@ -247,9 +253,9 @@ public class HillslopeRainEVPT_ToFile {
         try {
 
 
-            java.io.File theFile = new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+            java.io.File theFile = new java.io.File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            metaModif.setLocationBinaryFile(new java.io.File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
 
             metaModif.setFormat("Byte");
             byte[][] matDirs = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
@@ -263,58 +269,88 @@ public class HillslopeRainEVPT_ToFile {
             java.io.File PotEVPTFile;
             java.io.File outputDirectory;
 
-            for (int iy = 2002; iy < 2010; iy++) {
+                  int [] x = new int[36];
+        int [] y= new int[36];
+        int [] Code = new int[36];
+        //x[1]=3124; y[1]=234; Code[1]=9999999; 
+//        x[0]=2646; y[0]=762; Code[0]=5454220; 
+//x[1]=2817; y[1]=713; Code[1]=5454300; 
+//x[2]=2949; y[2]=741; Code[2]=5454000; 
+//x[1]=2256; y[1]=876; Code[1]=5453100; 
+//x[4]=1312; y[4]=1112; Code[4]=5451700; 
+//x[5]=2858; y[5]=742; Code[5]=5454090; 
+//x[6]=2115; y[6]=801; Code[6]=5453000; 
+//x[7]=1871; y[7]=903; Code[7]=5452200; 
+//x[8]=2885; y[8]=690; Code[8]=5454500; 
+//x[9]=2796; y[9]=629; Code[9]=5455100; 
+//x[10]=2958; y[10]=410; Code[10]=5455700; 
+//x[11]=3186; y[11]=392; Code[11]=5465000; 
+//x[12]=3316; y[12]=116; Code[12]=5465500; 
+x[1]=2734; y[1]=1069 ; Code[12]=05464500;
+//x[14]=1770; y[14]=1987; Code[14]=5458300; 
+//x[15]=2676; y[15]=465; Code[15]=5455500; 
+//x[16]=2900; y[16]=768; Code[16]=5453520; 
+//x[17]=1765; y[17]=981; Code[17]=5451900; 
+//x[18]=1245; y[18]=1181; Code[18]=5451500; 
+//x[19]=951; y[19]=1479; Code[19]=5451210; 
+//x[20]=3113; y[20]=705; Code[20]=5464942; 
+//x[21]=1978; y[21]=1403; Code[21]=5464220; 
+//x[22]=1779; y[22]=1591; Code[22]=5463500; 
+//x[23]=1932; y[23]=1695; Code[23]=5464000; 
+//x[24]=1798; y[24]=1750; Code[24]=5463050; 
+//x[25]=1590; y[25]=1789; Code[25]=5463000; 
+//x[26]=1682; y[26]=1858; Code[26]=5458900; 
+//x[27]=1634; y[27]=1956; Code[27]=5462000; 
+//x[28]=1775; y[28]=1879; Code[28]=5458500; 
+//x[29]=903; y[29]=2499; Code[29]=5459500; 
+//x[30]=1526; y[30]=2376; Code[30]=5457700; 
+//x[31]=1730; y[31]=2341; Code[31]=5458000; 
+//x[32]=1164; y[32]=3066; Code[32]=5457000; 
+//x[33]=1741; y[33]=1831; Code[33]=5462000; 
+//x[34]=3053; y[34]=2123; Code[34]=5412020; 
+//x[31]=1730; y[31]=2341; Code[31]=5458000; 
+//x[32]=1164; y[32]=3066; Code[32]=5457000; 
+//x[33]=1741; y[33]=1831; Code[33]=5462000; 
+//x[34]=3053; y[34]=2123; Code[34]=5412020; 
+ //FINISHCode[34]=5412400;   
+ //FINISHCode[34]=5411850;  
+ //FINISHCode[34]=5412500;      
+        for (int i=1;i<x.length-1;i++) {
+            System.out.println(" x " + x[i] + "  y  " +y[i]);
+        
+            String Dir="/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/MatrizPintada/";
+  
+             for (int ped = 1; ped <= 1; ped++) {
 
-             int xOut=2734;
-             int yOut=1069; 
+            for (int ir = 1; ir <= 1; ir++) {
+
+             int xOut=x[i];
+             int yOut=y[i]; 
+             int CodeStation=Code[i]; 
 //                    int xOut = 2817;
 //                    int yOut = 713;
                  
-                    
-                    stormFile = new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/1996_2010/Radar_StageIVDaily/" + iy + "/PrecIowa.metaVHC");
+                      
+                       String ens = "error";
+                      if (ir == 0 || ir == 51) {
+                        ens = "MPE_IOWA_ST4.";
+                       } else if (ir > 0 && ir < 10) {
+                       ens = "PED_0" + ir + "_MPE_IOWA_ST4.";
+                        } else {
+                         ens = "PED_" + ir + "_MPE_IOWA_ST4.";
+                       }
+                       String storm = "error";
+              storm = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/RadarErrorSim/PEDVHC" +ped+"/" + ir + "/" + ens + "metaVHC";
+                                                                     
+                    stormFile = new java.io.File(storm);
                     System.out.println(stormFile.getAbsolutePath());
-                    EVPTFile = new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/EVPT_MOD16/VHC/" + iy + "/ET/IowaET.metaVHC");
-                    PotEVPTFile = new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/EVPT_MOD16/VHC/" + iy + "/PET/IowaPET.metaVHC");
-
-                    outputDirectory = new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/Waterbalance/results/" + xOut + "_" + yOut + "/" + iy + "/");
+                
+                    outputDirectory = new java.io.File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/RadarErrorSim/RainAnalysis/PEDVHC" +ped+"/" + ir + "/" + xOut + "_" + yOut);
                     outputDirectory.mkdirs();
                     //stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/hydroNexrad.metaVHC");
-
-                    //new HillslopeRainEVPT_ToFile(2646, 762,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(2949, 741,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(2885, 690,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(2817, 713,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1312, 1112,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(2858, 742,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(2115, 801,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1765, 981,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1871, 903,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(2796, 629,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(2958, 410,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-              new HillslopeRainEVPT_ToFile(xOut, yOut, matDirs, magnitudes, metaModif, stormFile, EVPTFile, PotEVPTFile, outputDirectory);
-//            new HillslopeRainEVPT_ToFile(1770, 1987,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(2256, 876,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(3186, 392,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(3316, 116,matDirs,magnitudes,metaModif,stormFile,EVPTFile,PotEVPTFile,outputDirectory);
-//
-//
-//            new HillslopeRainEVPT_ToFile(2676, 465,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(2900, 768,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1245, 1181,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(951, 1479,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(3113, 705,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1978, 1403,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1779, 1591,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1932, 1695,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1590, 1789,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1682, 1858,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1634, 1956,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1775, 1879,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(903, 2499,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1526, 2376,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1730, 2341,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-//            new HillslopeRainEVPT_ToFile(1164, 3066,matDirs,magnitudes,metaModif,stormFile,EVPTFile);
-                
+             new HillslopeRainEVPT_ToFile(xOut, yOut, matDirs, magnitudes, metaModif, stormFile,outputDirectory);
+            }
+            }
             }
 
         } catch (java.io.IOException IOE) {

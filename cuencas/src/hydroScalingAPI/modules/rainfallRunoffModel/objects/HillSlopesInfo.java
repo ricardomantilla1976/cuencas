@@ -48,6 +48,8 @@ public class HillSlopesInfo extends java.lang.Object {
     hydroScalingAPI.modules.rainfallRunoffModel.objects.StormManager thisStormEvent;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager thisEVPTEvent;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager thisPotEVPTEvent;
+    hydroScalingAPI.modules.rainfallRunoffModel.objects.SnowManager thisSNOWEvent;
+    hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager thisSoilMoistureEvent;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager thisInfiltManager;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.LandUseManager thisLandUse;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager thisSCSData;
@@ -157,6 +159,22 @@ public class HillSlopesInfo extends java.lang.Object {
         return thisPotEVPTEvent.getPotEVPTOnHillslope(HillNumber,dateRequested);
     }
       
+      public double SnowMelt(int HillNumber,double timeInMinutes){
+        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
+        dateRequested.clear();
+        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
+//        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
+        return thisSNOWEvent.getSNOWOnHillslope(HillNumber,dateRequested);
+    }
+      
+       public double SoilMoisture(int HillNumber,double timeInMinutes){
+        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
+        dateRequested.clear();
+        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
+//        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
+        return thisSoilMoistureEvent.getSOILM040OnHillslope(HillNumber, dateRequested);
+    }
+      
       
        public double precipitationacum(int HillNumber,double timeInMinutes){
         java.util.Calendar dateRequested =java.util.Calendar.getInstance();
@@ -166,21 +184,21 @@ public class HillSlopesInfo extends java.lang.Object {
         return thisStormEvent.getAcumPrecOnHillslope(HillNumber,dateRequested);
     }
 
-       public double EVPTacum(int HillNumber,double timeInMinutes){
-        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
-        dateRequested.clear();
-        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
-//        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
-        return thisEVPTEvent.getAcumEVPTOnHillslope(HillNumber,dateRequested);
-    }
-       
-        public double PotEVPTacum(int HillNumber,double timeInMinutes){
-        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
-        dateRequested.clear();
-        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
-//        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
-        return thisPotEVPTEvent.getAcumPotEVPTOnHillslope(HillNumber,dateRequested);
-    }
+//       public double EVPTacum(int HillNumber,double timeInMinutes){
+//        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
+//        dateRequested.clear();
+//        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
+////        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
+//        return thisEVPTEvent.getAcumEVPTOnHillslope(HillNumber,dateRequested);
+//    }
+//       
+//        public double PotEVPTacum(int HillNumber,double timeInMinutes){
+//        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
+//        dateRequested.clear();
+//        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
+////        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
+//        return thisPotEVPTEvent.getAcumPotEVPTOnHillslope(HillNumber,dateRequested);
+//    }
     /**
      * The maximum precipitatation intesity recorded over the hillslope
      * @param HillNumber The index of the desired hillslope
@@ -266,6 +284,13 @@ public class HillSlopesInfo extends java.lang.Object {
 
          public void setPotEVPTManager(hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager PotEVPT){
         thisPotEVPTEvent=PotEVPT;
+    }
+         
+          public void setSnowManager(hydroScalingAPI.modules.rainfallRunoffModel.objects.SnowManager SNOW){
+        thisSNOWEvent=SNOW;
+    }
+          public void setSoilMoistureManager(hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager SOILM){
+        thisSoilMoistureEvent=SOILM;
     }
     /**
      *
@@ -475,6 +500,10 @@ public class HillSlopesInfo extends java.lang.Object {
    public double SCS_S2(int HillNumber){
      return ((25400/thisSCSData.getAverCN2(HillNumber))-254);
     }
+   
+   public double SWA150(int HillNumber){
+     return (thisSCSData.getAverSwa150(HillNumber));
+    }
    public double SCS_IA2(int HillNumber){
      return (0.05*((25400/thisSCSData.getAverCN2(HillNumber))-254));
     }
@@ -518,7 +547,7 @@ public class HillSlopesInfo extends java.lang.Object {
      * @param HillNumber The index of the desired hillslope
      * @return The average hillslope SLOPE - calculated by a */
       public double getHillslope(int HillNumber){
-        return thisSCSData.getavehillBasedSlope(HillNumber);
+        return thisSCSData.getavehillBasedSlopeMet1(HillNumber);
     }
 
 

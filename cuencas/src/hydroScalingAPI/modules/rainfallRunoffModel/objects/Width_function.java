@@ -339,7 +339,8 @@ public class Width_function {
             //subMain4(args);     //Case  11140102
             //subMain5(args);     //Iowa River
             //subMain6(args);     //Charlotte
-            subMainClearCreek(args);
+            //subMainClearCreek(args);
+            subMainCedar(args);
         } catch (java.io.IOException IOE) {
             System.out.print(IOE);
             System.exit(0);
@@ -586,6 +587,72 @@ public class Width_function {
 
     }
 
+    
+      public static void subMainCedar(String args[]) throws java.io.IOException {
+
+
+        ///// DEM DATA /////
+        String Dir = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/WidthFunction/";
+        new java.io.File(Dir).mkdirs();
+
+        //String[] AllSimName = {"30DEMASTER"};
+   String[] AllSimName = {"90DEMUSGSPrun1"};
+
+        String[] AllRain = {"3CedarRapids"};
+
+        int nsim = AllSimName.length;
+        int nbas = AllRain.length;
+
+        for (int i = 0; i < nsim; i++) {
+            for (int ib = 0; ib < nbas; ib++) {
+        System.out.println("Running BASIN " + AllSimName[i]);
+                System.out.println("Running BASIN " + AllRain[ib]);
+                  String SimName = AllSimName[i];
+                String BasinName = AllRain[ib];
+                java.io.File outputDirectory;
+                
+                // DEFINE DEM
+                String[] StringDEM = {"error", "error", "error"};
+                StringDEM = defineDEMxy(BasinName, SimName);
+                System.out.println("StringDEM = " + StringDEM[0]);
+                System.out.println("x = " + StringDEM[1] + "    y" + StringDEM[2]);
+                String DEM = StringDEM[0];
+                int x = Integer.parseInt(StringDEM[1]);//   .getInteger(StringDEM[1]);
+                int y= Integer.parseInt(StringDEM[2]);
+            
+                String ResStr = AllSimName[i] + "_" +AllRain[ib];
+            String OutputDir = Dir + "/" + ResStr + "/";
+            
+
+            new java.io.File(OutputDir).mkdirs();
+            java.io.File theFile=new java.io.File(DEM);
+
+            hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(new java.io.File(DEM));
+               
+            java.io.File theFile2;
+
+            theFile2 = new java.io.File(DEM.replace(".metaDEM", ".dir"));
+            metaModif.setLocationBinaryFile(theFile2);
+            String formatoOriginal = metaModif.getFormat();
+            metaModif.setFormat("Byte");
+            byte[][] matDirs = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+            metaModif.setLocationBinaryFile(new java.io.File(DEM.replace(".metaDEM", ".magn")));
+            metaModif.setFormat("Integer");
+            int[][] magnitudes = new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+
+
+            String LandUse = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+
+            //new Width_function(x, y, matDirs, magnitudes, metaModif, new java.io.File(LandUse), new java.io.File(OutputDir)).ExecuteWidthFunction();
+            String SoilData = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            String SoilHydData = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+            
+            new SCS(x, y, matDirs, magnitudes, metaModif, theFile, new java.io.File(LandUse), new java.io.File(SoilData), new java.io.File(SoilHydData), new java.io.File(Soil150SWAData), new java.io.File(OutputDir)).ExecuteSCS();
+            }
+        }
+    }
     public static void subMainClearCreek(String args[]) throws java.io.IOException {
 
 
@@ -667,8 +734,284 @@ public class Width_function {
             String LandUse = "/usr/home/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
 
             new Width_function(x, y, matDirs, magnitudes, metaModif, new java.io.File(LandUse), new java.io.File(OutputDir)).ExecuteWidthFunction();
-
+            String SoilData = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            String SoilHydData = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+            new SCS(x, y, matDirs, magnitudes, metaModif, theFile, new java.io.File(LandUse), new java.io.File(SoilData), new java.io.File(SoilHydData), new java.io.File(Soil150SWAData), new java.io.File(OutputDir)).ExecuteSCS();
             j = j + 1;
         }
     }
+    
+    
+      public static String[] defineDEMxy(String BasinName, String SimName) {
+
+        // DEFINE THE DEM and x and y
+        int xOut = 2817;
+        int yOut = 713; //90METERDEMClear Creek - coralville
+        String[] OUTPUT = {"error", "errorx", "errory"};
+        if (SimName.contains("ASTER")) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM";
+            xOut = 1596;
+            yOut = 298;
+        }
+        if (SimName.equals("5DEMLIDAR")) {
+            xOut = 8052;
+            yOut = 497;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/ClearCreek/Rasters/Topography/5meters/5meterc1.metaDEM";
+        }
+        if (SimName.equals("10DEMLIDAR")) {
+            xOut = 4025;
+            yOut = 244;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/ClearCreek/Rasters/Topography/10meters/10meterc1.metaDEM";
+        }
+        if (SimName.equals("20DEMLIDAR")) {
+            xOut = 2013;
+            yOut = 122;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/ClearCreek/Rasters/Topography/20meters/20meterc1.metaDEM";
+        }
+        if (SimName.equals("30DEMLIDAR")) {
+            xOut = 1341;
+            yOut = 82;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/ClearCreek/Rasters/Topography/30meters/30meterc1.metaDEM";
+        }
+        if (SimName.equals("60DEMLIDAR")) {
+            xOut = 670;
+            yOut = 41;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/ClearCreek/Rasters/Topography/60meters/60meterc1.metaDEM";
+        }
+        if (SimName.equals("90DEMLIDAR")) {
+            xOut = 447;
+            yOut = 27;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/90meterc1.metaDEM";
+        }
+        if (SimName.equals("90DEMUSGS")) {
+            xOut = 2817;
+            yOut = 713;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+        if (SimName.equals("30DEMUSGS")) {
+            xOut = 1541;
+            yOut = 92;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/ClearCreek/Rasters/Topography/30USGS/ned_1.metaDEM";
+        }
+
+        if (SimName.equals("10DEMUSGS")) {
+            xOut = 4624;
+            yOut = 278;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/ClearCreek/Rasters/Topography/10USGS/ned_1_3.metaDEM";
+        }
+
+        if (BasinName.indexOf("Cedar") >= 0) {
+
+            xOut = 2734;
+            yOut = 1069; //Cedar Rapids
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+
+        }
+
+        if (BasinName.indexOf("Waverly") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+            xOut = 1770;
+            yOut = 1987;
+        }
+
+
+        if (BasinName.indexOf("Marengo") >= 0) {
+            xOut = 2256;
+            yOut = 876;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+        if (BasinName.indexOf("Iowa") >= 0) {
+            xOut = 2885;
+            yOut = 690;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+        if (BasinName.indexOf("Garber") >= 0) {
+            xOut = 3217;
+            yOut = 1989;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+
+        if (BasinName.indexOf("Turkey") >= 0) {
+
+            xOut = 3053;
+            yOut = 2123;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+        if (BasinName.indexOf("Volga") >= 0) {
+            xOut = 3091;
+            yOut = 2004;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+        if (BasinName.indexOf("Hoover") >= 0) {
+            xOut = 3113;
+            yOut = 705;
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+         if (SimName.indexOf("90DEMUSGS") >= 0 && SimName.indexOf("Prun1") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun1/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+ 
+         if (SimName.indexOf("90DEMUSGS") >= 0 && SimName.indexOf("Prun3") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun3/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+ 
+       if (SimName.indexOf("90DEMUSGS") >= 0 && SimName.indexOf("Prun4") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun4/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+ 
+        if (SimName.indexOf("90DEMUSGS") >= 0 && SimName.indexOf("Prun5") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun5/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+        if (SimName.indexOf("90DEMUSGS") >= 0 && SimName.indexOf("Prun6") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun6/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+        if (SimName.indexOf("90DEMUSGS") >= 0 && SimName.indexOf("Prun7") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun7/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+        if (SimName.indexOf("90DEMUSGS") >= 0 && SimName.indexOf("Prun8") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun8/AveragedIowaRiverAtColumbusJunctions.metaDEM";
+        }
+
+
+
+        if (SimName.indexOf("120DEMUSGS") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs120m.metaDEM";
+            if (BasinName.indexOf("Clear") >= 0) {
+                xOut = 2113;
+                yOut = 535;
+            }
+            if (BasinName.indexOf("Iowa") >= 0) {
+                xOut = 2164;
+                yOut = 517;
+            }
+
+            if (BasinName.indexOf("Cedar") >= 0) {
+                xOut = 2050;
+                yOut = 802;
+            }
+        }
+
+
+        if (SimName.indexOf("180DEMUSGS") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs180m.metaDEM";
+            if (BasinName.indexOf("Clear") >= 0) {
+                xOut = 1409;
+                yOut = 356;
+            }
+            if (BasinName.indexOf("Cedar") >= 0) {
+                xOut = 1367;
+                yOut = 534;
+            }
+
+            if (BasinName.indexOf("Iowa") >= 0) {
+                xOut = 1443;
+                yOut = 345;
+            }
+
+        }
+
+        if (SimName.indexOf("90DEMASTER") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/90master.metaDEM";
+            if (BasinName.indexOf("Clear") >= 0) {
+                xOut = 2807;
+                yOut = 643;
+            }
+            if (BasinName.indexOf("Cedar") >= 0) {
+                xOut = 2723;
+                yOut = 997;
+            }
+
+            if (BasinName.indexOf("Iowa") >= 0) {
+                xOut = 2873;
+                yOut = 617;
+            }
+
+        }
+
+        if (SimName.indexOf("30DEMASTER") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/ce30maf.metaDEM";
+            if (BasinName.indexOf("Cedar") >= 0) {
+                xOut = 8124;
+                yOut = 510;
+            }
+
+        }
+        
+        
+        if (SimName.indexOf("150DEMASTER") >= 0) {
+            OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs150m.metaDEM";
+            if (BasinName.indexOf("Cedar") >= 0) {
+                xOut = 1639;
+                yOut = 534;
+            }
+
+        }
+        if (SimName.indexOf("30DEMUSGS") >= 0) {
+
+            if (BasinName.indexOf("Clear") >= 0) {
+                OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM";
+                xOut = 8288;
+                yOut = 1029;
+            }
+
+            if (BasinName.indexOf("Cedar") >= 0) {
+                OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.metaDEM";
+                xOut = 7875;
+                yOut = 1361;
+            }
+
+            if (BasinName.indexOf("Iowa") >= 0) {
+                OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM";
+                xOut = 8443;
+                yOut = 1029;
+
+            }
+
+            if (BasinName.indexOf("IowaUps") >= 0) {
+                OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM";
+                xOut = 5505;
+                yOut = 1871;
+
+            }
+
+            if (BasinName.indexOf("Waverly") >= 0) {
+                OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.metaDEM";
+                xOut = 5468;
+                yOut = 3237;
+            }
+
+        }
+        
+        if (SimName.indexOf("90DEMSRTM") >= 0) {
+
+            if (BasinName.indexOf("Cedar") >= 0) {
+   
+        OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/SRTM/srtm3arc.metaDEM";
+             xOut = 2801;
+                yOut = 1167;
+            }
+         if (BasinName.indexOf("Clear") >= 0) {
+   
+        OUTPUT[0] = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/SRTM/srtm3arc.metaDEM";
+             xOut = 2887;
+                yOut = 813;
+            }
+        }
+        
+        OUTPUT[1] = Integer.toString(xOut);
+        OUTPUT[2] = Integer.toString(yOut);
+
+        System.out.println("OUTPUT[0] = " + OUTPUT[0]);
+        System.out.println("OUTPUT[1] = " + OUTPUT[1]);
+        System.out.println("OUTPUT[2] = " + OUTPUT[2]);
+        return OUTPUT;
+    }
+
 }

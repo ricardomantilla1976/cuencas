@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package hydroScalingAPI.modules.rainfallRunoffModel.objects;
 
+import java.util.Locale;
+
 /**
  * This class manages a time series of parameters associated to the hillslope.  For
  * example rainfall, or any other temporaly varaible parameter.
@@ -71,9 +73,17 @@ public class HillSlopeTimeSeries {
         
         if(first){
             iniTimeMill=newRecordTime.getTimeInMillis();
+            //System.out.println("  Initial time " + newRecordTime.getTimeInMillis());
             first=false;
         }
-        
+        double reg=(double) regInterval;
+        double test=(((double)newRecordTime.getTimeInMillis()-(double)iniTimeMill)/(double)regInterval);
+       
+        long redeftime=iniTimeMill+Math.round(test)*regInterval; //To round the time to the previous exact record time
+        newRecordTime.setTimeInMillis(redeftime);
+        // java.text.SimpleDateFormat formatter=new java.text.SimpleDateFormat("E yyy.MM.dd at hh:hh:ss zzz");
+        //System.out.println("ninterval "  +test+"   newRecordTime  " + newRecordTime.getTimeInMillis() +   " newRecordValue  "+ newRecordValue);
+        //System.out.println("  new record " + newRecordTime.getTimeInMillis() + " newRecordValue  "+ newRecordValue);             
         recordTimeValue.put(newRecordTime,newRecordValue);
         
         numRecordsWithRain++;
@@ -89,10 +99,22 @@ public class HillSlopeTimeSeries {
     public float getRecord(java.util.Calendar atThisTime){
         
         java.util.Calendar serchForTime = java.util.Calendar.getInstance();
+        
         serchForTime.setTimeInMillis(iniTimeMill+regInterval*((atThisTime.getTimeInMillis()-iniTimeMill)/regInterval)); //To round the time to the previous exact record time
+         //System.out.println("  new record " + serchForTime.getTimeInMillis());             
+       
         Float valueToReturn=((Float)recordTimeValue.get(serchForTime));
         
+        //recordTimeValue.toString();
         if (valueToReturn == null){
+            //recordTimeValue.elements();
+            //System.out.println(iniTimeMill+"  regInterval  "+regInterval+"  did not find right value   " + atThisTime.getTimeInMillis() +  " ROUNDED  "+ serchForTime.getTimeInMillis());
+            //System.out.println("Time Searching" + serchForTime.getTimeInMillis());
+            atThisTime.getTimeInMillis();
+            //for() {
+            //        serchForTime.setTimeInMillis(iniTimeMill+regInterval*((atThisTime.getTimeInMillis()-iniTimeMill)/regInterval)); //To round the time to the previous exact record time
+                    
+            //}    
             return 0.0f;
         } else return valueToReturn;
         

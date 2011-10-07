@@ -1,0 +1,63 @@
+This file, RegressOutput.txt, was created at 8:50:51 PM on Jun 20, 2011
+ 
+Weighted Least Squares Minimisation
+Polynomial (with degree = 3) and fixed intercept, Fitting: Linear Regression
+y = fixed intercept + c[0]*x + c[1]*x^2 +c[2]*x^3 + . . .
+
+Fixed Intercept = 0.0
+             	Best         	Error        	Coefficient of	t-value      	p-value
+             	Estimate     	             	variation (%)	t            	P > |t|
+c[0]         	6.9989       	0.2748       	3.9266       	25.4673      	1.7668E-12
+c[1]         	-2.1626      	0.1097       	5.0744       	-19.707      	4.5755E-11
+c[2]         	0.1754       	0.0105       	5.9863       	16.7048      	3.6335E-10
+
+x0           	y(expl)      	y(calc)      	weight       	residual     	residual
+             	             	             	             	(unweighted) 	(weighted)
+0.0          	10.9996      	0.0          	0.5          	-10.9996     	-21.9992
+0.5          	8.8481       	2.9807       	0.45         	-5.8674      	-13.0386
+1.0          	7.1415       	5.0117       	0.55         	-2.1298      	-3.8723
+1.5          	6.5376       	6.2246       	0.44         	-0.3131      	-0.7115
+2.0          	6.466        	6.7508       	0.46         	0.2848       	0.6191
+2.5          	5.1026       	6.722        	0.51         	1.6194       	3.1754
+3.0          	4.7215       	6.2698       	0.56         	1.5483       	2.7649
+3.5          	3.7115       	5.5258       	0.48         	1.8143       	3.7797
+4.0          	3.8383       	4.6214       	0.5          	0.7831       	1.5662
+4.5          	3.4997       	3.6883       	0.45         	0.1886       	0.4192
+5.0          	3.7972       	2.8581       	0.55         	-0.9391      	-1.7074
+5.5          	3.4459       	2.2623       	0.44         	-1.1836      	-2.6899
+6.0          	2.8564       	2.0326       	0.46         	-0.8238      	-1.791
+6.5          	3.291        	2.3004       	0.51         	-0.9906      	-1.9424
+7.0          	3.0518       	3.1974       	0.56         	0.1456       	0.2599
+7.5          	3.6073       	4.8551       	0.48         	1.2478       	2.5995
+
+Sum of squares 174.6133
+Chi Square	728.4528
+Reduced Chi Square	56.0348
+ 
+ 
+Correlation: y(experimental) - y(calculated)
+Weighted Linear Correlation Coefficient	-0.1112
+Weighted Linear Correlation Coefficient Probability	0.3409
+
+Correlation coefficients
+             	c[0]         	c[1]         	c[2]         	
+c[0]         	1.0          	-0.9672      	0.9129       	
+c[1]         	-0.9672      	1.0          	-0.9852      	
+c[2]         	0.9129       	-0.9852      	1.0          	
+ 
+Degrees of freedom	13
+Number of data points	16
+Number of estimated paramaters	3
+
+Durbin-Watson d statistic	0.2934
+
+
+Coefficient of determination,   =                   0.0
+Adjusted Coefficient of determination,    =         -0.25
+Coefficient of determination, F-ratio =             0.0
+Coefficient of determination, F-ratio probability = 1.0
+Total (weighted) sum of squares  =                  348.8562
+Regression (weighted) sum of squares  =             0.0
+Error (weighted) sum of squares  =                  728.4528
+
+End of file

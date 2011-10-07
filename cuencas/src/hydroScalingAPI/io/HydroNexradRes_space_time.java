@@ -305,7 +305,7 @@ public class HydroNexradRes_space_time extends Object {
 
     public static void createMetaFile(File directory, int newsresol, int newtresol, int Finalrows, int Finalcolumns) {
         try {
-            File saveFile = new File(directory.getPath() + File.separator + "/Bin/" + "hydroNexrad.metaVHC");
+            File saveFile = new File(directory.getPath() + File.separator + "/Bin/" + "MPE_IOWA_ST4.metaVHC");
             // String F=directory.getPath()+File.separator+"/bin/"+"prec.metaVHC";
             PrintWriter writer = new PrintWriter(new FileWriter(saveFile));
             // System.out.println("file = "+ F);
@@ -319,14 +319,13 @@ public class HydroNexradRes_space_time extends Object {
             writer.println("[Southernmost Latitude]");
             //writer.println("37:38:00.00 N"); // KICT radar
             //writer.println("35:36:00.00 N"); // KICT radar
-            writer.println("40:58:00.00 N"); // Iowa River
+            writer.println("41:21:00.00 N"); // Iowa River
             //writer.println("33:13:00.00 N"); // KTLX radar
             //writer.println("34:07:00.00 N"); // KINX radar
             writer.println("[Westernmost Longitude]");
-
             //writer.println("97:18:00.00 W"); // KICT basin
             //writer.println("97:18:00.00 W"); // KICT radar
-            writer.println("93:58:00.00 W"); //Iowa River
+            writer.println("94:00:00.00 W"); //Iowa River
             // writer.println("100:04:00.00 W"); // KICT radar
             //writer.println("99:19:00.00 W"); // KTLX radar
             //writer.println("98:08:00.00 W");// KINX radar
@@ -387,12 +386,12 @@ public class HydroNexradRes_space_time extends Object {
 
 //      String monthString=months[(Integer.parseInt(timeStamp[1])-1)];
 
-        String vhcFilename = "hydroNexrad." + timeStamp[3] + timeStamp[4] + "00." + timeStamp[2] + "." + monthString + "." + timeStamp[0] + ".vhc";
+        String vhcFilename = "MPE_IOWA_ST4." + timeStamp[3] + timeStamp[4] + "00." + timeStamp[2] + "." + monthString + "." + timeStamp[0] + ".vhc";
         //System.out.println(" to "+vhcFilename);
         if (type.equals("Bin")) {
-            vhcFilename = "hydroNexrad." + timeStamp[3] + timeStamp[4] + "00." + timeStamp[2] + "." + monthString + "." + timeStamp[0] + ".vhc";
+            vhcFilename = "MPE_IOWA_ST4." + timeStamp[3] + timeStamp[4] + "00." + timeStamp[2] + "." + monthString + "." + timeStamp[0] + ".vhc";
         } else {
-            vhcFilename = "hydroNexrad." + timeStamp[3] + timeStamp[4] + "00." + timeStamp[2] + "." + monthString + "." + timeStamp[0] + ".asc";
+            vhcFilename = "MPE_IOWA_ST4." + timeStamp[3] + timeStamp[4] + "00." + timeStamp[2] + "." + monthString + "." + timeStamp[0] + ".asc";
         }
         //     System.out.println("vhcFilename: "+ vhcFilename +" ano = " + timeStamp[0]+" mes = " + timeStamp[1]+" day = " + timeStamp[2]+" hour = " + timeStamp[3]+" min = " + timeStamp[4]);
         //      System.out.println(" to "+vhcFilename);
@@ -403,17 +402,17 @@ public class HydroNexradRes_space_time extends Object {
     public static void main(String[] args) throws java.io.IOException {
         /*****DEFINE PARAMETERS*******/
         int NDecRes = 2;    // number of time we would like to reduce the spatial resolution
-        int orig_s_res = 60; //original spatial resolution in ArcSec
-        int ini_row = 184;   // number of rows in the original file
-        int ini_col = 199;   // number of columns in the original file
-        int orig_t_res = 15; // Initial time resolution in minutes
+        int orig_s_res = 180; //original spatial resolution in ArcSec
+        int ini_row = 54;   // number of rows in the original file
+        int ini_col = 54;   // number of columns in the original file
+        int orig_t_res = 60; // Initial time resolution in minutes
         int new_t_res = 60;
 
 
         /*****DEFINE DESIRED RESOLUTION IN SPACE (ARCMIN) AND TIME (MIN)*******/
-        int[] space = {15};
+        int[] space = {2,3,4};
         //int[] space = {1};
-        int[] time = {360};
+        int[] time = {180};
         //int[] time = {180};
 
         float missing = 0.0f;
@@ -423,14 +422,14 @@ public class HydroNexradRes_space_time extends Object {
             for (int it : time) {
                 new_t_res = it;
                 /*****DEFINE THE FOLDER WITH NEXRAD DATA AND OUTPUT FOLDER*******/
-                File folder_nexrad = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune17/");
-                File inputMetaFile = new File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/May29toJune17/hydroNexrad.metaVHC");
+                File folder_nexrad = new File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/RadarErrorSim/OriginalVHC/");
+                File inputMetaFile = new File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/RadarErrorSim/OriginalVHC/MPE_IOWA_ST4.metaVHC");
                 //File folder_nexrad = new File("C:/CUENCAS/Whitewater_database/scale_rainfall_study/walnut_river/may_event/NEXRAD/");
-                String OutputDir = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithBiasRemoval/" + NDecRes + "/";
+                String OutputDir = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/RadarErrorSim/WithBiasRemoval/" + NDecRes + "/";
                 new File(OutputDir).mkdirs();
                 OutputDir = OutputDir + "" + new_t_res + "min/";
                 new File(OutputDir).mkdirs();
-                String OutputDirs = OutputDir + "space/";
+                String OutputDirs = OutputDir + "/space/";
                 String OutputDirt = OutputDir + "/Time/";
                 new File(OutputDirs).mkdirs();
                 new File(OutputDirs + "asc").mkdirs();
@@ -439,7 +438,7 @@ public class HydroNexradRes_space_time extends Object {
                 new File(OutputDirt + "asc").mkdirs();
                 new File(OutputDirt + "Bin").mkdirs();
 
-                String OutputDirB = "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/simulated_events/Agreeg_Hydronexrad_v3/WithoutGeomBias/" + NDecRes + "/";
+                String OutputDirB = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/RadarErrorSim/WithoutGeomBias/" + NDecRes + "/";
                 new File(OutputDirB).mkdirs();
                 OutputDirB = OutputDirB + "" + new_t_res + "min/";
                 new File(OutputDirB).mkdirs();
@@ -475,7 +474,7 @@ public class HydroNexradRes_space_time extends Object {
                     Iterator i = files.iterator();
 System.out.println("OutputDirs" + OutputDirs + "" + OutputDirsB);
                     createMetaFile(new java.io.File(OutputDirs), new_s_res, orig_t_res, Frows, Fcolumns);
-                    createMetaFile(new java.io.File(OutputDirsB), new_s_res, orig_t_res, Frows, Fcolumns);
+                    //createMetaFile(new java.io.File(OutputDirsB), new_s_res, orig_t_res, Frows, Fcolumns);
 
                     while (i.hasNext()) {
 
@@ -512,22 +511,22 @@ System.out.println("OutputDirs" + OutputDirs + "" + OutputDirsB);
 
                 /*****CHANGE RESOLUTION IN TIME - WITH BIAS*******/
                 //if (orig_t_res != new_t_res) {
-                    File folder_bin = new File(OutputDirs + "/asc/" + "hydroNexrad.metaVHC");
+                    File folder_bin = new File(OutputDirs + "/asc/" + "MPE_IOWA_ST4.metaVHC");
                     System.out.println("folder_bin = " + folder_bin);
                     java.io.File directorio = folder_bin.getParentFile();
                     System.out.println("directorio = " + directorio);
                     String baseName = folder_bin.getName().substring(0, folder_bin.getName().lastIndexOf(".") - 1);
-                    // System.out.println("OutputDirs = "+directorio.getParent()+"     \n baseName"+baseName);
+                     System.out.println("OutputDirs = "+directorio.getParent()+"     \n baseName"+baseName);
                     hydroScalingAPI.util.fileUtilities.NameDotFilter myFiltro = new hydroScalingAPI.util.fileUtilities.NameDotFilter(baseName, "asc");
                     java.io.File[] lasQueSi = directorio.listFiles(myFiltro);
-                    //System.out.println("File list="+lasQueSi[1].getName());
-                    //System.out.println("File list="+lasQueSi[2].getName());
+                    System.out.println("File list="+lasQueSi[1].getName());
+                    System.out.println("File list="+lasQueSi[2].getName());
                     hydroScalingAPI.util.fileUtilities.ChronoFile[] arCron = new hydroScalingAPI.util.fileUtilities.ChronoFile[lasQueSi.length];
                     //System.out.println("length = "+lasQueSi.length);
                     arCron = new hydroScalingAPI.util.fileUtilities.ChronoFile[lasQueSi.length]; // create an array with files (size equal to the number of files)
                     for (int i = 0; i < lasQueSi.length; i++) {//System.out.println("i = "+i+" File list="+lasQueSi[i].getName());
                         arCron[i] = new hydroScalingAPI.util.fileUtilities.ChronoFile(lasQueSi[i], baseName);
-                        //System.out.println("i = "+i+" File list="+lasQueSi[i].getName());
+                        System.out.println("i = "+i+" File list="+lasQueSi[i].getName());
                     } // atribut the files to the array arcron
 
                     // for (int i=0;i<lasQueSi.length;i++) {System.out.println("File list="+arCron[i].fileName.getName());}
@@ -559,7 +558,7 @@ System.out.println("OutputDirs" + OutputDirs + "" + OutputDirsB);
 
                     /*****CHANGE RESOLUTION IN TIME*******/
                     //System.out.println("OutputDirs = "+OutputDirs);
-                    File folder_binB = new File(OutputDirsB + "/asc/" + "hydroNexrad.metaVHC");
+                    File folder_binB = new File(OutputDirsB + "/asc/" + "MPE_IOWA_ST4.metaVHC");
 
                     java.io.File directorioB = folder_bin.getParentFile();
 
