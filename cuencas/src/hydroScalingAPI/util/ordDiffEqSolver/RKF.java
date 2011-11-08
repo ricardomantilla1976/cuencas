@@ -698,8 +698,6 @@ public class RKF extends java.lang.Object {
 
         int ouletID = linksStructure.getOutletID();
         
-        ouletID=0;
-
         outputStream.write("\n");
         outputStream.write(currentTime + ",");
         for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
@@ -783,6 +781,13 @@ public class RKF extends java.lang.Object {
             for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
                 if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0) {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
+                }
+            }
+            
+            for (int i = 0; i < IC.length; i++) {
+                if (IC[i] > maxAchieved[i]) {
+                    maxAchieved[i] = IC[i];
+                    timeOfMaximumAchieved[i] = currentTime;
                 }
             }
 
@@ -1302,7 +1307,7 @@ public class RKF extends java.lang.Object {
      * @param IC The value of the initial condition
      * @param outputStream The file to which the information will be writen
      * @param linksStructure The structure describing the topology of the river network
-     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic parameters
+     * @param thisNetworkGeom The description the the hydraulic and geomorphic parameters
      * of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
@@ -1392,6 +1397,13 @@ public class RKF extends java.lang.Object {
 //            for (int i = 0; i < linksStructure.contactsArray.length; i++) {
 //                    outputStream.write(IC[i] + ",");
 //            }
+            
+            for (int i = 0; i < IC.length; i++) {
+                if (IC[i] > maxAchieved[i]) {
+                    maxAchieved[i] = IC[i];
+                    timeOfMaximumAchieved[i] = currentTime;
+                }
+            }
 
             thisDate = java.util.Calendar.getInstance();
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
@@ -1880,9 +1892,7 @@ public class RKF extends java.lang.Object {
 
                 basicTimeStep = givenStep[0][0];
                 currentTime += basicTimeStep;
-                givenStep[
-
-0][0] = currentTime;
+                givenStep[0][0] = currentTime;
                 IC = givenStep[1];
 
 
@@ -1923,9 +1933,7 @@ public class RKF extends java.lang.Object {
 
             basicTimeStep = givenStep[0][0];
             currentTime += basicTimeStep;
-            givenStep[
-
-0][0] = currentTime;
+            givenStep[0][0] = currentTime;
             IC = givenStep[1];
 
             outputStream.write("\n");
@@ -1956,9 +1964,7 @@ public class RKF extends java.lang.Object {
             givenStep = step(currentTime, IC, finalTime - currentTime - 1 / 60., true);
             basicTimeStep = givenStep[0][0];
             currentTime += basicTimeStep;
-            givenStep[
-
-0][0] = currentTime;
+            givenStep[0][0] = currentTime;
             IC = givenStep[1];
 
             outputStream.write("\n");
