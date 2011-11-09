@@ -1506,6 +1506,70 @@ public class BasinAnalyzer extends javax.swing.JDialog implements visad.DisplayL
         
     }
     
+    private void exportRSNTiles(int scale,java.io.File dirOut) throws java.io.IOException{
+        
+        
+        java.io.File hortFile=new java.io.File(metaDatos.getLocationBinaryFile().getPath().substring(0,metaDatos.getLocationBinaryFile().getPath().lastIndexOf("."))+".horton");
+        metaDatos.setLocationBinaryFile(hortFile);
+        metaDatos.setFormat("Byte");
+        try{
+            byte [][] matOrders=new hydroScalingAPI.io.DataRaster(metaDatos).getByte();
+            
+            metaDatos.restoreOriginalFormat();
+            
+            matrizPintada=new int[metaDatos.getNumRows()][metaDatos.getNumCols()];
+            int[][] headsTails=myRSNAnalysis.getHeadsAndTails(scale);
+            
+            hydroScalingAPI.util.randomSelfSimilarNetworks.RsnTile myTileActual;
+            
+            for(int i=0;i<headsTails[0].length;i++){
+                int xOulet=headsTails[0][i]%metaDatos.getNumCols();
+                int yOulet=headsTails[0][i]/metaDatos.getNumCols();
+                
+                int xSource=headsTails[2][i]%metaDatos.getNumCols();
+                int ySource=headsTails[2][i]/metaDatos.getNumCols();
+                
+                if(headsTails[3][i] == 0){
+                    xSource=-1;
+                    ySource=-1;
+                }
+                
+                int tileColor=i+1;
+                //System.out.println("Head: "+xOulet+","+yOulet+" Tail: "+xSource+","+ySource+" Color: "+tileColor+" Scale: "+(scale+1));
+                
+                myTileActual=new hydroScalingAPI.util.randomSelfSimilarNetworks.RsnTile(xOulet,yOulet,xSource,ySource,matDir,matOrders,metaDatos,scale+1);
+                int elementsInTile=myTileActual.getXYRsnTile()[0].length;
+                for (int j=0;j<elementsInTile;j++){
+                    matrizPintada[myTileActual.getXYRsnTile()[1][j]][myTileActual.getXYRsnTile()[0][j]]=tileColor;
+                }
+            }
+            
+            hydroScalingAPI.io.MetaRaster maskMR=new hydroScalingAPI.io.MetaRaster(metaDatos);
+            java.io.File saveFile1,saveFile2;
+            saveFile1=new java.io.File(dirOut+"/"+metaDatos.getLocationMeta().getName().substring(0,metaDatos.getLocationMeta().getName().lastIndexOf("."))+"_BasinWatersheds_Level"+scale+".metaVHC");
+            saveFile2=new java.io.File(dirOut+"/"+metaDatos.getLocationMeta().getName().substring(0,metaDatos.getLocationMeta().getName().lastIndexOf("."))+"_BasinWatersheds_Level"+scale+".vhc");
+            
+            maskMR.setLocationMeta(saveFile1);
+            maskMR.setLocationBinaryFile(saveFile2);
+            maskMR.setFormat("Integer");
+            maskMR.writeMetaRaster(maskMR.getLocationMeta());
+
+            java.io.DataOutputStream writer;
+            writer = new java.io.DataOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(saveFile2)));
+
+            for(int i=0;i<matrizPintada.length;i++) for(int j=0;j<matrizPintada[0].length;j++){
+                writer.writeInt(matrizPintada[i][j]);
+            }
+
+            writer.close();
+            
+        } catch (java.io.IOException IOE){
+            IOE.printStackTrace();
+            return;
+        }
+        
+    }
+    
     private void plotNetwork(DisplayImpl display,int scale) throws java.io.IOException, TypeException, VisADException{
         
         try {
@@ -1668,6 +1732,7 @@ public class BasinAnalyzer extends javax.swing.JDialog implements visad.DisplayL
         rsnScaleSlider = new javax.swing.JSlider();
         jPanel48 = new javax.swing.JPanel();
         jPanel49 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jPanel23 = new javax.swing.JPanel();
@@ -1727,10 +1792,9 @@ public class BasinAnalyzer extends javax.swing.JDialog implements visad.DisplayL
         jPanel8.setLayout(new java.awt.GridLayout(1, 3));
 
         buttonGroup1.add(widthTopolR);
-        widthTopolR.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        widthTopolR.setFont(new java.awt.Font("Dialog", 0, 10));
         widthTopolR.setSelected(true);
         widthTopolR.setText("Topologic Width Function");
-        widthTopolR.setActionCommand("Topologic Width Function");
         widthTopolR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 widthTopolRActionPerformed(evt);
@@ -1739,9 +1803,8 @@ public class BasinAnalyzer extends javax.swing.JDialog implements visad.DisplayL
         jPanel8.add(widthTopolR);
 
         buttonGroup1.add(widthGeomR);
-        widthGeomR.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        widthGeomR.setFont(new java.awt.Font("Dialog", 0, 10));
         widthGeomR.setText("Geometric Width Function");
-        widthGeomR.setActionCommand("Geometric Width Function");
         widthGeomR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 widthGeomRActionPerformed(evt);
@@ -2331,9 +2394,18 @@ public class BasinAnalyzer extends javax.swing.JDialog implements visad.DisplayL
         jPanel48.setLayout(new java.awt.GridLayout(2, 0));
 
         jPanel49.setLayout(new java.awt.BorderLayout());
+
+        jButton1.setText("Export Current Watershed Partition");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel49.add(jButton1, java.awt.BorderLayout.NORTH);
+
         jPanel48.add(jPanel49);
 
-        jList1.setFont(new java.awt.Font("Dialog", 1, 10));
+        jList1.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         jList1.setMaximumSize(new java.awt.Dimension(150, 0));
         jList1.setMinimumSize(new java.awt.Dimension(150, 0));
         jList1.setPreferredSize(new java.awt.Dimension(150, 0));
@@ -3247,6 +3319,26 @@ public class BasinAnalyzer extends javax.swing.JDialog implements visad.DisplayL
         }
 
 }//GEN-LAST:event_printVarValuesActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try{
+            javax.swing.JFileChooser fc=new javax.swing.JFileChooser(mainFrame.getInfoManager().dataBaseRastersHydPath);
+            fc.setFileSelectionMode(fc.DIRECTORIES_ONLY);
+            fc.setDialogTitle("Directory Selection");
+            fc.showOpenDialog(this);
+
+            if (fc.getSelectedFile() == null) return;
+        
+            exportRSNTiles(rsnScaleSlider.getValue(), fc.getSelectedFile());
+            
+            closeDialog(null);
+        } catch (java.io.IOException IOE){
+            System.err.println("Failed creating mask file for this basin. ");
+            System.err.println(IOE);
+        } 
+        
+            
+    }//GEN-LAST:event_jButton1ActionPerformed
     
     /**
      * Tests for the class
@@ -3325,6 +3417,7 @@ public class BasinAnalyzer extends javax.swing.JDialog implements visad.DisplayL
     private javax.swing.JEditorPane htmlGeomorphometricReport;
     private javax.swing.JCheckBox includeExterior;
     private javax.swing.JCheckBox includeInterior;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

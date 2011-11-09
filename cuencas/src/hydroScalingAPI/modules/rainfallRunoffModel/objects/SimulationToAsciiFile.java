@@ -249,7 +249,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
             //initialCondition[i]=( areasHillArray[0][i]*1.*1e3 ) / ( linkLengths[0][i] *1e3 )  ;//0.0;
             //initialCondition[i]=0.07*thisNetworkGeom.upStreamArea(i);//0.0;//
             //System.out.println(areasHillArray[0][i]);
-            initialCondition[i+linksStructure.contactsArray.length]=1;
+            initialCondition[i+linksStructure.contactsArray.length]=0;
             //System.out.println{"Sum of initial " + ic_sum};
             //ic_sum = ic_sum + initialCondition[i] ;
         }

@@ -187,7 +187,7 @@ public class RsnFlowSimulationTestPeaks extends java.lang.Object {
         
         System.out.println("Order,Mean PF,Mean PWF,Mean UA,Ratio PF,Ratio PWF,Ratio UA");
         
-        for(int pVal=1;pVal<8;pVal++){
+        for(int pVal=1;pVal<1;pVal++){
             
             System.out.print("Order = "+(pVal+1)+" /");
             

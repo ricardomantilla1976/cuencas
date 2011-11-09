@@ -74,7 +74,7 @@ public class StormManager {
         lastWaterDrop=date;
 
         precOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
-        accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+        accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
         for (int i=0;i<precOnBasin.length;i++){
             precOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
             precOnBasin[i].addDateAndValue(date,new Float(rainIntensity));

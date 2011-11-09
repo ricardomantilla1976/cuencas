@@ -108,8 +108,6 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         
         hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo thisHillsInfo=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo(linksStructure);
 
-        thisHillsInfo.setHillslopeVh(0.1f);
-
         System.out.println("Loading Storm ...");
         
         hydroScalingAPI.modules.rainfallRunoffModel.objects.StormManager storm;
@@ -131,6 +129,8 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
             infilMan=new hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager(myCuenca,linksStructure,infiltMetaRaster,matDir,magnitudes);
         
         thisHillsInfo.setInfManager(infilMan);
+        
+        thisHillsInfo.setHillslopeVh(((Float)routingParams.get("v_h")).floatValue());
         
             /*
                 Escribo en un theFile lo siguiente:
@@ -627,7 +627,8 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
 
         //Routing type: 2 is constant velocity v=vo, 5 variable v=vo q^l1 A^l2
         
-        new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
+        new SimulationToAsciiFile(778, 368, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 2, new java.io.File("/Users/ricardo/simulationResults/"), routingParams).executeSimulation();
+        //new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
 
         System.exit(0);
         
