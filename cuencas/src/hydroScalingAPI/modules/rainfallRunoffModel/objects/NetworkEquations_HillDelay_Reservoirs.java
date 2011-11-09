@@ -153,7 +153,7 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
         double maxInt=0;
         
         int[] resLocations=reservoirsMan.getReservoirLocations();
-        float[] s_max=reservoirsMan.getReservoirMaxStorages();
+        double[] s_max=reservoirsMan.getReservoirMaxStorages();
                 
         for (int i=0;i<nLi;i++){
             
@@ -218,11 +218,11 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
                     
                     //  1 - Determine Reservoir Yield (output discharge)
             
-                    float reservoirYield=0;//(float)Math.pow(0.1*(input[i]/s_max[i]),0.5);
+                    double reservoirYield=reservoirsMan.getReservoirYield(ll,input[i],K_Q*input[i]);
             
                     //  2 - Modify Link Equation to account for Reservoir Yield instead of Natural Outflow
             
-                    output[i]=(1/3.6*areasHillArray[0][i]*qs+Q_trib-reservoirYield);
+                    output[i]=60*(1/3.6*areasHillArray[0][i]*qs+Q_trib-reservoirYield);
                     
                 }
             }
@@ -233,7 +233,7 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
                     
                     //  1 - Determine Reservoir Yield (output discharge)
             
-                    float reservoirYield=0;//(float)Math.pow(0.1*(input[i]/s_max[i]),0.5);
+                    double reservoirYield=reservoirsMan.getReservoirYield(ll,input[i],K_Q*input[i]);
             
                     //  2 - Modify Link Equation to account for Reservoir Yield instead of Natural Outflow
             
@@ -251,7 +251,7 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
 
                     //  2 - Modify Downstream Link Equation to account for Reservoir Yield instead of Natural Outflow
 
-                    output[i]+=1/60.*(reservoirYield-K_Q*input[kk]);
+                    output[i]+=60.*(reservoirYield-K_Q*input[kk]);
 
                 }
             }
