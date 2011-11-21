@@ -31,7 +31,7 @@ public class XYplotter extends ApplicationFrame {
         final XYDataset dataset = createDataset(storageTime,storageValue,dischargeTime,dischargeValue);
         final JFreeChart chart = createChart(dataset);
         final ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(1000, 540));
+        chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
         setContentPane(chartPanel);
    }
     
@@ -41,9 +41,9 @@ public class XYplotter extends ApplicationFrame {
      */
     private XYDataset createDataset(ArrayList<Double> storageTime, ArrayList<Double> storageValue, ArrayList<Double> dischargeTime, ArrayList<Double> dischargeValue) {
         
-        final XYSeries series1 = new XYSeries("Discharge-Simulated");
+        final XYSeries series1 = new XYSeries("With Storage");
         for(int i =0; i<storageTime.size();i++){series1.add(storageTime.get(i), storageValue.get(i));}
-        final XYSeries series2 = new XYSeries("Discharge-Calculated");
+        final XYSeries series2 = new XYSeries("No Storage");
         for(int i =0; i<dischargeTime.size();i++){series2.add(dischargeTime.get(i), dischargeValue.get(i));}
         final XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series1);
@@ -62,7 +62,7 @@ public class XYplotter extends ApplicationFrame {
         
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
-            "Discharge Time Series",      // chart title
+            "",      // chart title
             "Time",                      // x axis label
             "Discharge (cumec)",        // y axis label
             dataset,                  // data

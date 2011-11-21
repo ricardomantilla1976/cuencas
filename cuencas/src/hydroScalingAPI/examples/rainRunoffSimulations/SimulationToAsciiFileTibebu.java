@@ -132,7 +132,7 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         
         thisHillsInfo.setHillslopeVh(((Float)routingParams.get("v_h")).floatValue());
         
-        hydroScalingAPI.modules.rainfallRunoffModel.objects.ReservoirsManager rm=new hydroScalingAPI.modules.rainfallRunoffModel.objects.ReservoirsManager();
+        hydroScalingAPI.modules.rainfallRunoffModel.objects.ReservoirsManager rm=new hydroScalingAPI.modules.rainfallRunoffModel.objects.ReservoirsManager(thisNetworkGeom,linksStructure);
         
         
 //        //Mapping link ids to locations in space
@@ -146,6 +146,18 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
 //        
 //        System.out.println(linksStructure.getResSimID(754, 386)-1);
 //        System.out.println(linksStructure.getResSimID(778, 368)-1);
+        //New Reservoir location
+//        System.out.println(linksStructure.getResSimID(766, 378)-1);
+//        System.out.println(linksStructure.getResSimID(767, 378)-1);
+//        System.out.println(linksStructure.getResSimID(758, 382)-1);
+//        System.out.println(linksStructure.getResSimID(759, 384)-1);
+//        System.out.println(linksStructure.getResSimID(771, 374)-1);
+//        System.out.println(linksStructure.getResSimID(1549, 139)-1);
+//        System.out.println(linksStructure.getResSimID(1556, 135)-1);
+//        System.out.println(linksStructure.getResSimID(1559, 132)-1);
+//        System.out.println(linksStructure.getResSimID(1562, 131)-1);
+//        System.out.println(linksStructure.getResSimID(1570, 127)-1);
+//        
 //        System.exit(0);
 //        
 //        System.out.println(linksStructure.getResSimID(1161, 159)-1);
@@ -300,15 +312,16 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         if(stormFile == null){
             for (int k=0;k<numPeriods;k++) {
                 System.out.println("Period"+(k)+" out of "+numPeriods);
+                System.out.println("Time"+","+"Outlet Discharge"+","+"Reservoir"+","+"ReservoirUP1"+","+"ReservoirUP2"+","+"ReservoirDown"+","+"DownUp4"+","+"DownUp2"); //Tibebu
                 rainRunoffRaining.jumpsRunToAsciiFile(storm.stormInitialTimeInMinutes()+k*rainDuration,storm.stormInitialTimeInMinutes()+(k+1)*rainDuration,rainDuration,initialCondition,newfile,linksStructure,thisNetworkGeom);
                 //rainRunoffRaining.jumpsRunToAsciiFile(storm.stormInitialTimeInMinutes()+k*rainDuration,storm.stormInitialTimeInMinutes()+(k+1)*rainDuration,10,initialCondition,newfile,linksStructure,thisNetworkGeom);
                 initialCondition=rainRunoffRaining.finalCond;
                 rainRunoffRaining.setBasicTimeStep(10/60.);
             }
             
-            java.util.Date interTime=new java.util.Date();
-            System.out.println("Intermedia Time:"+interTime.toString());
-            System.out.println("Running Time:"+(.001*(interTime.getTime()-startTime.getTime()))+" seconds");
+//            java.util.Date interTime=new java.util.Date();
+//            System.out.println("Intermedia Time:"+interTime.toString());
+//            System.out.println("Running Time:"+(.001*(interTime.getTime()-startTime.getTime()))+" seconds");
             
             rainRunoffRaining.jumpsRunToAsciiFile(storm.stormInitialTimeInMinutes()+numPeriods*rainDuration,(storm.stormInitialTimeInMinutes()+(numPeriods+1)*rainDuration)+extraSimTime,5,initialCondition,newfile,linksStructure,thisNetworkGeom);
             
@@ -445,7 +458,8 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
 
         //Routing type: 2 is constant velocity v=vo, 5 variable v=vo q^l1 A^l2
         
-        new SimulationToAsciiFileTibebu(778, 368, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 2, new java.io.File("E:/CUENCAS/ClearCreek_Database/Results"), routingParams).executeSimulation();
+//        new SimulationToAsciiFileTibebu(778, 368, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 2, new java.io.File("E:/CUENCAS/ClearCreek_Database/Results"), routingParams).executeSimulation();
+        new SimulationToAsciiFileTibebu(1570,127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 2, new java.io.File("E:/CUENCAS/ClearCreek_Database/Results"), routingParams).executeSimulation();
         //new SimulationToAsciiFileTibebu(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("E:/CUENCAS/ClearCreek_Database/Results"), routingParams).executeSimulation();
 
         System.exit(0);       

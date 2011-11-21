@@ -17,12 +17,31 @@ public class ReservoirsManager {
     double[] orficeDiameter;
     
     
-    public ReservoirsManager() {
-        resLocations = new int[]{16};//{16,34};
-        maxStorages=new double[] {466663,466663};
-        maxDepths = new double[] {7, 7};
-        weirLengths = new double[] {2, 2};
-        orficeDiameter = new double[] {.6, .6};
+    public ReservoirsManager(hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom,hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure) {
+        
+        java.util.Vector<String> resLoc=new java.util.Vector<String>();
+        
+        for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
+            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0)
+                if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) == 2) {
+//                    System.out.println("A reservoir at link# "+linksStructure.completeStreamLinksArray[i] +"With upstrea Area "+thisNetworkGeom.upStreamArea(linksStructure.completeStreamLinksArray[i]));
+                    resLoc.add(""+linksStructure.completeStreamLinksArray[i]);
+                }
+        }
+        
+        resLocations = new int[resLoc.size()];
+        for (int i = 0; i < resLocations.length; i++) {
+            resLocations[i]=Integer.parseInt(resLoc.get(i));   
+        }
+        
+//        System.out.println(java.util.Arrays.toString(resLocations));
+//        System.exit(0);
+        
+        resLocations = new int[]{2526};//{16,34};
+        maxStorages=new double[] {466663.38};
+        maxDepths = new double[] {7.03};
+        weirLengths = new double[] {4};
+        orficeDiameter = new double[] {1};
         
     }
     
@@ -40,22 +59,38 @@ public class ReservoirsManager {
         double deltaT = 1;
         
         double h = maxDepths[i]*Math.pow(storage/maxStorages[i],0.26);
-        if(h<maxDepths[i])
+//        System.out.println(h);
+        if(h<orficeDiameter[i])
+        {
+           yield = NaturalYield; 
+        }
+        else if(h<maxDepths[i]-1)
         {
             yield = (deltaT*0.6*0.25*Math.PI*Math.pow(orficeDiameter[i], 2)*Math.sqrt(2*9.81*h));
+//            if(yield > NaturalYield) yield = NaturalYield;
+        }
+        else if(h>maxDepths[i]-1&& h<maxDepths[i])
+        {
+            yield = (deltaT*0.6*0.25*Math.PI*Math.pow(orficeDiameter[i], 2)*Math.sqrt(2*9.81*h)+deltaT*3.1*weirLengths[i]*Math.pow(h-(maxDepths[i]-1), 1.5));
+//            System.out.println("<<<<WEIR IS BEING USED???>>>>");
+//            System.out.println(h+" "+yield);
+//            System.exit(0);
         }
         else
         {
-            yield = (deltaT*0.6*0.25*Math.PI*Math.pow(orficeDiameter[i], 2)*Math.sqrt(2*9.81*h)+deltaT*3.1*weirLengths[i]*Math.pow(h-maxDepths[i], 1.5));
+            yield = NaturalYield;
+//            System.out.println("<<<<WEIR IS BEING USED???>>>>");
+//            System.out.println(h);
+//            System.exit(0);
         }
         
-//        yield = 0; 
+//        yield = 0;
+//          yield = NaturalYield;
+
         
         
-//        System.out.println("Comparing Flows: Yield ="+yield+" Natural Flow = "+NaturalYield+ "For H="+h);
+//        System.out.println("Comparing Flows: Yield ="+yield+" Natural Flow = "+NaturalYield+ "For H="+h);       
         
-        
-        if(yield > NaturalYield) yield = NaturalYield;
         
         
         

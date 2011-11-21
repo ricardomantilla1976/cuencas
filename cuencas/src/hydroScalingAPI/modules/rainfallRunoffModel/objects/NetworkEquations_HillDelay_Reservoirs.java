@@ -231,11 +231,9 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
             for(int ll=0;ll<resLocations.length; ll++){
                 if(i == linksConectionStruct.nextLinkArray[resLocations[ll]]){
                     
+                    
+            
                     //  1 - Determine Reservoir Yield (output discharge)
-            
-                    double reservoirYield=reservoirsMan.getReservoirYield(ll,input[i],K_Q*input[i]);
-            
-                    //  2 - Modify Link Equation to account for Reservoir Yield instead of Natural Outflow
             
                     int kk=resLocations[ll];
                     
@@ -248,6 +246,9 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
                     }
 
                     if (input[kk] == 0) K_Q=1e-6;
+                    
+                                
+                    double reservoirYield=reservoirsMan.getReservoirYield(ll,input[kk],K_Q*input[kk]);
 
                     //  2 - Modify Downstream Link Equation to account for Reservoir Yield instead of Natural Outflow
 

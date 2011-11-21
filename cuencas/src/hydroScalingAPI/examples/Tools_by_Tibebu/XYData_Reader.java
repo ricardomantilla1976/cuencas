@@ -25,20 +25,21 @@ public class XYData_Reader {
         // TODO code application logic here
        
 
-        String storageFile =    "E:\\CUENCAS\\ClearCreek_Database\\Results\\NED_00159011_778_368-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_GK_params_0.315_-0.092_0.6_storages.csv";
-        String dischargeFile =  "E:\\CUENCAS\\ClearCreek_Database\\Results\\NED_00159011_778_368-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_GK_params_0.315_-0.092_0.6_storages.csv";
+        String storageFile =    "E:\\CUENCAS\\ClearCreek_Database\\Results\\NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_discharges.csv";
+        String noStorageFile =  "E:\\CUENCAS\\ClearCreek_Database\\Results\\NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6.csv";
+        
         String simulInFile;
-        int columnNumberToReadStorage = 9;
-        int columnNumberToReadDischarge = 7;
+        int columnNumberToReadStorage = 1658;
+        int columnNumberToReadDischarge = 1658;
         int columnNumber;
         ArrayList<Double> storageTime = new ArrayList();
         ArrayList<Double> storageValue = new ArrayList();
-        ArrayList<Double> dischargeTime = new ArrayList();
-        ArrayList<Double> dischargeValue = new ArrayList();
+        ArrayList<Double> noStorageTime = new ArrayList();
+        ArrayList<Double> noStorageValue = new ArrayList();
        
 	for (int n=0; n<2; n++)
         {
-            if(n==0){simulInFile = storageFile;} else{simulInFile = dischargeFile;}
+            if(n==0){simulInFile = storageFile;} else{simulInFile = noStorageFile;}
             BufferedReader br2 = new BufferedReader( new FileReader(simulInFile) );
             for(int i=0; i<11; i++) {  String key1 = br2.readLine();}
 
@@ -50,11 +51,11 @@ public class XYData_Reader {
                 
                 double time = (Double.parseDouble(st.nextToken() ));
                 if(n==0){storageTime.add(time); columnNumber =columnNumberToReadStorage;}
-                else{dischargeTime.add(time);   columnNumber =columnNumberToReadDischarge;}
+                else{noStorageTime.add(time);   columnNumber =columnNumberToReadDischarge;}
                 
                 for(int j = 0; j<columnNumber-2;j++){double RR = (Double.parseDouble(st.nextToken() ));}
                 double value = (Double.parseDouble(st.nextToken() ));
-                if(n==0){storageValue.add(value);}else{dischargeValue.add(value);}
+                if(n==0){storageValue.add(value);}else{noStorageValue.add(value);}
 
 //                System.out.println(time+"   "+value);
                 line2 = br2.readLine(); 
@@ -63,7 +64,7 @@ public class XYData_Reader {
         }  
         
         
-        final XYplotter plot = new XYplotter("Storage Discharge Calculation",storageTime,storageValue,dischargeTime,dischargeValue);
+        final XYplotter plot = new XYplotter("Storage Discharge Calculation",storageTime,storageValue,noStorageTime,noStorageValue);
         plot.pack();
         RefineryUtilities.centerFrameOnScreen(plot);
         plot.setVisible(true);
