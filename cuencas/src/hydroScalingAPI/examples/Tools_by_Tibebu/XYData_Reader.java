@@ -25,12 +25,20 @@ public class XYData_Reader {
         // TODO code application logic here
        
 
-        String storageFile =    "E:\\CUENCAS\\ClearCreek_Database\\Results\\NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_discharges.csv";
-        String noStorageFile =  "E:\\CUENCAS\\ClearCreek_Database\\Results\\NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6.csv";
+        String storageFile =    "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_discharges_Order_3_and_4_H5_D_Closed.csv";
+        String storageFile2=    "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_discharges_Order_4.csv";
+        String noStorageFile =  "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6.csv";
+        //CV
+//        String storageFile =    "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_778_368-UniformEvent_INT_10000.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_discharge.csv";
+//        String noStorageFile =  "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_778_368-UniformEvent_INT_10000.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6.csv";
+        //GK
+//        String storageFile =    "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_778_368-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_GK_params_0.3_-0.1_0.6_discharge.csv";
+//        String noStorageFile =  "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_778_368-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_GK_params_0.3_-0.1_0.6.csv";
+        
         
         String simulInFile;
-        int columnNumberToReadStorage = 1658;
-        int columnNumberToReadDischarge = 1658;
+        int columnNumberToReadStorage = 1658;//1658;//27;
+        int columnNumberToReadDischarge = 1658;//1658;//27;
         int columnNumber;
         ArrayList<Double> storageTime = new ArrayList();
         ArrayList<Double> storageValue = new ArrayList();

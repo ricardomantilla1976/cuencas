@@ -270,7 +270,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         System.out.println(thisDate.getTime());
 
         int basinOrder=linksStructure.getBasinOrder();
-        double extraSimTime=120D*Math.pow(2.0D,(basinOrder-1));
+        double extraSimTime=60D*Math.pow(2.0D,(basinOrder-1));
         
         if(stormFile == null){
             for (int k=0;k<numPeriods;k++) {
@@ -599,9 +599,9 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
     
     public static void subMain5(String args[]) throws java.io.IOException, VisADException {
         
-        java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.metaDEM");
+        java.io.File theFile=new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM");
         hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-        metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.dir"));
+        metaModif.setLocationBinaryFile(new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.dir"));
         
         metaModif.setFormat("Byte");
         byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
@@ -627,8 +627,8 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
 
         //Routing type: 2 is constant velocity v=vo, 5 variable v=vo q^l1 A^l2
         
-        new SimulationToAsciiFile(778, 368, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 2, new java.io.File("/Users/ricardo/simulationResults/"), routingParams).executeSimulation();
-        //new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
+//        new SimulationToAsciiFile(778, 368, matDirs, magnitudes, metaModif, 10000.0f, 15.0f, 30.0f, 2, new java.io.File("E:/CUENCAS/ClearCreek_Database/Results/"), routingParams).executeSimulation();
+        new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, 1000.0f, 15.0f, 30.0f, 2, new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Results/"), routingParams).executeSimulation();
 
         System.exit(0);
         

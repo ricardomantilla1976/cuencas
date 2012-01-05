@@ -177,19 +177,19 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
             
             for (int j=0;j<linksConectionStruct.connectionsArray[i].length;j++){
                 
-                int kk=linksConectionStruct.connectionsArray[i][j];
+                int mm=linksConectionStruct.connectionsArray[i][j];
                 
                 switch (routingType) {
                 
-                    case 2:     K_Q=CkArray[0][kk]/lengthArray[0][kk];
+                    case 2:     K_Q=CkArray[0][mm]/lengthArray[0][mm];
                                 break;
 
-                    case 5:     K_Q=Math.pow(CkArray[0][kk]*Math.pow(lengthArray[0][kk],-lambda1)*Math.pow(input[kk],lambda1)*Math.pow(upAreasArray[0][kk],lambda2),lambda3)/lengthArray[0][kk];
+                    case 5:     K_Q=Math.pow(CkArray[0][mm]*Math.pow(lengthArray[0][mm],-lambda1)*Math.pow(input[mm],lambda1)*Math.pow(upAreasArray[0][mm],lambda2),lambda3)/lengthArray[0][mm];
                 }
                 
-                if (input[kk] == 0) K_Q=1e-6;
+                if (input[mm] == 0) K_Q=1e-24;
                 
-                Q_trib+=K_Q*input[kk];
+                Q_trib+=K_Q*input[mm];
             }
             
             switch (routingType) {
@@ -200,7 +200,7 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
                 case 5:     K_Q=Math.pow(CkArray[0][i]*Math.pow(lengthArray[0][i],-lambda1)*Math.pow(input[i],lambda1)*Math.pow(upAreasArray[0][i],lambda2),lambda3)/lengthArray[0][i];
             }
             
-            if (input[i] == 0) K_Q=1e-6;
+            if (input[i] == 0) K_Q=1e-24;
             
             
             //storage inside the links
@@ -218,7 +218,7 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
                     
                     //  1 - Determine Reservoir Yield (output discharge)
             
-                    double reservoirYield=reservoirsMan.getReservoirYield(ll,input[i],K_Q*input[i]);
+                    double reservoirYield=reservoirsMan.getReservoirYield(ll,input[i],K_Q,1/3.6*areasHillArray[0][i]*qs+Q_trib);
             
                     //  2 - Modify Link Equation to account for Reservoir Yield instead of Natural Outflow
             
@@ -237,6 +237,27 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
             
                     int kk=resLocations[ll];
                     
+                    qs=vh*lengthArray[0][kk]/areasHillArray[0][kk]*input[kk+nLi]/1e3*3.6;
+                    
+                    Q_trib=0.0;
+            
+                    for (int j=0;j<linksConectionStruct.connectionsArray[kk].length;j++){
+
+                        int mm=linksConectionStruct.connectionsArray[kk][j];
+
+                        switch (routingType) {
+
+                            case 2:     K_Q=CkArray[0][mm]/lengthArray[0][mm];
+                                        break;
+
+                            case 5:     K_Q=Math.pow(CkArray[0][mm]*Math.pow(lengthArray[0][mm],-lambda1)*Math.pow(input[mm],lambda1)*Math.pow(upAreasArray[0][mm],lambda2),lambda3)/lengthArray[0][mm];
+                        }
+
+                        if (input[mm] == 0) K_Q=1e-24;
+
+                        Q_trib+=K_Q*input[mm];
+                    }
+                    
                     switch (routingType) {
 
                         case 2:     K_Q=CkArray[0][kk]/lengthArray[0][kk];
@@ -245,10 +266,9 @@ public class NetworkEquations_HillDelay_Reservoirs implements hydroScalingAPI.ut
                         case 5:     K_Q=Math.pow(CkArray[0][kk]*Math.pow(lengthArray[0][kk],-lambda1)*Math.pow(input[kk],lambda1)*Math.pow(upAreasArray[0][kk],lambda2),lambda3)/lengthArray[0][kk];
                     }
 
-                    if (input[kk] == 0) K_Q=1e-6;
+                    if (input[kk] == 0) K_Q=1e-24;
                     
-                                
-                    double reservoirYield=reservoirsMan.getReservoirYield(ll,input[kk],K_Q*input[kk]);
+                    double reservoirYield=reservoirsMan.getReservoirYield(ll,input[kk],K_Q,1/3.6*areasHillArray[0][kk]*qs+Q_trib);
 
                     //  2 - Modify Downstream Link Equation to account for Reservoir Yield instead of Natural Outflow
 
