@@ -37,17 +37,16 @@ public class StreamFlowTimeSeries {
             String[] data = {"",""};
             
                
-               while(flag==0)
-               {
-               String[] test=fullLine.split(",");
-               String[] test2=fullLine.split("\\.");
-               String[] test3=fullLine.split("E");
-               if(test.length==2 && test2.length<=3 && test3.length<=3){
-                flag=1;
-               }else{
-                fullLine = fileMeta.readLine();           
-               }
-               }
+            while (flag == 0) {
+                String[] test = fullLine.split(",");
+                String[] test2 = fullLine.split("\\.");
+                String[] test3 = fullLine.split("E");
+                if (test.length == 2 && test2.length <= 3 && test3.length <= 3) {
+                    flag = 1;
+                } else {
+                    fullLine = fileMeta.readLine();
+                }
+            }
             if (fullLine != null) {
                 if (fullLine.contains(",")) {
                     data = fullLine.split(",");
@@ -57,23 +56,23 @@ public class StreamFlowTimeSeries {
 
             while (fullLine != null) {
                 if (fullLine.contains(",")) {
-               String[] test=fullLine.split(",");
-               String[] test2=fullLine.split("\\.");
-               String[] test3=fullLine.split("E");
-               if(test.length==2 && test2.length<=3 && test3.length<=3){
-                    data = fullLine.split(",");
-                    if (data[0] != null && data[1] != null) {
-                        try {
-                            //System.out.println("data[0]" + data[0] + "data[1]" + data[1]);
-                            java.lang.Double.parseDouble(data[0]);
-                            recordTimeValue.put(data[0], new Double(data[1]));
-                        } catch (java.lang.NumberFormatException nfe) {
-                            System.out.println("Error reading value in the outlet");
+                    String[] test = fullLine.split(",");
+                    String[] test2 = fullLine.split("\\.");
+                    String[] test3 = fullLine.split("E");
+                    if (test.length == 2 && test2.length <= 3 && test3.length <= 3) {
+                        data = fullLine.split(",");
+                        if (data[0] != null && data[1] != null) {
+                            try {
+                                //System.out.println("data[0]" + data[0] + "data[1]" + data[1]);
+                                java.lang.Double.parseDouble(data[0]);
+                                recordTimeValue.put(data[0], new Double(data[1]));
+                            } catch (java.lang.NumberFormatException nfe) {
+                                System.out.println("Error reading value in the outlet");
+                            }
+
+
                         }
-
-
                     }
-               }
                 }
                 fullLine = fileMeta.readLine();
             }
@@ -182,6 +181,15 @@ public class StreamFlowTimeSeries {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        java.util.Calendar firstWaterDrop=java.util.Calendar.getInstance();
+        firstWaterDrop.clear();
+        firstWaterDrop.set(2008, 0, 27, 18, 28, 0);
+        System.out.println(firstWaterDrop.getTimeInMillis()/1000./60.);
+        
+        System.exit(0);
+        
+        
         String name = "/Users/ricardo/simulationResults/Parallel/WalnutGulch/walnutGulchUpdated_194_281-precipitation_interpolated_ev02.001000.19.August.1971-IR_0.0-Routing_GK_params_0.3_-0.1_0.5.csv.Outlet.csv";
         StreamFlowTimeSeries timeSeries = new StreamFlowTimeSeries(new java.io.File(name));
         java.util.Date startTime = new java.util.Date();
