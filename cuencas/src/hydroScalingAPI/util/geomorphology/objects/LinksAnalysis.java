@@ -884,7 +884,8 @@ public class LinksAnalysis extends java.lang.Object {
         //main6(args);  // Writing Link-IDs and connectivity for a DEM and map of hillslopes
         //main6_1(args);  // Writing connectivity for a DEM and map of hillslopes
         //main7(args);  //Writing connectivity for Clear Creek to share with The Mathematicians
-        main8_1(args);  //Wrting connectivity and Full model parameters for The Mathematicians
+        //main8_1(args);  //Wrting connectivity and Full model parameters for The Mathematicians
+        main8_2(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_Rodica(args);
         //main8(args);  //Writing connectivity for Cedar River at Cedar Rapids to share with The Mathematicians
         //main9(args);  // Writing connectivity for a DEM including all the embedded basins... Multiple outlet concept
@@ -2204,19 +2205,30 @@ System.out.println("X  " +x  + "   Y  " +  y);
             float[][] upAreas=mylinksAnalysis.getVarValues(2);
             float[][] areas=mylinksAnalysis.getVarValues(0);
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
+            float[][] dToB=mylinksAnalysis.getVarValues(7);
+            float[][] longest=mylinksAnalysis.getVarValues(11);
+            
 
-            String outputMetaFile="/Users/ricardo/temp/IowaConnectivity.txt";
+            String outputMetaFile="/Users/ricardo/temp/DataLinksIowa.txt";
+            //String outputMetaFile="/Users/ricardo/temp/IowaConnectivity.txt";
             //String outputMetaFile="/Users/ricardo/temp/GoodwinConnectivity.txt";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
+//            metaBuffer.write("Number of Links\n");
+//            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+//            metaBuffer.write("Link-ID Num-connected-links List-of-connected-links Length[km] Area[km^2] upArea[km^2]"+"\n");
+//            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+//                metaBuffer.write(""+i+" "+mylinksAnalysis.connectionsArray[i].length);
+//                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
+//                    metaBuffer.write(" "+mylinksAnalysis.connectionsArray[i][j]);
+//                metaBuffer.write(" "+lenghts[0][i]+" "+areas[0][i]+" "+upAreas[0][i]+"\n");
+//            }
+            
             metaBuffer.write("Number of Links\n");
             metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
-            metaBuffer.write("Link-ID Num-connected-links List-of-connected-links Length[km] Area[km^2] upArea[km^2]"+"\n");
+            metaBuffer.write("Link-ID;Distance to Border[km];Area[km^2];upArea[km^2];longestChannelPath[km]"+"\n");
             for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
-                metaBuffer.write(""+i+" "+mylinksAnalysis.connectionsArray[i].length);
-                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
-                    metaBuffer.write(" "+mylinksAnalysis.connectionsArray[i][j]);
-                metaBuffer.write(" "+lenghts[0][i]+" "+areas[0][i]+" "+upAreas[0][i]+"\n");
+                metaBuffer.write(""+(i+1)+";"+dToB[0][i]+";"+areas[0][i]+";"+upAreas[0][i]+";"+longest[0][i]+"\n");
             }
 
             metaBuffer.close();

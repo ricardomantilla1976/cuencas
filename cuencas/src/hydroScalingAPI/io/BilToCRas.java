@@ -176,25 +176,30 @@ public class BilToCRas {
         
         rasterBuffer.close();
         
-        
-        
-        
     }
     
     private boolean checkDirectoryContents(java.io.File inputDirectory){
         
-        headerInputFile=new java.io.File(inputDirectory.getPath()+"/"+inputDirectory.getName()+".HDR");
-        geoInputFile=new java.io.File(inputDirectory.getPath()+"/"+inputDirectory.getName()+".BLW");
-        dataInputFile=new java.io.File(inputDirectory.getPath()+"/"+inputDirectory.getName()+".BIL");
+        hydroScalingAPI.util.fileUtilities.DotFilter myFiltro;
         
-        if(headerInputFile.exists() && geoInputFile.exists() && dataInputFile.exists()) return true;
+        myFiltro=new hydroScalingAPI.util.fileUtilities.DotFilter("hdr");
+        java.io.File[] hdrQueSi=inputDirectory.listFiles(myFiltro);
         
-        headerInputFile=new java.io.File(inputDirectory.getPath()+"/"+inputDirectory.getName()+".hdr");
-        geoInputFile=new java.io.File(inputDirectory.getPath()+"/"+inputDirectory.getName()+".blw");
-        dataInputFile=new java.io.File(inputDirectory.getPath()+"/"+inputDirectory.getName()+".bil");
+        myFiltro=new hydroScalingAPI.util.fileUtilities.DotFilter("blw");
+        java.io.File[] blwQueSi=inputDirectory.listFiles(myFiltro);
+
+        myFiltro=new hydroScalingAPI.util.fileUtilities.DotFilter("bil");
+        java.io.File[] bilQueSi=inputDirectory.listFiles(myFiltro);
         
-        if(headerInputFile.exists() && geoInputFile.exists() && dataInputFile.exists()) return true;
+        if(hdrQueSi.length > 0 && blwQueSi.length > 0 && bilQueSi.length > 0){
         
+            headerInputFile=hdrQueSi[0];
+            geoInputFile=blwQueSi[0];
+            dataInputFile=bilQueSi[0];
+            
+            return true;
+        
+        }
         return false;
         
     }
@@ -205,8 +210,8 @@ public class BilToCRas {
      */
     public static void main(String[] args) {
         try{
-            new hydroScalingAPI.io.BilToCRas(new java.io.File("/Users/ricardo/Desktop/NED_77861520"),
-                                            new java.io.File("/tmp/"),0);
+            new hydroScalingAPI.io.BilToCRas(new java.io.File("/CuencasDataBases/Beatty Wash/NED_70848261/"),
+                                             new java.io.File("/Users/ricardo/temp/"),0);
         }catch(java.io.IOException ioe){
             System.err.println("error");
             ioe.printStackTrace();

@@ -108,6 +108,7 @@ public class RsnFlowSimulationExactHydrographs extends java.lang.Object {
         
         try{
             
+            subMain0(args);   //Self-Simiar trees ExIy, constant link-length
             subMain4(args);   //Bernulli Generators, constant link-length
             
         } catch (java.io.IOException IOE){
@@ -144,9 +145,9 @@ public class RsnFlowSimulationExactHydrographs extends java.lang.Object {
             
             System.out.print("Order = "+(pVal)+" /");
             
-            double probab=0.9;
+            double probab=1;
             
-            double numExperiments=50;
+            double numExperiments=1;
             
             double averageUA=0.0;
             double averagePWF=0.0;
@@ -220,6 +221,48 @@ public class RsnFlowSimulationExactHydrographs extends java.lang.Object {
             System.out.println("/");
             System.out.println((pVal+1)+","+thisLevelPF+","+thisLevelPWF+","+thisLevelUA+","+ratioPFs+","+ratioPWFs+","+ratioUAs);
 
+        }
+
+        System.exit(0);
+        
+    }
+    
+    public static void subMain0(String args[]) throws java.io.IOException, VisADException {
+        
+        for(int ee=1;ee<4;ee++){
+            
+            for(int ii=0;ii<4;ii++){
+                
+                System.out.println("E"+ee+"I"+ii);
+                
+                for(int generations=1;generations<8;generations++){
+        
+                    hydroScalingAPI.util.probability.DiscreteDistribution myUD_I=new hydroScalingAPI.util.probability.BinaryDistribution(ii,ii,1.0);
+                    hydroScalingAPI.util.probability.DiscreteDistribution myUD_E=new hydroScalingAPI.util.probability.BinaryDistribution(ee,ee,1.0);
+
+                    hydroScalingAPI.util.randomSelfSimilarNetworks.RsnStructure myRSN=new hydroScalingAPI.util.randomSelfSimilarNetworks.RsnStructure(generations,myUD_I,myUD_E);
+                    hydroScalingAPI.util.randomSelfSimilarNetworks.RsnLinksAnalysis myResults=new hydroScalingAPI.util.randomSelfSimilarNetworks.RsnLinksAnalysis(myRSN);
+
+                    double[][] distances=myResults.getWidthFunctions(new int[] {0},0);
+                    int maxLinks=Integer.MIN_VALUE;
+                    for(int i=0;i<distances[0].length;i++){
+                        maxLinks=Math.max(maxLinks,(int)distances[0][i]);
+                    }
+
+                    System.out.print(""+(generations+1));
+                    for (int i = 0; i < distances[0].length; i++) {
+                        System.out.print(","+(int)distances[0][i]);
+                    }
+                    System.out.println();
+
+    //                RsnFlowSimulationExactHydrographs theSimulation=new RsnFlowSimulationExactHydrographs(myRSN);
+    //                double[] coeffs=theSimulation.getCoefficients(0);
+    //                System.out.println("CoefficientsHY = "+java.util.Arrays.toString(coeffs));
+
+                }
+
+            }
+            
         }
 
         System.exit(0);

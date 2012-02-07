@@ -340,8 +340,8 @@ public class RSNDecomposition {
                                 ".horton",      /*4*/
                                 ".ltc",         /*5*/
                                 ".magn",        /*6*/
-                                ".magn",        /*7*/
-                                ".magn",        /*8*/
+                                ".gdo",        /*7*/
+                                ".tdo",        /*8*/
                                 ".corrDEM",     /*9*/
                                 ".corrDEM",     /*10*/
                                 ".lcp",         /*11*/
@@ -418,9 +418,29 @@ public class RSNDecomposition {
                 break;
             case 7:
                 //Meta Link's Distance to Outlet
+                float GoToB;
+
+                fileQuantity.seek(4*mylinksAnalysis.getOutletID());
+                GoToB=fileQuantity.readFloat();
+                
+                for (int i=0;i<quantityArray[0].length;i++){
+                    fileQuantity.seek(4*HAndT[2][i]);
+                    quantityArray[0][i]=fileQuantity.readFloat()-GoToB;
+                }
+
                 break;
             case 8:
                 //Meta Link's Topologic Distance to Outlet
+                int ToToB;
+
+                fileQuantity.seek(4*mylinksAnalysis.getOutletID());
+                ToToB=fileQuantity.readInt();
+                
+                for (int i=0;i<quantityArray[0].length;i++){
+                    fileQuantity.seek(4*HAndT[2][i]);
+                    int thisToToB=fileQuantity.readInt();
+                    quantityArray[0][i]=thisToToB-ToToB+1;
+                }
                 break;
             case 9:
                 //Meta Link's Slope
