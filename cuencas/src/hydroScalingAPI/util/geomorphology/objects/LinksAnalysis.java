@@ -868,6 +868,15 @@ public class LinksAnalysis extends java.lang.Object {
         }
         return ressimID;
     }
+    
+    public int getLinkIDbyContact(int x, int y){
+        int contactsID = x+(y*localMetaRaster.getNumCols());
+        ressimID=-1;
+        for (int i=0;i<contactsArray.length;i++){
+            if (contactsArray[i]==contactsID) ressimID=i;
+        }
+        return ressimID;
+    }
 
     /**
      * Tests for the class

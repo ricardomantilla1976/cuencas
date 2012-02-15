@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package hydroScalingAPI.modules.rainfallRunoffModel.objects;
 
+import java.util.TimeZone;
+
 /**
  * This class handles the precipitation over a basin.  It takes in a group of
  * raster files that represent snapshots of the rainfall fields and projects those
@@ -66,7 +68,9 @@ public class StormManager {
      */
     public StormManager(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, float rainIntensity, float rainDuration) {
 
+        TimeZone tz = TimeZone.getTimeZone("UTC");
         java.util.Calendar date=java.util.Calendar.getInstance();
+        date.setTimeZone(tz);
         date.clear();
         date.set(1971, 6, 1, 6, 0, 0);
 

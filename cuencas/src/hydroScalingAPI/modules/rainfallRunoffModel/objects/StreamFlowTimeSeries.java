@@ -4,6 +4,7 @@
  */
 package hydroScalingAPI.modules.rainfallRunoffModel.objects;
 
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.*;
@@ -63,10 +64,11 @@ public class StreamFlowTimeSeries {
                         data = fullLine.split(",");
                         if (data[0] != null && data[1] != null) {
                             try {
-                                //System.out.println("data[0]" + data[0] + "data[1]" + data[1]);
+                                //System.out.println("data[0]" + Double.valueOf(data[0]) + "data[1]" + data[1]);
                                 java.lang.Double.parseDouble(data[0]);
-                                recordTimeValue.put(data[0], new Double(data[1]));
+                                recordTimeValue.put(Double.valueOf(data[0]).toString(), new Double(data[1]));
                             } catch (java.lang.NumberFormatException nfe) {
+                                System.out.println(data[0]+" "+data[1]);
                                 System.out.println("Error reading value in the outlet");
                             }
 
@@ -105,9 +107,9 @@ public class StreamFlowTimeSeries {
 
     public double evaluate(double time) {
 
-//    //    System.out.println("Evaluating, Limits: "+firstTime+" "+lastTime);
+//        System.out.println("Evaluating, Limits: "+firstTime+" "+lastTime);
 //        System.out.println("firsttime: "+(Double)recordTimeValue.get(""+firstTime));
-//          System.out.println("lastTime: "+(Double)recordTimeValue.get(""+lastTime));
+//        System.out.println("lastTime: "+(Double)recordTimeValue.get(""+lastTime));
 //        System.out.println("Desired Time: "+time+" Test "+(time <= timesRecorded[0]));
 
         if (time < firstTime) {
@@ -144,7 +146,7 @@ public class StreamFlowTimeSeries {
 
         Double leftF = (Double) recordTimeValue.get("" + leftT);
 
-        //  System.out.println("Indexes "+time+" "+leftT+" "+rightT);
+        //System.out.println("Indexes "+time+" "+leftT+" "+rightT);
 
         while (leftF == null) {
             leftF = (Double) recordTimeValue.get("" + leftT);
@@ -182,12 +184,20 @@ public class StreamFlowTimeSeries {
      */
     public static void main(String[] args) {
         
-        java.util.Calendar firstWaterDrop=java.util.Calendar.getInstance();
-        firstWaterDrop.clear();
-        firstWaterDrop.set(2008, 0, 27, 18, 28, 0);
-        System.out.println(firstWaterDrop.getTimeInMillis()/1000./60.);
-        
-        System.exit(0);
+//        TimeZone tz = TimeZone.getTimeZone("UTC");
+//        java.util.Calendar firstWaterDrop=java.util.Calendar.getInstance();
+//        firstWaterDrop.clear();
+//        firstWaterDrop.setTimeZone(tz);
+//        firstWaterDrop.set(2008, 0, 1, 0, 0, 0 );
+//        System.out.println(firstWaterDrop.getTimeInMillis()/1000./60.);
+//        
+//        java.text.SimpleDateFormat dateFormatGmt = new java.text.SimpleDateFormat("yyyy-MMM-dd HH:mm:ss z");
+//        dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"));
+//        System.out.println(dateFormatGmt.format(firstWaterDrop.getTime()));
+//        
+//        System.out.println(firstWaterDrop.getTime());
+//        
+//        System.exit(0);
         
         
         String name = "/Users/ricardo/simulationResults/Parallel/WalnutGulch/walnutGulchUpdated_194_281-precipitation_interpolated_ev02.001000.19.August.1971-IR_0.0-Routing_GK_params_0.3_-0.1_0.5.csv.Outlet.csv";
