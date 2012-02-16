@@ -219,13 +219,13 @@ public class StormManager {
                 //Cargo cada uno
                 metaStorm.setLocationBinaryFile(arCron[i].fileName);
 
-                //System.out.println("--> Loading data from "+arCron[i].fileName.getName());
+                System.out.println("--> Loading data from "+arCron[i].fileName.getName());
 
                 dataSnapShot=new hydroScalingAPI.io.DataRaster(metaStorm).getDouble();
 
 
                 hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaStorm.getMissing()).doubleValue());
-                //System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
+                System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
 
 
                 //recorto la seccion que esta en la cuenca (TIENE QUE CONTENERLA)

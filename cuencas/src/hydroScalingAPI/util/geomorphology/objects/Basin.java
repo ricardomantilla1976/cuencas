@@ -57,7 +57,7 @@ public class Basin extends Object{
         minY=fullDirMatrix.length-1;
         maxY=0;
         
-        java.util.Vector idsBasin=new java.util.Vector();
+        java.util.Vector idsBasin=new java.util.Vector(fullDirMatrix[0].length*fullDirMatrix.length);
         
         toMark=new int[1][]; toMark[0]=new int[] {x,y};
         idsBasin.add(toMark[0]);
@@ -772,8 +772,8 @@ public class Basin extends Object{
      * @param args The command line arguments
      */
     public static void main (String args[]) {
-        //main0(args);
-        main1(args);
+        main0(args);
+        //main1(args);
     }
     
     /**
@@ -784,16 +784,16 @@ public class Basin extends Object{
         
         
         try{
-            java.io.File theFile=new java.io.File("/home/ricardo/peaseRiver_database/peaseRiver.metaDEM");
+            java.io.File theFile=new java.io.File("/CuencasDataBases/Walnut_Gulch_AZ_database/Rasters/Topography/1_ArcSec_USGS/walnutGulchUpdated.metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File("/home/ricardo/peaseRiver_database/peaseRiver.dir"));
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Walnut_Gulch_AZ_database/Rasters/Topography/1_ArcSec_USGS/walnutGulchUpdated.dir"));
             
             String formatoOriginal=metaModif.getFormat();
             metaModif.setFormat("Byte");
             byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
             System.out.println("Extraction begins");
             java.util.Calendar iniTime=java.util.Calendar.getInstance();
-            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(3154, 502,matDirs,metaModif);
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(194,281,matDirs,metaModif);
             
             System.out.println(laCuenca.getDivideShapeFactor()[0]);
             System.exit(0);

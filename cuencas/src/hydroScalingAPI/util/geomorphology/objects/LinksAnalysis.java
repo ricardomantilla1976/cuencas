@@ -897,7 +897,8 @@ public class LinksAnalysis extends java.lang.Object {
         main8_2(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_Rodica(args);
         //main8(args);  //Writing connectivity for Cedar River at Cedar Rapids to share with The Mathematicians
-        //main9(args);  // Writing connectivity for a DEM including all the embedded basins... Multiple outlet concept
+        //main9(args);  // Writing connectivity for Cedar River at Cedar Rapids (30 m DEM) to share with The Mathematicians
+        main_MODLU(args); //link-ids
     }
 
     /**
@@ -1398,9 +1399,9 @@ System.out.println("X  " +x  + "   Y  " +  y);
 
         try{
 
-            java.io.File theFile=new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res.metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res.dir"));
 
 //            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/DryCreek/NED_79047246.metaDEM");
 //            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
@@ -1442,10 +1443,10 @@ System.out.println("X  " +x  + "   Y  " +  y);
 
             String[] argsX;
             argsX=new String[] {
-                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_large_cities.log",
-                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_medium_cities.log",
-                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_small_cities.log",
-                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_usgs_gauges.log",
+//                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_large_cities.log",
+//                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_medium_cities.log",
+//                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_small_cities.log",
+//                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_usgs_gauges.log",
                             "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_sensors.log"};
 
             for (int i = 0; i < argsX.length; i++) {
@@ -1592,11 +1593,12 @@ System.out.println("X  " +x  + "   Y  " +  y);
 //                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_large_cities.log",
 //                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_medium_cities.log",
 //                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_small_cities.log",
-//                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_usgs_gauges.log",
-                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_sensors.log",
+                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_usgs_gauges.log",
+//                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_sensors.log",
 //                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_usace_gauges.log",
-                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/fake_res_iihr_rain_gauges.log",
-                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/fake_res_coop_rain_gauges.log"};
+//                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/fake_res_iihr_rain_gauges.log",
+//                            "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/fake_res_coop_rain_gauges.log"
+            };
 
             for (int i = 0; i < argsX.length; i++) {
                 String[] basins=new hydroScalingAPI.io.BasinsLogReader(new java.io.File(argsX[i])).getPresetBasins();
@@ -2242,6 +2244,106 @@ System.out.println("X  " +x  + "   Y  " +  y);
 
             metaBuffer.close();
 
+
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+    
+    /**
+     * Tests for the class
+     * @param args the command line arguments
+     */
+    public static void main9(String args[]) {
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+        
+        int x= 7876; int y= 1360 ;
+
+        try{
+            
+            System.out.println(">> Ready to go...");
+
+            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.dir"));
+
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+            System.out.println(">> Information read...");
+            
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
+
+            System.out.println(">> Basin Extracted...");
+            
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
+
+            System.out.println(">> Structure created...");
+            
+            //FINDS LINK ID FOR FORECAST LOCATIONS IN IOWA
+
+            int[][] matrizPintada=new int[metaModif.getNumRows()][metaModif.getNumCols()];
+            int[] headsTails=mylinksAnalysis.contactsArray;
+
+            hydroScalingAPI.util.geomorphology.objects.HillSlope myHillActual;
+
+            int numCols=metaModif.getNumCols();
+            int numRows=metaModif.getNumRows();
+            
+            laCuenca=null;
+            System.gc();
+
+            for(int i=0;i<headsTails.length;i++){
+            //for(int i=0;i<10;i++){
+                int xOulet=headsTails[i]%numCols;
+                int yOulet=headsTails[i]/numCols;
+
+                int tileColor=i+1;
+                System.out.println("Head: "+xOulet+","+yOulet+" Color: "+tileColor+"("+headsTails.length+")");
+
+                myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
+                int elementsInTile=myHillActual.getXYHillSlope()[0].length;
+                for (int j=0;j<elementsInTile;j++){
+                    matrizPintada[myHillActual.getXYHillSlope()[1][j]][myHillActual.getXYHillSlope()[0][j]]=tileColor;
+                }
+                myHillActual=null;
+                
+                if(i%1000 == 0) {
+                    System.out.println(">>GC");
+                    System.gc();
+                }
+            }
+
+            //CREATE MASK FILE FOR IOWA
+
+            java.io.FileOutputStream        outputDir;
+            java.io.DataOutputStream        newfile;
+            java.io.BufferedOutputStream    bufferout;
+
+            java.io.File inputFile=new java.io.File("/Users/ricardo/rawData/IowaConnectivity/linksMask_CedarRiver30m.vhc");
+
+            outputDir = new java.io.FileOutputStream(inputFile);
+            bufferout=new java.io.BufferedOutputStream(outputDir);
+            newfile=new java.io.DataOutputStream(bufferout);
+
+            for (int i=0;i<numRows;i++) for (int j=0;j<numCols;j++) {
+                newfile.writeFloat(matrizPintada[i][j]);
+            }
+            newfile.close();
+            bufferout.close();
+            outputDir.close();
+            
 
         } catch (java.io.IOException IOE){
             System.out.print(IOE);

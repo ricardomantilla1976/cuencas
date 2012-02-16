@@ -387,8 +387,6 @@ public class IowaBasinsInfoScript{
 
 
         new File(OutputPath).mkdirs();
-        new File(OutputPath+"/polygons/").mkdirs();
-        new File(OutputPath+"/networks/").mkdirs();
 
         File dir = new File(KMLsPath);
 
@@ -458,6 +456,13 @@ public class IowaBasinsInfoScript{
                     accumFiles[k]=new java.io.RandomAccessFile(rutaQuantity,"r");
                 }
 
+                String[] uniqueIdentifier=inCity1[j].getName().split("_");
+                String[] cityName=uniqueIdentifier[1].split(" \\(");
+                String[] riverName={""};//cityName[1].split("\\)");
+
+                //String webSafeName=cityName[0].replaceAll(" ", "_").toLowerCase()+"_"+riverName[0].replaceAll(" ", "_").replaceAll(",","").toLowerCase();
+                String webSafeName=cityName[0].split("\\.")[0];
+                
                 //Open the File for reading
 
                 fin = new FileInputStream(inCity1[j]);
@@ -467,7 +472,7 @@ public class IowaBasinsInfoScript{
 
                 //********** LINES ADDED TO WRITE LOOKUP TABLES FOR EACH BASIN
 
-                fileSalida=new java.io.File("/Users/ricardo/temp/masks/"+inCity1[j].getName()+".txt");
+                fileSalida=new java.io.File(OutputPath+"m"+webSafeName+".txt");
 
                 outputDir = new java.io.FileOutputStream(fileSalida);
                 bufferout=new java.io.BufferedOutputStream(outputDir);
@@ -560,18 +565,12 @@ public class IowaBasinsInfoScript{
 
                 System.out.println(">> >> Rates for this basin "+"Rain Rate: "+averageValue+" [mm] "+averageValueTimeMachine+" [mm] ");
 
-                String[] uniqueIdentifier=inCity1[j].getName().split("_");
-                String[] cityName=uniqueIdentifier[1].split(" \\(");
-                String[] riverName=cityName[1].split("\\)");
-
-                String webSafeName=cityName[0].replaceAll(" ", "_").toLowerCase()+"_"+riverName[0].replaceAll(" ", "_").replaceAll(",","").toLowerCase();
-
                 fin = new FileInputStream(inCity2[j]);
                 xover = new InputStreamReader(fin);
                 is = new BufferedReader(xover);
 
-                fileSalida=new java.io.File(OutputPath+"/polygons/"+webSafeName+".kmz");
-                String polyWebAddress="http://www.iihr.uiowa.edu/~ricardo/temp/iowa_basins_data1/"+new java.io.File(OutputPath).getName()+"/polygons/"+webSafeName+".kmz";
+                fileSalida=new java.io.File(OutputPath+"/p"+webSafeName+".kmz");
+                String polyWebAddress="http://www.iihr.uiowa.edu/~ricardo/temp/iowa_basins_data1/"+new java.io.File(OutputPath).getName()+"/p"+webSafeName+".kmz";
 
                 outputDir = new java.io.FileOutputStream(fileSalida);
                 java.util.zip.ZipOutputStream outputComprim=new java.util.zip.ZipOutputStream(outputDir);
@@ -631,8 +630,8 @@ public class IowaBasinsInfoScript{
                 is = new BufferedReader(xover);
 
 
-                fileSalida=new java.io.File(OutputPath+"/networks/"+webSafeName+".kmz");
-                String netWebAddress="http://www.iihr.uiowa.edu/~ricardo/temp/iowa_basins_data1/"+new java.io.File(OutputPath).getName()+"/networks/"+webSafeName+".kmz";
+                fileSalida=new java.io.File(OutputPath+"/n"+webSafeName+".kmz");
+                String netWebAddress="http://www.iihr.uiowa.edu/~ricardo/temp/iowa_basins_data1/"+new java.io.File(OutputPath).getName()+"/n"+webSafeName+".kmz";
 
                 outputDir = new java.io.FileOutputStream(fileSalida);
                 outputComprim=new java.util.zip.ZipOutputStream(outputDir);
@@ -711,12 +710,13 @@ public class IowaBasinsInfoScript{
 //            }
 
             String[][] kmlInAndOut=new String[][] {
-                                                   {"/Users/ricardo/rawData/BasinMasks/usgs_gauges/","/Volumes/ricardo/temp/iowa_basins_data1/usgs_gauges/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/usace_gauges/","/Volumes/ricardo/temp/iowa_basins_data1/usace_gauges/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/large_cities/","/Volumes/ricardo/temp/iowa_basins_data1/large_cities/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/medium_cities/","/Volumes/ricardo/temp/iowa_basins_data1/medium_cities/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data1/small_cities/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/ifc_sensors/","/Volumes/ricardo/temp/iowa_basins_data1/ifc_sensors/"}
+//                                                   {"/Users/ricardo/rawData/BasinMasks/usgs_gauges/","/Volumes/ricardo/temp/iowa_basins_data1/usgs_gauges/"},
+//                                                   {"/Users/ricardo/rawData/BasinMasks/usace_gauges/","/Volumes/ricardo/temp/iowa_basins_data1/usace_gauges/"},
+//                                                   {"/Users/ricardo/rawData/BasinMasks/large_cities/","/Volumes/ricardo/temp/iowa_basins_data1/large_cities/"},
+//                                                   {"/Users/ricardo/rawData/BasinMasks/medium_cities/","/Volumes/ricardo/temp/iowa_basins_data1/medium_cities/"},
+//                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data1/small_cities/"},
+//                                                   {"/Users/ricardo/rawData/BasinMasks/ifc_sensors/","/Volumes/ricardo/temp/iowa_basins_data1/ifc_sensors/"},
+                                                   {"/Users/ricardo/rawData/BasinMasks/ifis_locations/","/Volumes/ricardo/temp/iowa_basins_data1/ifis_locations/"}
                                                   };
 
 

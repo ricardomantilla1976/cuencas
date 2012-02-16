@@ -57,7 +57,7 @@ public class MetaFullNetToKML {
         newfile.write("  <name>RiverNetwork_"+uniqueIdentifier+".kml</name>"+ret);
         newfile.write("  <open>0</open>"+ret);
         
-        for(int i=3;i<=netStructure.getLargestOrder();i++){
+        for(int i=2;i<=netStructure.getLargestOrder();i++){
             newfile.write("  <Style id=\"linestyleO"+i+"\">"+ret);
             newfile.write("    <LineStyle>"+ret);
             newfile.write("      <color>7f"+Integer.toHexString(i*20)+"0000</color>"+ret);
@@ -65,7 +65,7 @@ public class MetaFullNetToKML {
             newfile.write("    </LineStyle>"+ret);
             newfile.write("  </Style>"+ret);
         }
-        for(int i=3;i<=netStructure.getLargestOrder();i++){
+        for(int i=2;i<=netStructure.getLargestOrder();i++){
             newfile.write("  <Folder>"+ret);
             newfile.write("    <name>Order "+i+" Streams</name>"+ret);
             newfile.write("    <visibility>1</visibility>"+ret);

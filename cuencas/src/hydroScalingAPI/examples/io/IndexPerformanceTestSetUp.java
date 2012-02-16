@@ -14,7 +14,7 @@ import java.net.*;
 
 import java.sql.*;
 
-public class IowaBasinsInfoScript2{
+public class IndexPerformanceTestSetUp{
 
     java.io.FileInputStream dataPath,dataPath2;
     java.io.BufferedInputStream dataBuffer,dataBuffer2;
@@ -43,7 +43,7 @@ public class IowaBasinsInfoScript2{
     java.io.BufferedOutputStream    bufferout;
     String                          ret="\n";
 
-    java.io.File dirOut=new java.io.File("/Users/ricardo/rawData/IowaConnectivity/");
+    java.io.File dirOut=new java.io.File("/Users/ricardo/rawData/IowaConnectivity/IndexEvaluation/");
 
     String KMLsPath, OutputPath;
 
@@ -61,7 +61,7 @@ public class IowaBasinsInfoScript2{
     float[] peakIndex;
 
 
-    public IowaBasinsInfoScript2() throws IOException{
+    public IndexPerformanceTestSetUp() throws IOException{
 
         System.out.println(">> Loading Next Link Array");
 
@@ -140,6 +140,7 @@ public class IowaBasinsInfoScript2{
         InputStreamReader xover;
         BufferedReader is;
         String line;
+        int posApr1st=0, fn=0;
 
         java.util.Vector<String> availableMapsOfRain=new java.util.Vector<String>();
 
@@ -151,21 +152,23 @@ public class IowaBasinsInfoScript2{
         is = new BufferedReader(xover);
 
         line = is.readLine();
-
+        
         while(line != null){
+            if(line.equalsIgnoreCase("H99999999_R6007_G_01APR2011_000000.out.gz")) posApr1st=fn;
             availableMapsOfRain.add(line);
-            line = is.readLine();
-            //if(line.equalsIgnoreCase("H99999999_R6007_G_25AUG2010_000000.out.gz")) break;
+            line = is.readLine(); fn++;
         }
 
         is.close();
         xover.close();
-
+        
         System.out.println(">> Reading High Quality Rainfall Data and Remapping Rainfall to Hillslopes");
 
         new java.io.File(dirOut.getPath()+"/RemappedRainfall/").mkdirs();
 
         int numMaps=availableMapsOfRain.size();
+
+        forecastHorizon=numMaps-posApr1st;
 
         matrix_rain=new float[numRow_Rain][numCol_Rain];
 
@@ -179,57 +182,65 @@ public class IowaBasinsInfoScript2{
 
             System.out.println(">> Opening connection: "+"http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/"+mostRecentFile);
             file = new URL("http://s-iihr57.iihr.uiowa.edu/ricardo/speed/60/"+mostRecentFile);
-            urlConn = file.openConnection();
+            
+            try {
+                urlConn = file.openConnection();
+                
+                System.out.println(">> Loading File # "+(ff-(numMaps-forecastHorizon)));
+
+                gzis = new GZIPInputStream(urlConn.getInputStream());
+                xover = new InputStreamReader(gzis);
+                is = new BufferedReader(xover);
+
+                is.readLine();//# file name: "H99999999_R6003_G_31MAR2010_221000.out
+                is.readLine();//# Accumulation map [mm]
+                is.readLine();//# Accumulation time [sec]: 3300
+                is.readLine();//# number of columns: 1741
+                is.readLine();//# number of rows: 1057
+                is.readLine();//# grid: LATLON
+                is.readLine();//# upper-left LATLONcorner(x,y): 6924 5409
+                is.readLine();//# xllcorner [lon]: -97.154167
+                is.readLine();//# yllcorner [lat]: 40.133331
+                is.readLine();//# cellsize [dec deg]: 0.004167
+                
+                line = is.readLine();
+                
+                if(line != null) if(line.indexOf("data") != -1) line=is.readLine(); //# no data value: -99.0
+
+                if(line == null) {
+                    System.out.println(">> File is empty... Aborting remapping process");
+                } else {
+                    
+                    for (int i = numRow_Rain-1; i >= 0; i--) {
+
+                        java.util.StringTokenizer linarray = new java.util.StringTokenizer(line);
 
 
-            System.out.println(">> Loading File # "+(ff-(numMaps-forecastHorizon)));
+                        for (int j = 0; j < numCol_Rain; j++) {
 
-            gzis = new GZIPInputStream(urlConn.getInputStream());
-            xover = new InputStreamReader(gzis);
-            is = new BufferedReader(xover);
+                            float f = 0;
+                            try {
+                                matrix_rain[i][j] = Float.valueOf(linarray.nextToken()).floatValue();
+                            } catch (NumberFormatException nfe) {
+                                System.out.println("NFE" + nfe.getMessage());
+                            }
 
-            is.readLine();//# file name: "H99999999_R6003_G_31MAR2010_221000.out
-            is.readLine();//# Accumulation map [mm]
-            is.readLine();//# Accumulation time [sec]: 3300
-            is.readLine();//# number of columns: 1741
-            is.readLine();//# number of rows: 1057
-            is.readLine();//# grid: LATLON
-            is.readLine();//# upper-left LATLONcorner(x,y): 6924 5409
-            is.readLine();//# xllcorner [lon]: -97.154167
-            is.readLine();//# yllcorner [lat]: 40.133331
-            is.readLine();//# cellsize [dec deg]: 0.004167
-            is.readLine();//# no data value: -99.0
-
-            line = is.readLine();
-
-            if(line == null) {
-                System.out.println(">> File is empty... Aborting remapping process");
-            } else {
-
-                for (int i = numRow_Rain-1; i >= 0; i--) {
-
-                    java.util.StringTokenizer linarray = new java.util.StringTokenizer(line);
-
-
-                    for (int j = 0; j < numCol_Rain; j++) {
-
-                        float f = 0;
-                        try {
-                            matrix_rain[i][j] = Float.valueOf(linarray.nextToken()).floatValue();
-                        } catch (NumberFormatException nfe) {
-                            System.out.println("NFE" + nfe.getMessage());
                         }
 
+                        line = is.readLine();
+
                     }
-
-                    line = is.readLine();
-
                 }
+
+                is.close();
+                xover.close();
+                gzis.close();
+            } catch (IOException iOException) {
+                System.out.println(">> File is missing... Aborting remapping process");
             }
 
-            is.close();
-            xover.close();
-            gzis.close();
+
+            
 
             System.out.println(">> Remapping File # "+(ff-(numMaps-forecastHorizon)));
 
@@ -262,7 +273,7 @@ public class IowaBasinsInfoScript2{
             outputDir.close();
 
             kk++;
-
+            
         }
 
         int totalConvolutionPeriod=kk*dicretizationOfHour;
@@ -580,56 +591,56 @@ public class IowaBasinsInfoScript2{
         props.setProperty("password","");
         props.setProperty("loginTimeout","2");
 
-//        try {
-//
-//            Connection conn = DriverManager.getConnection(url, props);
-//
-//            System.out.println(">> Obtaining Object's list");
-//
-//            Statement st = conn.createStatement();
-//
-//            ResultSet rs;
-//
-//            rs = st.executeQuery("SELECT count(*) FROM pois_adv");
-//            rs.next();
-//            int rowCount = rs.getInt(1);
-//
-//            dbID_linkID=new int[2][rowCount];
-//
-//            rs = st.executeQuery("SELECT id,link_id FROM pois_adv");
-//            java.util.Vector avaObjects=new java.util.Vector<String>();
-//            for(int kk=0;kk<rowCount;kk++) {
-//                rs.next();
-//                dbID_linkID[0][kk]=rs.getInt(1);
-//                dbID_linkID[1][kk]=rs.getInt(2)-2;
-//            }
-//            rs.close();
-//
-//            st = conn.createStatement();
-//
-//            int forecast=0;
-//            for(int kk=0;kk<rowCount;kk++) {
-//                if(dbID_linkID[1][kk] < peakValues.length){
-//                    forecast=peakValues[dbID_linkID[1][kk]]<0.8?0:peakValues[dbID_linkID[1][kk]]>1.2?2:1;
-//                    st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakValues[dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
-//                }
-//            }
-//
-//            st.executeBatch();
-//
-//            conn.close();
-//            
-//            System.out.println(">> Database IFIS-1 Update Successfull");
-//            
-//            java.util.Date endTime = new java.util.Date();
-//            System.out.println(">> Update time Time: " + endTime.toString());
-//
-//
-//
-//        } catch (SQLException ex) {
-//            System.out.println("Connection to UT server failed");
-//            ex.printStackTrace();
-//        }
+        try {
+
+            Connection conn = DriverManager.getConnection(url, props);
+
+            System.out.println(">> Obtaining Object's list");
+
+            Statement st = conn.createStatement();
+
+            ResultSet rs;
+
+            rs = st.executeQuery("SELECT count(*) FROM pois_adv");
+            rs.next();
+            int rowCount = rs.getInt(1);
+
+            dbID_linkID=new int[2][rowCount];
+
+            rs = st.executeQuery("SELECT id,link_id FROM pois_adv");
+            java.util.Vector avaObjects=new java.util.Vector<String>();
+            for(int kk=0;kk<rowCount;kk++) {
+                rs.next();
+                dbID_linkID[0][kk]=rs.getInt(1);
+                dbID_linkID[1][kk]=rs.getInt(2)-2;
+            }
+            rs.close();
+
+            st = conn.createStatement();
+
+            int forecast=0;
+            for(int kk=0;kk<rowCount;kk++) {
+                if(dbID_linkID[1][kk] < peakValues.length){
+                    forecast=peakValues[dbID_linkID[1][kk]]<0.8?0:peakValues[dbID_linkID[1][kk]]>1.2?2:1;
+                    st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakValues[dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
+                }
+            }
+
+            st.executeBatch();
+
+            conn.close();
+            
+            System.out.println(">> Database IFIS-1 Update Successfull");
+            
+            java.util.Date endTime = new java.util.Date();
+            System.out.println(">> Update time Time: " + endTime.toString());
+
+
+
+        } catch (SQLException ex) {
+            System.out.println("Connection to UT server failed");
+            ex.printStackTrace();
+        }
         
         url = "jdbc:postgresql://ut.iihr.uiowa.edu/ifis";
         props = new java.util.Properties();
@@ -763,7 +774,11 @@ public class IowaBasinsInfoScript2{
 
     public static void main(String[] args) throws IOException {
 
-        IowaBasinsInfoScript2 bigScript=new IowaBasinsInfoScript2();
+        IndexPerformanceTestSetUp bigScript=new IndexPerformanceTestSetUp();
+        bigScript.ExecuteIndexReset();
+        
+        System.exit(0);
+        
         if(args[0].equalsIgnoreCase("reset")) bigScript.ExecuteIndexReset();
         if(args[0].equalsIgnoreCase("update")) bigScript.ExecuteIndexUpdate();
         if(args[0].equalsIgnoreCase("index")) bigScript.CreateIndex();

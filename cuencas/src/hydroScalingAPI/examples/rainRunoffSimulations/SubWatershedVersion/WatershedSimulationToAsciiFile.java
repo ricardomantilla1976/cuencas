@@ -387,8 +387,8 @@ public class WatershedSimulationToAsciiFile extends java.lang.Object implements 
     public static void main(String args[]) {
         
         try{
-            //subMain1(args);  //Main case with three boundary conditions
-            subMain2(args);  //Test case with boundary condition on English River
+            subMain1(args);  //Main case with three boundary conditions
+            //subMain2(args);  //Test case with boundary condition on English River
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
             System.exit(0);
@@ -429,12 +429,12 @@ public class WatershedSimulationToAsciiFile extends java.lang.Object implements 
         
         routingParams.put("v_o",0.5f);
         
-        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJune/EventIowaJune8thNoon/hydroNexrad.metaVHC");
+        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/HyperResolution/Prod3_5min1.0/HydroNexradRef.metaVHC");
         
         java.util.Calendar zeroSimulationTime=java.util.Calendar.getInstance();
         TimeZone tz = TimeZone.getTimeZone("UTC");
         zeroSimulationTime.setTimeZone(tz);
-        zeroSimulationTime.set(2008,5, 8, 10, 15, 00);
+        zeroSimulationTime.set(2008,4, 2, 0, 0, 0);
 
         java.io.File outputDirectory=new java.io.File("/Users/ricardo/simulationResults/Parallel/IowaRiverBetweenICandLT/");
         outputDirectory.mkdirs();
@@ -482,12 +482,12 @@ public class WatershedSimulationToAsciiFile extends java.lang.Object implements 
         
         routingParams.put("v_o",0.5f);
         
-        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/HyperResolution/Prod3_5min1.0/StormJune8th/HydroNexradRef.metaVHC");
+        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/HyperResolution/Prod3_5min1.0/subSet/HydroNexradRef.metaVHC");
         
         java.util.Calendar zeroSimulationTime=java.util.Calendar.getInstance();
         TimeZone tz = TimeZone.getTimeZone("UTC");
         zeroSimulationTime.setTimeZone(tz);
-        zeroSimulationTime.set(2008,5, 8, 10, 15, 00);
+        zeroSimulationTime.set(2008,5, 1, 0, 0, 0);
         
         java.io.File outputDirectory=new java.io.File("/Users/ricardo/simulationResults/Parallel/IowaRiverBetweenICandLT/");
         outputDirectory.mkdirs();
@@ -499,8 +499,8 @@ public class WatershedSimulationToAsciiFile extends java.lang.Object implements 
                         new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaCityToLoneTreeWatershed/ERSim.txt")
                     } ;
         
-        new WatershedSimulationToAsciiFile(388,477,xxyyb,boundaryCondFiles,matDirs,magnitudes,horOrders,metaModif,20.0f,5.0f,stormFile,null,0.0f,2,routingParams,outputDirectory,zeroSimulationTime).executeSimulation();
-        //new WatershedSimulationToAsciiFile(1033,534,xxyyb,boundaryCondFiles,matDirs,magnitudes,horOrders,metaModif,20.0f,5.0f,stormFile,null,0.0f,2,routingParams,outputDirectory,zeroSimulationTime).executeSimulation();
+        //new WatershedSimulationToAsciiFile(388,477,xxyyb,boundaryCondFiles,matDirs,magnitudes,horOrders,metaModif,20.0f,5.0f,stormFile,null,0.0f,2,routingParams,outputDirectory,zeroSimulationTime).executeSimulation();
+        new WatershedSimulationToAsciiFile(1033,534,xxyyb,boundaryCondFiles,matDirs,magnitudes,horOrders,metaModif,20.0f,5.0f,stormFile,null,0.0f,2,routingParams,outputDirectory,zeroSimulationTime).executeSimulation();
             
     }
 

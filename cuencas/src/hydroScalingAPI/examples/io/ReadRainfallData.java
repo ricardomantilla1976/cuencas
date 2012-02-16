@@ -39,9 +39,9 @@ public class ReadRainfallData {
                                 };
     public ReadRainfallData(String dirIn) throws java.io.IOException {
         
-        java.io.File theFile=new java.io.File("/Users/ricardo/rawData/IowaConnectivity/linksMask.metaVHC");
+        java.io.File theFile=new java.io.File("/Users/ricardo/rawData/IowaConnectivity/linksMask_CedarRiver30m.metaVHC");
         hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-        metaModif.setLocationBinaryFile(new java.io.File("/Users/ricardo/rawData/IowaConnectivity/linksMask.vhc"));
+        metaModif.setLocationBinaryFile(new java.io.File("/Users/ricardo/rawData/IowaConnectivity/linksMask_CedarRiver30m.vhc"));
         int [][] matrizPintada=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
 
         int nColsMP=metaModif.getNumCols();
@@ -58,7 +58,7 @@ public class ReadRainfallData {
                 maxIndex=Math.max(matrizPintada[i][j],maxIndex);
             }
         }
-
+        
         float[] counters=new float[maxIndex];
 
         for (int i=0;i<nRowsMP;i++){
@@ -73,7 +73,7 @@ public class ReadRainfallData {
 
         java.util.Arrays.sort(lasQueSi);
         
-        for (int kk = 0; kk < lasQueSi.length; kk++) {
+        for (int kk = 1440; kk < 7296; kk++) {
 
             System.out.print(lasQueSi[kk]+",");
 
@@ -139,6 +139,8 @@ public class ReadRainfallData {
             System.out.println("rain"+kk+","+infoVals.maxValue+","+infoVals.minValue+","+infoVals.meanValue+","+infoVals.standardDeviation);
 
             new java.io.File(dirOut.getPath()+"/RemappedRain/").mkdirs();
+            
+            //if(kk>)
 
             outputDir = new FileOutputStream(dirOut.getPath()+"/RemappedRain/rain"+kk);
             bufferout=new BufferedOutputStream(outputDir);

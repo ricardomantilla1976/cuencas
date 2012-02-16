@@ -304,7 +304,7 @@ public class WatershedNetworkEquations_HillDelay implements hydroScalingAPI.util
 
             output[i] += 60 * K_Q * (upFlows[k].evaluate(time));
             
-            //System.out.println(">>> Applying boundary condition for time = "+Double.toString(time)+" on link "+i+" with a value of "+upFlows[k].evaluate(time)+" length array = "+lengthArray[0][i]+" velocity = "+CkArray[0][i]+" "+K_Q);
+            //System.out.println("            >>> Applying boundary condition for time = "+Double.toString(time)+" on link "+i+" with a value of "+upFlows[k].evaluate(time)+" length array = "+lengthArray[0][i]+" velocity = "+CkArray[0][i]+" "+K_Q);
             
         }
         

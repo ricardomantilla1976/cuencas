@@ -35,12 +35,15 @@ public class MetaNetToKML_Eric {
 
         String[] cityName=uniqueIdentifier.split(" \\(");
         String[] riverName=cityName[1].split("\\)");
-        String[] commentName=null;
-
-        if(riverName.length > 1) commentName=riverName[1].split(":"); else commentName=new String[] {"N/A"," [information N/A]"};
-
-        uniqueIdentifier=cityName[0]+" ("+riverName[0]+")";
+        String[] commentName=new String[] {"N/A"," [information N/A]"};
         
+        uniqueIdentifier=cityName[0];
+
+        if(riverName.length > 1) {
+            uniqueIdentifier=cityName[0]+" ("+riverName[0]+")";
+            commentName=riverName[1].split(":");
+        } else riverName=new String[] {""};
+
         float xO=myCuenca.getLonLatBasin()[0][0];
         float yO=myCuenca.getLonLatBasin()[1][0];
         
@@ -199,29 +202,33 @@ public class MetaNetToKML_Eric {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_large_cities.log",
+//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric Osgood/res_large_cities.log",
 //                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
 //                            "/Users/ricardo/rawData/BasinMasks/large_cities/"};
 //
-//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_usgs_gauges.log",
-//                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
-//                            "/Users/ricardo/rawData/BasinMasks/usgs_gauges/"};
+        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric Osgood/res_usgs_gauges.log",
+                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
+                            "/Users/ricardo/rawData/BasinMasks/usgs_gauges/"};
 //
-//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_medium_cities.log",
+//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric Osgood/res_medium_cities.log",
 //                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
 //                            "/Users/ricardo/rawData/BasinMasks/medium_cities/"};
 //
-        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_small_cities.log",
-                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
-                            "/Users/ricardo/rawData/BasinMasks/small_cities/"};
+//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric Osgood/res_small_cities.log",
+//                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
+//                            "/Users/ricardo/rawData/BasinMasks/small_cities/"};
 
-//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_sensors.log",
+//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric Osgood/res_sensors.log",
 //                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
 //                            "/Users/ricardo/rawData/BasinMasks/ifc_sensors/"};
 
-//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res_usace_gauges.log",
+//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric Osgood/res_usace_gauges.log",
 //                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
 //                            "/Users/ricardo/rawData/BasinMasks/usace_gauges/"};
+
+//        args=new String[] { "/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric Osgood/res_all.log",
+//                            "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res",
+//                            "/Users/ricardo/rawData/BasinMasks/ifis_locations/"};
 
         main1(args);
     }
@@ -251,6 +258,7 @@ public class MetaNetToKML_Eric {
 
 
 
+            //System.out.println("X;Y;Area;NumLinks;MaxWF;USGS_CODE");
             for (int i = 0; i < basins.length; i++) {
             //for (int i = 0; i < 1; i++) {
 
@@ -274,12 +282,22 @@ public class MetaNetToKML_Eric {
 
 
                     double areaUp=Math.round(thisNetworkGeom.upStreamArea(linksStructure.OuletLinkNum)*10)/10.0;
+                    float[][] linkLe=linksStructure.getVarValues(1);
+                     
 
-
-                    System.out.println(x+";"+y+";"+areaUp+";"+uniqueIdentifier);
-
-
-                    MetaNetToKML_Eric exporter=new MetaNetToKML_Eric(metaModif,outputDir,laCuenca,matDirs,gdo,uniqueIdentifier);
+                    int[] outlets=new int[] {linksStructure.getOutletID()};
+                    double[][] wf=linksStructure.getWidthFunctions(outlets, 0);
+                    double maxWF=0;
+                    for (double ds : wf[0]) {
+                        maxWF=Math.max(maxWF, ds);
+                    }
+                    
+                    hydroScalingAPI.util.statistics.Stats stats=new hydroScalingAPI.util.statistics.Stats(linkLe);
+                    System.out.println(uniqueIdentifier+","+stats.meanValue+","+areaUp);
+                    System.out.println(java.util.Arrays.toString(wf[0]));
+                    
+//                    System.out.println(x+";"+y+";"+areaUp+";"+linksStructure.connectionsArray.length+";"+uniqueIdentifier);
+//                    MetaNetToKML_Eric exporter=new MetaNetToKML_Eric(metaModif,outputDir,laCuenca,matDirs,gdo,uniqueIdentifier);
 
                 }
             }

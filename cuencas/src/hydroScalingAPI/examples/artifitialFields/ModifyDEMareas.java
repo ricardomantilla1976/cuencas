@@ -50,7 +50,7 @@ public class ModifyDEMareas {
             int jPn = j-1+(DIR[i][j]-1)%3;
 
             areas[k]-=upAreas[i][j];
-            lenghts[k]-=upLength[i][j];
+            lenghts[k]-=upLength[i][j]-30/100.0;
             
             System.out.println(lenghts[k]);
             
