@@ -347,7 +347,7 @@ public class LinksAnalysis extends java.lang.Object {
     public float[][] getDistancesToOutlet(float[][] dToOutlet,int outlet){
 
         java.util.Vector distToInclue=new java.util.Vector();
-        distToInclue.add(new float[] {dToOutlet[0][outlet],dToOutlet[1][outlet]});
+        distToInclue.add(new float[] {dToOutlet[0][outlet],dToOutlet[1][outlet],outlet});
         addIncoming(dToOutlet,distToInclue,outlet);
 
 
@@ -362,6 +362,26 @@ public class LinksAnalysis extends java.lang.Object {
         return shortGroupDists;
 
     }
+    
+    /**
+     * Returns the topologic and geometric distances of the upstream links to a
+     * desired link in the basin
+     * @param dToOutlet An array with distances to the basin outlet using function getDistancesToOutlet()
+     * @param outlet A list of desired outlets
+     * @return A float[][] array. Where float[0] contains the array of topologic distances to
+     * the desired link and float[1] contains the array of geometric distances to the
+     * desired link
+     */
+    public java.util.Vector getUpLinksDistancesToOutlet(float[][] dToOutlet,int outlet){
+
+        java.util.Vector distToInclue=new java.util.Vector();
+        distToInclue.add(new float[] {dToOutlet[0][outlet],dToOutlet[1][outlet],outlet});
+        addIncoming(dToOutlet,distToInclue,outlet);
+
+        return distToInclue;
+
+    }
+
 
         /**
      * Returns the topologic and geometric distances of the upstream links to a
@@ -404,7 +424,7 @@ public class LinksAnalysis extends java.lang.Object {
 
     private void addIncoming(float[][] dToOutlet,java.util.Vector distToInclue,int outlet){
         for(int i=0;i<connectionsArray[outlet].length;i++){
-            distToInclue.add(new float[] {dToOutlet[0][connectionsArray[outlet][i]],dToOutlet[1][connectionsArray[outlet][i]]});
+            distToInclue.add(new float[] {dToOutlet[0][connectionsArray[outlet][i]],dToOutlet[1][connectionsArray[outlet][i]],connectionsArray[outlet][i]});
             addIncoming(dToOutlet,distToInclue,connectionsArray[outlet][i]);
         }
     }
@@ -894,11 +914,12 @@ public class LinksAnalysis extends java.lang.Object {
         //main6_1(args);  // Writing connectivity for a DEM and map of hillslopes
         //main7(args);  //Writing connectivity for Clear Creek to share with The Mathematicians
         //main8_1(args);  //Wrting connectivity and Full model parameters for The Mathematicians
-        main8_2(args);  //Wrting connectivity and Full model parameters for The Mathematicians
+        //main8_2(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_Rodica(args);
         //main8(args);  //Writing connectivity for Cedar River at Cedar Rapids to share with The Mathematicians
         //main9(args);  // Writing connectivity for Cedar River at Cedar Rapids (30 m DEM) to share with The Mathematicians
-        main_MODLU(args); //link-ids
+        //main_MODLU(args); //link-ids
+        main10(args);  // Writing connectivity for Equation (Evaluation by Walter)
     }
 
     /**
@@ -1387,7 +1408,7 @@ System.out.println("X  " +x  + "   Y  " +  y);
         System.exit(0);
 
     }
- /**
+    /**
      * Tests for the class
      * @param args the command line arguments
      */
@@ -2354,7 +2375,131 @@ System.out.println("X  " +x  + "   Y  " +  y);
 
     }
 
+    /**
+     * Tests for the class
+     * @param args the command line arguments
+     */
+    public static void main10(String args[]) { //For Walter and the Formula
 
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try{
+            
+            System.out.println(">> Reading information");
+
+            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res.metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res.dir"));
+
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(metaModif, matDirs);
+            
+            //FINDS LINK ID FOR FORECAST LOCATIONS IN IOWA
+
+            int[][] matrizPintada=new int[metaModif.getNumRows()][metaModif.getNumCols()];
+            int[] headsTails=mylinksAnalysis.contactsArray;
+
+            hydroScalingAPI.util.geomorphology.objects.HillSlope myHillActual;
+
+            int numCols=metaModif.getNumCols();
+            int numRows=metaModif.getNumRows();
+
+            System.out.println(">> Calculating Mask");
+
+            for(int i=0;i<headsTails.length;i++){
+            //for(int i=0;i<10;i++){
+                int xOulet=headsTails[i]%numCols;
+                int yOulet=headsTails[i]/numCols;
+
+                int tileColor=i+1;
+                //System.out.println("Head: "+xOulet+","+yOulet+" Tail: "+xSource+","+ySource+" Color: "+tileColor+" Scale: "+(scale+1));
+
+                myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
+                int elementsInTile=myHillActual.getXYHillSlope()[0].length;
+                for (int j=0;j<elementsInTile;j++){
+                    matrizPintada[myHillActual.getXYHillSlope()[1][j]][myHillActual.getXYHillSlope()[0][j]]=tileColor;
+                }
+            }
+
+            System.out.println(">> Aquiring distances, areas and lenghts");
+            
+            float[][] bigDtoO=mylinksAnalysis.getDistancesToOutlet();
+            float[][] areas=mylinksAnalysis.getVarValues(0);
+            float[][] lenghts=mylinksAnalysis.getVarValues(1);
+
+            String outputMetaFile="/Users/ricardo/temp/LinksInBasinsIowa.csv";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            String[] argsX;
+            argsX=new String[] {"/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric Osgood/res_usgs_gauges.log"};
+            
+            int nCols=metaModif.getNumCols();
+            double mRes=metaModif.getResLat();
+            double minLat=metaModif.getMinLat();
+            double minLon=metaModif.getMinLon();
+
+            for (int i = 0; i < argsX.length; i++) {
+                String[] basins=new hydroScalingAPI.io.BasinsLogReader(new java.io.File(argsX[i])).getPresetBasins();
+
+                System.out.println(">> Opening: "+argsX[i]);
+                
+
+                for (int j = 0; j < basins.length; j++) {
+                
+
+                    if(!basins[j].equalsIgnoreCase("")){
+                        String[] basLabel = basins[j].split("; ");
+
+                        int x=Integer.parseInt(basLabel[0].split(",")[0].split("x:")[1].trim());
+                        int y=Integer.parseInt(basLabel[0].split(",")[1].split("y:")[1].trim());
+
+                        metaBuffer.write(basLabel[1].split(":")[0]+";"+x+";"+y+";"+matrizPintada[y][x]+"\n");
+                        
+                        java.util.Vector distsAndPos=mylinksAnalysis.getUpLinksDistancesToOutlet(bigDtoO,matrizPintada[y][x]-1);
+                        
+                        int numLinksUp=distsAndPos.size();
+                        
+                        System.out.println(basLabel[1].split(":")[0]+";"+x+";"+y+";"+matrizPintada[y][x]);
+                        System.out.println("Total # of links on this basin;"+numLinksUp);
+                        
+                        metaBuffer.write("Total # of links on this basin;"+numLinksUp+"\n");
+                        metaBuffer.write("Link-ID;Topological Distance to Outlet;Longitude;Latitude;hillArea[km^2];linkLength[km]"+"\n");
+                        
+                        float[] valuesOutlet=(float[])distsAndPos.get(0);
+                        int dOutlet=(int)(valuesOutlet[0]);
+                        
+                        for (int k = 0; k < numLinksUp; k++) {
+                            float[] values=(float[])distsAndPos.get(k);
+                            
+                            double xxx=(mylinksAnalysis.contactsArray[(int)values[2]]%nCols)*mRes/3600.+minLon;
+                            double yyy=(mylinksAnalysis.contactsArray[(int)values[2]]/nCols)*mRes/3600.+minLat;
+                            
+                            metaBuffer.write((int)(values[2]+1)+";"+(int)(values[0]-dOutlet+1)+";"+xxx+";"+yyy+";"+areas[0][(int)values[2]]+";"+lenghts[0][(int)values[2]]+"\n");
+                        }
+
+                    }
+                    
+                    
+                }
+
+            }
+
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
 
 
 }
