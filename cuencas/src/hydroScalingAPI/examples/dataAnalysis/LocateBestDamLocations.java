@@ -49,7 +49,7 @@ public class LocateBestDamLocations {
         
         
         //Array of stream orders to analyze and Dam and Lake parameters
-        int[] ordersToConsider={4,5,6};
+        int[] ordersToConsider={4,5};
         double maxAreaAllowed=1e5;
         float damElevation=5;
         
@@ -64,10 +64,11 @@ public class LocateBestDamLocations {
                 int iaE=streamsStructure.contactsArray[ordersToConsider[i]-1][j]/nCols;
                 
                 int iaN=ia;
-                int jaN=ja;        
-
-                //{
-
+                int jaN=ja;
+                
+                //TO TEST BOTTOM OF STREAM
+//                jaN=jaE;
+//                iaN=iaE;
                 
                 java.util.Vector locationAreasVolumes=new java.util.Vector<double[]>();
                 
@@ -77,15 +78,16 @@ public class LocateBestDamLocations {
 
                     hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(jaN, iaN ,damElevation,fullDirMatrix,dem,metaDatos);
                     
-                    double[] resCharac=new double[7];
+                    double[] resCharac=new double[8];
                     
-                    resCharac[0]=(float) (jaN*resLon/3600.0f+minLon);
-                    resCharac[1]=(float) (iaN*resLat/3600.0f+minLat);
+                    resCharac[0]=(float) ((jaN+0.5)*resLon/3600.0f+minLon);
+                    resCharac[1]=(float) ((iaN+0.5)*resLat/3600.0f+minLat);
                     resCharac[2]=jaN;
                     resCharac[3]=iaN;
                     resCharac[4]=basinHillslopesMask[iaN][jaN]-1;
                     resCharac[5]=theDam.getLakeArea();
                     resCharac[6]=theDam.getLakeVolume();
+                    resCharac[7]=areas[iaN][jaN];
                     
                     locationAreasVolumes.add(resCharac);
                     
@@ -101,49 +103,54 @@ public class LocateBestDamLocations {
                 
                 hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(jaN, iaN ,damElevation,fullDirMatrix,dem,metaDatos);
                     
-                double[] resCharac=new double[7];
+                double[] resCharac=new double[8];
                     
-                resCharac[0]=(float) (jaN*resLon/3600.0f+minLon);
-                resCharac[1]=(float) (iaN*resLat/3600.0f+minLat);
+                resCharac[0]=(float) ((jaN+0.5)*resLon/3600.0f+minLon);
+                resCharac[1]=(float) ((iaN+0.5)*resLat/3600.0f+minLat);
                 resCharac[2]=jaN;//(float) (jaN*resLon/3600.0f+minLon);
                 resCharac[3]=iaN;//(float) (iaN*resLat/3600.0f+minLat);
                 resCharac[4]=basinHillslopesMask[iaN][jaN]-1;
                 resCharac[5]=theDam.getLakeArea();
                 resCharac[6]=theDam.getLakeVolume();
+                resCharac[7]=areas[iaN][jaN];
 
                 locationAreasVolumes.add(resCharac);
                 
-                double maxVoluAvailable=Double.MIN_VALUE;
-                double minAreaAvailable=Double.MAX_VALUE;
-                int locationChosen=-1;
-                int locationDefault=-1;
+                if(locationAreasVolumes.size() > 10){
                 
-                for (int k = 0; k < locationAreasVolumes.size(); k++) {
-                    double[] thisLake =(double[]) locationAreasVolumes.elementAt(k);
-                    
-                    if(thisLake[3]<minAreaAvailable){
-                        minAreaAvailable=thisLake[3];
-                        locationDefault=k;
-                    }
-                    
-                    if(thisLake[3]<=maxAreaAllowed){
-                        if(thisLake[4]>maxVoluAvailable){
-                            maxVoluAvailable=thisLake[4];
-                            locationChosen=k;
+                    double maxVoluAvailable=Double.MIN_VALUE;
+                    double minAreaAvailable=Double.MAX_VALUE;
+                    int locationChosen=-1;
+                    int locationDefault=-1;
+
+                    for (int k = 5; k < locationAreasVolumes.size()-5; k++) {
+                        double[] thisLake =(double[]) locationAreasVolumes.elementAt(k);
+
+                        if(thisLake[5]<minAreaAvailable){
+                            minAreaAvailable=thisLake[5];
+                            locationDefault=k;
                         }
+
+                        if(thisLake[5]<=maxAreaAllowed){
+                            if(thisLake[6]>maxVoluAvailable){
+                                maxVoluAvailable=thisLake[6];
+                                locationChosen=k;
+                            }
+                        }
+
                     }
-                    
-                }
+
+                    double[] thisLake;
+
+                    if(locationChosen == -1){
+                        //This case means it didn't find a location with less than the allowed area
+                        thisLake =(double[]) locationAreasVolumes.elementAt(locationDefault);
+                        //System.out.println(java.util.Arrays.toString(thisLake));
+                    } else {
+                        thisLake =(double[]) locationAreasVolumes.elementAt(locationChosen);
+                        System.out.println(locationAreasVolumes.size()+" "+java.util.Arrays.toString(thisLake));
+                    }
                 
-                double[] thisLake;
-                
-                if(locationChosen == -1){
-                    //This case means it didn't find a location with less than the allowed area
-                    thisLake =(double[]) locationAreasVolumes.elementAt(locationDefault);
-                    //System.out.println(java.util.Arrays.toString(thisLake));
-                } else {
-                    thisLake =(double[]) locationAreasVolumes.elementAt(locationChosen);
-                    System.out.println(java.util.Arrays.toString(thisLake));
                 }
                 
             }
@@ -193,7 +200,7 @@ public class LocateBestDamLocations {
             metaModif.setFormat("Float");
             float [][] areas=new hydroScalingAPI.io.DataRaster(metaModif).getFloat();
             
-            new hydroScalingAPI.examples.dataAnalysis.LocateBestDamLocations(1570, 127,10, matDirs,dem,horton,areas,metaModif);
+            new hydroScalingAPI.examples.dataAnalysis.LocateBestDamLocations(1570, 127,5, matDirs,dem,horton,areas,metaModif);
             
            
         } catch (java.io.IOException IOE){
