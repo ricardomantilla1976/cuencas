@@ -548,7 +548,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
             }
         });
 
-        panelOpciones.setFont(new java.awt.Font("Dialog", 1, 10));
+        panelOpciones.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         panelOpciones.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 panelOpcionesStateChanged(evt);
@@ -647,7 +647,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         jPanel15.setLayout(new java.awt.GridLayout(7, 3));
 
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        jLabel6.setText("Runoff Intensity");
+        jLabel6.setText("Rainfall Intensity");
         jPanel15.add(jLabel6);
 
         rainIntensity.setText("20");
@@ -686,7 +686,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         flowVelocity.setText("0.5");
         jPanel15.add(flowVelocity);
 
-        jLabel11.setFont(new java.awt.Font("Dialog", 0, 10));
+        jLabel11.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         jLabel11.setText(" m / s");
         jPanel15.add(jLabel11);
 
@@ -697,7 +697,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         lambda1.setText("0.3");
         jPanel15.add(lambda1);
 
-        jLabel13.setFont(new java.awt.Font("Dialog", 0, 10));
+        jLabel13.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         jLabel13.setText(" m^(1/2) / s");
         jPanel15.add(jLabel13);
 
@@ -708,7 +708,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         lambda2.setText("-0.1");
         jPanel15.add(lambda2);
 
-        jLabel15.setFont(new java.awt.Font("Dialog", 0, 10));
+        jLabel15.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         jLabel15.setText(" m^(1/2) / s");
         jPanel15.add(jLabel15);
 
@@ -719,7 +719,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         hillVelocity.setText("0.05");
         jPanel15.add(hillVelocity);
 
-        jLabel19.setFont(new java.awt.Font("Dialog", 0, 10));
+        jLabel19.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         jLabel19.setText(" m / s");
         jPanel15.add(jLabel19);
 
