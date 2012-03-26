@@ -57,7 +57,7 @@ public class StormManager {
     private double yllcorner;
     private double cellsize;
 
-
+    private java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
 
     /**
      * Creates a new instance of StormManager (with constant rainfall rate
@@ -68,11 +68,10 @@ public class StormManager {
      */
     public StormManager(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, float rainIntensity, float rainDuration) {
 
-        TimeZone tz = TimeZone.getTimeZone("UTC");
         java.util.Calendar date=java.util.Calendar.getInstance();
         date.setTimeZone(tz);
         date.clear();
-        date.set(1971, 6, 1, 6, 0, 0);
+        date.set(1971, 6, 1, 0, 0, 0);
 
         firstWaterDrop=date;
         lastWaterDrop=date;
@@ -185,7 +184,9 @@ public class StormManager {
 
             precOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
             accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
-//////////////////////////////////////// stopped here - be sure accumulated is being calculated correctly
+            
+            //////////////////////////////////////// stopped here - be sure accumulated is being calculated correctly
+            
             int regInterval=metaStorm.getTemporalScale();
             float regIntervalmm=((float)metaStorm.getTemporalScale())/(1000.0f*60.0f);
 

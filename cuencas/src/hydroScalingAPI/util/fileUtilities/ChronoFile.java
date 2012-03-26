@@ -36,11 +36,11 @@ public class ChronoFile extends Object implements Comparable{
     public java.io.File fileName;
     private String baseName;
     
-    String[] months={"Enero","January","Febrero","February","Marzo","March","Abril","April","Mayo","May","Junio","June","Julio","July","Agosto","August","Septiembre","September","Octubre","October","Noviembre","November","Diciembre","December"};
-    java.util.Vector holdMonths=new java.util.Vector();
+    private String[] months={"Enero","January","Febrero","February","Marzo","March","Abril","April","Mayo","May","Junio","June","Julio","July","Agosto","August","Septiembre","September","Octubre","October","Noviembre","November","Diciembre","December"};
+    private java.util.Vector holdMonths=new java.util.Vector();
     
-    java.util.Calendar date=null;  //If the file is dated this variable contains the file date
-    TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+    private java.util.Calendar date=null;  //If the file is dated this variable contains the file date
+    private TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
         
     /**
      * Creates new chronoFile
@@ -161,8 +161,8 @@ public class ChronoFile extends Object implements Comparable{
                 m2=holdMonths.indexOf(mes2)/2;
                 y1=new Integer(thisFile.nextToken()).intValue();
                 y2=new Integer(otroFile.nextToken()).intValue();
-                date1=java.util.Calendar.getInstance(); date1.setTimeZone(tz); date1.set(y1, m1, d1);
-                date2=java.util.Calendar.getInstance(); date2.setTimeZone(tz); date2.set(y2, m2, d2);
+                date1=java.util.Calendar.getInstance(); date1.clear(); date1.setTimeZone(tz); date1.set(y1, m1, d1);
+                date2=java.util.Calendar.getInstance(); date2.clear(); date2.setTimeZone(tz); date2.set(y2, m2, d2);
                 return (date1.before(date2))?-1:1;
             case 5:
                 fullDate1=thisFile.nextToken();
@@ -182,8 +182,8 @@ public class ChronoFile extends Object implements Comparable{
                 m2=holdMonths.indexOf(mes2)/2;
                 y1=new Integer(thisFile.nextToken()).intValue();
                 y2=new Integer(otroFile.nextToken()).intValue();
-                date1=java.util.Calendar.getInstance(); date1.setTimeZone(tz); date1.set(y1, m1, d1, h1, min1, sec1);
-                date2=java.util.Calendar.getInstance(); date2.setTimeZone(tz); date2.set(y2, m2, d2, h2, min2, sec2);
+                date1=java.util.Calendar.getInstance(); date1.clear(); date1.setTimeZone(tz); date1.set(y1, m1, d1, h1, min1, sec1);
+                date2=java.util.Calendar.getInstance(); date2.clear(); date2.setTimeZone(tz); date2.set(y2, m2, d2, h2, min2, sec2);
                 return (date1.before(date2))?-1:1;
         }
         

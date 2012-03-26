@@ -53,6 +53,8 @@ public class HillSlopesInfo extends java.lang.Object {
     hydroScalingAPI.modules.rainfallRunoffModel.objects.InfiltrationManager thisInfiltManager;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.LandUseManager thisLandUse;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager thisSCSData;
+    
+    private java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
 
     /**
      * Creates new instnace of hillSlopesInfo
@@ -139,6 +141,7 @@ public class HillSlopesInfo extends java.lang.Object {
     public double precipitation(int HillNumber,double timeInMinutes){
         java.util.Calendar dateRequested =java.util.Calendar.getInstance();
         dateRequested.clear();
+        dateRequested.setTimeZone(tz);
         dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
 //        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
         return thisStormEvent.getPrecOnHillslope(HillNumber,dateRequested);
@@ -147,6 +150,7 @@ public class HillSlopesInfo extends java.lang.Object {
       public double EVPT(int HillNumber,double timeInMinutes){
         java.util.Calendar dateRequested =java.util.Calendar.getInstance();
         dateRequested.clear();
+        dateRequested.setTimeZone(tz);
         dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
 //        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
         return thisEVPTEvent.getEVPTOnHillslope(HillNumber,dateRequested);
@@ -154,6 +158,7 @@ public class HillSlopesInfo extends java.lang.Object {
          public double PotEVPT(int HillNumber,double timeInMinutes){
         java.util.Calendar dateRequested =java.util.Calendar.getInstance();
         dateRequested.clear();
+        dateRequested.setTimeZone(tz);
         dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
 //        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
         return thisPotEVPTEvent.getPotEVPTOnHillslope(HillNumber,dateRequested);
@@ -162,6 +167,7 @@ public class HillSlopesInfo extends java.lang.Object {
       public double SnowMelt(int HillNumber,double timeInMinutes){
         java.util.Calendar dateRequested =java.util.Calendar.getInstance();
         dateRequested.clear();
+        dateRequested.setTimeZone(tz);
         dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
 //        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
         return thisSNOWEvent.getSNOWOnHillslope(HillNumber,dateRequested);
@@ -170,6 +176,7 @@ public class HillSlopesInfo extends java.lang.Object {
        public double SoilMoisture(int HillNumber,double timeInMinutes){
         java.util.Calendar dateRequested =java.util.Calendar.getInstance();
         dateRequested.clear();
+        dateRequested.setTimeZone(tz);
         dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
 //        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
         return thisSoilMoistureEvent.getSOILM040OnHillslope(HillNumber, dateRequested);
@@ -179,6 +186,7 @@ public class HillSlopesInfo extends java.lang.Object {
        public double precipitationacum(int HillNumber,double timeInMinutes){
         java.util.Calendar dateRequested =java.util.Calendar.getInstance();
         dateRequested.clear();
+        dateRequested.setTimeZone(tz);
         dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
 //        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
         return thisStormEvent.getAcumPrecOnHillslope(HillNumber,dateRequested);
@@ -187,7 +195,8 @@ public class HillSlopesInfo extends java.lang.Object {
 //       public double EVPTacum(int HillNumber,double timeInMinutes){
 //        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
 //        dateRequested.clear();
-//        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
+//        dateRequested.setTimeZone(tz);
+        //        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
 ////        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
 //        return thisEVPTEvent.getAcumEVPTOnHillslope(HillNumber,dateRequested);
 //    }
@@ -195,6 +204,7 @@ public class HillSlopesInfo extends java.lang.Object {
 //        public double PotEVPTacum(int HillNumber,double timeInMinutes){
 //        java.util.Calendar dateRequested =java.util.Calendar.getInstance();
 //        dateRequested.clear();
+//        dateRequested.setTimeZone(tz);
 //        dateRequested.setTimeInMillis((long) (timeInMinutes*60*1000));
 ////        System.out.println("HillNumber="+HillNumber+"    dateRequested)="+dateRequested);
 //        return thisPotEVPTEvent.getAcumPotEVPTOnHillslope(HillNumber,dateRequested);

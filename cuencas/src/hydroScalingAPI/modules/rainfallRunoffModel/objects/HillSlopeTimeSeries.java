@@ -48,6 +48,8 @@ public class HillSlopeTimeSeries {
     
     private boolean first=true;
     private long iniTimeMill;
+    
+    private java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
 
     /**
      * Creates new HillSlopeTimeSeries
@@ -99,9 +101,10 @@ public class HillSlopeTimeSeries {
     public float getRecord(java.util.Calendar atThisTime){
         
         java.util.Calendar serchForTime = java.util.Calendar.getInstance();
-        
+        serchForTime.clear();
+        serchForTime.setTimeZone(tz);
         serchForTime.setTimeInMillis(iniTimeMill+regInterval*((atThisTime.getTimeInMillis()-iniTimeMill)/regInterval)); //To round the time to the previous exact record time
-         //System.out.println("  new record " + serchForTime.getTimeInMillis());             
+        //System.out.println("  new record " + serchForTime.getTimeInMillis());           
        
         Float valueToReturn=((Float)recordTimeValue.get(serchForTime));
         
@@ -116,7 +119,10 @@ public class HillSlopeTimeSeries {
                     
             //}    
             return 0.0f;
-        } else return valueToReturn;
+        } else {
+            //System.out.println("  new record " + serchForTime.getTimeInMillis()+" and value "+valueToReturn);
+            return valueToReturn;
+        }
         
 
 //        java.util.Calendar serchForTime = java.util.Calendar.getInstance(); 
@@ -140,8 +146,8 @@ public class HillSlopeTimeSeries {
     }
     
     /**
-     * The record lenght
-     * @return The record lenght
+     * The record length
+     * @return The record length
      */
     public float getSize(){
 //        return recordTime.size();
