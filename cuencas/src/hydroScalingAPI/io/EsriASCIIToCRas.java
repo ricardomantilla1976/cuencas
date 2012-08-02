@@ -181,11 +181,11 @@ public class EsriASCIIToCRas extends Object {
     public static void main(String args[]) {
 
       
-System.out.print("30ASTER");
+     System.out.print("30ASTER");
 
            try {
-            new EsriASCIIToCRas( new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/iowa30aster.txt"),
-                                new java.io.File("/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/"),0);
+            new EsriASCIIToCRas( new java.io.File("/nfsscratch/Users/rmantill/CuencasDataBases/ISUHills/Rasters/Topography/LIDAR_iihr/isu_plotsMet.txt"),
+                                new java.io.File("/nfsscratch/Users/rmantill/CuencasDataBases/ISUHills/Rasters/Topography/LIDAR_iihr/"),0);
 
         } catch (Exception IOE){
             System.out.print(IOE);

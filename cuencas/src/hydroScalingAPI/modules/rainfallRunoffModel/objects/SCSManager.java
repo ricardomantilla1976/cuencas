@@ -68,6 +68,7 @@ public class SCSManager {
     double[] minHillBased_K_NRCS;  // [link]//
     double[] maxInfiltrationRate;  // [link]//
     double[] SURGOSwa150;  // [link]//
+    double[] VegLAI;  // [link]//
 
     // Estimate the curvature of the hillslope - 5 classes
     double[][] HillslopeReliefArea; //[link][class]
@@ -78,6 +79,7 @@ public class SCSManager {
     private hydroScalingAPI.io.MetaRaster metaSoilData;
     private hydroScalingAPI.io.MetaRaster metaSoilHydData;
     private hydroScalingAPI.io.MetaRaster metaSwa150Data;
+    private hydroScalingAPI.io.MetaRaster metaVegLAIData;
     private hydroScalingAPI.io.MetaRaster metaDemData;
     private hydroScalingAPI.io.MetaRaster metaSlope;
     private java.util.Calendar InfoDate;
@@ -183,10 +185,10 @@ public class SCSManager {
                 return;
             }
 
-            if (metaSoilData.getMinLon() > metaDatos.getMinLon() + myCuenca.getMinX() * metaDatos.getResLon() / 3600.0
-                    || metaSoilData.getMinLat() > metaDatos.getMinLat() + myCuenca.getMinY() * metaDatos.getResLat() / 3600.0
-                    || metaSoilData.getMaxLon() < metaDatos.getMinLon() + (myCuenca.getMaxX() + 2) * metaDatos.getResLon() / 3600.0
-                    || metaSoilData.getMaxLat() < metaDatos.getMinLat() + (myCuenca.getMaxY() + 2) * metaDatos.getResLat() / 3600.0) {
+            if (metaSwa150Data.getMinLon() > metaDatos.getMinLon() + myCuenca.getMinX() * metaDatos.getResLon() / 3600.0
+                    || metaSwa150Data.getMinLat() > metaDatos.getMinLat() + myCuenca.getMinY() * metaDatos.getResLat() / 3600.0
+                    || metaSwa150Data.getMaxLon() < metaDatos.getMinLon() + (myCuenca.getMaxX() + 2) * metaDatos.getResLon() / 3600.0
+                    || metaSwa150Data.getMaxLat() < metaDatos.getMinLat() + (myCuenca.getMaxY() + 2) * metaDatos.getResLat() / 3600.0) {
                 System.out.println("Not Area Coverage for Soil data");
                 return;
             }
@@ -495,6 +497,7 @@ public class SCSManager {
             java.io.OutputStreamWriter newfile = new java.io.OutputStreamWriter(bufferout);
 
             for (int j = 0; j < linksStructure.contactsArray.length; j++) {
+                if(currentHillNumPixels[j]==0) currentHillNumPixels[j]=1;
                 newfile.write(linksStructure.contactsArray[j] + " ");
                 newfile.write(currentHillNumPixels[j] + " ");
                 CN[j] = currentHillBasedCN[j] / currentHillNumPixels[j];
@@ -593,10 +596,14 @@ public class SCSManager {
                         maxslope = Math.max(maxslope, slope);
                         slope = ((PixelH - dataSnapShotDem[MatYDem][MatXDem + 1]) / PixelSize);
                         maxslope = Math.max(maxslope, slope);
-
-
+// method proposed by Horn (1981)
+                        double sx=(1/(PixelSize*8))*((dataSnapShotDem[MatYDem+1][MatXDem + 1]+2*dataSnapShotDem[MatYDem+1][MatXDem]+dataSnapShotDem[MatYDem+1][MatXDem-1])
+                                -(dataSnapShotDem[MatYDem-1][MatXDem + 1]+2*dataSnapShotDem[MatYDem-1][MatXDem]+dataSnapShotDem[MatYDem-1][MatXDem-1]));
+                        double sy=(1/(PixelSize*8))*((dataSnapShotDem[MatYDem+1][MatXDem + 1]+2*dataSnapShotDem[MatYDem][MatXDem+1]+dataSnapShotDem[MatYDem-1][MatXDem+1])
+                                -(dataSnapShotDem[MatYDem+1][MatXDem -1]+2*dataSnapShotDem[MatYDem][MatXDem-1]+dataSnapShotDem[MatYDem-1][MatXDem-1]));
+                        double SlopeDEM=Math.pow(Math.pow(sx,2)+Math.pow(sy,2),0.5);
                         avehillBasedSlopeMet1[matrizPintada[j][k] - 1] = avehillBasedSlopeMet1[matrizPintada[j][k] - 1] + maxslope;
-//                        avehillBasedSlopeMet2[matrizPintada[j][k] - 1] = avehillBasedSlopeMet2[matrizPintada[j][k] - 1] + SlopeDEM;
+                        avehillBasedSlopeMet2[matrizPintada[j][k] - 1] = avehillBasedSlopeMet2[matrizPintada[j][k] - 1] + SlopeDEM;
                         ///System.out.println("MatXDem = " + MatXDem +"MatYDem = " + MatYDem+"   SlopeDEM=   " + SlopeDEM+"\n");
 ///////////////////// land use ///////////////////
                         if (PixelH > maxHillBasedH[matrizPintada[j][k] - 1]) {
@@ -942,6 +949,7 @@ public class SCSManager {
         double PixelHydCond = -9.9;
         if(hydCond>0) PixelHydCond=hydCond*0.0036;
         else {
+        if(soil>0) {    
         if (soil == 5 || soil == 6) {
             PixelHydCond = 0.00001;
         }
@@ -959,8 +967,12 @@ public class SCSManager {
         }
 
        if (soil == 4) {
-                PixelHydCond = 0.005;
+                PixelHydCond = 0.01;
         }}
+        else {
+            PixelHydCond = 0.05;
+        }
+        }
 
         return PixelHydCond;
     }
@@ -970,7 +982,7 @@ public class SCSManager {
         if (soil == 5 && soil == 6) {
             PixelMan = 0.1;
         }
-       
+   
            if (LC == 11){
            PixelMan = 0.1;
            } else if (LC == 12){
@@ -985,115 +997,23 @@ public class SCSManager {
                 PixelMan = 0.2;
             
             } else if (LC == 41|| LC == 42|| LC == 43) {
-                PixelMan = 0.8;
+                PixelMan = 0.4;
             }
              else if (LC == 51|| LC == 52 || LC == 71 || LC == 72) {
                 PixelMan = 0.3; 
             }
             else if (LC == 81 || LC == 82 || LC == 83 || LC == 84 || LC == 85) {
-                PixelMan = 0.55;
+                PixelMan = 0.4;
             } else if (LC > 90 && LC <= 99) {
                 PixelMan = 0.4;
 
            }else if (LC == 101) {
                 PixelMan = 0.1; // GREENROOF
            } else {
-                PixelMan = 0.1;
+                PixelMan = 0.4;
             }
-        
-
-        if (soil == 2) {
-            if (LC == 11 || LC == 12 || LC == 90 || LC == 95 || LC == 92) {
-                PixelMan =PixelMan;
-            } else if (LC == 21 || LC == 83 || LC == 84 || LC == 85) {
-                PixelMan = PixelMan - 0.005;
-            } else if (LC == 22) {
-                PixelMan = PixelMan - 0.005;
-            } else if (LC == 23) {
-                PixelMan = PixelMan - 0.005;
-            } else if (LC == 24) {
-                PixelMan = PixelMan - 0.005;
-            } else if (LC == 31 || LC == 32) {
-                PixelMan = PixelMan - 0.005;
-            } else if (LC == 41 || LC == 42 || LC == 2000 || LC == 43) {
-                PixelMan = PixelMan - 0.005;
-            } else if (LC == 51 || LC == 52) {
-                PixelMan = PixelMan - 0.005;
-            } else if (LC == 71 || LC == 72 || LC == 73 || LC == 74) {
-                PixelMan = PixelMan - 0.005;
-            } else if (LC == 101) {
-                PixelMan = PixelMan - 0.005;
-            } else if (LC == 81 || LC == 61) {
-                PixelMan = PixelMan - 0.005;
-            } else if (LC == 82) {
-                PixelMan = PixelMan - 0.005;
-            } else {
-                PixelMan = PixelMan - 0.005;
-            }
-        }
        
-        if (soil == 3) {
-            if (LC == 11 || LC == 12 || LC == 90 || LC == 95 || LC == 92) {
-                PixelMan =PixelMan;
-            } else if (LC == 21 || LC == 83 || LC == 84 || LC == 85) {
-                PixelMan = PixelMan - 0.0075;
-            } else if (LC == 22) {
-                PixelMan = PixelMan - 0.0075;
-            } else if (LC == 23) {
-                PixelMan = PixelMan - 0.0075;
-            } else if (LC == 24) {
-                PixelMan = PixelMan - 0.0075;
-            } else if (LC == 31 || LC == 32) {
-                PixelMan = PixelMan - 0.0075;
-            } else if (LC == 41 || LC == 42 || LC == 2000 || LC == 43) {
-                PixelMan = PixelMan - 0.0075;
-            } else if (LC == 51 || LC == 52) {
-                PixelMan = PixelMan - 0.0075;
-            } else if (LC == 71 || LC == 72 || LC == 73 || LC == 74) {
-                PixelMan = PixelMan - 0.0075;
-            } else if (LC == 101) {
-                PixelMan = PixelMan - 0.0075;
-            } else if (LC == 81 || LC == 61) {
-                PixelMan = PixelMan - 0.0075;
-            } else if (LC == 82) {
-                PixelMan = PixelMan - 0.0075;
-            } else {
-                PixelMan = PixelMan - 0.0075;
-            }
-        }
-        
-        
-        if (soil == 4) {
-            if (LC == 11 || LC == 12 || LC == 90 || LC == 95 || LC == 92) {
-                PixelMan =PixelMan;
-            } else if (LC == 21 || LC == 83 || LC == 84 || LC == 85) {
-                PixelMan = PixelMan - 0.01;
-            } else if (LC == 22) {
-                PixelMan = PixelMan - 0.01;
-            } else if (LC == 23) {
-                PixelMan = PixelMan - 0.01;
-            } else if (LC == 24) {
-                PixelMan = PixelMan - 0.01;
-            } else if (LC == 31 || LC == 32) {
-                PixelMan = PixelMan - 0.01;
-            } else if (LC == 41 || LC == 42 || LC == 2000 || LC == 43) {
-                PixelMan = PixelMan - 0.01;
-            } else if (LC == 51 || LC == 52) {
-                PixelMan = PixelMan - 0.01;
-            } else if (LC == 71 || LC == 72 || LC == 73 || LC == 74) {
-                PixelMan = PixelMan - 0.01;
-            } else if (LC == 101) {
-                PixelMan = PixelMan - 0.01;
-            } else if (LC == 81 || LC == 61) {
-                PixelMan = PixelMan - 0.01;
-            } else if (LC == 82) {
-                PixelMan = PixelMan - 0.01;
-            } else {
-                PixelMan = PixelMan - 0.01;
-            }
-        }
-
-        return PixelMan;
+           return PixelMan;
     }
 ///////////////////// K NRCS for the hillslope ///////////////////
 

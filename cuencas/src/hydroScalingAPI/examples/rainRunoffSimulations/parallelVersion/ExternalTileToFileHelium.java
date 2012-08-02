@@ -59,7 +59,8 @@ import java.io.IOException;
                                     float v_o,
                                     String stormFile,
                                     String EVPTFile,
-                                    String SNOWFile,
+                                    String SNOWMeltFile,
+                                    String SNOWSWEFile,
                                     String SOILMFile,
                                     float infilRate,
                                     String outputDirectory,
@@ -85,7 +86,7 @@ import java.io.IOException;
 
         if(dynaIndex==3) {command=new String[] {
                                 System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
-                                "-Xmx3000m",
+                                "-Xmx5000m",
                                 "-Xrs",
                                 "-classpath",
                                 "\""+System.getProperty("java.class.path")+"\"",
@@ -102,7 +103,8 @@ import java.io.IOException;
                                 ""+v_o, // args[9]
                                 stormFile, // args[10]
                                 EVPTFile, // args[11]
-                                SNOWFile, // args[12]
+                                SNOWMeltFile, // args[12]
+                                SNOWSWEFile, // args[12]
                                 SOILMFile, // args[12]
                                 ""+infilRate, // args[13]
                                 outputDirectory, // args[14]
@@ -154,17 +156,18 @@ import java.io.IOException;
             newfile.write("#!/bin/bash"+"\n");
             
             newfile.write("#$ -o " + WorkDir + "$JOB_ID.out"+"\n");
-            newfile.write("#$ -pe orte 1"+"\n");
+            newfile.write("#$ -pe orte 2"+"\n");
             newfile.write("#$ -V"+"\n");
             //newfile.write("#$ -q all.q" +"\n");
 
-           // newfile.write("#$ -q IFC"+"\n");
+            //newfile.write("#$ -q IFC"+"\n");
             
             newfile.write("#$ -ckpt user"+"\n");
             newfile.write("#$ -q all.q"+"\n");
             newfile.write("#$ -l ib=1"+"\n");
             newfile.write("#$ -cwd"+"\n");
             newfile.write("#$ -l mf=4G"+"\n");
+            //newfile.write("#$ -e /dev/null"+"\n");
 
             newfile.write("echo \"Got $NSLOTS slots.\""+"\n");
             newfile.write("echo \"TMPDIR=\" $TMPDIR"+"\n");
@@ -312,7 +315,7 @@ import java.io.IOException;
     "FSLOUTPUTTYPE=NIFTI_GZ",
     "G_BROKEN_FILENAMES=1",
     "_=/bin/env",
-    "OLDPWD=/Users/rmantill/qsubBin/tempScripts"
+    "OLDPWD=/nfsscratch/Users/rmantill/qsubBin/tempScripts"
     };
     
     

@@ -83,7 +83,7 @@ public class SCS {
                 + "aveManning,aveCN2,aveHydCond \n");//1
         int linkID = 0;
         int maxorder=0;double aveLength=0;double stdLength=0;double aveArea=0;double stdArea=0;
-        double aveSlope=0;double stdSlope=0;double aveRelief=0;double stdRelief=0;double aveManning=0;
+        double aveSlopeC=0;double aveSlopeH=0;double stdSlope=0;double aveRelief=0;double stdRelief=0;double aveManning=0;
         double aveHydCond=0; double aveCN2=0; double aveSWA150=0;
         double aveSCS1=0;double aveSCS2=0;
         
@@ -129,10 +129,13 @@ public class SCS {
         newfile.write("maxHillBasedManning,");//17
         newfile.write("getAverK_NRCS,");//18
         newfile.write("LandUseSCS,");//19
-        newfile.write("Soil_CN2(i),");//20
-        newfile.write("SCS_S2(i),");//21
-        newfile.write("Soil_CN1(i),");//22
-        newfile.write("SCS_S1(i),");//23
+        newfile.write("Soil_CN1(i),");//20
+        newfile.write("SCS_S1(i),");//21
+        newfile.write("Soil_CN2(i),");//22
+        newfile.write("SCS_S2(i),");//23
+        newfile.write("Soil_CN3(i),");//22
+        newfile.write("SCS_S3(i),");//23
+        newfile.write("Soil_SWA(i),");//22
         newfile.write("dist[meters],");//24
         newfile.write("vh1_1,");//25
         newfile.write("vh1_10,");//26
@@ -158,6 +161,7 @@ public class SCS {
         double numplan=0;
         double numlinear=0;
         System.out.println( "basin area  "+thisNetworkGeom.basinArea()+ "NLi  "+nLi+"  ave area "+thisNetworkGeom.basinArea()/nLi);
+        int nLi2=0;
         for (int i = 0; i < nLi; i++) {
             //if(thisNetworkGeom.linkOrder(i) > 1){
             int matrix_pin = i + 1;
@@ -174,16 +178,21 @@ public class SCS {
             newfile.write(thisNetworkGeom.upStreamTotalLength(i) + ",");//4
             newfile.write(thisNetworkGeom.mainChannelLength(i)+","); //5
             newfile.write(thisHillsInfo.Area(i) + ",");//5 // hillslope area (km2 - I think)
-            System.out.println(i + "  HArea  " + thisHillsInfo.Area(i));
+            //System.out.println(i + "  HArea  " + thisHillsInfo.Area(i));
             aveArea=aveArea+thisHillsInfo.Area(i);
             newfile.write(thisNetworkGeom.upStreamArea(i) + ",");       //6
-//            newfile.write(SCSObj.getavehillBasedSlopeMet1(i) + ",");//7a
-//            newfile.write(SCSObj.getavehillBasedSlopeMet2(i) + ",");//7b
+            newfile.write(SCSObj.getavehillBasedSlopeMet1(i) + ",");//7a
+            newfile.write(SCSObj.getavehillBasedSlopeMet2(i) + ",");//7b
             newfile.write(thisNetworkGeom.Slope(i) + ",");//8
-             aveSlope=aveSlope+thisNetworkGeom.Slope(i) ;
-            //System.out.println( "Area(i)  " +thisHillsInfo.Area(i) + "length  " +thisNetworkGeom.Length(i)+
-           //         "S2(i)"+thisHillsInfo.SCS_S2(i));
-            
+            if(thisNetworkGeom.Slope(i)<=0){
+              System.out.println( "Hill" +SCSObj.getHillRelief(i) + "    thisNetworkGeom.Length(i) "+ thisNetworkGeom.Length(i)) ;  
+            }
+            if(thisNetworkGeom.Slope(i)>0 || thisNetworkGeom.Slope(i)<5){
+            aveSlopeC=aveSlopeC+thisNetworkGeom.Slope(i) ;
+            aveSlopeH=aveSlopeH+thisHillsInfo.getHillslope(i);
+            nLi2=nLi2+1;
+            //System.out.println("SlopeC"+ thisNetworkGeom.Slope(i)+"  thisHillsInfo.getHillslope(i)  " + thisHillsInfo.getHillslope(i)+"   A(i)  " +thisHillsInfo.Area(i) + "L  " +thisNetworkGeom.Length(i));
+            }
             double coef=2*thisNetworkGeom.Length(i)*thisHillsInfo.SCS_S2(i)*1e-6;
             
             //System.out.println(  "coefarea  " +coef + "Area(i)  " +thisHillsInfo.Area(i)*0.05);
@@ -196,31 +205,47 @@ public class SCS {
             newfile.write(HillRelief + ",");//9
             newfile.write(Hchannel + ",");//10
             newfile.write(SCSObj.getHillRelief(i) + ",");//11
-             aveRelief=aveRelief+SCSObj.getHillRelief(i);
-             if(SCSObj.getHillRelief(i)==0)
+            aveRelief=aveRelief+SCSObj.getHillRelief(i);
+             //System.out.println( "test1 ");
+          
+            if(SCSObj.getHillRelief(i)==0)
                  numplan=numplan+1;
             newfile.write(SCSObj.getHillReliefMin(i) + ",");//12
             newfile.write(SCSObj.getHillReliefMax(i) + ",");//13
             newfile.write(FormParam + ","); //14
+             //System.out.println( "test2 ");
             newfile.write(SCSObj.getAverManning(i) + ","); //15
              aveManning=aveManning+SCSObj.getAverManning(i);
             newfile.write(SCSObj.getminHillBasedManning(i) + ","); //16
             newfile.write(SCSObj.getmaxHillBasedManning(i) + ","); //17
-            newfile.write(SCSObj.getAverK_NRCS(i) + ","); //18
+            // System.out.println( "test3 ");
+             //System.out.println( "SCSObj.getAverK_NRCS(i) " +SCSObj.getAverK_NRCS(i) );
+           //System.out.println( "thisHillsInfo.LandUseSCS(i) " +thisHillsInfo.LandUseSCS(i) );
+             newfile.write(SCSObj.getAverK_NRCS(i) + ","); //18
+            
+             //System.out.println( "test4 ");
             newfile.write(thisHillsInfo.LandUseSCS(i) + ","); //19
-            newfile.write(thisHillsInfo.SCS_CN2(i) + ","); //20
+             //System.out.println( "test5 ");
+            newfile.write(thisHillsInfo.SCS_CN1(i) + ","); //20
+             // System.out.println( "test6 ");
+            newfile.write(thisHillsInfo.SCS_S1(i) + ","); //21
+            newfile.write(thisHillsInfo.SCS_CN2(i) + ","); //22
+            newfile.write(thisHillsInfo.SCS_S2(i) + ","); //23
+            newfile.write(thisHillsInfo.SCS_CN3(i) + ","); //22
+              //System.out.println( "test7 ");
+            newfile.write(thisHillsInfo.SCS_S3(i) + ","); //23
+            newfile.write(thisHillsInfo.SWA150(i) + ","); //23
+            double dist = thisHillsInfo.Area(i) * 1000000 * 0.5 / (thisNetworkGeom.Length(i)); //(m)
+            //double tim_run=dist/100; //hour
+            newfile.write(dist + ",");  //24
+            //System.out.println("SCS_S1(i)      " + thisHillsInfo.SCS_S1(i) +"  SCS_S2 (i)      " + thisHillsInfo.SCS_S2(i));
+            //System.out.println("SWA150(i)      " + thisHillsInfo.SWA150(i) );
              aveCN2=aveCN2+thisHillsInfo.SCS_CN2(i) ;
             aveSCS2=aveSCS2+thisHillsInfo.SCS_S2(i) ;
             aveSCS1=aveSCS1+thisHillsInfo.SCS_S1(i) ;
             aveSWA150=aveSWA150+thisHillsInfo.SWA150(i) ;
-            newfile.write(thisHillsInfo.SCS_S2(i) + ","); //21
-            newfile.write(thisHillsInfo.SCS_CN1(i) + ","); //22
-            newfile.write(thisHillsInfo.SCS_S1(i) + ","); //23
-            double dist = thisHillsInfo.Area(i) * 1000000 * 0.5 / (thisNetworkGeom.Length(i)); //(m)
-            //double tim_run=dist/100; //hour
-            newfile.write(dist + ",");  //24
-            System.out.println("SCS_S1(i)      " + thisHillsInfo.SCS_S1(i) +"  SCS_S2 (i)      " + thisHillsInfo.SCS_S2(i));
-            System.out.println("SWA150(i)      " + thisHillsInfo.SWA150(i) );
+      
+            
             //System.out.println("1/SCSObj.getAverManning(i):    " + 1/SCSObj.getAverManning(i));
             //System.out.println("SCSObj.getavehillBasedSlope(i):    " + Math.pow(SCSObj.getavehillBasedSlopeMet1(i)/10000, 0.5));
             //System.out.println("Math.pow(1/ 1000, (2 / 3)):    " + Math.pow(1.0/ 1000.0, (2.0 / 3.0)));
@@ -311,7 +336,7 @@ public class SCS {
             newfile.write(SCSObj.getTerm(i,3)+",");//26
             newfile.write(thisHillsInfo.AveHydCond(i) +",");//26
              aveHydCond=aveHydCond+thisHillsInfo.AveHydCond(i) ;
-            System.out.println(" Hy Cond"+thisHillsInfo.AveHydCond(i)+",");//28
+            //System.out.println(" Hy Cond"+thisHillsInfo.AveHydCond(i)+",");//28
             double acum=SCSObj.getHillReliefPorc(i,0);
             newfile.write(acum+",");//29
             acum=acum+SCSObj.getHillReliefPorc(i,1);
@@ -329,10 +354,13 @@ public class SCS {
 
 
         }
-        
+        System.out.println("aveSlopeC  "+aveSlopeC+"  nLi  " +nLi);
+        System.out.println("aveSlopeC  "+aveSlopeC+"  nLi2  " +nLi2);
         aveLength=aveLength/nLi;
         aveArea=aveArea/nLi;
-        aveSlope=aveSlope/nLi;
+        aveSlopeC=aveSlopeC/nLi2;
+                
+        aveSlopeH=aveSlopeH/nLi;
         aveRelief=aveRelief/nLi;
         aveManning=aveManning/nLi;
         aveCN2=aveCN2/nLi;
@@ -344,9 +372,9 @@ public class SCS {
         numconvex=numconvex*100/nLi;
         numlinear=numlinear*100/nLi;
         numplan=numplan*100/nLi;
-        System.out.println("aveArea " + aveArea + " aveSCS1 " + aveSCS1+ " aveSCS2 " + aveSCS2+ " aveSWA150 " + aveSWA150);
-        System.exit(0);
-         newfileSum.write(aveLength+","+aveArea+","+aveSlope+","+
+        //System.out.println("aveArea " + aveArea + " aveSCS1 " + aveSCS1+ " aveSCS2 " + aveSCS2+ " aveSWA150 " + aveSWA150);
+        //System.exit(0);
+         newfileSum.write(aveLength+","+aveArea+","+aveSlopeC+","+aveSlopeH+","+
                 aveRelief+","+numconcave+","+numconvex+","+numlinear+","+numplan+","+
                 aveManning+","+aveCN2+","+aveHydCond +"\n");//1
          
@@ -543,10 +571,10 @@ public class SCS {
                     double ai7=(thisHillsInfo.Area(i)*1e6/SCSObj.getHillRelief(i))*(SCSObj.getTerm(i,0)+SCSObj.getTerm(i,1)*h+SCSObj.getTerm(i,2)*h*h+SCSObj.getTerm(i,3)*h*h*h);
             double dh_dw7=thisNetworkGeom.Length(i)*2/(ai2);
    
-            System.out.println(" Area(i) " + thisHillsInfo.Area(i)+" Length(i) " + thisNetworkGeom.Length(i)+" HillRelief(i) " + SCSObj.getHillRelief(i));
-            System.out.println(" thisNetworkGeom.Slope(i) " + thisNetworkGeom.Slope(i));
-            System.out.println(" dh_da2 " + dh_da2+" dh_da4 " + dh_da4+" dh_da6 " + dh_da6+" dh_da8 " + dh_da8);
-            System.out.println(" dh_dw2 " + dh_da2+" dh_dw4 " + dh_da4+" dh_dw6 " + dh_da6+" dh_dw8 " + dh_da8);
+            //System.out.println(" Area(i) " + thisHillsInfo.Area(i)+" Length(i) " + thisNetworkGeom.Length(i)+" HillRelief(i) " + SCSObj.getHillRelief(i));
+            //System.out.println(" thisNetworkGeom.Slope(i) " + thisNetworkGeom.Slope(i));
+            //System.out.println(" dh_da2 " + dh_da2+" dh_da4 " + dh_da4+" dh_da6 " + dh_da6+" dh_da8 " + dh_da8);
+            //System.out.println(" dh_dw2 " + dh_da2+" dh_dw4 " + dh_da4+" dh_dw6 " + dh_da6+" dh_dw8 " + dh_da8);
             
             //newfile.write(SCSObj.getHillReliefPorc(i,0)+",");//28
             //newfile.write(SCSObj.getHillReliefPorc(i,1)+",");//29
@@ -591,7 +619,7 @@ public class SCS {
 
     public static void subMain(String args[]) throws java.io.IOException {
 
-        String pathinput = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/";
+        String pathinput = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/";
         
          
         
@@ -613,20 +641,20 @@ public class SCS {
             y = 2123;
 
         String precname = "glomod90.metaVHC";
-        String Dir = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover//";
+        String Dir = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover//";
          //String Dir = "C:/Documents and Settings/lcunha/My Documents/CUENCAS/Whitewater_database/Rasters/Hydrology/Land_info/LandCover2001_cliped/";
         new java.io.File(Dir + "/TURKEY/").mkdirs();
         String OutputDir = Dir + "/TURKEY/";
 
      
         String LandUse = Dir + precname;
-         Dir =  "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/";
+         Dir =  "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/";
        
         //Dir = "C:/Documents and Settings/lcunha/My Documents/CUENCAS/Whitewater_database/Rasters/Hydrology/soil_type/CUENCAS/";
         precname = "soil_rec90.metaVHC";
         String SoilData = Dir + precname;
-String SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
-String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";            
+String SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+String Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";            
       new SCS(x, y, matDirs, magnitudes, metaModif, DEMFile, new java.io.File(LandUse), new java.io.File(SoilData), new java.io.File(SoilHydData), new java.io.File(Soil150SWAData),new java.io.File(OutputDir)).ExecuteSCS();
 
 
@@ -635,9 +663,11 @@ String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB
     public static void subMain1(String args[]) throws java.io.IOException {
 
         ///// DEM DATA /////
-        String Dir = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/temp/Topography/Summary/";
+        int BasinFlag=1;
+        String Dir = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/temp/Topography/Summary/";
         new java.io.File(Dir).mkdirs();
-
+        String SimName = "90DEMUSGS";
+        String BasinName = "3Garber";
 
         //int[] Res = {90, 60, 30, 20, 10, 5};
 
@@ -648,40 +678,27 @@ String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB
         //int[] YY = {27, 41, 82, 122, 244, 497,-9};
         //int[] XX = {1341};
         //int[] YY = {122};
+                String ResStr = BasinName + "/" +SimName+ "/" +BasinFlag +"/";
         
-         int[] Res = {-16};
-        int[] XX = {2734};
-        int[] YY = {1069};
-        int j = 0;
-        for (int ir : Res) {
-
-            String ResStr = ir + "meter";
-            String OutputDir = Dir + "/" + ResStr + "/";
-            if(ir==-9) OutputDir= Dir + "/90USGS/";
-            if(ir==-10) OutputDir= Dir + "/ASTER/";
-            if(ir==-11) OutputDir= Dir + "/30USGS/";
-            if(ir==-12) OutputDir= Dir + "/10USGS/";
-            if(ir==-13) OutputDir= Dir + "/30USGS/";
-            if(ir==-14) OutputDir= Dir + "/CedarPrun5/";
-             if(ir==-15) OutputDir= Dir + "/CedarPrun7/";
-              if(ir==-16) OutputDir= Dir + "/Cedar90/";
+        String OutputDir = Dir + "/" + ResStr + "/";
+        
+         
             new java.io.File(OutputDir).mkdirs();
 
             java.io.File DEMFile;
-               DEMFile=new java.io.File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-            if(ir==-9) DEMFile=new java.io.File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-            if(ir==-10) DEMFile=new java.io.File("/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM");
-            if(ir==-11) DEMFile=new java.io.File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM");
-            if(ir==-12) DEMFile=new java.io.File("/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/10USGS/ned_1_3.metaDEM");
-            if(ir==-13) DEMFile=new java.io.File("/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/30USGS/ned_1.metaDEM");
-               if(ir==-14) DEMFile=new java.io.File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun5/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-            if(ir==-15) DEMFile=new java.io.File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun7/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-            if(ir==-16) DEMFile=new java.io.File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-    
-            int x = XX[j];
-            int y = YY[j]; //Clear Creek - coralville
-     int BasinFlag=0;
-   //  DEMFile=new java.io.File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+           
+            String[] StringDEM = {"error", "error", "error"};
+                    StringDEM = hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.ParallelSimulationToFileHelium.defineDEMxy(BasinName, SimName);
+                    System.out.println("StringDEM = " + StringDEM[0]);
+                    System.out.println("x = " + StringDEM[1] + "    y" + StringDEM[2]);
+
+                    DEMFile=new java.io.File(StringDEM[0]);
+                    int x = Integer.parseInt(StringDEM[1]);//   .getInteger(StringDEM[1]);
+                    int y = Integer.parseInt(StringDEM[2]);
+            
+            
+     
+   //  DEMFile=new java.io.File("/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
    //    OutputDir= "/Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/Basin_Info/TestBasin/";
      //  new java.io.File(OutputDir).mkdirs();
     //   x = 2858;
@@ -707,57 +724,78 @@ String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB
 
  //Clear Creek - coralville
          
-            if(ir==-9) {x=2817;
-            y=713;}
-            if(ir==-10) {x=1596;
-            y=298;}
-            if(ir==-11) {x=8288;
-            y=1050;}
-            if(ir==-12) {x=4624;
-            y=278;}
-            if(ir==-13) {x=1541;
-            y=92;}
-
    
 //  x = 2734;
 //            y = 1069; //Cedar Rapids
-            String LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
-             String SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
-            String SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
-            String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+            String LandUse = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+             String SoilData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            String SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            String Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
          
-            if (BasinFlag == 0) {
-            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
-            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
-            SoilHydData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";       
-         Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";}
+        if (BasinFlag == 0) {
+            LandUse = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+            SoilData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+        }
 
         if (BasinFlag == 1) {
-            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverIntenseAgriculture_90_2.metaVHC";
-            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/glomod90.metaVHC";
+            SoilData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
         }
 
 
         if (BasinFlag == 2) {
-            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverRestoringCropsTo10percentGrassland_90_2.metaVHC";
-            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverBaseline_90_2.metaVHC";
+            SoilData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
         }
 
 
         if (BasinFlag == 3) {
-            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverRestoringPastureTo10percentForest_90_2.metaVHC";
-            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverRestoringPastureTo10percentForest_90_2.metaVHC";
+            SoilData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
         }
 
 
         if (BasinFlag == 4) {
-            LandUse = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverBaseline_90_2.metaVHC";
-            SoilData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            LandUse = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverBaseline_90_2.metaVHC";
+            SoilData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+        }
+
+
+        if (BasinFlag == 25) {
+            LandUse = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverTranfrom_25_90_2.metaVHC";
+            SoilData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+        }
+
+
+        if (BasinFlag == 50) {
+            LandUse = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverTranfrom_50_90_2.metaVHC";
+            SoilData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+        }
+
+
+        if (BasinFlag == 75) {
+            LandUse = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcoverTranfrom_75_90_2.metaVHC";
+            SoilData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydgroup90.metaVHC";
+            SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
         }
 
             new SCS(x, y, matDirs, magnitudes, metaModif, DEMFile, new java.io.File(LandUse), new java.io.File(SoilData), new java.io.File(SoilHydData), new java.io.File(Soil150SWAData),new java.io.File(OutputDir)).ExecuteSCS();
-            j = j + 1;
-        }
+        
 
     }
     

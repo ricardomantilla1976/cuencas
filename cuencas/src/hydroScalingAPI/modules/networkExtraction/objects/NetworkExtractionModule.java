@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 package hydroScalingAPI.modules.networkExtraction.objects;
 
 import hydroScalingAPI.modules.networkExtraction.widgets.ExtractionOptions;
-
+import java.util.TimeZone;
 /**
  * This class controls the procedures associated to River Network Extraction from
  * DEMs.  It comunicates with the GUI and the methods needed to achieve this task
@@ -70,7 +70,7 @@ public class NetworkExtractionModule implements Runnable {
      */
     public hydroScalingAPI.modules.networkExtraction.objects.WorkRectangle MT;
     /**
-     * A Vector contining a list of the sinks in the DEM
+     * A Vector containing a list of the sinks in the DEM
      */
     public java.util.Vector Sink_t;
     /**
@@ -220,6 +220,7 @@ public class NetworkExtractionModule implements Runnable {
      * The number of cells that need to converge in order to let a river start
      */
     public int nCeldasConv=2;
+    
     /**
      * A flag that indicates the cleanShortsRoutine will be called
      */
@@ -529,6 +530,7 @@ public class NetworkExtractionModule implements Runnable {
             }
             
             if(areaPend_nuevo){
+                System.out.println("enter the area code - number of pixels"+pixAP);
                 GetRasterNetwork.umbral_Area(pixAP,this);
                 GetGeomorphologyRAM.getORD(this);
                 GetRasterNetwork.getArea_Pend(this);
@@ -1085,9 +1087,9 @@ public class NetworkExtractionModule implements Runnable {
     public static void main(String[] Arguments){
         
  
-System.out.print("ASTER");
-        Arguments=new String[] { "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/cedar_aster.metaDEM",
-                                 "/scratch/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/30meterASTER/cedar_aster.dem"};
+System.out.print("nlda");
+        Arguments=new String[] { "//nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs250.metaDEM",
+                                 "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs250.dem"};
 //
 //System.out.print("5meter");
 //        Arguments=new String[] { "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/5meters/5meterc1.metaDEM",

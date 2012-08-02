@@ -47,12 +47,10 @@ public class Gen_MatrixPintada{
 
 //    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] LandUseOnBasin;
 
-    private java.util.Calendar InfoDate;
-
+   
     int[][] matrizPintada;
 
-    private double recordResolutionInMinutes;
-
+ 
     private String OutputM;
     private String OutputL;
      /**
@@ -70,28 +68,36 @@ public class Gen_MatrixPintada{
 
 
 
-    public Gen_MatrixPintada(String Outp,String Outl, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir,byte[][] HorLin, int[][] magnitudes) throws IOException {
+    public Gen_MatrixPintada(String Outp,String Outl, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir,byte[][] HorLin, int[][] magnitudes,double[][] DEM) throws IOException {
 
         OutputM=Outp;
         OutputL=Outl;
 
         System.out.println("START THE SCS MANAGER \n");
         java.io.File OutputFileM=new java.io.File(OutputM);
-         java.io.File OutputFileL=new java.io.File(OutputL);
+        java.io.File OutputFileL=new java.io.File(OutputL);
         java.io.File directorio=OutputFileM.getParentFile();
-
+        hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(DEM);
+        System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
+      
 
         int[][] matDirBox=new int[myCuenca.getMaxY()-myCuenca.getMinY()+3][myCuenca.getMaxX()-myCuenca.getMinX()+3];
         int[][] matHorLin=new int[myCuenca.getMaxY()-myCuenca.getMinY()+3][myCuenca.getMaxX()-myCuenca.getMinX()+3];
         int[][] matHorLinCode=new int[myCuenca.getMaxY()-myCuenca.getMinY()+3][myCuenca.getMaxX()-myCuenca.getMinX()+3];
-
-//        for (int i=1;i<matDirBox.length-1;i++) for (int j=1;j<matDirBox[0].length-1;j++){
-//            matDirBox[i][j]=(int) matDir[i+myCuenca.getMinY()-1][j+myCuenca.getMinX()-1];
-//        }
-//
-//
+        double[][] matDEM=new double[myCuenca.getMaxY()-myCuenca.getMinY()+3][myCuenca.getMaxX()-myCuenca.getMinX()+3];
+        double[][] matDEMInBasin=new double[myCuenca.getMaxY()-myCuenca.getMinY()+3][myCuenca.getMaxX()-myCuenca.getMinX()+3];
+        //hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaSNOW.getMissing()).doubleValue());       
+        
+       System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
+      
+       
         for (int i=1;i<matDirBox.length-1;i++) for (int j=1;j<matDirBox[0].length-1;j++){
             matHorLin[i][j]=(int) HorLin[i+myCuenca.getMinY()-1][j+myCuenca.getMinX()-1];
+           
+        }
+        
+        for (int i=1;i<matDirBox.length-1;i++) for (int j=1;j<matDirBox[0].length-1;j++){
+            matDEM[i][j]=DEM[i+myCuenca.getMinY()-1][j+myCuenca.getMinX()-1];
         }
 
             /****** OJO QUE ACA PUEDE HABER UN ERROR (POR LA CUESTION DE LA COBERTURA DEL MAPA SOBRE LA CUENCA)*****************/
@@ -132,17 +138,37 @@ public class Gen_MatrixPintada{
                 }
             }
             System.out.println("linksStructure.contactsArray.length: "+linksStructure.contactsArray.length+"  linksStructure.tailsArray.length = "+linksStructure.tailsArray.length);
-
-          for (int i=1;i<matDirBox.length-1;i++) for (int j=1;j<matDirBox[0].length-1;j++){
-              if(matHorLin[i][j]>0)
-                matHorLinCode[i][j]=matrizPintada[i][j];
+System.out.println("matDEM.length()"+matDEM.length + "matDEM.length()"+matDEM[0].length);
+System.out.println("matDEM.length()"+DEM.length + "matDEM.length()"+DEM[0].length);
+System.out.println("atDirBox.length-1"+matDirBox.length + "mmatDirBox[0].length-1"+matDirBox[0].length);
+for (int i=0;i<matDEMInBasin.length;i++) for (int j=0;j<matDEMInBasin[0].length;j++){
+              
+              if(matHorLin[i][j]>0) matHorLinCode[i][j]=matHorLin[i][j];
+                  
+              if(matrizPintada[i][j]>0) matDEMInBasin[i][j]=DEM[i+myCuenca.getMinY()-1][j+myCuenca.getMinX()-1];
+              else matDEMInBasin[i][j]=-9.9;
+              //System.out.println(matrizPintada[i][j] + "  DEM " + matDEMInBasin[i][j]);
+                  //DEM[i][j]=matrizPintada[i][j];
         }
 
+    
+    
+    hydroScalingAPI.util.statistics.Stats rainStats2=new hydroScalingAPI.util.statistics.Stats(matDEMInBasin,-9.9);
+    System.out.println("min" + rainStats2.minValue + "max" + rainStats2.maxValue+ "ave" + rainStats2.meanValue);
+    
+    java.io.File CorrDEM=new java.io.File(OutputM.substring(0,OutputM.indexOf("MP"))+"CorrDEM.asc");
+    
+        java.io.FileOutputStream        outputDir;
+        java.io.OutputStreamWriter      newfile;
+        java.io.BufferedOutputStream    bufferout;
+        String                          retorno="\n";
 
-  
-
+     
+         
+         
             newfileASC(OutputFileM,myCuenca,matrizPintada,metaDatos);
             newfileASC(OutputFileL,myCuenca,matHorLinCode,metaDatos);
+            newfileASCDouble(CorrDEM,myCuenca,matDEMInBasin,metaDatos);
            /*     for (int j=0;j<matrizPintada.length;j++) for (int k=0;k<matrizPintada[0].length;k++){
                      if (matrizPintada[j][k] > 0){
                         minLonBasin= metaDatos.getMinLon()+myCuenca.getMinX()*metaDatos.getResLon()/3600.0;
@@ -178,6 +204,44 @@ public class Gen_MatrixPintada{
         newfile.write("yllcorner "+minLatBasin+retorno);//Iowa river
         newfile.write("cellsize "+demResLat+retorno);
         newfile.write("NODATA_value  "+"-9"+retorno);
+
+     //   System.out.println("OUTPUT PROGRAM - Fcolumns = " +Finalcolumns + "Frows = "+Finalrows);
+       for (int i=(nlin-1);i>=0;i--) {
+        for (int j=0;j<ncol;j++) {
+                    newfile.write(Finalmatrix[i][j]+" ");
+                }
+            newfile.write(retorno);
+           }
+
+        newfile.close();
+        bufferout.close();
+        outputDir.close();
+        }
+    
+    private void newfileASCDouble(java.io.File AscFile, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca,double[][] Finalmatrix,hydroScalingAPI.io.MetaRaster metaDatos) throws java.io.IOException{
+
+
+        java.io.FileOutputStream        outputDir;
+        java.io.OutputStreamWriter      newfile;
+        java.io.BufferedOutputStream    bufferout;
+        String                          retorno="\n";
+
+        outputDir = new java.io.FileOutputStream(AscFile);
+        bufferout=new java.io.BufferedOutputStream(outputDir);
+        newfile=new java.io.OutputStreamWriter(bufferout);
+
+        int nlin= (myCuenca.getMaxY()-myCuenca.getMinY()+3);
+        int ncol= (myCuenca.getMaxX()-myCuenca.getMinX()+3);
+
+        double minLonBasin= metaDatos.getMinLon()+myCuenca.getMinX()*metaDatos.getResLon()/3600.0;
+        double minLatBasin = metaDatos.getMinLat()+myCuenca.getMinY()*metaDatos.getResLat()/3600.0;
+        double demResLat=metaDatos.getResLat()/3600;
+        newfile.write("ncols "+ncol+retorno);
+        newfile.write("nrows "+nlin+retorno);
+        newfile.write("xllcorner "+minLonBasin+retorno);// Iowa river
+        newfile.write("yllcorner "+minLatBasin+retorno);//Iowa river
+        newfile.write("cellsize "+demResLat+retorno);
+        newfile.write("NODATA_value  "+"-9.9"+retorno);
 
      //   System.out.println("OUTPUT PROGRAM - Fcolumns = " +Finalcolumns + "Frows = "+Finalrows);
        for (int i=(nlin-1);i>=0;i--) {
@@ -231,23 +295,37 @@ public class Gen_MatrixPintada{
     * @param args the command line arguments
     */
     public static void main (String args[]) throws IOException {
-
-        String pathinput = "//scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun8/";
+        String pathinput = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/"; 
+        //pathinput = "//nfsscratch/Users/rmantill/CuencasDataBases/ISUHills/Rasters/Topography/"; 
+    
+        //String pathinput = "//scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun9/";
         java.io.File theFile=new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".metaDEM");
+        //java.io.File theFile=new java.io.File(pathinput + "walnut10" + ".metaDEM");
         hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+        //metaModif.setLocationBinaryFile(new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".dir"));
         metaModif.setLocationBinaryFile(new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".dir"));
         String formatoOriginal=metaModif.getFormat();
         metaModif.setFormat("Byte");
         byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
 
 
+        //metaModif.setLocationBinaryFile(new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".horton"));
         metaModif.setLocationBinaryFile(new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".horton"));
         formatoOriginal=metaModif.getFormat();
+        System.out.println("horton"+formatoOriginal);
         metaModif.setFormat("Byte");
         byte [][] HortonLinks=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
-
-        metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
-        metaModif.setFormat("Integer");
+        
+        metaModif.setFormat("Double");
+        metaModif.setLocationBinaryFile(new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".corrDEM"));
+        
+        System.out.println("dem  "+formatoOriginal);
+        //System.exit(1);
+        
+        double [][] DEM=new hydroScalingAPI.io.DataRaster(metaModif).getDouble();
+        
+                  
+        
         int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
         int [] x = new int[36];
         int [] y= new int[36];
@@ -255,6 +333,7 @@ public class Gen_MatrixPintada{
         //x[1]=3124; y[1]=234; Code[1]=9999999; 
 //        x[0]=2646; y[0]=762; Code[0]=5454220; 
 //x[1]=2817; y[1]=713; Code[1]=5454300; 
+x[1]=1298; y[1]=14; Code[1]=10000; 
 //x[2]=2949; y[2]=741; Code[2]=5454000; 
 //x[1]=2256; y[1]=876; Code[1]=5453100; 
 //x[4]=1312; y[4]=1112; Code[4]=5451700; 
@@ -266,7 +345,7 @@ public class Gen_MatrixPintada{
 //x[10]=2958; y[10]=410; Code[10]=5455700; 
 //x[11]=3186; y[11]=392; Code[11]=5465000; 
 //x[12]=3316; y[12]=116; Code[12]=5465500; 
-x[1]=2734; y[1]=1069; Code[1]=9999998; 
+//x[1]=2734; y[1]=1069; Code[1]=9999998; 
 //x[14]=1770; y[14]=1987; Code[14]=5458300; 
 //x[15]=2676; y[15]=465; Code[15]=5455500; 
 //x[16]=2900; y[16]=768; Code[16]=5453520; 
@@ -295,11 +374,12 @@ x[1]=2734; y[1]=1069; Code[1]=9999998;
  //FINISHCode[34]=5412400;   
  //FINISHCode[34]=5411850;  
  //FINISHCode[34]=5412500;      
-        for (int i=1;i<x.length-1;i++) {
+        //for (int i=1;i<x.length-1;i++) {
+            for (int i=1;i<2;i++) {
             System.out.println(" x " + x[i] + "  y  " +y[i]);
-        String Dir="/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/MatrizPint90/";
-        String OutputM=Dir+"/MP_" + x[i] + "_"+ y[i] + "_"+ Code[i] + ".asc";
-        String OutputL=Dir+"/HL_" + x[i] + "_"+ y[i] + "_"+ Code[i] + ".asc";
+        String Dir="//nfsscratch/Users/rmantill/CuencasDataBases/ISUHills/Rasters/MatrizPint90Conc/";
+        String OutputM=Dir+"/MP90Pr9_" + x[i] + "_"+ y[i] + "_"+ Code[i] + ".asc";
+        String OutputL=Dir+"/HL90Pr9_" + x[i] + "_"+ y[i] + "_"+ Code[i] + ".asc";
         new java.io.File(Dir+"/").mkdirs();
        
         hydroScalingAPI.util.geomorphology.objects.Basin myCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x[i],y[i],matDirs,metaModif);
@@ -307,7 +387,7 @@ x[1]=2734; y[1]=1069; Code[1]=9999998;
         hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom=new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(linksStructure);
 
         hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada Matrix;
-        Matrix=new hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada(OutputM,OutputL, myCuenca, linksStructure, metaModif, matDirs, HortonLinks, magnitudes);
+        Matrix=new hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada(OutputM,OutputL, myCuenca, linksStructure, metaModif, matDirs, HortonLinks, magnitudes,DEM);
 
         // main basin
         }

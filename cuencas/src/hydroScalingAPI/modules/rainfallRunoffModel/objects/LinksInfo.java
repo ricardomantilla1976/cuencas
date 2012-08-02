@@ -61,7 +61,7 @@ public class LinksInfo extends java.lang.Object {
 
         slopeArray=new float[1][lengthArray[0].length];
         for (int LinkNumber=0;LinkNumber<slopeArray[0].length;LinkNumber++) {
-            if (dropArray[0][LinkNumber] == 0){
+            if (dropArray[0][LinkNumber] <= 0 || lengthArray[0][LinkNumber] == 0){
                 slopeArray[0][LinkNumber]=(float) (0.05*Math.pow(upStreamAreaArray[0][LinkNumber]/2.0,-0.2)); //false Geometry
             } else {
                 slopeArray[0][LinkNumber]=(float) (dropArray[0][LinkNumber]/lengthArray[0][LinkNumber]/1000.0);

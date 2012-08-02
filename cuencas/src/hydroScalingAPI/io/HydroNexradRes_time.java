@@ -10,7 +10,7 @@ import java.io.*;
 import java.io.FileOutputStream;
 import java.io.DataOutputStream;
 import java.text.DecimalFormat;
-
+import java.util.TimeZone;
 
 
 /**
@@ -183,6 +183,9 @@ public class HydroNexradRes_time extends Object {
 
     java.util.Calendar date=java.util.Calendar.getInstance();
     date.clear();
+    java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+    date.setTimeZone(tz);  /// CHECK RICARDO
+    
 
     date.setTimeInMillis(timmilsec);
 
@@ -249,7 +252,9 @@ public class HydroNexradRes_time extends Object {
 
 
     java.util.Calendar date=java.util.Calendar.getInstance();
-        date.clear();
+    date.clear();
+    java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+    date.setTimeZone(tz);  /// CHECK RICARDO
         date.set(time[0], time[1], time[2], time[3], time[4], time[5]);
         double timemin =date.getTimeInMillis()/1000./60.;
   System.out.println(fileName+"---- year "+timeStamp[0]+ " month  "+timeStamp[1]+ " DAY  "+timeStamp[2]+ " HOUR  "+timeStamp[3]+ " MIN  "+timeStamp[4]);
@@ -292,8 +297,8 @@ public class HydroNexradRes_time extends Object {
         newfile.write("nrows "+rows+retorno);
         //newfile.write("xllcorner "+"-97.63333"+retorno);// basin mode
         //newfile.write("yllcorner "+"37.300000"+retorno);//basin mode
-        newfile.write("xllcorner "+"-93.966667"+retorno);// Iowa river
-        newfile.write("yllcorner "+"40.966667"+retorno);//Iowa river
+        newfile.write("xllcorner "+"-93.93337"+retorno);// Iowa river
+        newfile.write("yllcorner "+"40.98333"+retorno);//Iowa river
         //newfile.write("xllcorner "+"-100.066667"+retorno);// radar mode
         //newfile.write("yllcorner "+"35.600000"+retorno);//radar mode
         int cellsize = (int) java.lang.Math.round(FinalResolution/60);

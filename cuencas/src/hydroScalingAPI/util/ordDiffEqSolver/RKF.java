@@ -25,7 +25,7 @@ package hydroScalingAPI.util.ordDiffEqSolver;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-
+import java.util.TimeZone;
 /**
  * An implementation of the Runge-Kutta-Felberg algorithm for solving non-linear ordinary
  * differential equations.  It uses a time step control algorithm to avoid numerical errors
@@ -230,7 +230,7 @@ public class RKF extends java.lang.Object {
 
                 double newdelta = Math.abs(2 * (newY[i] - newYstar[i]) / (newY[i] + newYstar[i]));
                 if (newY[i] < 0.01 && newYstar[i] < 0.01) {
-                    newdelta = 0.1 * newdelta;
+                    newdelta = 0.01 * newdelta;
                 }
                 if (Delta < newdelta) {
                     Delta = newdelta;
@@ -282,11 +282,11 @@ public class RKF extends java.lang.Object {
 //
 ////   out.write("--> "+"Tstep = " + timeStep+"newTimeStep" + newTimeStep +" Dif"+ ( timeStep-newTimeStep)+"\n");
 ////   out.write("-----> "+"Delta = " + Delta+" epsilon "+epsilon+" factor "+factor+"\n");
-////       out.write("---------> "+" N Link " +IC.length+" Link with prob=" + problink+"\n");
+///       out.write("---------> "+" N Link " +IC.length+" Link with prob=" + problink+"\n");
 ////   out.write("-------------> " + "Yval   " + Yprob + "Yvalprob    " + Ystarprob+"\n");
 //
 //out.close();
-      // System.out.println("IC.length " +IC.length +" link error  "+ Math.floor(problink) + "  Yprob  " +Yprob + "  Y*prob  "+ Ystarprob +"--> "+timeStep+" "+epsilon+" "+Delta+" "+factor);
+            // System.out.println("nlinks " +IC.length/9 +" IC error "+ Math.floor(problink) +" Var Problem "+Math.floor(problink/(IC.length/9))+" Link  "+ (Math.floor(problink/(IC.length/9)*8+problink)) +"  Yprob  " +Yprob + "  Y*prob  "+ Ystarprob +"--> "+timeStep+" "+epsilon+" "+Delta+" "+factor);
             //System.out.println("Yprob" +Yprob + "Yprob"+ Ystarprob + "--> "+timeStep+" "+epsilon+" "+Delta+" "+factor+" "+newTimeStep+" ("+java.util.Calendar.getInstance().getTime()+")");
 
             if (newTimeStep < 0.01 / 60.) {
@@ -547,7 +547,8 @@ public class RKF extends java.lang.Object {
             givenStep[0][0] = currentTime;
             IC = givenStep[1];
 
-            java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime()+ " (" + java.util.Calendar.getInstance().getTime() + ")");
 
@@ -598,7 +599,8 @@ public class RKF extends java.lang.Object {
         for (int j = 0; j < IC.length; j++) {
             outputStream.writeDouble(IC[j]);
         }
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")");
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
@@ -714,7 +716,8 @@ public class RKF extends java.lang.Object {
             }
         }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
@@ -806,7 +809,7 @@ public class RKF extends java.lang.Object {
 //            for (int j=IC.length/2;j<IC.length;j++) System.out.print(IC[j]+" ");
 //            System.out.println();
 //            if(Math.random()<0.2) System.exit(0);
-        
+
         }
 
         if (currentTime != finalTime && IC[ouletID] > 1e-6) {
@@ -868,7 +871,8 @@ public class RKF extends java.lang.Object {
             outputStream_L.write(IC[i - 1] + ",");
         }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
@@ -1029,7 +1033,8 @@ public class RKF extends java.lang.Object {
 
         }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + fourPlaces.format(IC[ouletID]));
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
@@ -1209,7 +1214,8 @@ public class RKF extends java.lang.Object {
             outputStream.write(IC[linksStructure.completeStreamLinksArray[ind[i]]] + "\t");
         }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
@@ -1331,7 +1337,8 @@ public class RKF extends java.lang.Object {
 //            outputStream.write(IC[i] + ",");
 //        }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]+"Links with boundary condition: 15077, 12746, 5245 = "+IC[15077]+" "+IC[12746]+" "+IC[5245]);
         
@@ -1474,7 +1481,8 @@ public class RKF extends java.lang.Object {
         int nlinks = linksStructure.contactsArray.length;
 
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " water table: " + IC[ouletID + 2 * nlinks]);
@@ -1509,7 +1517,7 @@ public class RKF extends java.lang.Object {
                 givenStep[0][0] = currentTime;
                 IC = givenStep[1];
 
-                if (currentTime <= targetTime-1/60.) {
+                if (currentTime <= targetTime - 1 / 60.) {
                     for (int i = 0; i < IC.length; i++) {
                         if (IC[i] > maxAchieved[i]) {
                             maxAchieved[i] = IC[i];
@@ -1547,7 +1555,7 @@ public class RKF extends java.lang.Object {
 
             givenStep = stepSCS(currentTime, IC, targetTime - currentTime, true);
 
-            if (currentTime + givenStep[0][0] >= finalTime-1 / 60.) {
+            if (currentTime + givenStep[0][0] >= finalTime - 1 / 60.) {
                 System.out.println("******** False Step ********");
                 break;
             }
@@ -1557,13 +1565,11 @@ public class RKF extends java.lang.Object {
             givenStep[0][0] = currentTime;
             IC = givenStep[1];
 
-        if (currentTime <= finalTime-1/60.)    
-        {
-                    for (int i = 0; i < IC.length; i++) {
-                        if (IC[i] > maxAchieved[i]) {
-                            maxAchieved[i] = IC[i];
-                            timeOfMaximumAchieved[i] = currentTime;
-                        }
+            if (currentTime <= finalTime - 1 / 60.) {
+                for (int i = 0; i < IC.length; i++) {
+                    if (IC[i] > maxAchieved[i]) {
+                        maxAchieved[i] = IC[i];
+                        timeOfMaximumAchieved[i] = currentTime;
                     }
                     thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                     thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
@@ -1581,6 +1587,7 @@ public class RKF extends java.lang.Object {
                         }
                     }
                 }
+            }
 //        
         }
 
@@ -1591,10 +1598,10 @@ public class RKF extends java.lang.Object {
             givenStep[0][0] = currentTime;
             IC = givenStep[1];
 
-          
+
         }
 
-      
+
         finalCond = IC;
 
     }
@@ -1631,7 +1638,8 @@ public class RKF extends java.lang.Object {
         int ouletID = linksStructure.getOutletID();
         int nlinks = linksStructure.contactsArray.length;
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID] + " Precip: " + IC[6 * nlinks + ouletID]);
 
@@ -1648,8 +1656,8 @@ public class RKF extends java.lang.Object {
             if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
                 outputStream1.write(df4.format(IC[nl]) + ",");
                 outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
-                outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df2.format(IC[9 * nlinks + nl]) + ",");
-                outputStream4.write(df2.format(IC[10 * nlinks + nl]) + "," + df2.format(IC[11 * nlinks + nl]) + "," + df2.format(IC[12 * nlinks + nl]) + "," + df2.format(IC[13 * nlinks + nl]) + ",");
+                outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]));
+                outputStream4.write(df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]));
 
             }
         }
@@ -1705,9 +1713,9 @@ public class RKF extends java.lang.Object {
                         int nl = linksStructure.completeStreamLinksArray[i];
                         if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
                             outputStream1.write(df4.format(IC[nl]) + ",");
-                            outputStream2.write(df3.format(IC[nlinks + nl]) + "," + df3.format(IC[2 * nlinks + nl]) + "," + df3.format(IC[3 * nlinks + nl]) + ",");
-                            outputStream3.write(df3.format(IC[4 * nlinks + nl]) + "," + df3.format(IC[5 * nlinks + nl]) + "," + df3.format(IC[6 * nlinks + nl]) + "," + df3.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df3.format(IC[9 * nlinks + nl]) + ",");
-                            outputStream4.write(df3.format(IC[10 * nlinks + nl]) + "," + df3.format(IC[11 * nlinks + nl]) + "," + df3.format(IC[12 * nlinks + nl]) + "," + df3.format(IC[13 * nlinks + nl]) + ",");
+                            outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
+                            outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]));
+                            outputStream4.write(df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]));
 
                         }
                     }
@@ -1761,9 +1769,9 @@ public class RKF extends java.lang.Object {
                 int nl = linksStructure.completeStreamLinksArray[i];
                 if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
                     outputStream1.write(df4.format(IC[nl]) + ",");
-                    outputStream2.write(df3.format(IC[nlinks + nl]) + "," + df3.format(IC[2 * nlinks + nl]) + "," + df3.format(IC[3 * nlinks + nl]) + ",");
-                    outputStream3.write(df3.format(IC[4 * nlinks + nl]) + "," + df3.format(IC[5 * nlinks + nl]) + "," + df3.format(IC[6 * nlinks + nl]) + "," + df3.format(IC[7 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]) + "," + df3.format(IC[9 * nlinks + nl]) + ",");
-                    outputStream4.write(df3.format(IC[10 * nlinks + nl]) + "," + df3.format(IC[11 * nlinks + nl]) + "," + df3.format(IC[12 * nlinks + nl]) + "," + df3.format(IC[13 * nlinks + nl]) + ",");
+                    outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
+                    outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]));
+                    outputStream4.write(df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]));
 
                 }
             }
@@ -1866,7 +1874,8 @@ public class RKF extends java.lang.Object {
             }
         }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")");
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
@@ -2042,7 +2051,8 @@ public class RKF extends java.lang.Object {
 0][0] = currentTime;
             IC = givenStep[1];
 
-            java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
 
             System.out.print(currentTime + ",");
@@ -2244,7 +2254,8 @@ public class RKF extends java.lang.Object {
 
         int ouletID = linksStructure.getOutletID();
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
+        thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
 
         outputStream.write("\n");

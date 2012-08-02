@@ -45,6 +45,8 @@ public class HillSlope extends java.lang.Object {
     private int[][] toMark;
     private int numPixHill=0;
     
+    private int[][] idsHill;
+    
     /**
      * Creates an instance of HillSlope
      * @param x The column number of the link contact
@@ -68,13 +70,13 @@ public class HillSlope extends java.lang.Object {
         //System.out.println("Limits: "+magnitudes.length+" "+magnitudes[0].length);
         //System.out.println("Hill Outlet: "+x+" "+y+" "+thisLinkMagn);
         
-        int[][] idsHill=new int[5000][];
+        idsHill=new int[5000][];
         
         toMark=new int[1][]; toMark[0]=new int[] {x,y};
         idsHill[numPixHill]=toMark[0];
         numPixHill++;
         while(toMark != null){
-            getHill(fullDirMatrix, idsHill,toMark,magnitudes);
+            getHill(fullDirMatrix,toMark,magnitudes);
         }
         
         LonLatHillSlope=new float[2][numPixHill];
@@ -93,15 +95,17 @@ public class HillSlope extends java.lang.Object {
         idsHill=null;
     }
     
-    private void getHill(byte [][] fullDirMatrix,int[][] idsHill,int[][] ijs,int[][] magnitudes){
+    private void getHill(byte [][] fullDirMatrix,int[][] ijs,int[][] magnitudes){
         
         java.util.Vector tribsVector=new java.util.Vector();
-        
+        //System.out.println(" tribvector size  "+tribsVector.size());
+       
         for(int incoming=0;incoming<ijs.length;incoming++){
             int j=ijs[incoming][0];
             int i=ijs[incoming][1];
             for (int k=0; k <= 8; k++){
                 if (fullDirMatrix[i+(k/3)-1][j+(k%3)-1] == 9-k && (magnitudes[i+(k/3)-1][j+(k%3)-1] == thisLinkMagn || magnitudes[i+(k/3)-1][j+(k%3)-1]<=0)){
+                    //System.out.println("ijs.length  "+ijs.length + "  loop k " + k + "  tribsVector " + tribsVector.size() + " i " + i);
                     tribsVector.add(new int[] {j+(k%3)-1,i+(k/3)-1});
                     //getBasin(i+(k/3)-1,j+(k%3)-1, fullDirMatrix,idsBasin);
                 }
@@ -113,15 +117,26 @@ public class HillSlope extends java.lang.Object {
             toMark=new int[countTribs][2];
             for(int k=0;k<countTribs;k++){
                 toMark[k]=(int[])tribsVector.get(k);
+                //System.out.println("k " +k+ "  numPixHill" +numPixHill + "  idsHill.length" +idsHill.length +" countTribs "+countTribs);
                 idsHill[numPixHill]=toMark[k];
                 numPixHill++;
+                
                 if(numPixHill == idsHill.length){
                     System.out.println(">> Hits the condition");
                     System.out.println(">> Before "+idsHill.length+" "+idsHill[0][0]);
                     
-                    idsHill=java.util.Arrays.copyOf(idsHill, idsHill.length+1000);
+                    //idsHill=java.util.Arrays.copyOf(idsHill, idsHill.length+1000);
+                    int[][] tempIDS=new int[idsHill.length+1000][];
+                    for (int ll = 0; ll < idsHill.length; ll++) {
+                        tempIDS[ll]=idsHill[ll];
+                    }
+                    idsHill=tempIDS.clone();
                     
                     System.out.println(">> After "+idsHill.length+" "+idsHill[0][0]);
+                    
+                    
+                    
+                    
                 }
                 //System.out.println(">>"+toMark[k][0]+" "+toMark[k][1]);
             }

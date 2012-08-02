@@ -574,7 +574,7 @@ public class LinksAnalysis extends java.lang.Object {
 
                 float[][] wFunc=getDistancesToOutlet(bigDtoO,outlets[k]);
                 float[][][] OrderwFunc = new float[2][nclass][wFunc[metric].length];
-                System.out.println("outlets" + k+ " order length = " + order[0].length + "wfunclength = "+wFunc[metric].length);
+                //System.out.println("outlets" + k+ " order length = " + order[0].length + "wfunclength = "+wFunc[metric].length);
                 for(int l=0;l<wFunc[metric].length;l++){
 
                     int or=(int)order[0][l];
@@ -655,7 +655,7 @@ public class LinksAnalysis extends java.lang.Object {
                                 };
 
         float[][] quantityArray=new float[1][tailsArray.length];
-
+       
         java.io.File rutaQuantity=new java.io.File(localMetaRaster.getLocationBinaryFile().getPath().substring(0,localMetaRaster.getLocationBinaryFile().getPath().lastIndexOf("."))+extenciones[varIndex]);
         java.io.RandomAccessFile fileQuantity=new java.io.RandomAccessFile(rutaQuantity,"r");
 
@@ -664,13 +664,37 @@ public class LinksAnalysis extends java.lang.Object {
                 //Link's Hillslope Area.  This is done by subtraction of area at head and area at incoming links head
                 for (int i=0;i<quantityArray[0].length;i++){
                     fileQuantity.seek(4*contactsArray[i]);
+                    
                     quantityArray[0][i]=fileQuantity.readFloat();
+                    
+                    float tempVar=quantityArray[0][i];
+                    
+                    float[] tempVar2=new float[10];
+                    float pixelsize=6378.0f * (float)localMetaRaster.getResLon() * (float) Math.PI / (3600.0f * 180.0f) * 1000.f;
+                    float pixelarea=pixelsize*pixelsize*1e-6f;
+                    
                     for (int j=0;j<connectionsArray[i].length;j++){
                         fileQuantity.seek(4*contactsArray[connectionsArray[i][j]]);
-                        quantityArray[0][i]-=fileQuantity.readFloat();
+                        tempVar2[j]=fileQuantity.readFloat();
+                        quantityArray[0][i]-=tempVar2[j];
+                        
+                        if(quantityArray[0][i]<=0)
+                        {quantityArray[0][i]=pixelarea;}
+                    
+                    }
+                    if (quantityArray[0][i]<0) {
+                        System.out.println("outlet = " + getOutletID());
+                        System.out.println("i = " + i);
+                        System.out.println("Old Area = " + tempVar);
+                        System.out.println("Contributors ="+java.util.Arrays.toString(tempVar2));
+                        System.out.println("New Area = " + quantityArray[0][i]);
+                        System.out.println("x,y = " +contactsArray[i]%localMetaRaster.getNumCols()+","+contactsArray[i]/localMetaRaster.getNumCols()); 
+                        System.out.println("test = " +pixelsize); 
+                        System.out.println("test = " +pixelarea); 
                     }
                 }
-
+                //System.exit(0);
+   
                 break;
             case 1:
                 //Link's Length.  This is done by subtraction of tcl at head and tcl at incoming links head
@@ -908,12 +932,12 @@ public class LinksAnalysis extends java.lang.Object {
         //main1(args);
         //main2(args);
         //main3(args);
-        //main5(args);
+        //main5(args); // generate file for ReadParallel files
         //main4(args);
         //main6(args);  // Writing Link-IDs and connectivity for a DEM and map of hillslopes
         //main6_1(args);  // Writing connectivity for a DEM and map of hillslopes
         //main7(args);  //Writing connectivity for Clear Creek to share with The Mathematicians
-        //main8_1(args);  //Wrting connectivity and Full model parameters for The Mathematicians
+        main8_1(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_2(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_3(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_Rodica(args);
@@ -1294,31 +1318,38 @@ public static void main5(String args[]) {
        // int[] Res = {90, 60, 30, 20, 10, 5,-9,-10,-11,12,-13};
         //int[] XX = {447, 670, 1341, 2013, 4025, 8052,-9,-10,-11,12,-13};
        // int[] YY = {27, 41, 82, 122, 244, 497,-9,-10,-11,12,-13};
-       
-        int[] Res = {-14};
-        int[] XX = {2734};
-        int[] YY = {1069};
-        //int[] XX = {1341};
-        //int[] YY = {122};
-        int j = 0;
-        for (int ir : Res) {
-   
-             java.io.File DEMFile;
-               DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/ClearCreek/Rasters/Topography/"+ir+"meters/"+ir+"meterc1.metaDEM");
-            if(ir==-9) DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-            if(ir==-10) DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM");
-            if(ir==-11) DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM");
-            if(ir==-12) DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/ClearCreek/Rasters/Topography/10USGS/ned_1_3.metaDEM");
-            if(ir==-13) DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/ClearCreek/Rasters/Topography/30USGS/ned_1.metaDEM");
-            if(ir==-14) DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun5/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-            if(ir==-15) DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun6/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-            
-            if(ir==-16) DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun7/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-            if(ir==-17) DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun8/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-            if(ir==-18) DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
-            int x = XX[j];
-            int y = YY[j]; //Clear Creek - coralville
-            j=j+1;
+       String[] AllSimName = {
+        "10000DEMUSGS","nldaDEMUSGS","90DEMUSGS","120DEMUSGS","30DEMUSGS","180DEMUSGS","250DEMUSGS","500DEMUSGS",
+   "1000DEMUSGSCA","2000DEMUSGSCA","5000DEMUSGSCA","10000DEMUSGSCA","nldaDEMUSGSCA","90DEMUSGSCA","120DEMUSGSCA","30DEMUSGSCA","180DEMUSGSCA","250DEMUSGSCA","500DEMUSGSCA"};
+   //    "90DEMUSGS","90DEMASTER","90DEMSRTM","90DEMUSGSPrun8","90DEMUSGSPrun7",
+   //"90DEMUSGSPrun6","90DEMUSGSPrun5","120DEMUSGS","150DEMUSGS","180DEMUSGS",
+   //"1000DEMUSGS","2000DEMUSGS","5000DEMUSGS",
+       String[] AllRain = {"3CedarRapids"};
+   int nsim = AllSimName.length;
+
+        int nbas = AllRain.length;
+              for (int is = 0; is < nsim; is++) {
+                for (int ib = 0; ib < nbas; ib++) {
+
+                    System.out.println("Running BASIN " + AllSimName[is]);
+                    System.out.println("Running BASIN " + AllRain[ib]);
+
+                    String SimName = AllSimName[is];
+                    String BasinName = AllRain[ib];
+     
+                    java.io.File DEMFile;
+             
+                    String[] StringDEM = {"error", "error", "error"};
+                    StringDEM = hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.ParallelSimulationToFileHelium.defineDEMxy(BasinName, SimName);
+                    System.out.println("StringDEM = " + StringDEM[0]);
+                    System.out.println("x = " + StringDEM[1] + "    y" + StringDEM[2]);
+                    String DEM = StringDEM[0];
+                    int xOut = Integer.parseInt(StringDEM[1]);//   .getInteger(StringDEM[1]);
+                    int yOut = Integer.parseInt(StringDEM[2]);
+
+               DEMFile=new java.io.File(DEM);
+            int x = xOut;
+            int y = yOut;
                 
 //
       
@@ -1336,24 +1367,9 @@ public static void main5(String args[]) {
             metaModif.setFormat("Byte");
             byte[][] horOrders = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
 
- //Clear Creek - coralville
-         
-            if(ir==-9) {x=2817;
-            y=713;}
-            if(ir==-10) {x=1596;
-            y=298;}
-            if(ir==-11) {x=8288;
-            y=1050;}
-            if(ir==-12) {x=4624;
-            y=278;}
-            if(ir==-13) {x=1541;
-            y=92;}
-            
-                x = 3124;
-                y= 234;
                 
        System.out.println(DEMFile.toString());
-       DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun5/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+       //DEMFile=new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun7/AveragedIowaRiverAtColumbusJunctions.metaDEM");
 System.out.println("X  " +x  + "   Y  " +  y);
             String formatoOriginal=metaModif.getFormat();
             metaModif.setFormat("Byte");
@@ -1401,7 +1417,7 @@ System.out.println("X  " +x  + "   Y  " +  y);
         bufferout.close();
         
         }
-        
+              }        
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
             System.exit(0);
@@ -1931,10 +1947,20 @@ System.out.println("X  " +x  + "   Y  " +  y);
     }
 
     public static void main8_1(String args[]) {
-    int flag=1;
-        int x= 7875; int y= 1361 ;// Basin Code 05464500 Cedar River at Cedar Rapids, IA
-        if(flag==2) {
+    int flag=5;
+        int x= 7876; int y= 1360 ;// Basin Code 05464500 Cedar River at Cedar Rapids, IA
+    if(flag==2) {
             x=2734;y=1069;
+    }
+    if(flag==5) {
+            x=2734;y=1069;
+    }
+     if(flag==4) {
+            x=2885;y=690;
+    }
+    
+         if(flag==3) {
+            x=2;y=39;
         }
         java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
         java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
@@ -1947,10 +1973,16 @@ System.out.println("X  " +x  + "   Y  " +  y);
 //            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
 
             java.io.File theFile=new java.io.File("/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.metaDEM");
-            if(flag==2) theFile=new java.io.File("/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+            if(flag==2 || flag==4) theFile=new java.io.File("/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+                if(flag==3) theFile=new java.io.File("/Groups/IFC/CuencasDataBases/Shalehills/Rasters/Topography/dem_asc.metaDEM");
+            if(flag==5) theFile=new java.io.File("/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun6/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+            
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
             metaModif.setLocationBinaryFile(new java.io.File("/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.dir"));
-            if(flag==2) metaModif.setLocationBinaryFile(new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            if(flag==2|| flag==4) metaModif.setLocationBinaryFile(new java.io.File("/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            if(flag==3) metaModif.setLocationBinaryFile(new java.io.File("/Groups/IFC/CuencasDataBases/Shalehills/Rasters/Topography/dem_asc.dir"));
+            if(flag==5) metaModif.setLocationBinaryFile(new java.io.File("/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun6/AveragedIowaRiverAtColumbusJunctions.dir"));
+       
             metaModif.setFormat("Byte");
             byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
 
@@ -1960,8 +1992,12 @@ System.out.println("X  " +x  + "   Y  " +  y);
             int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
 
             hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
-
+System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
+              float[][] areas=mylinksAnalysis.getVarValues(0);
+              float[][] upAreas=mylinksAnalysis.getVarValues(2);
+              
+              
             hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom = new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(mylinksAnalysis);
             hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo thisHillsInfo = new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo(mylinksAnalysis);
             
@@ -1969,6 +2005,14 @@ System.out.println("X  " +x  + "   Y  " +  y);
             String SoilData = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
             String SoilHydData = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
             String Soil150SWAData = "/Groups/IFC/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+             if(flag==3) {
+              LandUse = "/Groups/IFC/CuencasDataBases/Shalehills/Rasters/Hydrology/landcoverproj.metaVHC";
+              SoilData = "/Groups/IFC/CuencasDataBases/Shalehills/Rasters/Hydrology/soilhydtype.metaVHC";
+              SoilHydData = "/Groups/IFC/CuencasDataBases/Shalehills/Rasters/Hydrology/hydcond.metaVHC";
+              Soil150SWAData = "/Groups/IFC/CuencasDataBases/Shalehills/Rasters/Hydrology/swe.metaVHC";
+                
+                    }
+            
             java.io.File LandUseFile = new java.io.File(LandUse);
             java.io.File SoilFile = new java.io.File(SoilData);
             java.io.File SoilHydFile = new java.io.File(SoilHydData);
@@ -1982,23 +2026,30 @@ System.out.println("X  " +x  + "   Y  " +  y);
             SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, SoilHydFile,SwaFileFile,laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes,0);
  
             thisHillsInfo.setSCSManager(SCSObj);
-        
+            System.out.println("x" + x +"y" + y + "dem" + metaModif.toString() + "mylinksAnalysis.connectionsArray.length" + mylinksAnalysis.connectionsArray.length);
             
 
-            float[][] upAreas=mylinksAnalysis.getVarValues(2);
-            float[][] areas=mylinksAnalysis.getVarValues(0);
+//            float[][] upAreas=mylinksAnalysis.getVarValues(2);
+//            float[][] areas=mylinksAnalysis.getVarValues(0);
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
             float[][] hb = new float[1][mylinksAnalysis.connectionsArray.length]; // mmfloat 
             float[][] MaxInf = new float[1][mylinksAnalysis.connectionsArray.length];
             float[][] Hh = new float[1][mylinksAnalysis.connectionsArray.length];
             float[][] HydCond = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] MaxInfRate = new float[1][mylinksAnalysis.connectionsArray.length];
             float[][] Terms = new float[4][mylinksAnalysis.connectionsArray.length];
             float[][] Slope = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] width =thisNetworkGeom.getWidthArray();
+            
+            float[][] Drop = new float[1][mylinksAnalysis.connectionsArray.length];
             float[][] Manning = new float[1][mylinksAnalysis.connectionsArray.length];
             float[][] Area_Relief_Param = new float[4][mylinksAnalysis.connectionsArray.length]; //Area in km and depth in m
+            float[][] Slope2 =thisNetworkGeom.getSlopeArray();
+            
             for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
              hb[0][i]=(float) thisHillsInfo.SWA150(i);
-             MaxInf[0][i]=(float) thisHillsInfo.MaxInfRate(i);
+             MaxInfRate[0][i]=(float) thisHillsInfo.MaxInfRate(i);
+             System.out.println("hisHillsInfo.MaxInfRate(i)"+ thisHillsInfo.MaxInfRate(i) + "width"+width);
              Hh[0][i]=(float) thisHillsInfo.HillRelief(i)*1000;
              
              HydCond[0][i]=(float) thisHillsInfo.AveHydCond(i);
@@ -2007,6 +2058,7 @@ System.out.println("X  " +x  + "   Y  " +  y);
             Area_Relief_Param[1][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 1);
             Area_Relief_Param[2][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 2);
             Area_Relief_Param[3][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 3);
+            
             if(Hh[0][i]==0) {Hh[0][i]=0;
             Area_Relief_Param[0][i]=0;
             Area_Relief_Param[1][i]=1;
@@ -2014,17 +2066,23 @@ System.out.println("X  " +x  + "   Y  " +  y);
             Area_Relief_Param[3][i]=0;}
             
              Slope[0][i]=(float) thisHillsInfo.getHillslope(i);
+             
              Manning[0][i]=(float) thisHillsInfo.HillManning(i);
+             
             }
-            
-            java.io.File outputDirectory = new java.io.File("/scratch/Users/rmantill/dataRodica/");
+            Drop=mylinksAnalysis.getVarValues(3);
+            java.io.File outputDirectory = new java.io.File("/nfsscratch/Users/rmantill/dataRodica/");
             outputDirectory.mkdirs();
             
             String outputMetaFile=outputDirectory+"/NextLinkCedarRiver_30m.txt";
             System.out.println(outputMetaFile);
+            
             if(flag==2) outputMetaFile=outputDirectory+"/NextLinkCedarRiver_90m.txt";
+            if(flag==3) outputMetaFile=outputDirectory+"/Shalehills.txt";
+            if(flag==5) outputMetaFile=outputDirectory+"/CedarPrun6.txt";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
-
+    
+        
             metaBuffer.write("Number of Links\n");
             metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
             metaBuffer.write("ID Length[km] Area[km^2] upArea[km^2] ");
@@ -2038,15 +2096,19 @@ System.out.println("X  " +x  + "   Y  " +  y);
                 metaBuffer.write(" "+lenghts[0][i]+" "+areas[0][i]+" "+upAreas[0][i]);
                 metaBuffer.write(" "+hb[0][i]+" "+Hh[0][i]+" "+MaxInf[0][i]);
                 metaBuffer.write(" "+HydCond[0][i]+" "+Slope[0][i]+" "+Manning[0][i]);
-                metaBuffer.write(" "+Area_Relief_Param[0][i]+" "+Area_Relief_Param[1][i]+" "+Area_Relief_Param[2][i]+" "+Area_Relief_Param[3][i]);
+                metaBuffer.write(" "+Area_Relief_Param[0][i]+" "+Area_Relief_Param[1][i]+" "+Area_Relief_Param[2][i]+" "+Area_Relief_Param[3][i] + " " +Drop[0][i]);
+                double sum=Area_Relief_Param[0][i]+Area_Relief_Param[1][i]+Area_Relief_Param[2][i]+Area_Relief_Param[3][i];
+                
+                System.out.println("areas[0][i]"+ areas[0][i] + "lenghts[0][i]" + lenghts[0][i] + "Slope[0][i]"+Slope[0][i]+" Manning[0][i] "+Manning[0][i]);
                 metaBuffer.write("\n");
-                if((i+1)==177179) System.out.println(i + "LINK"+areas[0][i]);
-            //System.exit(0);
+                if(areas[0][i]<0) System.out.println(i + "LINKwith area zero"+areas[0][i]);
+        
+                //System.exit(0);
             }
 
             metaBuffer.close();
 
-            outputDirectory = new java.io.File("/scratch/Users/rmantill/dataScott/");
+            outputDirectory = new java.io.File("/nfsscratch/Users/rmantill/dataScott/");
             outputDirectory.mkdirs();
          outputMetaFile=outputDirectory+"/NextLinkCedarRiver_30m.txt";
          System.out.println(outputMetaFile);
@@ -2070,6 +2132,9 @@ System.out.println("X  " +x  + "   Y  " +  y);
                 metaBuffer.write(" "+HydCond[0][i]+" "+Slope[0][i]+" "+Manning[0][i]);
                 metaBuffer.write(" "+Area_Relief_Param[0][i]+" "+Area_Relief_Param[1][i]+" "+Area_Relief_Param[2][i]+" "+Area_Relief_Param[3][i]);
                 metaBuffer.write("\n");
+                
+                  System.out.println(" Slope[0][i] "+Slope[0][i] + " Slope2[0][i] "+Slope2[0][i] + "HydCond[0][i]+" + HydCond[0][i]);
+             
             }
 
             metaBuffer.close();
@@ -2084,11 +2149,12 @@ System.out.println("X  " +x  + "   Y  " +  y);
     }
     
     public static void main8_Rodica(String args[]) {
-    int flag=2;
+    int flag=3;
         int x= 7875; int y= 1361 ;// Basin Code 05464500 Cedar River at Cedar Rapids, IA
         if(flag==2) {
             x=2734;y=1069;
         }
+    
         java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
         java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
         dpoint2.applyPattern("0.00000000");
@@ -2122,6 +2188,7 @@ System.out.println("X  " +x  + "   Y  " +  y);
             String SoilData = "/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
             String SoilHydData = "/Groups/IFC//CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
             String Soil150SWAData = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+           
             java.io.File LandUseFile = new java.io.File(LandUse);
             java.io.File SoilFile = new java.io.File(SoilData);
             java.io.File SoilHydFile = new java.io.File(SoilHydData);
@@ -2174,6 +2241,7 @@ System.out.println("X  " +x  + "   Y  " +  y);
             outputDirectory.mkdirs();
             String outputMetaFile="/scratch/Users/rmantill/dataRodica/NextLinkCedarRiver_30m.txt";
             if(flag==2) outputMetaFile="/scratch/Users/rmantill/dataRodica/NextLinkCedarRiver_90m.txt";
+            if(flag==2) outputMetaFile="/scratch/Users/rmantill/dataRodica/Shalehill_90m.txt";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write("Number of Links\n");

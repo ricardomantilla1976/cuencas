@@ -36,7 +36,9 @@ import java.util.TimeZone;
  */
 public class StormManager {
 
-    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] precOnBasin,accumPrecOnBasin;
+    //private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] precOnBasin,accumPrecOnBasin;
+    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] precOnBasin;
+  
     private boolean success=false,veryFirstDrop=true;
     private hydroScalingAPI.io.MetaRaster metaStorm;
     private java.util.Calendar firstWaterDrop,lastWaterDrop;
@@ -72,12 +74,48 @@ public class StormManager {
         date.setTimeZone(tz);
         date.clear();
         date.set(1971, 6, 1, 0, 0, 0);
-
+        //// CHECK RICARDO
+        System.out.println("STORM INITIAL TIME" + date.getTimeInMillis());
+      
         firstWaterDrop=date;
+        //java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+        firstWaterDrop.setTimeZone(tz); //// CHECK RICARDO - does it takes the attribute from date?
         lastWaterDrop=date;
-
+        lastWaterDrop.setTimeZone(tz); //// CHECK RICARDO
         precOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
-        accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
+        //accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+        for (int i=0;i<precOnBasin.length;i++){
+            precOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
+            precOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
+            ////// this is wrong, should be accumulated
+            //accumPrecOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
+            //accumPrecOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
+
+        }
+
+        recordResolutionInMinutes=rainDuration;
+
+        thisStormName="UniformEvent_INT_"+rainIntensity+"_DUR_"+rainDuration;
+
+        success=true;
+
+    }
+    
+     public StormManager(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, float rainIntensity, float rainDuration,java.util.Calendar date) {
+
+        java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+        date.setTimeZone(tz);
+        
+          //// CHECK RICARDO
+        System.out.println("STORM INITIAL TIME" + date.getTimeInMillis());
+      
+        firstWaterDrop=date;
+        //java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+        firstWaterDrop.setTimeZone(tz); //// CHECK RICARDO - does it takes the attribute from date?
+        lastWaterDrop=date;
+        lastWaterDrop.setTimeZone(tz); //// CHECK RICARDO
+        precOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
+        //accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
         for (int i=0;i<precOnBasin.length;i++){
             precOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
             precOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
@@ -122,7 +160,7 @@ public class StormManager {
         for (int i=0;i<lasQueSi.length;i++) arCron[i]=new hydroScalingAPI.util.fileUtilities.ChronoFile(lasQueSi[i],baseName);
 
         java.util.Arrays.sort(arCron);
-
+        
         //Una vez leidos los archivos:
         //Lleno la matriz de direcciones
 
@@ -174,7 +212,7 @@ public class StormManager {
 
                     xOulet=myCuenca.getXYBasin()[0][0];
                     yOulet=myCuenca.getXYBasin()[1][0];
-
+                    System.out.println("i   " +i);
                     myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDir,magnitudes,metaDatos);
                     for (int j=0;j<myHillActual.getXYHillSlope()[0].length;j++){
                         matrizPintada[myHillActual.getXYHillSlope()[1][j]-myCuenca.getMinY()+1][myHillActual.getXYHillSlope()[0][j]-myCuenca.getMinX()+1]=i+1;
@@ -183,7 +221,7 @@ public class StormManager {
             }
 
             precOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
-            accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+            //accumPrecOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
             
             //////////////////////////////////////// stopped here - be sure accumulated is being calculated correctly
             
@@ -200,7 +238,7 @@ public class StormManager {
 
                 for (int i=0;i<precOnBasin.length;i++){
                 precOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
-                accumPrecOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
+                //accumPrecOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
                 totalHillBasedPrecmm[i]=0.0f;
                 currentHillBasedPrec[i]=0.0D;
                 currentHillNumPixels[i]=0.0f;
@@ -210,7 +248,7 @@ public class StormManager {
             double [][] dataSnapShot, dataSection;
             int MatX,MatY;
 
-            System.out.println("-----------------Start of Files Reading----------------");
+            //System.out.println("-----------------Start of Files Reading----------------");
 
             totalPixelBasedPrec=new float[matDirBox.length][matDirBox[0].length];
 
@@ -220,13 +258,13 @@ public class StormManager {
                 //Cargo cada uno
                 metaStorm.setLocationBinaryFile(arCron[i].fileName);
 
-                System.out.println("--> Loading data from "+arCron[i].fileName.getName());
+                //System.out.println("--> Loading data from "+arCron[i].fileName.getName());
 
                 dataSnapShot=new hydroScalingAPI.io.DataRaster(metaStorm).getDouble();
 
 
                 hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaStorm.getMissing()).doubleValue());
-                System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
+                //System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
 
 
                 //recorto la seccion que esta en la cuenca (TIENE QUE CONTENERLA)
@@ -267,8 +305,9 @@ public class StormManager {
                         if (veryFirstDrop){
                             firstWaterDrop=arCron[i].getDate();
                             veryFirstDrop=false;
+                            System.out.println(" " +firstWaterDrop.getTime());
                         }
-//System.out.println(arCron[i].getDate());
+System.out.println("STORM FIRST DROP"+arCron[i].getDate().getTimeInMillis());
                         precOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(currentHillBasedPrec[j]/currentHillNumPixels[j])); //
                         totalHillBasedPrecmm[j]+=(currentHillBasedPrec[j]/currentHillNumPixels[j])*(regIntervalmm/60);
                         totalHillBasedPrec[j]+=currentHillBasedPrec[j]/currentHillNumPixels[j];
@@ -276,8 +315,8 @@ public class StormManager {
                     } else{totalHillBasedPrecmm[j]=0.0f;}
                     
 
-                    accumPrecOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(totalHillBasedPrecmm[j])); //
-       //             System.out.println(arCron[i].getDate()+"Rain file " + i + "link " +j + "totalHillBasedPrecmm[j] = " + totalHillBasedPrecmm[j]);
+                    //accumPrecOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(totalHillBasedPrecmm[j])); //
+                    //System.out.println(arCron[i].getDate()+"Rain file " + i + "link " +j + "totalHillBasedPrecmm[j] = " + totalHillBasedPrecmm[j]);
                     currentHillBasedPrec[j]=0.0D;
                     currentHillNumPixels[j]=0.0f;
                 }
@@ -321,7 +360,8 @@ public class StormManager {
      * @return Returns the rainfall rate in mm/h
      */
     public float getPrecOnHillslope(int HillNumber,java.util.Calendar dateRequested){
-
+        java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+        dateRequested.setTimeZone(tz);  // CHECK RICARDO
         return precOnBasin[HillNumber].getRecord(dateRequested);
 
     }
@@ -335,7 +375,7 @@ public class StormManager {
     public double getAcumPrecOnHillslope(int HillNumber,java.util.Calendar dateRequested){
 
 
-        return accumPrecOnBasin[HillNumber].getRecord(dateRequested);
+        return 1;//accumPrecOnBasin[HillNumber].getRecord(dateRequested);
 
 //        double Acum=0.0f;
 //        long dateRequestedMil=dateRequested.getTimeInMillis();
@@ -418,11 +458,14 @@ public class StormManager {
      * on the basin
      */
     public void setStormInitialTime(java.util.Calendar iniDate){
-
+         java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+        iniDate.setTimeZone(tz);  // CHECK RICARDO
         firstWaterDrop=iniDate;
     }
     public void setStormFinalTime(java.util.Calendar FinalDate){
-
+        java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+        FinalDate.setTimeZone(tz);  // CHECK RICARDO
+        
         lastWaterDrop=FinalDate;
     }
     /**

@@ -8,7 +8,6 @@ import java.text.DecimalFormat;
 /**f
  *
  * @author lcunha*/
-
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -30,7 +29,7 @@ public class ParalelVersionReader extends Object {
     float[][] Evap;
     float[][] Qs_l;
     float[][] Qp_l;
-     float[][] Qp;
+    float[][] Qp;
     float[][] TStorage;
     float[][] Ai;
     float[] RRTime;
@@ -44,7 +43,7 @@ public class ParalelVersionReader extends Object {
     float[] hydroorder;
     float[] hydroarea;
     float[] hydrolat;
-    float[] hydrolong;
+    float[] hydroLong_0200;
     // Link information from entire basin
     int[] Linkcode;
     int[] Linkorder;
@@ -54,7 +53,7 @@ public class ParalelVersionReader extends Object {
     int[] LinkX;
     int[] LinkY;
     float[] Linklat;
-    float[] Linklong;
+    float[] LinkLong_0200;
     float maxdistOutlet;
     float maxupsarea;
     int nlinksT;
@@ -117,7 +116,7 @@ public class ParalelVersionReader extends Object {
     float[] maxEVPTS;
     float[] TmaxEVPTS;
     float[] CoverageEVPTS;
-     float[] meanSNOWS;
+    float[] meanSNOWS;
     float[] accumSNOWS;
     float[] maxSNOWS;
     float[] TmaxSNOWS;
@@ -150,13 +149,13 @@ public class ParalelVersionReader extends Object {
         LinkX = new int[nest];
         LinkY = new int[nest];
         Linklat = new float[nest];
-        Linklong = new float[nest];
+        LinkLong_0200 = new float[nest];
 
-        
+
 
         LinkAnalysisFile(LinkAnal);
         System.out.println("READ LINK ANALYSES, n links = " + nlinksT);
-        int noutlet = (int) ((lasQueSi.length / 6)+1) ; // approximated number of outlets
+        int noutlet = (int) ((lasQueSi.length / 6) + 1); // approximated number of outlets
         //System.out.println("nlinksT = " + nlinksT + "noutlet = " + noutlet);
         UpsArea = new float[nlinksT];
         SCS1 = new float[nlinksT];
@@ -169,26 +168,26 @@ public class ParalelVersionReader extends Object {
         Tmax = new float[nlinksT];
         DistOutlet = new float[nlinksT];
         // info prec space
-        ntimestep = 40000;
-        Linkn = new float[nlinksT +50];
-        CodeL = new float[nlinksT +50];
-        XLinkn = new int[nlinksT +50];
-        YLinkn = new int[nlinksT +50];
-        meanRainS = new float[nlinksT +50];
-        accumRainS = new float[nlinksT +50];
-        maxRainS = new float[nlinksT +50];
-        TmaxRainS = new float[nlinksT +50];
-        CoverageS = new float[nlinksT +50];
-        meanEVPTS = new float[nlinksT +50];
-        accumEVPTS = new float[nlinksT +50];
-        maxEVPTS = new float[nlinksT +50];
-        TmaxEVPTS = new float[nlinksT +50];
-        CoverageEVPTS = new float[nlinksT +50];
-        meanSNOWS = new float[nlinksT +50];
-        accumSNOWS = new float[nlinksT +50];
-        maxSNOWS = new float[nlinksT +50];
-        TmaxSNOWS = new float[nlinksT +50];
-        CoverageSNOWS = new float[nlinksT +50];
+        ntimestep = 25000;
+        Linkn = new float[nlinksT + 50];
+        CodeL = new float[nlinksT + 50];
+        XLinkn = new int[nlinksT + 50];
+        YLinkn = new int[nlinksT + 50];
+        meanRainS = new float[nlinksT + 50];
+        accumRainS = new float[nlinksT + 50];
+        maxRainS = new float[nlinksT + 50];
+        TmaxRainS = new float[nlinksT + 50];
+        CoverageS = new float[nlinksT + 50];
+        meanEVPTS = new float[nlinksT + 50];
+        accumEVPTS = new float[nlinksT + 50];
+        maxEVPTS = new float[nlinksT + 50];
+        TmaxEVPTS = new float[nlinksT + 50];
+        CoverageEVPTS = new float[nlinksT + 50];
+        meanSNOWS = new float[nlinksT + 50];
+        accumSNOWS = new float[nlinksT + 50];
+        maxSNOWS = new float[nlinksT + 50];
+        TmaxSNOWS = new float[nlinksT + 50];
+        CoverageSNOWS = new float[nlinksT + 50];
         RRTime = new float[ntimestep];
         EvapTime = new float[ntimestep];
 //         nlS=0;
@@ -200,7 +199,7 @@ public class ParalelVersionReader extends Object {
         hydroorder = new float[noutlet];
         hydroarea = new float[noutlet];
         hydrolat = new float[noutlet];
-        hydrolong = new float[noutlet];
+        hydroLong_0200 = new float[noutlet];
         nhydro = 0;
 
         hydrographs = new float[noutlet][ntimestep];
@@ -211,7 +210,7 @@ public class ParalelVersionReader extends Object {
         Qs_l = new float[noutlet][ntimestep];
         Qp = new float[noutlet][ntimestep];
         Evap = new float[noutlet][ntimestep];
-       
+
         TStorage = new float[noutlet][ntimestep];
         Ai = new float[noutlet][ntimestep];
         LinknHyd = new float[noutlet]; // = x+3848*y for iowa and cedar river
@@ -243,7 +242,7 @@ public class ParalelVersionReader extends Object {
         BCMEVPT = new float[ntimestep];
         distMaxtimeEVPT = new float[ntimestep];
         nelemDO = new int[ndistoutlet];
-        
+
         accumSNOW = new float[ndistoutlet][ntimestep];
         AveSNOW = new float[ndistoutlet][ntimestep];
         aveSNOWtime = new float[ntimestep];
@@ -284,7 +283,7 @@ public class ParalelVersionReader extends Object {
             if (flag == -1) {
                 System.out.println("read link file ");
                 readFile1(lasQueSi[i], Tinit);
-                System.out.println("read one more file"  +" nlinks"+ nlinks);
+                System.out.println("read one more file" + " nlinks" + nlinks);
             }
             if (flag == 1) {
                 System.out.println("read outlet file ");
@@ -292,7 +291,7 @@ public class ParalelVersionReader extends Object {
             }
             //       if(flag==5) readFile3(lasQueSi[i],Tinit);
         }
-         System.out.println("Finish files reading"  +" nlinks"+ nlinks);
+        System.out.println("Finish files reading" + " nlinks" + nlinks);
         //GenerateStatisticsRain();
 
         DecimalFormat df = new DecimalFormat("###");
@@ -306,7 +305,7 @@ public class ParalelVersionReader extends Object {
         java.io.File theFile;
 
         theFile = new java.io.File(OutFile + "/statistics_links" + ident + ".csv");
-        System.out.println("Writing disc1 - " + theFile +"   nlinks"+ nlinks);
+        System.out.println("Writing disc1 - " + theFile + "   nlinks" + nlinks);
 
         java.io.FileOutputStream salida = new java.io.FileOutputStream(theFile);
         java.io.BufferedOutputStream bufferout = new java.io.BufferedOutputStream(salida);
@@ -359,7 +358,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.write("\n");
         for (int it = 0; it < nhydro; it++) {
-            newfile.write(hydrolong[it] + ",");
+            newfile.write(hydroLong_0200[it] + ",");
         }
         newfile.write("\n");
 
@@ -401,7 +400,11 @@ public class ParalelVersionReader extends Object {
         for (int ii = 0; ii < ntime; ii++) {
             //for (int jj=0;jj<nhydro;jj++){
             for (int it = 0; it < nhydro; it++) {
-                newfile.write(HTime[it][ii] + ",");
+                if (Float.isInfinite(HTime[it][ii])) {
+                    HTime[it][ii] = (HTime[it - 1][ii] + HTime[it + 1][ii]) / 2;
+                } else {
+                    newfile.write(HTime[it][ii] + ",");
+                }
             }
             newfile.write("\n");
         }
@@ -438,7 +441,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.write("\n");
         for (int it = 0; it < nhydro; it++) {
-            newfile.write(hydrolong[it] + ",");
+            newfile.write(hydroLong_0200[it] + ",");
         }
         newfile.write("\n");
         for (int ii = 0; ii < ntime; ii++) {
@@ -480,7 +483,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.write("\n");
         for (int it = 0; it < nhydro; it++) {
-            newfile.write(hydrolong[it] + ",");
+            newfile.write(hydroLong_0200[it] + ",");
         }
         newfile.write("\n");
         for (int ii = 0; ii < ntime; ii++) {
@@ -523,7 +526,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.write("\n");
         for (int it = 0; it < nhydro; it++) {
-            newfile.write(hydrolong[it] + ",");
+            newfile.write(hydroLong_0200[it] + ",");
         }
         newfile.write("\n");
 
@@ -538,9 +541,9 @@ public class ParalelVersionReader extends Object {
         }
         newfile.close();
         bufferout.close();
-        
-        
-             theFile = new java.io.File(OutFile + "/Evaporation" + ident + ".csv");
+
+
+        theFile = new java.io.File(OutFile + "/Evaporation" + ident + ".csv");
         //System.out.println("Writing disc1 - " + theFile);
 
         salida = new java.io.FileOutputStream(theFile);
@@ -569,7 +572,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.write("\n");
         for (int it = 0; it < nhydro; it++) {
-            newfile.write(hydrolong[it] + ",");
+            newfile.write(hydroLong_0200[it] + ",");
         }
         newfile.write("\n");
         for (int ii = 0; ii < ntime; ii++) {
@@ -581,8 +584,8 @@ public class ParalelVersionReader extends Object {
         }
         newfile.close();
         bufferout.close();
-        
-             theFile = new java.io.File(OutFile + "/Qp_l" + ident + ".csv");
+
+        theFile = new java.io.File(OutFile + "/Qp_l" + ident + ".csv");
         //System.out.println("Writing disc1 - " + theFile);
 
         salida = new java.io.FileOutputStream(theFile);
@@ -611,7 +614,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.write("\n");
         for (int it = 0; it < nhydro; it++) {
-            newfile.write(hydrolong[it] + ",");
+            newfile.write(hydroLong_0200[it] + ",");
         }
         newfile.write("\n");
         for (int ii = 0; ii < ntime; ii++) {
@@ -624,7 +627,7 @@ public class ParalelVersionReader extends Object {
         newfile.close();
         bufferout.close();
 
-                theFile = new java.io.File(OutFile + "/Qp" + ident + ".csv");
+        theFile = new java.io.File(OutFile + "/Qp" + ident + ".csv");
         //System.out.println("Writing disc1 - " + theFile);
 
         salida = new java.io.FileOutputStream(theFile);
@@ -653,7 +656,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.write("\n");
         for (int it = 0; it < nhydro; it++) {
-            newfile.write(hydrolong[it] + ",");
+            newfile.write(hydroLong_0200[it] + ",");
         }
         newfile.write("\n");
         for (int ii = 0; ii < ntime; ii++) {
@@ -666,7 +669,7 @@ public class ParalelVersionReader extends Object {
         newfile.close();
         bufferout.close();
 
-             theFile = new java.io.File(OutFile + "/Qs_l" + ident + ".csv");
+        theFile = new java.io.File(OutFile + "/Qs_l" + ident + ".csv");
         //System.out.println("Writing disc1 - " + theFile);
 
         salida = new java.io.FileOutputStream(theFile);
@@ -695,7 +698,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.write("\n");
         for (int it = 0; it < nhydro; it++) {
-            newfile.write(hydrolong[it] + ",");
+            newfile.write(hydroLong_0200[it] + ",");
         }
         newfile.write("\n");
         for (int ii = 0; ii < ntime; ii++) {
@@ -707,7 +710,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.close();
         bufferout.close();
-        
+
         theFile = new java.io.File(OutFile + "/Ai" + ident + ".csv");
         //System.out.println("Writing disc1 - " + theFile);
 
@@ -749,7 +752,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.write("\n");
         for (int it = 0; it < nhydro; it++) {
-            newfile.write(hydrolong[it] + ",");
+            newfile.write(hydroLong_0200[it] + ",");
         }
         newfile.write("\n");
         for (int ii = 0; ii < ntime; ii++) {
@@ -761,7 +764,7 @@ public class ParalelVersionReader extends Object {
         }
         newfile.close();
         bufferout.close();
-        
+
         theFile = new java.io.File(OutFile + "/statistics_time" + ident + ".csv");
         //System.out.println("Writing disc1 - " + theFile);
 
@@ -862,13 +865,14 @@ public class ParalelVersionReader extends Object {
 
         java.util.StringTokenizer tokens;
 
-        //System.out.println("InputFile" + LinkAnal);
+        System.out.println("InputFile" + LinkAnal);
         ruta = new FileReader(LinkAnal);
         buffer = new BufferedReader(ruta);
         String data = buffer.readLine();
         nlinksT = 0;
         maxdistOutlet = 0;
         maxupsarea = 0;
+        //System.exit(1);
         while (data != null) {
             //System.out.println("data" + data);
             tokens = new StringTokenizer(data, ",");
@@ -883,11 +887,12 @@ public class ParalelVersionReader extends Object {
             //System.out.println("Linkarea[nlinksT]" + Linkarea[nlinksT]);
             LinkupsLength[nlinksT] = new Float(tokens.nextToken());
             LinkdOutlet[nlinksT] = new Float(tokens.nextToken());
-            //System.out.println("LinkX[nlinksT]" + LinkX[nlinksT]);
+
             LinkX[nlinksT] = new Integer(tokens.nextToken());
+            //System.out.println("LinkX[nlinksT]" + LinkX[nlinksT]);
             LinkY[nlinksT] = new Integer(tokens.nextToken());
             Linklat[nlinksT] = new Float(tokens.nextToken());
-            Linklong[nlinksT] = new Float(tokens.nextToken());
+            LinkLong_0200[nlinksT] = new Float(tokens.nextToken());
 
             NC = new Integer(tokens.nextToken());
             NL = new Integer(tokens.nextToken());
@@ -902,7 +907,8 @@ public class ParalelVersionReader extends Object {
             data = buffer.readLine();
 
         }
-        //System.out.println("\n" + "nlinksT = " + nlinksT + "\n");
+        System.out.println("\n" + "nlinksT = " + nlinksT + "\n");
+        //System.exit(1);
     }
 
     public void readFile1(java.io.File InputFile, double Ti) throws java.io.IOException {
@@ -961,8 +967,8 @@ public class ParalelVersionReader extends Object {
 
             xx = Integer.valueOf(filename.substring(i1, i2));
             yy = Integer.valueOf(filename.substring(i3, i4));
-             System.out.println(xx + "xx");
-             System.out.println(yy + "yy");
+            System.out.println(xx + "xx");
+            System.out.println(yy + "yy");
         }
 
         if (filename.contains("ned_1_3")) {
@@ -988,7 +994,7 @@ public class ParalelVersionReader extends Object {
         }
 
         int ii = nlinks;
-        
+
         //int fileid=InputFile.getName().indexOf("_");
         //int fileid2=InputFile.getName().indexOf("_",fileid+1);
         // System.out.println(InputFile.getName()+"fileid - "+fileid + "fileid2  " + fileid2);
@@ -1005,7 +1011,7 @@ public class ParalelVersionReader extends Object {
             ii = ii + 1;
         }
         data = buffer.readLine();
-         //READ Horton order
+        //READ Horton order
         if (data.length() > 0) {
             tokens = new StringTokenizer(data, ",");
         } else {
@@ -1032,8 +1038,8 @@ public class ParalelVersionReader extends Object {
             SCS1[ii] = new Float(tokens.nextToken());
             ii = ii + 1;
         }
-        
-         data = buffer.readLine();
+
+        data = buffer.readLine();
         //System.out.println("upstream area" + data);
         //READ Horton order
         if (data.length() > 0) {
@@ -1047,8 +1053,8 @@ public class ParalelVersionReader extends Object {
             MaxInf[ii] = new Float(tokens.nextToken());
             ii = ii + 1;
         }
-        
-         data = buffer.readLine();
+
+        data = buffer.readLine();
         //System.out.println("upstream area" + data);
         //READ Horton order
         if (data.length() > 0) {
@@ -1063,10 +1069,13 @@ public class ParalelVersionReader extends Object {
             ii = ii + 1;
         }
         
-             while (!data.contains("Maximum Discharge") && data!=null ) {data = buffer.readLine();}
+        while (!data.contains("Maximum Discharge") && data != null) {
+            data = buffer.readLine();
+            if(data==null) return;
+        }
 
-          
-        
+
+
         System.out.println("area" + data);
         //READ Upstream Area
         if (data != null) {
@@ -1084,7 +1093,7 @@ public class ParalelVersionReader extends Object {
         }
         //     System.out.println("out Q loop");
         data = buffer.readLine();
-          System.out.println("data.length()" + data.length());
+        System.out.println("data.length()" + data.length());
         if (data.length() > 0) {
             tokens = new StringTokenizer(data, ",");
         } else {
@@ -1100,15 +1109,14 @@ public class ParalelVersionReader extends Object {
             Tmax[ii] = TTemp - (float) Ti;
             ii = ii + 1;
         }
-        String test="null";
-        while(!test.contentEquals("Precipitation Rates [mm/hr]"))
-        {
-        data = buffer.readLine();
-        //System.out.println("data in loop" + data);
-        if (data.length() > 0){
-        tokens = new StringTokenizer(data, ",");
-        test = new String(tokens.nextToken());
-        }   
+        String test = "null";
+        while (!test.contentEquals("Precipitation Rates [mm/hr]")) {
+            data = buffer.readLine();
+            //System.out.println("data in loop" + data);
+            if (data.length() > 0) {
+                tokens = new StringTokenizer(data, ",");
+                test = new String(tokens.nextToken());
+            }
         }
 
         ii = nlinks;
@@ -1120,7 +1128,7 @@ public class ParalelVersionReader extends Object {
             Linkn[ii] = new Float(tokens.nextToken());
             ii = ii + 1;
         }
-                  //System.out.println("1113 ii" +  ii + "   nlinks "  + nlinks );
+        //System.out.println("1113 ii" +  ii + "   nlinks "  + nlinks );
 
         data = buffer.readLine();
         //System.out.println("Xlinks" + data);
@@ -1136,7 +1144,7 @@ public class ParalelVersionReader extends Object {
         }
 
         data = buffer.readLine();
-           //System.out.println("1128 ii" +  ii + "   nlinks "  + nlinks );
+        //System.out.println("1128 ii" +  ii + "   nlinks "  + nlinks );
 
         //System.out.println("later1" + data);
         if (data.length() > 0) {
@@ -1147,25 +1155,25 @@ public class ParalelVersionReader extends Object {
         // Read link Y
         tokens = new StringTokenizer(data, ",");
         temp = new String(tokens.nextToken());
-        ii=nlinks;
+        ii = nlinks;
 //System.out.println("1138   ii" +  ii + "   nlinks "  + nlinks );
-        
+
         while (tokens.hasMoreTokens()) {
             YLinkn[ii] = new Integer(tokens.nextToken());
             ii = ii + 1;
         }
-        
+
         data = buffer.readLine();
 //System.out.println("later2" + data);
 //System.out.println("1146   ii" +  ii + "   nlinks "  + nlinks );
         // Read link Y
-        
+
         int iif = 0;
         int jt = 0;
         float[] tempRRtime = new float[10000];
-        int nel = ii - nlinks + 10;
+        int nel = ii - nlinks + 100;
         float[][] tempRain = new float[nel][10000];
-            //System.out.println("1153 ii" +  ii + "   nlinks "  + nlinks + "  nel" +nel);
+        //System.out.println("1153 ii" +  ii + "   nlinks "  + nlinks + "  nel" +nel);
 
         while (data != null && !data.isEmpty() && !data.equals(",") && !data.contains("Evap")) {
 
@@ -1260,7 +1268,7 @@ public class ParalelVersionReader extends Object {
         jt = 0;
         float[] tempEvaptime = new float[10000];
         nel = ii - nlinks + 100;
-        
+
         float[][] tempEvap = new float[nel][10000];
 /////////////////////////////READ EVAPORATION//////////////
         while (data != null && !data.isEmpty() && !data.equals(",") && !data.contains("SnowMelt")) {
@@ -1271,7 +1279,7 @@ public class ParalelVersionReader extends Object {
             tempEvaptime[jt] = EvapTime[jt];
             iif = 0;
 
-            while (tokens.hasMoreTokens() && iif<nel) {
+            while (tokens.hasMoreTokens() && iif < nel) {
                 tempEvap[iif][jt] = new Float(tokens.nextToken());
                 iif = iif + 1;
             }
@@ -1446,7 +1454,7 @@ public class ParalelVersionReader extends Object {
 //            }
 //
 //        }
-        nlinks=ii;
+        nlinks = ii;
 
         ruta.close();
         buffer.close();
@@ -1479,7 +1487,8 @@ public class ParalelVersionReader extends Object {
 
 
         int yy = 0;
-        //System.out.println(filename);
+        System.out.println(filename);
+
         if (filename.contains("ned_1")) {
             int i1 = filename.indexOf("_") + 1;
             int i2 = filename.indexOf("_", i1);
@@ -1499,10 +1508,11 @@ public class ParalelVersionReader extends Object {
             int i3 = filename.indexOf("_", i1) + 1;
             int i4 = filename.indexOf("-", i1);
 
+            System.out.println("ii" + ii + "   xxx " + filename.substring(i1, i2));
             xxx[ii] = Integer.valueOf(filename.substring(i1, i2));
+            System.out.println("yyy " + filename.substring(i1, i4));
             yyy[ii] = Integer.valueOf(filename.substring(i3, i4));
         }
-
 
 
 
@@ -1511,11 +1521,11 @@ public class ParalelVersionReader extends Object {
         int i = 0;
         while (flag == 0) {   //System.out.println("i  " + i+"LinknHyd[ii]   " + LinknHyd[ii] + "Linkcode[i]   " +Linkcode[i]);
             if (xxx[ii] == LinkX[i] && yyy[ii] == LinkY[i]) {
-                LinknHyd[ii] =Linkcode[i];
+                LinknHyd[ii] = Linkcode[i];
                 hydroorder[ii] = Linkorder[i];
                 hydroarea[ii] = Linkarea[i];
                 hydrolat[ii] = Linklat[i];
-                hydrolong[ii] = Linklong[i];
+                hydroLong_0200[ii] = LinkLong_0200[i];
                 flag = 1;
             }
             i = i + 1;
@@ -1523,7 +1533,7 @@ public class ParalelVersionReader extends Object {
                 hydroorder[ii] = -9;
                 hydroarea[ii] = -9.9f;
                 hydrolat[ii] = -9.9f;
-                hydrolong[ii] = -9.9f;
+                hydroLong_0200[ii] = -9.9f;
                 flag = 1;
                 break;
             }
@@ -1540,62 +1550,67 @@ public class ParalelVersionReader extends Object {
         if (flag == 1) {
             while (data != null) {
                 ll = ll + 1;
-                String[] test=data.split(",");
+                String[] test = data.split(",");
+               String[] test4 = test[0].split("\\.");
+                
                 //System.out.println("LENGTH TEST 1 - " + test.length);
-                 String[] test2=data.split("\\.");
-                  //System.out.println("LENGTH TEST 2 - " + test2.length);
-                 String[] test3=data.split("E");
-                   
-                 //System.out.println("LENGTH TEST 3 - " + test3.length);
-                        // guarantees that it has 1 comma, 2 dots, and 1 E
-                 if(test.length==2 && test2.length<=3 && test3.length<=3){
-                            if(!data.substring(0,1).contentEquals("E")){ 
-               // System.out.println(data + "   " + ll);
-                double number1;
-                double number2;
-                tokens = new StringTokenizer(data, ",");
-                if (tokens.hasMoreTokens()) {
-                    temp = new String(tokens.nextToken());
-                    double TTemp;
-//System.out.println("temp" +temp);
-                    if (temp.indexOf("E") < 1) {
-                        //System.out.println("temp" +temp);
-                        if(temp.toString().contentEquals("E7")){
-                           
-                        }
-                        TTemp = Double.valueOf(temp);
-                        TTemp = TTemp - (Ti);
-                    } else {
-                        number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
-                        //System.out.println(ii + "number1" +number1+ "j" + j);
-                        number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
-                        //System.out.println(ii + "number2" +number2+ "j" + j);
-                        TTemp = number1 * Math.pow(10, number2);
-                        TTemp = (TTemp - Ti);
-                    }
-//System.out.println(ii + "temp" +temp+ "j" + j);
-                    HTime[ii][j] = (float) TTemp;
-
-                    // check if there is an E
-                    if (tokens.hasMoreTokens()) {
-                        temp = new String(tokens.nextToken());
-//System.out.println(ii + "temp" +temp+ "j" + j);//
+                String[] test2 = data.split("\\.");
+                //System.out.println("LENGTH TEST 2 - " + test2.length);
+                String[] test3 = data.split("E");
+                //System.out.println(data);
+                //System.out.println("LENGTH TEST 3 - " + test3.length);
+                // guarantees that it has 1 comma, 2 dots, and 1 E
+                if (test4.length<=2 && test.length == 2 && test2.length <= 3 && test3.length <= 3) {
+                    if (!data.substring(0, 1).contentEquals("E")) {
+                        //System.out.println(data + "   " + ll);
+                        double number1;
+                        double number2;
+                        tokens = new StringTokenizer(data, ",");
                         
-                        if (temp.indexOf("E") < 1) {
-                            hydrographs[ii][j] = Float.valueOf(temp);
-                        } else {
-                            number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
-                            number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
-                            hydrographs[ii][j] = (float) (number1 * Math.pow(10, number2));
-                        }
+                        if (tokens.hasMoreTokens()) {
+                            temp = new String(tokens.nextToken());
+                            double TTemp;
+//System.out.println("temp" +temp);
+                            if (temp.indexOf("E") < 1) {
+                                //System.out.println("temp" +temp);
+                                if (temp.toString().contentEquals("E7")) {
+                                }
+                                TTemp = Double.valueOf(temp);
+                                TTemp = TTemp - (Ti);
+                            } else {
+                                number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                                //System.out.println(ii + "number1" +number1+ "j" + j);
+                                number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                                //System.out.println(ii + "number2" +number2+ "j" + j);
+                                TTemp = number1 * Math.pow(10, number2);
+                                TTemp = (TTemp - Ti);
+                            }
+//System.out.println(ii + "temp" +temp+ "j" + j);
+                            HTime[ii][j] = (float) TTemp;
+                            //if(Math.TTemp)
 
-                        for (int cc = 0; cc <= linejump; cc++) {
-                            data = buffer.readLine();
-                        }
+                            // check if there is an E
+                            if (tokens.hasMoreTokens()) {
+                                temp = new String(tokens.nextToken());
+//System.out.println(ii + "temp" +temp+ "j" + j);//
 
-                        j = j + 1;
-                    }}
-                }}
+                                if (temp.indexOf("E") < 1) {
+                                    hydrographs[ii][j] = Float.valueOf(temp);
+                                } else {
+                                    number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                                    number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                                    hydrographs[ii][j] = (float) (number1 * Math.pow(10, number2));
+                                }
+
+                                for (int cc = 0; cc <= linejump; cc++) {
+                                    data = buffer.readLine();
+                                }
+
+                                j = j + 1;
+                            }
+                        }
+                    }
+                }
                 data = buffer.readLine();
                 if (j >= ntimestep) {
                     data = null;
@@ -1610,7 +1625,7 @@ public class ParalelVersionReader extends Object {
 
             String FilenameStorage = filename.replace("Outlet", "Storage");
             ruta = new FileReader(FileDir + "/" + FilenameStorage);
-            
+
             buffer = new BufferedReader(ruta);
             System.out.println(FileDir + "/" + FilenameStorage);
             data = buffer.readLine(); // JUMP 2 LINE IN THE BEGINING
@@ -1622,60 +1637,60 @@ public class ParalelVersionReader extends Object {
 
                 double number1;
                 double number2;
-                
-                 String[] test=data.split(",");
-                 String[] test2=data.split("\\.");
-                 String[] test3=data.split("E");
-                        // guarantees that it has 1 comma, 2 dots, and 1 E
-                        if(test.length==4 && test2.length<=5 && test3.length<=2){
-        
-                
-               //System.out.println(data);
-                tokens = new StringTokenizer(data, ","); // jump time stamp
-                
-                if (tokens.hasMoreTokens()) {
-                    temp = new String(tokens.nextToken()); // jump time stamp
-                    if (tokens.hasMoreTokens()) {
-                        temp = new String(tokens.nextToken());
 
-                        if (temp.indexOf("E") < 1) {
-                            Storage0[ii][j] = Float.valueOf(temp);
-                        } else {
-                            number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
-                            number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
-                            Storage0[ii][j] = (float) (number1 * Math.pow(10, number2));
-                        }
+                String[] test = data.split(",");
+                String[] test2 = data.split("\\.");
+                String[] test3 = data.split("E");
+                // guarantees that it has 1 comma, 2 dots, and 1 E
+                if (test.length == 4 && test2.length <= 5 && test3.length <= 2) {
+
+
+                    //System.out.println(data);
+                    tokens = new StringTokenizer(data, ","); // jump time stamp
+
+                    if (tokens.hasMoreTokens()) {
+                        temp = new String(tokens.nextToken()); // jump time stamp
                         if (tokens.hasMoreTokens()) {
                             temp = new String(tokens.nextToken());
-                            //System.out.println(temp);
 
                             if (temp.indexOf("E") < 1) {
-                                Storage1[ii][j] = Float.valueOf(temp);
+                                Storage0[ii][j] = Float.valueOf(temp);
                             } else {
-
                                 number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
                                 number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
-                                Storage1[ii][j] = (float) (number1 * Math.pow(10, number2));
+                                Storage0[ii][j] = (float) (number1 * Math.pow(10, number2));
                             }
                             if (tokens.hasMoreTokens()) {
                                 temp = new String(tokens.nextToken());
-//System.out.println(temp);
+                                //System.out.println(temp);
+
                                 if (temp.indexOf("E") < 1) {
-                                    Storage2[ii][j] = Float.valueOf(temp);
-                                    
+                                    Storage1[ii][j] = Float.valueOf(temp);
                                 } else {
+
                                     number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
                                     number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
-                                    Storage2[ii][j] = (float) (number1 * Math.pow(10, number2));
+                                    Storage1[ii][j] = (float) (number1 * Math.pow(10, number2));
                                 }
+                                if (tokens.hasMoreTokens()) {
+                                    temp = new String(tokens.nextToken());
+//System.out.println(temp);
+                                    if (temp.indexOf("E") < 1) {
+                                        Storage2[ii][j] = Float.valueOf(temp);
+
+                                    } else {
+                                        number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                                        number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                                        Storage2[ii][j] = (float) (number1 * Math.pow(10, number2));
+                                    }
 
 
-                                j = j + 1;
+                                    j = j + 1;
+                                }
                             }
                         }
                     }
                 }
-                        }
                 for (int cc = 0; cc <= linejump; cc++) {
                     data = buffer.readLine();
                 }
@@ -1685,10 +1700,10 @@ public class ParalelVersionReader extends Object {
                     data = null;
                 }
             }
-            
+
             String FilenameOthers = filename.replace("Outlet", "Others");
-            
-            
+
+
             ruta = new FileReader(FileDir + "/" + FilenameOthers);
             System.out.println(FileDir + "/" + FilenameOthers);
             buffer = new BufferedReader(ruta);
@@ -1701,82 +1716,83 @@ public class ParalelVersionReader extends Object {
 
                 double number1;
                 double number2;
-                 String[] test=data.split(",");
-                 String[] test2=data.split("\\.");
-                 String[] test3=data.split("E");
-                        // guarantees that it has 1 comma, 2 dots, and 1 E
-                       if(test.length==6 && test2.length<=7 && test3.length<=2){
-        
-                //System.out.println(data);
-                tokens = new StringTokenizer(data, ","); // jump time stamp
-                if (tokens.hasMoreTokens()) {
-                    temp = new String(tokens.nextToken()); // jump time stamp
+                String[] test = data.split(",");
+                String[] test2 = data.split("\\.");
+                String[] test3 = data.split("E");
+                // guarantees that it has 1 comma, 2 dots, and 1 E
+                if (test.length == 6 && test2.length <= 7 && test3.length <= 2) {
+
+                    //System.out.println(data);
+                    tokens = new StringTokenizer(data, ","); // jump time stamp
                     if (tokens.hasMoreTokens()) {
-                        temp = new String(tokens.nextToken());
-
-                        if (temp.indexOf("E") < 1) {
-                            Evap[ii][j] = Float.valueOf(temp);
-                        } else {
-                            number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
-                            number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
-                            Evap[ii][j] = (float) (number1 * Math.pow(10, number2));
-                        }
-                        
-                           if (tokens.hasMoreTokens()) {
-                            temp = new String(tokens.nextToken());
-                            //System.out.println(temp);
-
-                            if (temp.indexOf("E") < 1) {
-                                Qp[ii][j] = Float.valueOf(temp);
-                            } else {
-
-                                number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
-                                number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
-                                Qp[ii][j] = (float) (number1 * Math.pow(10, number2));
-                            }
-                           }
+                        temp = new String(tokens.nextToken()); // jump time stamp
                         if (tokens.hasMoreTokens()) {
                             temp = new String(tokens.nextToken());
-                            //System.out.println(temp);
 
                             if (temp.indexOf("E") < 1) {
-                                Qp_l[ii][j] = Float.valueOf(temp);
+                                Evap[ii][j] = Float.valueOf(temp);
                             } else {
-
                                 number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
                                 number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
-                                Qp_l[ii][j] = (float) (number1 * Math.pow(10, number2));
+                                Evap[ii][j] = (float) (number1 * Math.pow(10, number2));
+                            }
+
+                            if (tokens.hasMoreTokens()) {
+                                temp = new String(tokens.nextToken());
+                                //System.out.println(temp);
+
+                                if (temp.indexOf("E") < 1) {
+                                    Qp[ii][j] = Float.valueOf(temp);
+                                } else {
+
+                                    number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                                    number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                                    Qp[ii][j] = (float) (number1 * Math.pow(10, number2));
+                                }
                             }
                             if (tokens.hasMoreTokens()) {
                                 temp = new String(tokens.nextToken());
+                                //System.out.println(temp);
 
                                 if (temp.indexOf("E") < 1) {
-                                 Qs_l[ii][j] = Float.valueOf(temp);
+                                    if (temp.indexOf("?") >= 0) temp="0";
+                                    Qp_l[ii][j] = Float.valueOf(temp);
                                 } else {
+
                                     number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
                                     number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
-                                  Qs_l[ii][j] = (float) (number1 * Math.pow(10, number2));
+                                    Qp_l[ii][j] = (float) (number1 * Math.pow(10, number2));
                                 }
                                 if (tokens.hasMoreTokens()) {
-                                temp = new String(tokens.nextToken());
+                                    temp = new String(tokens.nextToken());
 
-                                if (temp.indexOf("E") < 1) {
-                                 TStorage[ii][j] = Float.valueOf(temp);
-                                } else {
-                                    number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
-                                    number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
-                                 TStorage[ii][j] = (float) (number1 * Math.pow(10, number2));
-                                }
-                                }
-                                
+                                    if (temp.indexOf("E") < 1) {
+                                        Qs_l[ii][j] = Float.valueOf(temp);
+                                    } else {
+                                        number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                                        number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                                        Qs_l[ii][j] = (float) (number1 * Math.pow(10, number2));
+                                    }
+                                    if (tokens.hasMoreTokens()) {
+                                        temp = new String(tokens.nextToken());
 
-                                j = j + 1;
-                            
-                        }
+                                        if (temp.indexOf("E") < 1) {
+                                            TStorage[ii][j] = Float.valueOf(temp);
+                                        } else {
+                                            number1 = Double.valueOf(temp.substring(0, temp.indexOf("E")));
+                                            number2 = Double.valueOf(temp.substring((temp.indexOf("E") + 1), temp.length()));
+                                            TStorage[ii][j] = (float) (number1 * Math.pow(10, number2));
+                                        }
+                                    }
+
+
+                                    j = j + 1;
+
+                                }
+                            }
                         }
                     }
                 }
-                        }
                 for (int cc = 0; cc <= linejump; cc++) {
                     data = buffer.readLine();
                 }
@@ -1785,9 +1801,9 @@ public class ParalelVersionReader extends Object {
                 if (j >= ntimestep) {
                     data = null;
                 }
-            
-            
-        }
+
+
+            }
 
         }
 
@@ -2040,127 +2056,301 @@ public class ParalelVersionReader extends Object {
 //String[] AllSimName = {"90DEMUSGS"};
 //String[] AllSimName = {"90DEMUSGSPrun6","90DEMUSGSPrun8"};
 //String[] AllSimName = {"180DEMUSGS","90DEMASTER"};
-//String[] AllSimName = {"90DEMUSGS"};
-       String[] AllSimName = {"90DEMUSGS"};
+//String[] AllSimName = {"90DEMUSGSPrun6"};
+
+        for (int iy = 2008; iy < 2009; iy++) {
+          // String[] AllSimName = {"90DEMUSGSPrun7"};
+         // String[] AllSimName = {"30DEMUSGS"};
+         //String[] AllSimName = {"10DEMASTER","120DEMUSGS"}; 
+         //String[] AllSimName = {"20DEMLIDAR","30DEMUSGS"};
+         //String[] AllSimName = {"60DEMASTER","90DEMLIDAR"};
+         //String[] AllSimName = {"90DEMUSGSPrun5","90DEMUSGSPrun8"};
+         //String[] AllSimName = {"10DEMLIDAR","180DEMUSGS"};
+         //String[] AllSimName = {"30DEMASTER","5DEMASTER"};
+         //String[] AllSimName = {"60DEMLIDAR","90DEMSRTM"};
+         //String[] AllSimName = {"90DEMUSGSPrun6","10DEMUSGS"};
+         //String[] AllSimName = {"20DEMASTER","30DEMLIDAR"};
+         //String[] AllSimName = {"90DEMUSGS","90DEMUSGSPrun7","30DEMUSGS"};
+         //String[] AllSimName = {"90DEMUSGSPrun7"};
+                  
+         // String[] AllSimName = {"90DEMUSGS","90DEMUSGSPrun7","250DEMUSGS"
+          //,"500DEMUSGS","1000DEMUSGS"};
+//String[] AllSimName = {"1000DEMUSGS","180DEMUSGS","30DEMUSGS","90DEMSRTM","90DEMUSGSPrun4","90DEMUSGSPrun7",
+//"120DEMUSGS","2000DEMUSGS","500DEMUSGS","90DEMUSGS","90DEMUSGSPrun5  90DEMUSGSPrun8",
+//"150DEMUSGS","250DEMUSGS","90DEMASTER","90DEMUSGSPrun3","90DEMUSGSPrun6  nldaDEM"};
+        String[] AllSimName = {"30DEMUSGS"};
+
+//"120DEMUSGS","30DEMUSGS","90DEMSRTM","90DEMUSGSPrun6","90DEMUSGSPrun8"};
+            //String[] AllSimName = {"30DEMUSGS"};
+//              String[] AllRain = {"3ClearCreek2002Long_0200SNLDA","3ClearCreek2003Long_0200SNLDA","3ClearCreek2004Long_0200SNLDA",
+//             "3ClearCreek2005Long_0200SNLDA","3ClearCreek2006Long_0200SNLDA","3ClearCreek2007Long_0200SNLDA","3ClearCreek2008Long_0200SNLDA",
+//             "3ClearCreek2009Long_0200SNLDA"};
+            //  String[] AllRain = {"MultipleYearsLongBasicModels"};
+
+//   String[] AllRain = {"3Hoover2002Long_0200SNLDA","3Hoover2003Long_0200SNLDA","3Hoover2004Long_0200SNLDA",
+//             "3Hoover2005Long_0200SNLDA","3Hoover2006Long_0200SNLDA","3Hoover2007Long_0200SNLDA","3Hoover2008Long_0200SNLDA",
+//             "3Hoover2009Long_0200SNLDA"};
 // 
-//              String[] AllRain = {"3ClearCreek2002Long","3ClearCreek2003Long","3ClearCreek2004Long",
-//             "3ClearCreek2005Long","3ClearCreek2006Long","3ClearCreek2007Long","3ClearCreek2008Long",
-//             "3ClearCreek2009Long"};
-       String[] AllRain = {"3CedarRapids"};
-        
-//   String[] AllRain = {"3Hoover2002Long","3Hoover2003Long","3Hoover2004Long",
-//             "3Hoover2005Long","3Hoover2006Long","3Hoover2007Long","3Hoover2008Long",
-//             "3Hoover2009Long"};
+            //String[] AllRain = {"3ClearCreek" +iy+"Long_0200SNLDA",};
+           //String[] AllRain = {"3CedarRapids"};
+           String[] AllRain = {"3CedarRapids2008Event_0200SNLDAHN3_60BR"};
+//String[] AllRain = {    
+//"3CedarRapids" +iy+"Event_0200SNLDA",
+//"3CedarRapids" +iy+"Event_0200SNLDA3_60BR",
+//"3CedarRapids" +iy+"Event_0200SNLDACMORPH",
+//"3CedarRapids" +iy+"Event_0200SNLDAHN1_60BR",
+//"3CedarRapids" +iy+"Event_0200SNLDAHN1_60BR2",
+//"3CedarRapids" +iy+"Event_0200SNLDAHN2_60BR",
+//"3CedarRapids" +iy+"Event_0200SNLDAHN3_5BR",
+//"3CedarRapids" +iy+"Event_0200SNLDAHN3_60BR",
+//"3CedarRapids" +iy+"Event_0200SNLDANLDASPrec",
+//"3CedarRapids" +iy+"Event_0200SNLDANWS2",
+//"3CedarRapids" +iy+"Event_0200SNLDAPERSIANN",
+//"3CedarRapids" +iy+"Event_0200SNLDATRMM",
+//"3CedarRapids" +iy+"Event_0200SNLDATRMMv2",
+//"3CedarRapids" +iy+"Event_SNLDA",
+//"3CedarRapids" +iy+"Long_0200",
+//"3CedarRapids" +iy+"Long_0200SNLDA",
+//"3CedarRapids" +iy+"Long_0200SNLDACMORPH",
+//"3CedarRapids" +iy+"Long_0200SNLDAHN3_60BR",
+//"3CedarRapids" +iy+"Long_0200SNLDANLDASPrec",
+//"3CedarRapids" +iy+"Long_0200SNLDANWS",
+//"3CedarRapids" +iy+"Long_0200SNLDANWS2",
+//"3CedarRapids" +iy+"Long_0200SNLDANWS3",
+//"3CedarRapids" +iy+"Long_0200SNLDAPERSIANN",
+//"3CedarRapids" +iy+"Long_0200SNLDATRMM",
+//"3CedarRapids" +iy+"Long_SNLDA",
+//"3CedarRapids" +iy+"Long_SNLDAPERSIANN",
+//"3ClearCreek" +iy+"Long_0200",
+//"3ClearCreek" +iy+"Long_0200SNLDA",
+//"3ClearCreek" +iy+"Long_0200SNLDANWS",
+//"3ClearCreek" +iy+"LongSNLDA",
+//"3Garber" +iy+"Event_0200SNLDA",
+//"3Garber" +iy+"Long_0200",
+//"3Garber" +iy+"Long_0200SNLDA",
+//"3Garber" +iy+"LongSNLDA",
+//"3IowaCity" +iy+"Long_0200",
+//"3IowaCity" +iy+"Long_0200SNLDA",
+//"3IowaCity" +iy+"Long_0200SNLDANWS",
+//"3IowaCity" +iy+"LongSNLDA",
+//"3IowaCity",
+//"3CedarRapids"  
+//};
+         //   String[] AllRain = { "3CedarRapids" +iy+"Long_0200SNLDA","3IowaCity" +iy+"Long_0200SNLDA","3Garber" +iy+"Long_0200SNLDA"};
+       // String[] AllRain = {"3CedarRapids2008Event_0200SNLDA"};
+
+//         String[] AllRain = {
+//   "3CedarRapids" +iy+"Long_0200SNLDANWS3",     
+// "3CedarRapids" +iy+"Long_0200SNLDANLDASPrec",
+// "3CedarRapids" +iy+"Long_0200SNLDAPERSIANN",
+//
+//          };
+
+//         String[] AllRain = { "3CedarRapids2008Event_0200SNLDA",
+//       "3CedarRapids2008Event_0200SNLDAHN3_5BR",
+//                 "3CedarRapids2008Event_0200SNLDAHN3_60BR"
+//                ,"3CedarRapids2008Event_0200SNLDAHN2_60BR",
+//                "3CedarRapids2008Event_0200SNLDAHN1_60BR2",
+//                "3CedarRapids2008Event_0200SNLDAPERSIANN"
+//                ,"3CedarRapids2008Event_0200SNLDACMORPH"
+//                ,"3CedarRapids2008Event_0200SNLDATRMM"
+//                ,"3CedarRapids2008Event_0200SNLDANLDASPrec"
+//                ,"3CedarRapids2008Event_0200SNLDANWS3"};
+//String[] AllRain = { "3CedarRapids2008Event_0200SNLDAHN1_60BR"};
+
+//        String[] AllRain = {"3IowaCity2008test_0200SNLDA","3IowaCity2008test_0200SNLDAHN1_15BR",
+//"3IowaCity2008test_0200SNLDACMORPH","3IowaCity2008test_0200SNLDAHN1_60BR",
+//"3IowaCity2008test_0200SNLDAHN2_15BR","3IowaCity2008test_0200SNLDAHN2_60BR",
+//"3IowaCity2008test_0200SNLDAHN3_15BR","3IowaCity2008test_0200SNLDAHN3_60BR"};
+
+
+//  String[] AllRain = {"3IowaCity" +iy+"Long_0200SNLDA",
+//            "3IowaCity" +iy+"Long_0200SNLDANWS",
+//            "3IowaCity" +iy+"Long_SNLDA",
+//            "3IowaCity" +iy+"Long_0200"
+//  };
+//         String[] AllRain = {"3CedarRapids" +iy+"Long_0200SNLDA",
+//  "3CedarRapids" +iy+"Long_0200SNLDANLDASPrec",
+//  "3CedarRapids" +iy+"Long_0200SNLDANWS2",
+//  "3CedarRapids" +iy+"Long_0200SNLDAPERSIANN",
+// "3CedarRapids" +iy+"Long_0200SNLDACMORPH",
+//         "3CedarRapids2008Long_0200SNLDA"};  
+// String[] AllRain = {"3IowaCity2002Long_0200SNLDA",
+//        "3IowaCity2002LongSNLDA"};
+//     String[] AllRain = {
+//      
+//         "3Garber2008Long0200SNLDA"
+//};  
+//      "3Garber" +iy+"Event_0200SNLDA",
+//  "3CedarRapids" +iy+"Long_0200SNLDANLDASPrec",
+// "3CedarRapids" +iy+"Long_0200SNLDAPERSIANN",
+
+//     "3CedarRapids" +iy+"Long_0200SNLDA",
+//  "3CedarRapids" +iy+"Long_0200SNLDANLDASPrec",
+//  "3CedarRapids" +iy+"Long_0200SNLDANWS2",
+//  "3CedarRapids" +iy+"Long_0200SNLDAPERSIANN",
+// "3CedarRapids" +iy+"Long_0200SNLDACMORPH"
+
+
+//       String[] AllRain = {
+//"3CedarRapids2008Event_0200SNLDAHN3_5BR",
+//"3CedarRapids2008Event_0200SNLDAHN1_60BR",
+//"3CedarRapids2008Event_0200SNLDAHN1_60BR2",
+//"3CedarRapids2008Event_0200SNLDAHN2_60BR",
+//"3CedarRapids2008Event_0200SNLDAHN3_60BR",
+//"3CedarRapids2008Event_0200SNLDA"
+//        };
+//,"3IowaCity" +iy+"Long_0200SNLDA",
+//"3CedarRapids" +iy+"Long_0200SNLDA"
+//String[] AllRain = {"3CedarRapids"};
+//String[] AllRain = {"3CedarRapids2008Event_0200SNLDANWS" };
+            //String[] AllRain = {"3CedarRapids2008Event_0200SNLDAHN3_5BR","3IowaCity2008Event_0200SNLDAHN3_5BR"};
+//      
+//  String[] AllRain = {"3CedarRapids2008Long_0200SNLDACMORPH",
+//"3CedarRapids2004Long_0200SNLDACMORPH","3CedarRapids2008Long_0200SNLDAPER",
+//"3CedarRapids2004Long_0200SNLDAPER","3CedarRapids2008Long_0200SNLDATRMM",
+//"3CedarRapids2004Long_0200SNLDATRMM"};
+
+
+
+            //String[] AllRain = {"3IowaCity2008testNH1_60BR_0200"};
+////   
+//   String[] AllRain = {"3IowaCity2002Long_0200SNLDACMORPH"};
+
+            //String[] AllRain = {"3IowaCity2007Long_0200SNLDA"};
+
+// String[] AllRain = {"3IowaCity2002Long_0200","3IowaCity2003Long_0200","3IowaCity2004Long_0200",
+//             "3IowaCity2005Long_0200","3IowaCity2006Long_0200","3IowaCity2007Long_0200","3IowaCity2008Long_0200",
+//             "3IowaCity2009Long_0200"};
 // 
-// String[] AllRain = {"3CedarRapids2002Long","3CedarRapids2003Long","3CedarRapids2004Long",
-//             "3CedarRapids2005Long","3CedarRapids2006Long","3CedarRapids2007Long","3CedarRapids2008Long",
-//             "3CedarRapids2009Long"};
- 
- // String[] AllRain = {"3CedarRapids2009Long"};
- 
-// String[] AllRain = {"3IowaCity2002Long","3IowaCity2003Long","3IowaCity2004Long",
-//             "3IowaCity2005Long","3IowaCity2006Long","3IowaCity2007Long","3IowaCity2008Long",
-//             "3IowaCity2009Long"};
- 
- String Direc = "MultipleYearsLong18";
-        //Direc="SyntheticRainfall7";
-        Direc="RadarErrorRunsRes";
-         // Direc="RadarErrorDC";
-        //Direc="ResulstThesis/DEM";ti
-        //Direc = "GarberSimu";
-
-        int nsim = AllSimName.length;
-        int nbas = AllRain.length;
-
-        for (int i = 0; i < nsim; i++) {
-            for (int ib =0; ib <nbas; ib++) {
-
-                System.out.println("Running BASIN " + AllSimName[i]);
-                System.out.println("Running BASIN " + AllRain[ib]);
-
-                String SimName = AllSimName[i];
-                String BasinName = AllRain[ib];
-                File LinkAnalysisFile = new File("/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/linksAnalyses/linksInfo2885_690.csv"); // Iowa city
-                LinkAnalysisFile = new File(defineLinkFile(BasinName, SimName));
-                System.out.println(LinkAnalysisFile.getAbsoluteFile());
 
 
+            String Direc = "MultipleYearsLong40";
+            //Direc = "SyntheticDEM";
+            //Direc = "/SyntheticDEM2/";
+            // Direc="MultipleDataset2008_v4";
+            //Direc="MultipleYearsLongDifModels";
+            //Direc="Synthetic8";
+            //Direc="/MultipleDataset2008_v4/";
+            //Direc = "/StudySatBasedonHN3/Res3/";
+            //Direc="/StudySatBasedonHN3/Res3/";
+            //Direc="/StudySatBasedonHN3/Samplig2/nfiles2/";
+            //Direc="/SyntheticRainfall7/";
+            //Direc="ResulstThesis/DEM";ti
+            // Direc = "MultipleYearsLongLC";
+            //Direc ="MultipleYearsLongBasicModels";
 
-                final Collection<File> all = new ArrayList<File>();
-                //addFilesRecursively(new File("/scratch/Users/rmantill/results_cuencas/EGU/"+BasinName + "/" + SimName + "/"), all);
+            int nsim = AllSimName.length;
+            int nbas = AllRain.length;
 
-                //addFilesRecursively(new File("/scratch/Users/rmantill/results_cuencas/MultipleYears2/"+BasinName + "/" + SimName + "/0.0/"), all);
-                String inputfile="/scratch/Users/rmantill/results_cuencas/" + Direc + "/" + BasinName + "/" + SimName+ "/";   
-                addFilesRecursively(new File(inputfile), all);
-               System.out.println(inputfile);
-                
-                //addFilesRecursively(new File("/scratch/Users/rmantill/results_cuencas/MultipleYears4/3ClearCreek2008/90DEMUSGS/0.0/RoutT_2/HillT_9/HillVelT_4CQf_4.0/EV_1.0/VS0.0010/RC-9.0/UnsO0.0/PH0.0/SCS_-9.0/vh_-9.0/hh_0.0/"),all);
-                //scratch/Users/rmantill/results_cuencas/EGU/3CedarRapids/90DEMUSGS/0.0/RoutT_2/HillT_0/HillVelT_4/VS0.0010/RC0.9/UnsO0.5/PH0.0/SCS_-9.0/vh_-9.0/hh_0.0
-                //addFilesRecursively(new File("/Users/rmantill/luciana/Parallel/Helium_version/"+ BasinName + "/" + SimName + "/"), all);cd  
-                //addFilesRecursively(new File("//Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/3ClearCreek2009MarchAdvdisc4/"), all);
+            for (int i = 0; i < nsim; i++) {
+                for (int ib = 0; ib < nbas; ib++) {
 
-                String[] ListDir = new String[all.size()];
-                System.out.println("all size= " + all.size() + "\n");
-                File outfolder = new File("/scratch/Users/rmantill/results_cuencas/" + Direc + "/resultsTEST4/" + BasinName + "/" + SimName + "/");
+                    System.out.println("Running BASIN " + AllSimName[i]);
+                    System.out.println("Running BASIN " + AllRain[ib]);
+
+                    String SimName = AllSimName[i];
+                    String BasinName = AllRain[ib];
+                    File LinkAnalysisFile = new File("/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/linksAnalyses/linksInfo2885_690.csv"); // Iowa city
+                    String[] StringDEM = {"error", "error", "error"};
+                    StringDEM = hydroScalingAPI.examples.rainRunoffSimulations.parallelVersion.ParallelSimulationToFileHelium.defineDEMxy(BasinName, SimName);
+                    System.out.println("StringDEM = " + StringDEM[0]);
+                    System.out.println("x = " + StringDEM[1] + "    y" + StringDEM[2]);
+                    String DEM = StringDEM[0];
+                    int x = Integer.parseInt(StringDEM[1]);//   .getInteger(StringDEM[1]);
+                    int y= Integer.parseInt(StringDEM[2]);
+                    String NFile = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/linksAnalyses/linksInfo" + x + "_" + y + ".csv";
 
 
-                if (all.size() > 0) {
-                    outfolder.mkdirs();
-                }
+                    LinkAnalysisFile = new File(NFile);
+                    System.out.println(LinkAnalysisFile.getAbsoluteFile());
 
-                int t = 0;
-                for (Iterator iterator = all.iterator(); iterator.hasNext();) {
 
-                    File file = (File) iterator.next();
-                    if (file.isDirectory()) {
-                        ListDir[t] = file.toString();
-                        t = t + 1;
+
+                    final Collection<File> all = new ArrayList<File>();
+                    //addFilesRecursively(new File("/nfsscratch/Users/rmantill/results_cuencas/EGU/"+BasinName + "/" + SimName + "/"), all);
+
+
+                    // for(int is =14; is < 56; is++) {
+                    //  all.clear();
+                    //addFilesRecursively(new File("/nfsscratch/Users/rmantill/results_cuencas/MultipleYears2/"+BasinName + "/" + SimName + "/0.0/"), all);
+                    //  String inputfile="/nfsscratch/Users/rmantill/results_cuencas/" + Direc + "/" + BasinName + "/" + SimName+ "/0.0/RoutT_5/HillT_134/HillVelT_7/IR_" + is + "/";   
+                    //String inputfile = "/nfsscratch/Users/rmantill/results_cuencas/" + Direc + "/" + BasinName + "/" + SimName + "/";
+                    String inputfile = "/nfsscratch/Users/rmantill/results_cuencas/" + Direc + "/" + BasinName + "/" + SimName + "/0.0/ET0.0010/RoutT_5/";
+                    addFilesRecursively(new File(inputfile), all);
+                    System.out.println(inputfile);
+
+                    //addFilesRecursively(new File("/nfsscratch/Users/rmantill/results_cuencas/MultipleYears4/3ClearCreek2008/90DEMUSGS/0.0/RoutT_2/HillT_9/HillVelT_4CQf_4.0/EV_1.0/VS0.0010/RC-9.0/UnsO0.0/PH0.0/SCS_-9.0/vh_-9.0/hh_0.0/"),all);
+                    //nfsscratch/Users/rmantill/results_cuencas/EGU/3CedarRapids/90DEMUSGS/0.0/RoutT_2/HillT_0/HillVelT_4/VS0.0010/RC0.9/UnsO0.5/PH0.0/SCS_-9.0/vh_-9.0/hh_0.0
+                    //addFilesRecursively(new File("/Users/rmantill/luciana/Parallel/Helium_version/"+ BasinName + "/" + SimName + "/"), all);cd  
+                    //addFilesRecursively(new File("//Users/rmantill/luciana/Parallel/Res_Jan_2011_M5_3/3ClearCreek2009MarchAdvdisc4/"), all);
+
+                    String[] ListDir = new String[all.size()];
+                    System.out.println("all size= " + all.size() + "\n");
+                    File outfolder = new File("/nfsscratch/Users/rmantill/results_cuencas/" + Direc + "/resultsSimAF/" + BasinName + "/" + SimName + "/");
+
+
+                    if (all.size() > 0) {
+                        outfolder.mkdirs();
                     }
 
-                }
+                    int t = 0;
+                    for (Iterator iterator = all.iterator(); iterator.hasNext();) {
 
-                System.out.println("n directories" + t);
-                for(int idd =15; idd < t; idd++) {
-
-                    System.out.println("directories" + idd + "ListDir[idd]" + ListDir[idd]);                    
-                    File folder = new java.io.File(ListDir[idd]);
-
-                    if (folder.exists()) {
-                        FilenameFilter only = new OnlyExt("csv");
-                        String[] folStrfilter = folder.list(only);
-                        if (folStrfilter.length > 0) {
-                            System.out.println("File n= " + folStrfilter.length + "\n");
-                            String[] folStr = folder.list();
-                            int Str = folStr.length;
-                            System.out.println(idd + "    " + ListDir[idd] + "File n= " + Str + "\n");
-
-                            //try {
-                            String str = ListDir[idd].replace('/', '_');
-                            //String str2=str.substring(str.indexOf("Rout"));
-                            System.out.println(str);
-                            String str2 = str.substring(str.indexOf("RoutT") - 14);
-                            str2 = str2.replace("RoutT_", "R");
-                            str2 = str2.replace("_HillT_", "H");
-                            str2 = str2.replace("_HillVelT_", "HV");
-                            //str2 = str2.replace("_", "");
-                            System.out.println("IDENTIFIER" + str2 + "\n");
-                            try {
-                                new ParalelVersionReader(folder, LinkAnalysisFile, str2, outfolder);
-                            } catch (java.io.IOException IOE) {
-
-
-                                //} catch (java.io.IOException IOE) {
-                                System.out.print(IOE);
-                                //System.exit(0);
-                            }
-
+                        File file = (File) iterator.next();
+                        if (file.isDirectory()) {
+                            ListDir[t] = file.toString();
+                            t = t + 1;
                         }
 
-
                     }
+
+                    System.out.println("n directories" + t);
+                    for (int idd = 0; idd < t; idd++) {
+
+                        System.out.println("directories" + idd + "ListDir[idd]" + ListDir[idd]);
+                        File folder = new java.io.File(ListDir[idd]);
+
+                        if (folder.exists()) {
+                            FilenameFilter only = new OnlyExt("csv");
+                            String[] folStrfilter = folder.list(only);
+                            if (folStrfilter.length > 0) {
+                                System.out.println("File n= " + folStrfilter.length + "\n");
+                                String[] folStr = folder.list();
+                                int Str = folStr.length;
+                                System.out.println(idd + "    " + ListDir[idd] + "File n= " + Str + "\n");
+
+                                //try {
+                                String str = ListDir[idd].replace('/', '_');
+                                //String str2=str.substring(str.indexOf("Rout"));
+                                System.out.println(str);
+                                String str2 = str.substring(str.indexOf("RoutT") - 14);
+                                str2 = str2.replace("RoutT_", "R");
+                                str2 = str2.replace("_HillT_", "H");
+                                str2 = str2.replace("_HillVelT_", "HV");
+                                //str2 = str2.replace("_", "");
+                                System.out.println("IDENTIFIER" + str2 + "\n");
+                                try {
+                                    new ParalelVersionReader(folder, LinkAnalysisFile, str2, outfolder);
+
+                                    System.out.println("Finish  " + str2 + "\n");
+
+                                } catch (java.io.IOException IOE) {
+
+
+                                    //} catch (java.io.IOException IOE) {
+                                    System.out.print(IOE);
+                                    //System.exit(0);
+                                }
+
+                                //      }
+                            }
+                            System.out.println("Finish  " + folder.toString() + "\n");
+
+                        }
+                    }
+
                 }
-
-
 
 //                File folder = new java.io.File("/Users/rmantill/luciana/Parallel/ALL_MODELS4/" + BasinName + "/" + SimName + "/"
 //                        + "RoutT_2/"
@@ -2211,232 +2401,50 @@ public class ParalelVersionReader extends Object {
         }
     }
 
-      public static void  zipFolder(String srcFolder, String destZipFile)
-    throws Exception {
-   ZipOutputStream zip = null;
-   FileOutputStream fileWriter = null;
+    public static void zipFolder(String srcFolder, String destZipFile)
+            throws Exception {
+        ZipOutputStream zip = null;
+        FileOutputStream fileWriter = null;
 
-   fileWriter = new FileOutputStream(destZipFile);
-   zip = new ZipOutputStream(fileWriter);
+        fileWriter = new FileOutputStream(destZipFile);
+        zip = new ZipOutputStream(fileWriter);
 
-   addFolderToZip("", srcFolder, zip);
-   zip.flush();
-   zip.close();
- }
-
- public static void addFileToZip(String path, String srcFile,
-ZipOutputStream zip)
-     throws Exception {
-
-   File folder = new File(srcFile);
-   if (folder.isDirectory()) {
-     addFolderToZip(path, srcFile, zip);
-   } else {
-     byte[] buf = new byte[1024];
-     int len;
-     FileInputStream in = new FileInputStream(srcFile);
-     zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
-     while ((len = in.read(buf)) > 0) {
-       zip.write(buf, 0, len);
-     }
-   }
- }
-
- public static void addFolderToZip(String path, String srcFolder,ZipOutputStream zip)
-     throws Exception {
-   File folder = new File(srcFolder);
-
-   for (String fileName : folder.list()) {
-     if (path.equals("")) {
-       addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
-     } else {
-       addFileToZip(path + "/" + folder.getName(), srcFolder + "/" +
-fileName, zip);
-     }
-   }
- }
- 
-    public static String defineLinkFile(String BasinName, String SimName) {
-
-        // DEFINE THE DEM and x and y
-        int xOut = 2817;
-        int yOut = 713; //90METERDEMClear Creek - coralville
-        String[] OUTPUT = {"error", "errorx", "errory"};
-        if (SimName.contains("ASTER")) {
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/ASTER/astercc.metaDEM";
-            xOut = 1596;
-            yOut = 298;
-        }
-        if (SimName.equals("5DEMLIDAR")) {
-            xOut = 8052;
-            yOut = 497;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/5meters/5meterc1.metaDEM";
-        }
-        if (SimName.equals("10DEMLIDAR")) {
-            xOut = 4025;
-            yOut = 244;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/10meters/10meterc1.metaDEM";
-        }
-        if (SimName.equals("20DEMLIDAR")) {
-            xOut = 2013;
-            yOut = 122;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/20meters/20meterc1.metaDEM";
-        }
-        if (SimName.equals("30DEMLIDAR")) {
-            xOut = 1341;
-            yOut = 82;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/30meters/30meterc1.metaDEM";
-        }
-        if (SimName.equals("60DEMLIDAR")) {
-            xOut = 670;
-            yOut = 41;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/60meters/60meterc1.metaDEM";
-        }
-        if (SimName.equals("90DEMLIDAR")) {
-            xOut = 447;
-            yOut = 27;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/90meters/90meterc1.metaDEM";
-        }
-        if (SimName.equals("90DEMUSGS")) {
-            xOut = 2817;
-            yOut = 713;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-        }
-
-           if (SimName.equals("30DEMUSGS")) {
-            xOut = 1541;
-            yOut = 92;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/30USGS/ned_1.metaDEM";
-        }
-
-        if (SimName.equals("10DEMUSGS")) {
-            xOut = 4624;
-            yOut = 278;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/10USGS/ned_1_3.metaDEM";
-        }
-
-        if (BasinName.indexOf("Cedar") >= 0) {
-            xOut = 2734;
-            yOut = 1069; //Cedar Rapids
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-        }
-
-
-        if (BasinName.indexOf("Iowa") >= 0) {
-            xOut = 2885;
-            yOut = 690;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-        }
-
-        if (BasinName.indexOf("Marengo") >= 0) {
-            xOut = 2256;
-            yOut = 876;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-        }
-
- if (SimName.indexOf("30DEMUSGS") >= 0) {
-
-            if (BasinName.indexOf("Clear") >= 0) {
-                OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM";
-                xOut = 8288;
-                yOut = 1029;
-            }
-
-            if (BasinName.indexOf("Cedar") >= 0) {
-                OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.metaDEM";
-                xOut = 7875;
-                yOut = 1361;
-            }
-
-            if (BasinName.indexOf("Iowa") >= 0) {
-                OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM";
-                xOut = 8443;
-                yOut = 1029;
-
-            }
-
-            if (BasinName.indexOf("IowaUps") >= 0) {
-                OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/IowaRiverAtIowaCity.metaDEM";
-                xOut = 5505;
-                yOut = 1871;
-
-            }}
- 
-        if (BasinName.indexOf("Turkey") >= 0) {
-
-            xOut = 3053;
-            yOut = 2123;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-        }
-
-        if (BasinName.indexOf("Volga") >= 0) {
-            xOut = 3091;
-            yOut = 2004;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-        }
-        
-        if (BasinName.indexOf("Garber") >= 0) {
-            xOut = 3217;
-            yOut = 1989;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-        }
-
-        if (SimName.indexOf("120DEMUSGS") >= 0) {
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs120m.metaDEM";
-            if (BasinName.indexOf("Clear") >= 0) {
-                xOut = 2113;
-                yOut = 535;
-            }
-            if (BasinName.indexOf("Iowa") >= 0) {
-                xOut = 2164;
-                yOut = 517;
-            }
-
-            if (BasinName.indexOf("Cedar") >= 0) {
-                xOut = 2050;
-                yOut = 802;
-            }
-        }
-
-
-        if (SimName.indexOf("180DEMUSGS") >= 0) {
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs180m.metaDEM";
-            if (BasinName.indexOf("Clear") >= 0) {
-                xOut = 1409;
-                yOut = 356;
-            }
-            if (BasinName.indexOf("Cedar") >= 0) {
-                xOut = 1367;
-                yOut = 534;
-            }
-
-            if (BasinName.indexOf("Iowa") >= 0) {
-                xOut = 1443;
-                yOut = 345;
-            }
-
-        }
-
-        if (BasinName.indexOf("Hoover") >= 0) {
-            xOut = 3113;
-            yOut = 705;
-            OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-        }
-        
-        if (BasinName.indexOf("ALL") >= 0) {
-                OUTPUT[0] = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/90metersPrun5/AveragedIowaRiverAtColumbusJunctions.metaDEM";
-                xOut = 3124;
-                yOut = 234;}
-
-        String NFile = "/scratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/linksAnalyses/linksInfo" + xOut + "_" + yOut + ".csv";
-
-
-        System.out.println("NFile = " + NFile);
-
-        return NFile;
+        addFolderToZip("", srcFolder, zip);
+        zip.flush();
+        zip.close();
     }
-    
-  
- 
-    
+
+    public static void addFileToZip(String path, String srcFile,
+            ZipOutputStream zip)
+            throws Exception {
+
+        File folder = new File(srcFile);
+        if (folder.isDirectory()) {
+            addFolderToZip(path, srcFile, zip);
+        } else {
+            byte[] buf = new byte[1024];
+            int len;
+            FileInputStream in = new FileInputStream(srcFile);
+            zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+            while ((len = in.read(buf)) > 0) {
+                zip.write(buf, 0, len);
+            }
+        }
+    }
+
+    public static void addFolderToZip(String path, String srcFolder, ZipOutputStream zip)
+            throws Exception {
+        File folder = new File(srcFolder);
+
+        for (String fileName : folder.list()) {
+            if (path.equals("")) {
+                addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
+            } else {
+                addFileToZip(path + "/" + folder.getName(), srcFolder + "/"
+                        + fileName, zip);
+            }
+        }
+    }
+
+   
 }

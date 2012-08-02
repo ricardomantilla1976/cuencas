@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 package hydroScalingAPI.modules.rainfallRunoffModel.objects;
 
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * This class manages a time series of parameters associated to the hillslope.  For
@@ -72,7 +73,8 @@ public class HillSlopeTimeSeries {
     public void addDateAndValue(java.util.Calendar newRecordTime, Float newRecordValue){
 //        recordTime.add(newRecordTime);
 //        recordValue.add(newRecordValue);
-        
+        java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+        newRecordTime.setTimeZone(tz);  /// CHECK RICARDO
         if(first){
             iniTimeMill=newRecordTime.getTimeInMillis();
             //System.out.println("  Initial time " + newRecordTime.getTimeInMillis());
@@ -84,8 +86,10 @@ public class HillSlopeTimeSeries {
         long redeftime=iniTimeMill+Math.round(test)*regInterval; //To round the time to the previous exact record time
         newRecordTime.setTimeInMillis(redeftime);
         // java.text.SimpleDateFormat formatter=new java.text.SimpleDateFormat("E yyy.MM.dd at hh:hh:ss zzz");
-        //System.out.println("ninterval "  +test+"   newRecordTime  " + newRecordTime.getTimeInMillis() +   " newRecordValue  "+ newRecordValue);
-        //System.out.println("  new record " + newRecordTime.getTimeInMillis() + " newRecordValue  "+ newRecordValue);             
+        //System.out.println("initial time "  +((double)iniTimeMill)/(double)regInterval);
+        //System.out.println("ninterval  "  +test+"   newRecordTime  " + newRecordTime.getTimeInMillis() +   " newRecordValue  "+ newRecordValue);
+        //System.out.println("  new record  " + newRecordTime.getTimeInMillis() + " newRecordValue  "+ newRecordValue);             
+        
         recordTimeValue.put(newRecordTime,newRecordValue);
         
         numRecordsWithRain++;

@@ -29,7 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.util.TimeZone;
 /**
  * This calss implements the set of non-linear ordinary differential equations used
  * to simulate flows along the river network.  The function is writen as a
@@ -169,6 +169,8 @@ public class NetworkEquations_AllMethodSeriial implements hydroScalingAPI.util.o
 
         java.util.Calendar date = java.util.Calendar.getInstance();
         date.set(2008, 5, 7, 0, 0, 0);
+        java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+        date.setTimeZone(tz);
         change = date.getTimeInMillis() / 1000.0 / 60.0;
 
         // SCS implementation

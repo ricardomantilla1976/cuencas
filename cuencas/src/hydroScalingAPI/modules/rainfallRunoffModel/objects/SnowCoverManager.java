@@ -25,29 +25,29 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 package hydroScalingAPI.modules.rainfallRunoffModel.objects;
-
+import java.util.TimeZone;
 /**
  * This class handles the SNOWipitation over a basin.  It takes in a group of
  * raster files that represent snapshots of the rainfall fields and projects those
  * fields over the hillslope map to obtain hillslope-based rainfall time series.
  * @author Ricardo Mantilla
  */
-public class SnowManager {
+public class SnowCoverManager {
 
-    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] SNOWOnBasin;
+    private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[] SNOWCoverOnBasin;
     private boolean success=false,veryFirstDrop=true;
-    private hydroScalingAPI.io.MetaRaster metaSNOW;
-    private java.util.Calendar firstSnow,lastSnow;
-    private float[][] totalPixelBasedSNOW;
-    private float[] totalHillBasedSNOW;
-    private float[] totalHillBasedSNOWmm;
+    private hydroScalingAPI.io.MetaRaster metaSNOWCover;
+    private java.util.Calendar firstSnowCover,lastSnowCover;
+    private float[][] totalPixelBasedSNOWCover;
+    private float[] totalHillBasedSNOWCover;
+    
     private hydroScalingAPI.util.fileUtilities.ChronoFile[] arCron;
 
     int[][] matrizPintada;
 
     private double recordResolutionInMinutes;
 
-    private String thisSNOWName;
+    private String thisSNOWCoverName;
 
     private int ncol;   // create
     private int nrow;   // create
@@ -64,20 +64,21 @@ public class SnowManager {
      * @param rainIntensity The uniform intensity to be applied over the basinb
      * @param rainDuration The duration of the event with the given intensity
      */
-    public SnowManager(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, float rainIntensity, float rainDuration) {
+    public SnowCoverManager(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, float rainIntensity, float rainDuration) {
 
         java.util.Calendar date=java.util.Calendar.getInstance();
         date.clear();
+         date.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         date.set(1971, 6, 1, 6, 0, 0);
 
-        firstSnow=date;
-        lastSnow=date;
+        firstSnowCover=date;
+        lastSnowCover=date;
 
-        SNOWOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
-        //accumSNOWOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
-        for (int i=0;i<SNOWOnBasin.length;i++){
-            SNOWOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
-            SNOWOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
+        SNOWCoverOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.connectionsArray.length];
+        //accumSNOWCoverOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+        for (int i=0;i<SNOWCoverOnBasin.length;i++){
+            SNOWCoverOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
+            SNOWCoverOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
             ////// this is wrong, should be accumulated
             //accumSNOWOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries((int)(rainDuration*60*1000),1);
             //accumSNOWOnBasin[i].addDateAndValue(date,new Float(rainIntensity));
@@ -86,7 +87,7 @@ public class SnowManager {
 
         recordResolutionInMinutes=rainDuration;
 
-        thisSNOWName="UniformEvent_INT_"+rainIntensity+"_DUR_"+rainDuration;
+        thisSNOWCoverName="UniformEvent_INT_"+rainIntensity+"_DUR_"+rainDuration;
 
         success=true;
 
@@ -103,7 +104,7 @@ public class SnowManager {
      * @param matDir The directions matrix of the DEM that contains the basin
      * @param magnitudes The magnitudes matrix of the DEM that contains the basin
      */
-    public SnowManager(java.io.File locFile, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes) {
+    public SnowCoverManager(java.io.File locFile, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes) {
 
         //System.out.println("locFile.getParentFile()" + locFile.getParentFile());
         int temp=locFile.getName().lastIndexOf(".");
@@ -133,19 +134,19 @@ public class SnowManager {
 
         try{
 
-            metaSNOW=new hydroScalingAPI.io.MetaRaster(locFile);
-            nrow=metaSNOW.getNumRows();
-            ncol=metaSNOW.getNumCols();
-            xllcorner=metaSNOW.getMinLon();
-            yllcorner=metaSNOW.getMinLat();
-            cellsize=metaSNOW.getResLat();
+            metaSNOWCover=new hydroScalingAPI.io.MetaRaster(locFile);
+            nrow=metaSNOWCover.getNumRows();
+            ncol=metaSNOWCover.getNumCols();
+            xllcorner=metaSNOWCover.getMinLon();
+            yllcorner=metaSNOWCover.getMinLat();
+            cellsize=metaSNOWCover.getResLat();
 
 
             /****** OJO QUE ACA PUEDE HABER UN ERROR (POR LA CUESTION DE LA COBERTURA DEL MAPA SOBRE LA CUENCA)*****************/
-            if (metaSNOW.getMinLon() > metaDatos.getMinLon()+myCuenca.getMinX()*metaDatos.getResLon()/3600.0 ||
-                metaSNOW.getMinLat() > metaDatos.getMinLat()+myCuenca.getMinY()*metaDatos.getResLat()/3600.0 ||
-                metaSNOW.getMaxLon() < metaDatos.getMinLon()+(myCuenca.getMaxX()+2)*metaDatos.getResLon()/3600.0 ||
-                metaSNOW.getMaxLat() < metaDatos.getMinLat()+(myCuenca.getMaxY()+2)*metaDatos.getResLat()/3600.0) {
+            if (metaSNOWCover.getMinLon() > metaDatos.getMinLon()+myCuenca.getMinX()*metaDatos.getResLon()/3600.0 ||
+                metaSNOWCover.getMinLat() > metaDatos.getMinLat()+myCuenca.getMinY()*metaDatos.getResLat()/3600.0 ||
+                metaSNOWCover.getMaxLon() < metaDatos.getMinLon()+(myCuenca.getMaxX()+2)*metaDatos.getResLon()/3600.0 ||
+                metaSNOWCover.getMaxLat() < metaDatos.getMinLat()+(myCuenca.getMaxY()+2)*metaDatos.getResLat()/3600.0) {
                     System.out.println("Not Area Coverage");
                     return;
             }
@@ -179,25 +180,25 @@ public class SnowManager {
                 }
             }
 
-            SNOWOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
-            //accumSNOWOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+            SNOWCoverOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
+            //accumSNOWCoverOnBasin=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries[linksStructure.tailsArray.length];
 //////////////////////////////////////// stopped here - be sure accumulated is being calculated correctly
-            int regInterval=metaSNOW.getTemporalScale();
-            float regIntervalmm=((float)metaSNOW.getTemporalScale())/(1000.0f*60.0f);
+            int regInterval=metaSNOWCover.getTemporalScale();
+            float regIntervalmm=((float)metaSNOWCover.getTemporalScale())/(1000.0f*60.0f);
 
             //System.out.println("Time interval for this file: "+regInterval);
 
-            totalHillBasedSNOW=new float[SNOWOnBasin.length];
-            totalHillBasedSNOWmm=new float[SNOWOnBasin.length];
+            totalHillBasedSNOWCover=new float[SNOWCoverOnBasin.length];
+            
 
-                double[] currentHillBasedSNOW=new double[SNOWOnBasin.length];
-                float[] currentHillNumPixels=new float[SNOWOnBasin.length];
+                double[] currentHillBasedSNOWCover=new double[SNOWCoverOnBasin.length];
+                float[] currentHillNumPixels=new float[SNOWCoverOnBasin.length];
 
-                for (int i=0;i<SNOWOnBasin.length;i++){
-                SNOWOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
-                //accumSNOWOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
-                totalHillBasedSNOWmm[i]=0.0f;
-                currentHillBasedSNOW[i]=0.0D;
+                for (int i=0;i<SNOWCoverOnBasin.length;i++){
+                SNOWCoverOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
+                //accumSNOWCoverOnBasin[i]=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopeTimeSeries(regInterval,arCron.length);
+                
+                
                 currentHillNumPixels[i]=0.0f;
                 }
 
@@ -207,21 +208,21 @@ public class SnowManager {
 
             System.out.println("-----------------Start of Files Reading----------------");
 
-            totalPixelBasedSNOW=new float[matDirBox.length][matDirBox[0].length];
+            totalPixelBasedSNOWCover=new float[matDirBox.length][matDirBox[0].length];
 
 
 
             for (int i=0;i<arCron.length;i++){
                 //Cargo cada uno
-                metaSNOW.setLocationBinaryFile(arCron[i].fileName);
+                metaSNOWCover.setLocationBinaryFile(arCron[i].fileName);
 
                 //System.out.println("--> Loading data from "+arCron[i].fileName.getName());
+//
+                dataSnapShot=new hydroScalingAPI.io.DataRaster(metaSNOWCover).getDouble();
 
-                dataSnapShot=new hydroScalingAPI.io.DataRaster(metaSNOW).getDouble();
 
-
-                hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaSNOW.getMissing()).doubleValue());
-                //System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
+                hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaSNOWCover.getMissing()).doubleValue());
+//                System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
 
 
                 //recorto la seccion que esta en la cuenca (TIENE QUE CONTENERLA)
@@ -235,45 +236,45 @@ public class SnowManager {
                 int basinMinX=myCuenca.getMinX();
                 int basinMinY=myCuenca.getMinY();
 
-                double SNOWMinLon=metaSNOW.getMinLon();
-                double SNOWMinLat=metaSNOW.getMinLat();
-                double SNOWResLon=metaSNOW.getResLon();
-                double SNOWResLat=metaSNOW.getResLat();
+                double SNOWCoverMinLon=metaSNOWCover.getMinLon();
+                double SNOWCoverMinLat=metaSNOWCover.getMinLat();
+                double SNOWCoverResLon=metaSNOWCover.getResLon();
+                double SNOWCoverResLat=metaSNOWCover.getResLat();
 
                 for (int j=0;j<matrizPintada.length;j++) for (int k=0;k<matrizPintada[0].length;k++){
                     
                     evalSpot=new double[] {demMinLon+(basinMinX+k-1)*demResLon/3600.0,
                                            demMinLat+(basinMinY+j-1)*demResLat/3600.0};
 
-                    MatX=(int) Math.floor((evalSpot[0]-SNOWMinLon)/SNOWResLon*3600.0);
-                    MatY=(int) Math.floor((evalSpot[1]-SNOWMinLat)/SNOWResLat*3600.0);
+                    MatX=(int) Math.floor((evalSpot[0]-SNOWCoverMinLon)/SNOWCoverResLon*3600.0);
+                    MatY=(int) Math.floor((evalSpot[1]-SNOWCoverMinLat)/SNOWCoverResLat*3600.0);
 
                     if (matrizPintada[j][k] > 0){
-                        currentHillBasedSNOW[matrizPintada[j][k]-1]+=dataSnapShot[MatY][MatX];
+                        currentHillBasedSNOWCover[matrizPintada[j][k]-1]+=dataSnapShot[MatY][MatX];
                         currentHillNumPixels[matrizPintada[j][k]-1]++;
                     }
 
-                    totalPixelBasedSNOW[j][k]+=(float) dataSnapShot[MatY][MatX];
+                    totalPixelBasedSNOWCover[j][k]+=(float) dataSnapShot[MatY][MatX];
 
                 }
 
                 for (int j=0;j<linksStructure.contactsArray.length;j++){
-                    if (currentHillBasedSNOW[j] > 0) {
+                    if (currentHillBasedSNOWCover[j] > 0) {
                         if (veryFirstDrop){
-                            firstSnow=arCron[i].getDate();
+                            firstSnowCover=arCron[i].getDate();
                             veryFirstDrop=false;
                         }
 //System.out.println(arCron[i].getDate());
-                        SNOWOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(currentHillBasedSNOW[j]/currentHillNumPixels[j])); //
-                        totalHillBasedSNOWmm[j]+=(currentHillBasedSNOW[j]/currentHillNumPixels[j])*(regIntervalmm/60);
-                        totalHillBasedSNOW[j]+=currentHillBasedSNOW[j]/currentHillNumPixels[j];
-                        lastSnow=arCron[i].getDate();
-                    } else{totalHillBasedSNOWmm[j]=0.0f;}
+                        SNOWCoverOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(currentHillBasedSNOWCover[j]/currentHillNumPixels[j])); //
+                        
+                        totalHillBasedSNOWCover[j]+=currentHillBasedSNOWCover[j]/currentHillNumPixels[j];
+                        lastSnowCover=arCron[i].getDate();
+                    } 
                     
 
                     //accumSNOWOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(totalHillBasedSNOWmm[j])); //
        //             System.out.println(arCron[i].getDate()+"Rain file " + i + "link " +j + "totalHillBasedSNOWmm[j] = " + totalHillBasedSNOWmm[j]);
-                    currentHillBasedSNOW[j]=0.0D;
+                    currentHillBasedSNOWCover[j]=0.0D;
                     currentHillNumPixels[j]=0.0f;
                 }
 
@@ -282,10 +283,10 @@ public class SnowManager {
             }
 
             for (int j=0;j<linksStructure.contactsArray.length;j++){
-                totalHillBasedSNOW[j]/=SNOWOnBasin[j].getSize();
+                totalHillBasedSNOWCover[j]/=SNOWCoverOnBasin[j].getSize();
             }
 
-            thisSNOWName=metaSNOW.getLocationBinaryFile().getName().substring(0,metaSNOW.getLocationBinaryFile().getName().lastIndexOf("."));
+            thisSNOWCoverName=metaSNOWCover.getLocationBinaryFile().getName().substring(0,metaSNOWCover.getLocationBinaryFile().getName().lastIndexOf("."));
 
             success=true;
 
@@ -293,14 +294,14 @@ public class SnowManager {
             System.out.println("-----------------Done with Files Reading----------------");
 
 
-            recordResolutionInMinutes=metaSNOW.getTemporalScale()/1000.0/60.0;
+            recordResolutionInMinutes=metaSNOWCover.getTemporalScale()/1000.0/60.0;
 
-            if(lastSnow == null){
-                firstSnow=arCron[0].getDate();
-                lastSnow=arCron[0].getDate();
+            if(lastSnowCover == null){
+                firstSnowCover=arCron[0].getDate();
+                lastSnowCover=arCron[0].getDate();
                 for (int j=0;j<linksStructure.contactsArray.length;j++){
-                    SNOWOnBasin[j].addDateAndValue(arCron[0].getDate(),0.0f); //
-                    totalHillBasedSNOW[j]=0;
+                    SNOWCoverOnBasin[j].addDateAndValue(arCron[0].getDate(),0.0f); //
+                    totalHillBasedSNOWCover[j]=0;
                 }
             }
 
@@ -315,9 +316,9 @@ public class SnowManager {
      * @param dateRequested The time for which the rain is desired
      * @return Returns the rainfall rate in mm/h
      */
-    public float getSNOWOnHillslope(int HillNumber,java.util.Calendar dateRequested){
-
-        return SNOWOnBasin[HillNumber].getRecord(dateRequested);
+    public float getSNOWCoverOnHillslope(int HillNumber,java.util.Calendar dateRequested){
+         dateRequested.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        return SNOWCoverOnBasin[HillNumber].getRecord(dateRequested);
 
     }
 
@@ -364,9 +365,9 @@ public class SnowManager {
      * @param HillNumber The index of the desired hillslope
      * @return The maximum rainfall rate in mm/h
      */
-    public float getMaxSNOWOnHillslope(int HillNumber){
+    public float getMaxSNOWCoverOnHillslope(int HillNumber){
 
-        return SNOWOnBasin[HillNumber].getMaxRecord();
+        return SNOWCoverOnBasin[HillNumber].getMaxRecord();
 
     }
 
@@ -375,9 +376,9 @@ public class SnowManager {
      * @param HillNumber The index of the desired hillslope
      * @return The average rainfall rate in mm/h
      */
-    public float getMeanSNOWOnHillslope(int HillNumber){
+    public float getMeanSNOWCoverOnHillslope(int HillNumber){
 
-        return SNOWOnBasin[HillNumber].getMeanRecord();
+        return SNOWCoverOnBasin[HillNumber].getMeanRecord();
 
     }
 
@@ -393,17 +394,17 @@ public class SnowManager {
      * Returns the name of this SNOW event
      * @return A String that describes this SNOW
      */
-    public String SNOWName(){
-        return thisSNOWName;
+    public String SNOWCoverName(){
+        return thisSNOWCoverName;
     }
 
     /**
      * The SNOW temporal resolution in milliseconds
      * @return A float with the temporal resolution
      */
-    public float SNOWRecordResolution(){
+    public float SNOWCoverRecordResolution(){
 
-        return metaSNOW.getTemporalScale();
+        return metaSNOWCover.getTemporalScale();
 
     }
 
@@ -412,9 +413,9 @@ public class SnowManager {
      * @return A {@link java.util.Calendar} object indicating when the first drop of water fell
      * on the basin
      */
-    public void setSNOWInitialTime(java.util.Calendar iniDate){
+    public void setSNOWCoverInitialTime(java.util.Calendar iniDate){
 
-        firstSnow=iniDate;
+        firstSnowCover=iniDate;
     }
 
     /**
@@ -424,7 +425,7 @@ public class SnowManager {
      */
     public java.util.Calendar SNOWInitialTime(){
 
-        return firstSnow;
+        return firstSnowCover;
     }
 
     /**
@@ -435,7 +436,7 @@ public class SnowManager {
      */
     public double SNOWInitialTimeInMinutes(){
 
-        return firstSnow.getTimeInMillis()/1000./60.;
+        return firstSnowCover.getTimeInMillis()/1000./60.;
     }
 
     /**
@@ -445,7 +446,7 @@ public class SnowManager {
      * on the basin
      */
     public double SNOWFinalTimeInMinutes(){
-        return lastSnow.getTimeInMillis()/1000./60.+SNOWRecordResolutionInMinutes();
+        return lastSnowCover.getTimeInMillis()/1000./60.+SNOWRecordResolutionInMinutes();
     }
 
     /**
@@ -466,7 +467,7 @@ public class SnowManager {
      */
     public float getTotalPixelBasedSNOW(int i, int j){
 
-        return totalPixelBasedSNOW[i][j];
+        return totalPixelBasedSNOWCover[i][j];
 
     }
 
@@ -489,7 +490,7 @@ public class SnowManager {
      */
     public float getTotalHillSlopeBasedSNOW(int HillNumber){
 
-        return totalHillBasedSNOW[HillNumber];
+        return totalHillBasedSNOWCover[HillNumber];
 
     }
 

@@ -35,7 +35,7 @@ package hydroScalingAPI.examples.rainRunoffSimulations;
 import visad.*;
 import java.io.*;
 import java.util.*;
-
+import java.util.TimeZone;
 /**
  *
  * @author Luciana Cunha
@@ -211,6 +211,8 @@ public class RainfallAnalysesLuc extends java.lang.Object implements Runnable{
           CMB[k]=0;
            double currTime=storm.stormInitialTimeInMinutes()+k*storm.stormRecordResolutionInMinutes();
           java.util.Calendar thisDate1=java.util.Calendar.getInstance();
+           java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+                thisDate1.setTimeZone(tz);
           thisDate1.setTimeInMillis((long)(currTime*60.*1000.0));
          
          for (int i=0;i<linksStructure.connectionsArray.length;i++){
@@ -232,6 +234,8 @@ public class RainfallAnalysesLuc extends java.lang.Object implements Runnable{
        for (int k=0;k<numPeriods;k++) {
           double currTime=storm.stormInitialTimeInMinutes()+k*storm.stormRecordResolutionInMinutes();
           java.util.Calendar thisDate1=java.util.Calendar.getInstance();
+           java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+           thisDate1.setTimeZone(tz);
           thisDate1.setTimeInMillis((long)(currTime*60.*1000.0));
           newfiler.write(currTime+",");
           newfiler.write(coverage[k]+","+mean[k]+","+stddev[k]+","+CV[k]+","+CMP[k]);

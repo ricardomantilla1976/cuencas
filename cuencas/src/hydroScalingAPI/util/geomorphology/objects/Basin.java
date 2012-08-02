@@ -18,7 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 package hydroScalingAPI.util.geomorphology.objects;
-
+import java.util.TimeZone;
 /**
  * Uses a recursive algorithm to find the locations in the DEM that drain through a
  * given point in the landscape, and defines the boundary of these group of points.
@@ -40,6 +40,7 @@ public class Basin extends Object{
     private hydroScalingAPI.io.MetaRaster localMetaRaster;
     
     private int[][] toMark;
+   
     
     /**
      * Creates an instance of Basin
@@ -793,6 +794,8 @@ public class Basin extends Object{
             byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
             System.out.println("Extraction begins");
             java.util.Calendar iniTime=java.util.Calendar.getInstance();
+            java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
+            iniTime.setTimeZone(tz);
             hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(194,281,matDirs,metaModif);
             
             System.out.println(laCuenca.getDivideShapeFactor()[0]);
@@ -801,6 +804,8 @@ public class Basin extends Object{
             
             System.out.println("Relief: "+laCuenca.getRelief());
             java.util.Calendar finalTime=java.util.Calendar.getInstance();
+            
+            finalTime.setTimeZone(tz);
             System.out.println("Extraction ends");
             System.out.println(">>> Running Time is "+(finalTime.getTimeInMillis()-iniTime.getTimeInMillis())/1000.);
             /*byte[][] nm=laCuenca.getBasinMask();

@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
 package hydroScalingAPI.io;
-
+import java.util.TimeZone;
 /**
  * Manages the Gauge-type data object
  * @author Ricardo Mantilla

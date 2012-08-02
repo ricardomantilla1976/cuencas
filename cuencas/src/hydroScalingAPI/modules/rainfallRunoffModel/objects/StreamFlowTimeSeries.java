@@ -48,29 +48,42 @@ public class StreamFlowTimeSeries {
                     fullLine = fileMeta.readLine();
                 }
             }
+              firstTime=-9.f;
             if (fullLine != null) {
                 if (fullLine.contains(",")) {
+               String[] test=fullLine.split(",");
+               String[] test2=fullLine.split("\\.");
+               String[] test3=fullLine.split("E");
+               if(test.length==2 && test2.length<=3 && test3.length<=3){
                     data = fullLine.split(",");
+                    if (data[0] != null && data[1] != null) {
+                        try {   
+               data = fullLine.split(",");
                     firstTime = Double.parseDouble(data[0]);
+                    } catch (java.lang.NumberFormatException nfe) {
+                            System.out.println("Error reading value in the outlet");
+                        }
                 }
+               }
+            }
             }
 
             while (fullLine != null) {
                 if (fullLine.contains(",")) {
-                    String[] test = fullLine.split(",");
-                    String[] test2 = fullLine.split("\\.");
-                    String[] test3 = fullLine.split("E");
-                    if (test.length == 2 && test2.length <= 3 && test3.length <= 3) {
-                        data = fullLine.split(",");
-                        if (data[0] != null && data[1] != null) {
-                            try {
-                                //System.out.println("data[0]" + Double.valueOf(data[0]) + "data[1]" + data[1]);
-                                java.lang.Double.parseDouble(data[0]);
-                                recordTimeValue.put(Double.valueOf(data[0]).toString(), new Double(data[1]));
-                            } catch (java.lang.NumberFormatException nfe) {
-                                System.out.println(data[0]+" "+data[1]);
-                                System.out.println("Error reading value in the outlet");
-                            }
+               String[] test=fullLine.split(",");
+               String[] test2=fullLine.split("\\.");
+               String[] test3=fullLine.split("E");
+               if(test.length==2 && test2.length<=3 && test3.length<=3){
+                    data = fullLine.split(",");
+                    if (data[0] != null && data[1] != null) {
+                        try {
+                            if(firstTime<0) firstTime=Double.parseDouble(data[0]);
+                            //System.out.println("data[0]" + data[0] + "data[1]" + data[1]);
+                            java.lang.Double.parseDouble(data[0]);
+                            recordTimeValue.put(data[0], new Double(data[1]));
+                        } catch (java.lang.NumberFormatException nfe) {
+                            System.out.println("Error reading value in the outlet");
+                        }
 
 
                         }
