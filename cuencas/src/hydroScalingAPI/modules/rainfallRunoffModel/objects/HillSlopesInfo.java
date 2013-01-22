@@ -579,12 +579,16 @@ public class HillSlopesInfo extends java.lang.Object {
     }
     /* Luciana Cunha Edition - SCS Manager - Object for Network Equations using SCSmethod
      * @param HillNumber The index of the desired hillslope
-     * @return The average hillslope SLOPE - calculated by a */
+     * @return The average hillslope SLOPE  */
 
     public double getHillslope(int HillNumber) {
         return thisSCSData.getavehillBasedSlopeMet1(HillNumber);
     }
-
+    
+     public double getHillslope2(int HillNumber) {
+        return thisSCSData.getavehillBasedSlopeMet2(HillNumber);
+    }
+     
     public double getArea_ReliefParam(int HillNumber, int coef) {
         return thisSCSData.getTerm(HillNumber, coef);
     }

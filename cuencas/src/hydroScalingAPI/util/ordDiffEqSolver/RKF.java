@@ -1,20 +1,20 @@
 /*
-CUENCAS is a River Network Oriented GIS
-Copyright (C) 2005  Ricardo Mantilla
+ CUENCAS is a River Network Oriented GIS
+ Copyright (C) 2005  Ricardo Mantilla
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 /*
  * RKF.java
@@ -26,18 +26,20 @@ package hydroScalingAPI.util.ordDiffEqSolver;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.TimeZone;
+
 /**
- * An implementation of the Runge-Kutta-Felberg algorithm for solving non-linear ordinary
- * differential equations.  It uses a time step control algorithm to avoid numerical errors
- * while solving the equations
+ * An implementation of the Runge-Kutta-Felberg algorithm for solving non-linear
+ * ordinary differential equations. It uses a time step control algorithm to
+ * avoid numerical errors while solving the equations
+ *
  * @author Ricardo Mantilla
  */
 public class RKF extends java.lang.Object {
 
     hydroScalingAPI.util.ordDiffEqSolver.BasicFunction theFunction;
     /**
-     * An array containing the value of the function that was last calculated by the
-     * RKF algorithm
+     * An array containing the value of the function that was last calculated by
+     * the RKF algorithm
      */
     public double[] finalCond;
     double epsilon;
@@ -57,15 +59,13 @@ public class RKF extends java.lang.Object {
     double[] Derivs;
     double[] carrier, k0, k1, k2, k3, k4, k5, newY, newYstar, maxAchieved, timeOfMaximumAchieved;
     double Delta, newTimeStep, factor;
-    
     private java.text.SimpleDateFormat dateFormatUTC;
-    
-        
-        
 
     /**
      * Creates new RKF
-     * @param fu The differential equation to solve described by a {@link hydroScalingAPI.util.ordDiffEqSolver.BasicFunction}
+     *
+     * @param fu The differential equation to solve described by a
+     * {@link hydroScalingAPI.util.ordDiffEqSolver.BasicFunction}
      * @param eps The value error allowed by the step forward algorithm
      * @param basTs The step size
      */
@@ -73,19 +73,20 @@ public class RKF extends java.lang.Object {
         theFunction = fu;
         epsilon = eps;
         basicTimeStep = basTs;
-        
+
         dateFormatUTC = new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
         dateFormatUTC.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
     }
 
     /**
-     * Returns the value of the function described by differential equations in the
-     * next time step
+     * Returns the value of the function described by differential equations in
+     * the next time step
+     *
      * @param currentTime The current time
      * @param IC The value of the initial condition
      * @param timeStep The desired step size
-     * @param finalize A boolean indicating in the timeStep provided is final or if 
-     * it needs to be refined
+     * @param finalize A boolean indicating in the timeStep provided is final or
+     * if it needs to be refined
      * @return The value of the multivatiate function
      */
     private double[][] step(double currentTime, double[] IC, double timeStep, boolean finalize) {
@@ -412,8 +413,9 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Returns the values of the function described by differential equations in the
-     * the intermidia steps needed to go from the Initial to the Final time
+     * Returns the values of the function described by differential equations in
+     * the the intermidia steps needed to go from the Initial to the Final time
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param IC The value of the initial condition
@@ -457,8 +459,10 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Returns the values of the function described by differential equations in the
-     * the intermidia steps requested to go from the Initial to the Final time
+     * Returns the values of the function described by differential equations in
+     * the the intermidia steps requested to go from the Initial to the Final
+     * time
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
@@ -521,9 +525,10 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Writes (in binary format) to a specified file the values of the function described by differential
-     * equations in the the intermidia steps needed to go from the Initial to the Final
-     * time
+     * Writes (in binary format) to a specified file the values of the function
+     * described by differential equations in the the intermidia steps needed to
+     * go from the Initial to the Final time
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param IC The value of the initial condition
@@ -547,10 +552,10 @@ public class RKF extends java.lang.Object {
             givenStep[0][0] = currentTime;
             IC = givenStep[1];
 
-            java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+            java.util.Calendar thisDate = java.util.Calendar.getInstance();
             thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println(thisDate.getTime()+ " (" + java.util.Calendar.getInstance().getTime() + ")");
+            System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")");
 
             outputStream.writeDouble(currentTime);
             for (int j = 0; j < IC.length; j++) {
@@ -579,9 +584,10 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Writes (in binary format) to a specified file the values of the function described by differential
-     * equations in the the intermidia steps requested to go from the Initial to the Final
-     * time
+     * Writes (in binary format) to a specified file the values of the function
+     * described by differential equations in the the intermidia steps requested
+     * to go from the Initial to the Final time
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
@@ -599,7 +605,7 @@ public class RKF extends java.lang.Object {
         for (int j = 0; j < IC.length; j++) {
             outputStream.writeDouble(IC[j]);
         }
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")");
@@ -613,8 +619,8 @@ public class RKF extends java.lang.Object {
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-                thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-                System.out.println("inLoop"+thisDate.getTime());*/
+                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 givenStep = step(currentTime, IC, basicTimeStep, false);
 
@@ -631,8 +637,8 @@ public class RKF extends java.lang.Object {
 
             }
             /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-            System.out.println("outsideLoop"+thisDate.getTime());*/
+             thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+             System.out.println("outsideLoop"+thisDate.getTime());*/
 
             if (targetTime == finalTime) {
                 //System.out.println("******** I'll go to End Of Step ********");
@@ -655,7 +661,8 @@ public class RKF extends java.lang.Object {
             for (int j = 0; j < IC.length; j++) {
                 outputStream.writeDouble(IC[j]);
             }
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")");
 
@@ -675,7 +682,8 @@ public class RKF extends java.lang.Object {
             for (int j = 0; j < IC.length; j++) {
                 outputStream.writeDouble(IC[j]);
             }
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")");
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
@@ -688,18 +696,21 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Writes (in ascii format) to a specified file the values of the function described by differential
-     * equations in the the intermidia steps requested to go from the Initial to the Final
-     * time.  This method is very specific for solving equations of flow in a network.  It prints output for
-     * the flow component at all locations.
+     * Writes (in ascii format) to a specified file the values of the function
+     * described by differential equations in the the intermidia steps requested
+     * to go from the Initial to the Final time. This method is very specific
+     * for solving equations of flow in a network. It prints output for the flow
+     * component at all locations.
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
      * @param IC The value of the initial condition
      * @param outputStream The file to which the information will be writen
-     * @param linksStructure The structure describing the topology of the river network
-     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic parameters
-     * of the links in the network
+     * @param linksStructure The structure describing the topology of the river
+     * network
+     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic
+     * parameters of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
     public void jumpsRunToAsciiFile(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom) throws java.io.IOException {
@@ -707,7 +718,7 @@ public class RKF extends java.lang.Object {
         double currentTime = iniTime, targetTime;
 
         int ouletID = linksStructure.getOutletID();
-        
+
         outputStream.write("\n");
         outputStream.write(currentTime + ",");
         for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
@@ -716,10 +727,10 @@ public class RKF extends java.lang.Object {
             }
         }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-        System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+        System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
         //System.out.println();
 
@@ -730,8 +741,8 @@ public class RKF extends java.lang.Object {
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-                thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-                System.out.println("inLoop"+thisDate.getTime());*/
+                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 givenStep = step(currentTime, IC, basicTimeStep, false);
 
@@ -752,16 +763,17 @@ public class RKF extends java.lang.Object {
                             timeOfMaximumAchieved[i] = currentTime;
                         }
                     }
-                    thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+                    thisDate = java.util.Calendar.getInstance();
+                    thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                     thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-                    System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+                    System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
                 }
 
 
             }
             /*thisDate=java.util.Calendar.getInstance();
-            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-            System.out.println("outsideLoop"+thisDate.getTime());*/
+             thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+             System.out.println("outsideLoop"+thisDate.getTime());*/
 
             if (targetTime == finalTime) {
 
@@ -794,7 +806,7 @@ public class RKF extends java.lang.Object {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
                 }
             }
-            
+
             for (int i = 0; i < IC.length; i++) {
                 if (IC[i] > maxAchieved[i]) {
                     maxAchieved[i] = IC[i];
@@ -802,9 +814,10 @@ public class RKF extends java.lang.Object {
                 }
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
 
 //            for (int j=IC.length/2;j<IC.length;j++) System.out.print(IC[j]+" ");
 //            System.out.println();
@@ -827,9 +840,10 @@ public class RKF extends java.lang.Object {
                 }
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
 
         }
 
@@ -838,18 +852,21 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Writes (in ascii format) to a specified file the values of the function described by differential
-     * equations in the the intermidia steps requested to go from the Initial to the Final
-     * time.  This method is very specific for solving equations of flow in a network.  It prints output for
-     * the flow component at all locations.
+     * Writes (in ascii format) to a specified file the values of the function
+     * described by differential equations in the the intermidia steps requested
+     * to go from the Initial to the Final time. This method is very specific
+     * for solving equations of flow in a network. It prints output for the flow
+     * component at all locations.
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
      * @param IC The value of the initial condition
      * @param outputStream The file to which the information will be writen
-     * @param linksStructure The structure describing the topology of the river network
-     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic parameters
-     * of the links in the network
+     * @param linksStructure The structure describing the topology of the river
+     * network
+     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic
+     * parameters of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
     public void jumpsRunToAsciiFilePlusLocations(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, int[] resSimID, java.io.OutputStreamWriter outputStream_L) throws java.io.IOException {
@@ -871,10 +888,10 @@ public class RKF extends java.lang.Object {
             outputStream_L.write(IC[i - 1] + ",");
         }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-        System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+        System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
         //System.out.println();
 
@@ -885,8 +902,8 @@ public class RKF extends java.lang.Object {
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-                thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-                System.out.println("inLoop"+thisDate.getTime());*/
+                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 givenStep = step(currentTime, IC, basicTimeStep, false);
 
@@ -909,14 +926,14 @@ public class RKF extends java.lang.Object {
                     }
                     thisDate = java.util.Calendar.getInstance();
                     thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-                    System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+                    System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
                 }
 
 
             }
             /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-            System.out.println("outsideLoop"+thisDate.getTime());*/
+             thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+             System.out.println("outsideLoop"+thisDate.getTime());*/
 
             if (targetTime == finalTime) {
                 //System.out.println("******** I'll go to End Of Step ********");
@@ -953,9 +970,10 @@ public class RKF extends java.lang.Object {
                 outputStream_L.write(IC[i - 1] + ",");
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
 
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
@@ -982,9 +1000,10 @@ public class RKF extends java.lang.Object {
                 outputStream_L.write(IC[i - 1] + ",");
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
@@ -995,18 +1014,21 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Writes (in ascii format) to a specified file the values of the function described by differential
-     * equations in the the intermidia steps requested to go from the Initial to the Final
-     * time.  This method is very specific for solving equations of flow in a network.  It prints output for
-     * the flow component at all locations.
+     * Writes (in ascii format) to a specified file the values of the function
+     * described by differential equations in the the intermidia steps requested
+     * to go from the Initial to the Final time. This method is very specific
+     * for solving equations of flow in a network. It prints output for the flow
+     * component at all locations.
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
      * @param IC The value of the initial condition
      * @param outputStream The file to which the information will be writen
-     * @param linksStructure The structure describing the topology of the river network
-     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic parameters
-     * of the links in the network
+     * @param linksStructure The structure describing the topology of the river
+     * network
+     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic
+     * parameters of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
     public void jumpsRunToAsciiFileHilltype4(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, java.io.OutputStreamWriter outputStream2, java.io.OutputStreamWriter outputStream3, java.io.OutputStreamWriter outputStream4, java.io.OutputStreamWriter outputStream5, java.io.OutputStreamWriter outputStream6, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, int HT) throws java.io.IOException {
@@ -1033,7 +1055,7 @@ public class RKF extends java.lang.Object {
 
         }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + fourPlaces.format(IC[ouletID]));
@@ -1047,8 +1069,8 @@ public class RKF extends java.lang.Object {
 
             while (currentTime < targetTime) {
                 /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-                thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-                System.out.println("inLoop"+thisDate.getTime());*/
+                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 if (HT == 4) {
                     givenStep = step(currentTime, IC, basicTimeStep, false);
@@ -1071,8 +1093,8 @@ public class RKF extends java.lang.Object {
 
             }
             /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-            System.out.println("outsideLoop"+thisDate.getTime());*/
+             thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+             System.out.println("outsideLoop"+thisDate.getTime());*/
 
             if (targetTime == finalTime) {
                 //System.out.println("******** I'll go to End Of Step ********");
@@ -1123,7 +1145,8 @@ public class RKF extends java.lang.Object {
 
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + fourPlaces.format(IC[ouletID]));
 
@@ -1147,26 +1170,26 @@ public class RKF extends java.lang.Object {
             IC = givenStep[1];
 
             /*  outputStream.write("\n"+currentTime + ",");
-            outputStream2.write("\n"+currentTime + ",");
-            outputStream3.write("\n"+currentTime + ",");
-            outputStream4.write("\n"+currentTime + ",");
-            outputStream5.write("\n"+currentTime + ",");
-            outputStream6.write("\n"+currentTime + ",");
+             outputStream2.write("\n"+currentTime + ",");
+             outputStream3.write("\n"+currentTime + ",");
+             outputStream4.write("\n"+currentTime + ",");
+             outputStream5.write("\n"+currentTime + ",");
+             outputStream6.write("\n"+currentTime + ",");
             
-            for (int i = 0; i < nLi; i++) {
+             for (int i = 0; i < nLi; i++) {
             
-            outputStream.write(fourPlaces.format(IC[i]) + ",");
-            outputStream2.write(fourPlaces.format(IC[i+3*nLi]) + ",");
-            outputStream3.write(fourPlaces.format(IC[i+4*nLi]) + ",");
-            outputStream4.write(fourPlaces.format(IC[i+5*nLi]) + ",");
-            outputStream5.write(fourPlaces.format(IC[i+1*nLi]) + ",");
-            outputStream6.write(fourPlaces.format(IC[i+2*nLi]) + ",");
+             outputStream.write(fourPlaces.format(IC[i]) + ",");
+             outputStream2.write(fourPlaces.format(IC[i+3*nLi]) + ",");
+             outputStream3.write(fourPlaces.format(IC[i+4*nLi]) + ",");
+             outputStream4.write(fourPlaces.format(IC[i+5*nLi]) + ",");
+             outputStream5.write(fourPlaces.format(IC[i+1*nLi]) + ",");
+             outputStream6.write(fourPlaces.format(IC[i+2*nLi]) + ",");
             
-            }
+             }
             
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-            thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + fourPlaces.format(IC[ouletID]));
+             thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
+             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + fourPlaces.format(IC[ouletID]));
              */
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
@@ -1178,18 +1201,21 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Writes (in ascii format) to a specified file the values of the function described by differential
-     * equations in the the intermidia steps requested to go from the Initial to the Final
-     * time.  This method is very specific for solving equations of flow in a network.  It prints output for
-     * the flow component at all locations.
+     * Writes (in ascii format) to a specified file the values of the function
+     * described by differential equations in the the intermidia steps requested
+     * to go from the Initial to the Final time. This method is very specific
+     * for solving equations of flow in a network. It prints output for the flow
+     * component at all locations.
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
      * @param IC The value of the initial condition
      * @param outputStream The file to which the information will be writen
-     * @param linksStructure The structure describing the topology of the river network
-     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic parameters
-     * of the links in the network
+     * @param linksStructure The structure describing the topology of the river
+     * network
+     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic
+     * parameters of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
     public void jumpsRunToAsciiFileTabs(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom) throws java.io.IOException {
@@ -1214,10 +1240,10 @@ public class RKF extends java.lang.Object {
             outputStream.write(IC[linksStructure.completeStreamLinksArray[ind[i]]] + "\t");
         }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-        System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+        System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
         //System.out.println();
 
@@ -1228,8 +1254,8 @@ public class RKF extends java.lang.Object {
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-                thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-                System.out.println("inLoop"+thisDate.getTime());*/
+                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 givenStep = step(currentTime, IC, basicTimeStep, false);
 
@@ -1246,8 +1272,8 @@ public class RKF extends java.lang.Object {
 
             }
             /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-            System.out.println("outsideLoop"+thisDate.getTime());*/
+             thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+             System.out.println("outsideLoop"+thisDate.getTime());*/
 
             if (targetTime == finalTime) {
                 //System.out.println("******** I'll go to End Of Step ********");
@@ -1277,9 +1303,10 @@ public class RKF extends java.lang.Object {
                 outputStream.write(IC[linksStructure.completeStreamLinksArray[ind[i]]] + "\t");
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
 
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
@@ -1299,9 +1326,10 @@ public class RKF extends java.lang.Object {
                 outputStream.write(IC[linksStructure.completeStreamLinksArray[ind[i]]] + "\t");
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
@@ -1311,18 +1339,21 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Writes (in ascii format) to a specified file the values of the function described by differential
-     * equations in the the intermidia steps requested to go from the Initial to the Final
-     * time.  This method is very specific for solving equations of flow in a network.  It prints output for
-     * the flow component at all locations.
+     * Writes (in ascii format) to a specified file the values of the function
+     * described by differential equations in the the intermidia steps requested
+     * to go from the Initial to the Final time. This method is very specific
+     * for solving equations of flow in a network. It prints output for the flow
+     * component at all locations.
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
      * @param IC The value of the initial condition
      * @param outputStream The file to which the information will be writen
-     * @param linksStructure The structure describing the topology of the river network
-     * @param thisNetworkGeom The description the the hydraulic and geomorphic parameters
-     * of the links in the network
+     * @param linksStructure The structure describing the topology of the river
+     * network
+     * @param thisNetworkGeom The description the the hydraulic and geomorphic
+     * parameters of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
     public void jumpsRunCompleteToAsciiFile(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, java.io.OutputStreamWriter outputStream1) throws java.io.IOException {
@@ -1337,12 +1368,12 @@ public class RKF extends java.lang.Object {
 //            outputStream.write(IC[i] + ",");
 //        }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]+"Links with boundary condition: 15077, 12746, 5245 = "+IC[15077]+" "+IC[12746]+" "+IC[5245]);
-        
-        System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+
+        System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         outputStream1.write(currentTime + "," + IC[ouletID] + "\n");
 
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
@@ -1355,8 +1386,8 @@ public class RKF extends java.lang.Object {
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-                thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-                System.out.println("inLoop"+thisDate.getTime());*/
+                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 givenStep = step(currentTime, IC, basicTimeStep, false);
 
@@ -1377,17 +1408,19 @@ public class RKF extends java.lang.Object {
                             timeOfMaximumAchieved[i] = currentTime;
                         }
                     }
-                    thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+                    thisDate = java.util.Calendar.getInstance();
+                    thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                     thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-                    System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
-                    
+                    System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+
                     outputStream1.write(currentTime + "," + IC[ouletID] + "\n");
                 }
 
 
 
             }
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println("outsideLoop" + thisDate.getTime());
 
@@ -1413,7 +1446,7 @@ public class RKF extends java.lang.Object {
 //            for (int i = 0; i < linksStructure.contactsArray.length; i++) {
 //                    outputStream.write(IC[i] + ",");
 //            }
-            
+
             for (int i = 0; i < IC.length; i++) {
                 if (IC[i] > maxAchieved[i]) {
                     maxAchieved[i] = IC[i];
@@ -1421,9 +1454,10 @@ public class RKF extends java.lang.Object {
                 }
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             outputStream1.write(currentTime + "," + IC[ouletID] + "\n");
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
@@ -1443,9 +1477,10 @@ public class RKF extends java.lang.Object {
 //                    outputStream.write(IC[i] + ",");
 //            }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             outputStream1.write(currentTime + "," + IC[ouletID] + "\n");
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
@@ -1457,20 +1492,22 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * This version was included to make the SCS more efficient
-     * It runs
-     * Writes (in ascii format) to a specified file the values of the function described by differential
-     * equations in the the intermidia steps requested to go from the Initial to the Final
-     * time.  This method is very specific for solving equations of flow in a network.  It prints output for
-     * the flow component at all locations.
+     * This version was included to make the SCS more efficient It runs Writes
+     * (in ascii format) to a specified file the values of the function
+     * described by differential equations in the the intermidia steps requested
+     * to go from the Initial to the Final time. This method is very specific
+     * for solving equations of flow in a network. It prints output for the flow
+     * component at all locations.
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
      * @param IC The value of the initial condition
      * @param outputStream The file to which the information will be writen
-     * @param linksStructure The structure describing the topology of the river network
-     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic parameters
-     * of the links in the network
+     * @param linksStructure The structure describing the topology of the river
+     * network
+     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic
+     * parameters of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
     public void jumpsRunCompleteToAsciiFileSCS(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, java.io.OutputStreamWriter outputStream1, java.io.OutputStreamWriter outputStream2, java.io.OutputStreamWriter outputStream3, int outflat) throws java.io.IOException {
@@ -1481,10 +1518,10 @@ public class RKF extends java.lang.Object {
         int nlinks = linksStructure.contactsArray.length;
 
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-        System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+        System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " water table: " + IC[ouletID + 2 * nlinks]);
         //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " qs_l: " + IC[ouletID + 7 * nlinks]);
         outputStream1.write(currentTime + "," + df5.format(IC[ouletID]) + "\n");
@@ -1524,9 +1561,10 @@ public class RKF extends java.lang.Object {
                             timeOfMaximumAchieved[i] = currentTime;
                         }
                     }
-                    thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+                    thisDate = java.util.Calendar.getInstance();
+                    thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                     thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-                    System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+                    System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
                     //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " water table: " + IC[ouletID + 2 * nlinks]);
                     //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " qs_l: " + IC[ouletID + 7 * nlinks]);
                     outputStream1.write(currentTime + "," + df5.format(IC[ouletID]) + "\n");
@@ -1544,7 +1582,8 @@ public class RKF extends java.lang.Object {
 
 
             }
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println("outsideLoop" + thisDate.getTime());
 
@@ -1571,9 +1610,10 @@ public class RKF extends java.lang.Object {
                         maxAchieved[i] = IC[i];
                         timeOfMaximumAchieved[i] = currentTime;
                     }
-                    thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+                    thisDate = java.util.Calendar.getInstance();
+                    thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                     thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-                    System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+                    System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
                     //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " water table: " + IC[ouletID + 2 * nlinks]);
                     //System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " qs_l: " + IC[ouletID + 7 * nlinks]);
                     outputStream1.write(currentTime + "," + df5.format(IC[ouletID]) + "\n");
@@ -1607,20 +1647,22 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * This version was included to make the SCS more efficient
-     * It runs
-     * Writes (in ascii format) to a specified file the values of the function described by differential
-     * equations in the the intermidia steps requested to go from the Initial to the Final
-     * time.  This method is very specific for solving equations of flow in a network.  It prints output for
-     * the flow component at all locations.
+     * This version was included to make the SCS more efficient It runs Writes
+     * (in ascii format) to a specified file the values of the function
+     * described by differential equations in the the intermidia steps requested
+     * to go from the Initial to the Final time. This method is very specific
+     * for solving equations of flow in a network. It prints output for the flow
+     * component at all locations.
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
      * @param IC The value of the initial condition
      * @param outputStream The file to which the information will be writen
-     * @param linksStructure The structure describing the topology of the river network
-     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic parameters
-     * of the links in the network
+     * @param linksStructure The structure describing the topology of the river
+     * network
+     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic
+     * parameters of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
     public void jumpsRunCompleteToAsciiFileSCSSerial(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom, java.io.OutputStreamWriter outputStream1, java.io.OutputStreamWriter outputStream2, java.io.OutputStreamWriter outputStream3, java.io.OutputStreamWriter outputStream4, int writeorder) throws java.io.IOException {
@@ -1638,7 +1680,7 @@ public class RKF extends java.lang.Object {
         int ouletID = linksStructure.getOutletID();
         int nlinks = linksStructure.contactsArray.length;
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID] + " Precip: " + IC[6 * nlinks + ouletID]);
@@ -1651,13 +1693,10 @@ public class RKF extends java.lang.Object {
         outputStream3.write(df3.format(currentTime) + ",");
         outputStream4.write(df3.format(currentTime) + ",");
         // define the order to be ploted
-        for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
-            int nl = linksStructure.completeStreamLinksArray[i];
-            if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
-                outputStream1.write(df4.format(IC[nl]) + ",");
-                outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
-                outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]));
-                outputStream4.write(df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]));
+        for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+            //int nl = linksStructure.completeStreamLinksArray[i];
+            if (thisNetworkGeom.linkOrder(i) >= writeorder) {
+                outputStream1.write(df4.format(IC[i]) + ",");
 
             }
         }
@@ -1677,8 +1716,8 @@ public class RKF extends java.lang.Object {
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-                thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-                System.out.println("inLoop"+thisDate.getTime());*/
+                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 givenStep = stepSCSSerial(currentTime, IC, basicTimeStep, false);
                 //    System.out.println("currentTime"+currentTime+"targetTime"+targetTime +"basicTimeStep"+ basicTimeStep+"givenStep[0][0]"+givenStep[0][0]);
@@ -1699,9 +1738,10 @@ public class RKF extends java.lang.Object {
                             timeOfMaximumAchieved[i] = currentTime;
                         }
                     }
-                    thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+                    thisDate = java.util.Calendar.getInstance();
+                    thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                     thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-                    System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+                    System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
                     //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
 
                     outputStream1.write(df3.format(currentTime) + ",");
@@ -1709,10 +1749,17 @@ public class RKF extends java.lang.Object {
                     outputStream3.write(df3.format(currentTime) + ",");
                     outputStream4.write(df3.format(currentTime) + ",");
                     // define the order to be ploted
+                    for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+                        //int nl = linksStructure.completeStreamLinksArray[i];
+                        if (thisNetworkGeom.linkOrder(i) >= writeorder) {
+                            outputStream1.write(df4.format(IC[i]) + ",");
+
+                        }
+                    }
+
                     for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
                         int nl = linksStructure.completeStreamLinksArray[i];
                         if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
-                            outputStream1.write(df4.format(IC[nl]) + ",");
                             outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
                             outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]));
                             outputStream4.write(df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]));
@@ -1728,7 +1775,8 @@ public class RKF extends java.lang.Object {
 
 
             }
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println("outsideLoop" + thisDate.getTime());
 
@@ -1755,20 +1803,27 @@ public class RKF extends java.lang.Object {
 //                    outputStream.write(IC[i] + ",");
 //            }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
 
             outputStream1.write(df3.format(currentTime) + ",");
             outputStream2.write(df3.format(currentTime) + ",");
             outputStream3.write(df3.format(currentTime) + ",");
             outputStream4.write(df3.format(currentTime) + ",");
+            for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+                if (thisNetworkGeom.linkOrder(i) >= writeorder) {
+                    outputStream1.write(df4.format(IC[i]) + ",");
+
+                }
+            }
             // define the order to be ploted
             for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
                 int nl = linksStructure.completeStreamLinksArray[i];
                 if (thisNetworkGeom.linkOrder(nl) >= writeorder) {
-                    outputStream1.write(df4.format(IC[nl]) + ",");
+
                     outputStream2.write(df2.format(IC[nlinks + nl]) + "," + df2.format(IC[2 * nlinks + nl]) + "," + df2.format(IC[3 * nlinks + nl]) + ",");
                     outputStream3.write(df2.format(IC[4 * nlinks + nl]) + "," + df2.format(IC[5 * nlinks + nl]) + "," + df2.format(IC[8 * nlinks + nl]));
                     outputStream4.write(df2.format(IC[6 * nlinks + nl]) + "," + df2.format(IC[7 * nlinks + nl]));
@@ -1803,9 +1858,10 @@ public class RKF extends java.lang.Object {
                 }
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             //System.out.println(thisDate.getTime() + " Outlet Discharge: " + IC[ouletID] +" Surface Stor: " + IC[1*nlinks+ouletID] +" Water table: " + IC[2*nlinks+ouletID] +" Soil moisture: " + IC[3*nlinks+ouletID]);
 
 //            outputStream1.write(df3.format(currentTime) + ",");
@@ -1836,18 +1892,21 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Writes (in ascii format) to a specified file the values of the function described by differential
-     * equations in the the intermidia steps requested to go from the Initial to the Final
-     * time.  This method is very specific for solving equations of flow in a network.  It prints output for
-     * the flow component at a few locations.
+     * Writes (in ascii format) to a specified file the values of the function
+     * described by differential equations in the the intermidia steps requested
+     * to go from the Initial to the Final time. This method is very specific
+     * for solving equations of flow in a network. It prints output for the flow
+     * component at a few locations.
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
      * @param IC The value of the initial condition
      * @param outputStream The file to which the information will be writen
-     * @param linksStructure The structure describing the topology of the river network
-     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic parameters
-     * of the links in the network
+     * @param linksStructure The structure describing the topology of the river
+     * network
+     * @param thisNetworkGeom The descripion the the hydraulic and geomorphic
+     * parameters of the links in the network
      * @throws java.io.IOException Captures errors while writing to the file
      */
     public void jumpsRunToIncompleteAsciiFile(double iniTime, double finalTime, double incrementalTime, double[] IC, java.io.OutputStreamWriter outputStream, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom) throws java.io.IOException {
@@ -1874,7 +1933,7 @@ public class RKF extends java.lang.Object {
             }
         }
 
-        java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+        java.util.Calendar thisDate = java.util.Calendar.getInstance();
         thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
         System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")");
@@ -1894,8 +1953,8 @@ public class RKF extends java.lang.Object {
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-                thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-                System.out.println("inLoop"+thisDate.getTime());*/
+                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 givenStep = step(currentTime, IC, basicTimeStep, false);
 
@@ -1919,8 +1978,8 @@ public class RKF extends java.lang.Object {
             double typicalStepSize = basicTimeStep;
 
             /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-            System.out.println("outsideLoop"+thisDate.getTime());*/
+             thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+             System.out.println("outsideLoop"+thisDate.getTime());*/
 
 
 
@@ -1967,7 +2026,8 @@ public class RKF extends java.lang.Object {
                 }
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
             System.out.println(thisDate.getTime() + " (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID] + " - Tipical Time Step: " + typicalStepSize);
 
@@ -1999,8 +2059,8 @@ public class RKF extends java.lang.Object {
             }
 
             /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-            System.out.println(thisDate.getTime()+" ("+java.util.Calendar.getInstance().getTime()+")");*/
+             thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+             System.out.println(thisDate.getTime()+" ("+java.util.Calendar.getInstance().getTime()+")");*/
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
@@ -2013,9 +2073,10 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Writes to standard output the values of the function described by differential
-     * equations in the the intermidia steps needed to go from the Initial to the Final
-     * time
+     * Writes to standard output the values of the function described by
+     * differential equations in the the intermidia steps needed to go from the
+     * Initial to the Final time
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param IC The value of the initial condition
@@ -2051,7 +2112,7 @@ public class RKF extends java.lang.Object {
 0][0] = currentTime;
             IC = givenStep[1];
 
-            java.util.Calendar thisDate = java.util.Calendar.getInstance(); 
+            java.util.Calendar thisDate = java.util.Calendar.getInstance();
             thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
 
@@ -2105,9 +2166,10 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Writes to standard output the values of the function described by differential
-     * equations in the the intermidia steps requested to go from the Initial to the Final
-     * time
+     * Writes to standard output the values of the function described by
+     * differential equations in the the intermidia steps requested to go from
+     * the Initial to the Final time
+     *
      * @param iniTime The initial time of the solution
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
@@ -2144,8 +2206,8 @@ public class RKF extends java.lang.Object {
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-                thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-                System.out.println("inLoop"+thisDate.getTime());*/
+                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 givenStep = step(currentTime, IC, basicTimeStep, false);
 
@@ -2169,8 +2231,8 @@ public class RKF extends java.lang.Object {
 
 
             } /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-            System.out.println("outsideLoop"+thisDate.getTime());*/
+             thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+             System.out.println("outsideLoop"+thisDate.getTime());*/
 
             if (targetTime == finalTime) {
                 //System.out.println("******** I'll go to End Of Step ********");
@@ -2272,7 +2334,7 @@ public class RKF extends java.lang.Object {
             }
         }
 
-        System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+        System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
         //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
         //System.out.println();
 
@@ -2289,8 +2351,8 @@ public class RKF extends java.lang.Object {
             while (currentTime < targetTime) {
 
                 /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-                thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-                System.out.println("inLoop"+thisDate.getTime());*/
+                 thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+                 System.out.println("inLoop"+thisDate.getTime());*/
 
                 givenStep = step(currentTime, IC, basicTimeStep, false);
 
@@ -2314,8 +2376,8 @@ public class RKF extends java.lang.Object {
 
 
             } /*thisDate=java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-            thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
-            System.out.println("outsideLoop"+thisDate.getTime());*/
+             thisDate.setTimeInMillis((long)(currentTime*60.*1000.0));
+             System.out.println("outsideLoop"+thisDate.getTime());*/
 
             if (targetTime == finalTime) {
                 //System.out.println("******** I'll go to End Of Step ********");
@@ -2364,9 +2426,10 @@ public class RKF extends java.lang.Object {
                 }
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
 
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
@@ -2398,9 +2461,10 @@ public class RKF extends java.lang.Object {
                 }
             }
 
-            thisDate = java.util.Calendar.getInstance(); thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            thisDate = java.util.Calendar.getInstance();
+            thisDate.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
             thisDate.setTimeInMillis((long) (currentTime * 60. * 1000.0));
-            System.out.println("Local Time: ("+thisDate.getTime() +") UTC Time: ("+dateFormatUTC.format(thisDate.getTime())+ ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
+            System.out.println("Local Time: (" + thisDate.getTime() + ") UTC Time: (" + dateFormatUTC.format(thisDate.getTime()) + ") Cuerrent Time: (" + java.util.Calendar.getInstance().getTime() + ")" + " Outlet Discharge: " + IC[ouletID]);
             //for (int j=0;j<IC.length/2;j++) System.out.print(IC[j]+" ");
             //System.out.println();
 
@@ -2416,6 +2480,7 @@ public class RKF extends java.lang.Object {
 
     /**
      * Sets the valuo of the algorithm time step
+     *
      * @param newBTS The time step to assign
      */
     public void setBasicTimeStep(double newBTS) {
@@ -2425,7 +2490,9 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Returns an array with the maximum value calculated during the iteration process
+     * Returns an array with the maximum value calculated during the iteration
+     * process
+     *
      * @param newBTS The time step to assign
      */
     public double[] getMaximumAchieved() {
@@ -2435,7 +2502,9 @@ public class RKF extends java.lang.Object {
     }
 
     /**
-     * Returns an array with the time to maximum value calculated during the iteration process
+     * Returns an array with the time to maximum value calculated during the
+     * iteration process
+     *
      * @param newBTS The time step to assign
      */
     public double[] getTimeToMaximumAchieved() {
@@ -2446,6 +2515,7 @@ public class RKF extends java.lang.Object {
 
     /**
      * Tests for the class
+     *
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -2471,12 +2541,12 @@ public class RKF extends java.lang.Object {
         System.out.println("Running Time:" + (.001 * (endTime.getTime() - startTime.getTime())) + " seconds");
 
         /*System.out.println(answer.length);
-        System.exit(0);
-        for (int i=0;i<answer.length;i++){
-        System.out.print("Time: "+answer[i][0][0]+" Evaluation: ");
-        for(int j=0;j<answer[i][1].length;j++) System.out.print(answer[i][1][j]+" ");
-        System.out.println("");
-        }*/
+         System.exit(0);
+         for (int i=0;i<answer.length;i++){
+         System.out.print("Time: "+answer[i][0][0]+" Evaluation: ");
+         for(int j=0;j<answer[i][1].length;j++) System.out.print(answer[i][1][j]+" ");
+         System.out.println("");
+         }*/
 
 
 

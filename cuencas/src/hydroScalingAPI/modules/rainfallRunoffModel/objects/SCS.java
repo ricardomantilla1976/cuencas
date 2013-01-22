@@ -115,9 +115,9 @@ public class SCS {
         newfile.write("mainchannellength[m],");
         newfile.write("HillArea[km2],");//5 // hillslope area (km2 - I think)
         newfile.write("UpsArea[km2],");       //6
-        newfile.write("AvehillBasedSlope,");//7a
+        newfile.write("AvehillBasedSlope1,");//7a
         newfile.write("AvehillBasedSlope2,");//7b
-        newfile.write("Slope,");//8
+        newfile.write("NetworkSlope,");//8
         newfile.write("HillRelief,");//9
         newfile.write("Hchannel,");//10
         newfile.write("HillRelief,");//11
@@ -602,8 +602,8 @@ public class SCS {
     public static void main(String args[]) {
 
         try {
-            //subMain(args);     //Case Whitewater
-            subMain1(args);     //Case CedarRapids
+            subMain(args);     //Case Whitewater
+            //subMain1(args);     //Case CedarRapids
             //subMain2(args);     //Case  Rio Puerco
             //subMain3(args);     //Case  11070208
             //subMain4(args);     //Case  11140102
@@ -619,13 +619,16 @@ public class SCS {
 
     public static void subMain(String args[]) throws java.io.IOException {
 
-        String pathinput = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/";
-        
+        //String pathinput = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/";
+   int Prun = 6;
+        int writeorder = 5;
+        String pathinput = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/Aster3xPr" +Prun+"/";
+            
          
         
-        java.io.File DEMFile = new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions.metaDEM");
+        java.io.File DEMFile = new java.io.File(pathinput + "asterdem3x.metaDEM");
         hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(DEMFile);
-        metaModif.setLocationBinaryFile(new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions.dir"));
+        metaModif.setLocationBinaryFile(new java.io.File(pathinput + "asterdem3x.dir"));
 
         String formatoOriginal = metaModif.getFormat();
         metaModif.setFormat("Byte");
@@ -637,25 +640,46 @@ public class SCS {
         int x = 3053;
         int y = 2123;
         
-         x = 3053;
-            y = 2123;
-
-        String precname = "glomod90.metaVHC";
-        String Dir = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover//";
+        // x = 3053;
+        //    y = 2123;
+        x=2012; //Delaware trenton
+        y=458;//Delaware trenton
+        
+        String Dir = "null";
+        String OutputDir = pathinput + "/summary/";
+        String precname = "null";
+        
          //String Dir = "C:/Documents and Settings/lcunha/My Documents/CUENCAS/Whitewater_database/Rasters/Hydrology/Land_info/LandCover2001_cliped/";
-        new java.io.File(Dir + "/TURKEY/").mkdirs();
-        String OutputDir = Dir + "/TURKEY/";
+        new java.io.File(OutputDir).mkdirs();
+        
 
      
-        String LandUse = Dir + precname;
-         Dir =  "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/";
+        String LandUse = "null";
+         Dir =  "null";
        
         //Dir = "C:/Documents and Settings/lcunha/My Documents/CUENCAS/Whitewater_database/Rasters/Hydrology/soil_type/CUENCAS/";
-        precname = "soil_rec90.metaVHC";
-        String SoilData = Dir + precname;
-String SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
-String Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";            
-      new SCS(x, y, matDirs, magnitudes, metaModif, DEMFile, new java.io.File(LandUse), new java.io.File(SoilData), new java.io.File(SoilHydData), new java.io.File(Soil150SWAData),new java.io.File(OutputDir)).ExecuteSCS();
+        precname = "null";
+        String SoilData = "null";
+String SoilHydData = "null";
+String Soil150SWAData = "null";            
+  
+//  String precname = "n";
+//        String Dir = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover//";
+//         //String Dir = "C:/Documents and Settings/lcunha/My Documents/CUENCAS/Whitewater_database/Rasters/Hydrology/Land_info/LandCover2001_cliped/";
+//        new java.io.File(Dir + "/TURKEY/").mkdirs();
+//        String OutputDir = Dir + "/TURKEY/";
+//
+//     
+//        String LandUse = Dir + precname;
+//         Dir =  "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/";
+//       
+//        //Dir = "C:/Documents and Settings/lcunha/My Documents/CUENCAS/Whitewater_database/Rasters/Hydrology/soil_type/CUENCAS/";
+//        precname = "soil_rec90.metaVHC";
+//        String SoilData = Dir + precname;
+//String SoilHydData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+//String Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";            
+// 
+new SCS(x, y, matDirs, magnitudes, metaModif, DEMFile, new java.io.File(LandUse), new java.io.File(SoilData), new java.io.File(SoilHydData), new java.io.File(Soil150SWAData),new java.io.File(OutputDir)).ExecuteSCS();
 
 
     }
@@ -680,7 +704,7 @@ String Soil150SWAData = "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers
         //int[] YY = {122};
                 String ResStr = BasinName + "/" +SimName+ "/" +BasinFlag +"/";
         
-        String OutputDir = Dir + "/" + ResStr + "/";
+        String OutputDir = "D:/usr/Delaware_luciana/CUENCASDelaware/";
         
          
             new java.io.File(OutputDir).mkdirs();

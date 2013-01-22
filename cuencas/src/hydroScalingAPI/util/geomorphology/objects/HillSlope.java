@@ -122,8 +122,8 @@ public class HillSlope extends java.lang.Object {
                 numPixHill++;
                 
                 if(numPixHill == idsHill.length){
-                    System.out.println(">> Hits the condition");
-                    System.out.println(">> Before "+idsHill.length+" "+idsHill[0][0]);
+                    //System.out.println(">> Hits the condition");
+                    //System.out.println(">> Before "+idsHill.length+" "+idsHill[0][0]);
                     
                     //idsHill=java.util.Arrays.copyOf(idsHill, idsHill.length+1000);
                     int[][] tempIDS=new int[idsHill.length+1000][];
@@ -132,7 +132,7 @@ public class HillSlope extends java.lang.Object {
                     }
                     idsHill=tempIDS.clone();
                     
-                    System.out.println(">> After "+idsHill.length+" "+idsHill[0][0]);
+                    //System.out.println(">> After "+idsHill.length+" "+idsHill[0][0]);
                     
                     
                     
