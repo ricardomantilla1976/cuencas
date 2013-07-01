@@ -114,7 +114,7 @@ public class SCSManager {
     public SCSManager(java.io.File DemData, java.io.File LandUse, java.io.File SoilData, java.io.File SoilHydData, java.io.File Swa150Data, hydroScalingAPI.util.geomorphology.objects.Basin myCuenca, hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure, hydroScalingAPI.io.MetaRaster metaDatos, byte[][] matDir, int[][] magnitudes, float HS) throws IOException {
 
         System.out.println("START THE SCS MANAGER \n");
-
+        System.out.println("LandUse.getName()  " + LandUse.toString());
 
         int nclasses = 11;
         Manning = new double[linksStructure.contactsArray.length];
@@ -156,6 +156,7 @@ public class SCSManager {
             
               for (int i = 0; i < linksStructure.contactsArray.length; i++) {
               Manning[i] = 0.4;
+              
         HydCond[i] = 0;
         Swa150[i] = 0;
         K_NRCS[i] = 0;
@@ -302,6 +303,7 @@ public class SCSManager {
                 double DemResLon = metaDemData.getResLon();
                 double DemResLat = metaDemData.getResLat();
                 double PixelSize = 6378.0 * DemResLat * Math.PI / (3600.0 * 180.0) * 1000;
+                  
                 double PixelDiag = PixelSize * Math.sqrt(2);
                  int[] currentHillNumPixels = new int[linksStructure.tailsArray.length];
 
@@ -590,6 +592,7 @@ public class SCSManager {
             java.io.File directorio = LandUse.getParentFile();
             String baseNameLC = directorio + "/" + (LandUse.getName().substring(0, LandUse.getName().lastIndexOf("."))) + ".vhc";
             directorio = SoilData.getParentFile();
+            
             String baseNameSOIL = directorio + "/" + (SoilData.getName().substring(0, SoilData.getName().lastIndexOf("."))) + ".vhc";
 
             directorio = SoilHydData.getParentFile();
@@ -740,7 +743,7 @@ public class SCSManager {
 
                 metaDemData.setLocationBinaryFile(new java.io.File((baseNameDEM)));
                 metaSlope.setLocationBinaryFile(new java.io.File((baseNameGradient)));
-                metaSlope.setLocationBinaryFile(new java.io.File((baseNameGradient)));
+               
                 System.out.println("--> Start to load the data Dem\n");
                 dataSnapShotDem = new hydroScalingAPI.io.DataRaster(metaDemData).getDouble();
 
@@ -1610,6 +1613,8 @@ public class SCSManager {
      * @return The average manning roughness parameter
      */
     public Double getAverManning(int HillNumber) {
+        
+        
         return Manning[HillNumber];
     }
 
