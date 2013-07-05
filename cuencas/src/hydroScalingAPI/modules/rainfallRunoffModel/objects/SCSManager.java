@@ -152,6 +152,8 @@ public class SCSManager {
 
         float[][] AreaHill;
         AreaHill = new float[1][linksStructure.contactsArray.length];
+        
+        
         if (LandUse.getName() == "null") {
             
               for (int i = 0; i < linksStructure.contactsArray.length; i++) {
@@ -722,7 +724,7 @@ public class SCSManager {
                 double[] currentHillBasedHydCond = new double[linksStructure.tailsArray.length];
                 double[] currentHillSwa150 = new double[linksStructure.tailsArray.length];
                 int[][] currentSoilType = new int[linksStructure.tailsArray.length][6];
-
+                double[] currentMaxInf = new double[linksStructure.tailsArray.length];
 
                 double PixelCN;
                 PixelCN = -9.9;
@@ -757,7 +759,8 @@ public class SCSManager {
                 dataSnapShotSOILHyd = new hydroScalingAPI.io.DataRaster(metaSoilData).getDouble();
                 // System.out.println("--> Start to load the data slope\n");
                 // dataSnapShotSlope = new hydroScalingAPI.io.DataRaster(metaSlope).getDouble();
-                System.out.println("--> Start to load the data Swa 150\n");
+                
+                System.out.println("--> Start to load the data Swa 150\n" + metaSwa150Data.toString());
                 dataSnapShotSwa150 = new hydroScalingAPI.io.DataRaster(metaSwa150Data).getDouble();
 
 
@@ -858,27 +861,39 @@ public class SCSManager {
                             }///////////////////// Hyd_group ///////////////////
                             if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 1) {
                                 currentSoilType[matrizPintada[j][k] - 1][0]++;
-                            }
-                            if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 2) {
+                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 4.;
+                          
+                            maxInfiltrationRate[j] = 25.4 * 4.;}
+                            else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 2) {
                                 currentSoilType[matrizPintada[j][k] - 1][1]++;
+                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 3.;
                             }
-                            if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 3) {
+                            else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 3) {
                                 currentSoilType[matrizPintada[j][k] - 1][2]++;
+                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 2.;
+                          
                             }
-                            if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 4) {
+                            else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 4) {
                                 currentSoilType[matrizPintada[j][k] - 1][3]++;
+                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 1.;
+                                
                             }
-                            if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 5) {
+                            else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 5) {
                                 currentSoilType[matrizPintada[j][k] - 1][4]++;
+                                
+                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 0.;
                             }
-                            if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 6) {
+                            else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 6) {
+                                
                                 currentSoilType[matrizPintada[j][k] - 1][5]++;
+                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 0.;
                             }
-                            if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] <= 0) {
+                            else {
                                 currentSoilType[matrizPintada[j][k] - 1][1]++;
-                                dataSnapShotSOIL[MatYSOIL][MatXSOIL] = 2;
+                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 1.;
                             }
-
+                          
+                            
 
 ///////////////////// SOIL CONSERVATION NUMBER ///////////////////
                             PixelCN = EstimateSCS(dataSnapShotSOIL[MatYSOIL][MatXSOIL], dataSnapShotLC[MatYLC][MatXLC]);
@@ -958,7 +973,9 @@ public class SCSManager {
                     K_NRCS[j] = currentHillBased_K_NRCS[j] / currentHillNumPixels[j];
                     HydCond[j] = currentHillBasedHydCond[j] / currentHillNumPixels[j];
                     Swa150[j] = currentHillSwa150[j] / currentHillNumPixels[j];
+                    maxInfiltrationRate[j] = currentMaxInf[j]/ currentHillNumPixels[j];
                     newfile.write(CN[j] + " " + Manning[j] + " " + K_NRCS[j] + " ");
+   // System.out.println("maxInfiltrationRate  "+maxInfiltrationRate[j] + " " +CN[j] + " " + Manning[j] + " " + K_NRCS[j] + " ");
 
                     for (int n = 0; n < nclasses; n++) {
                         LandUseOnBasinArray[j][n] = (100 * currentHillBasedLandUse[j][n] / currentHillNumPixels[j]);
@@ -989,21 +1006,7 @@ public class SCSManager {
                             MaxHillBasedSOIL[j] = n;
                         }
                     }
-                    if (MaxHillBasedSOIL[j] == 0) {
-                        maxInfiltrationRate[j] = 25.4 * 5.;
-                    }
-                    if (MaxHillBasedSOIL[j] == 1) {
-                        maxInfiltrationRate[j] = 25.4 * 4.;
-                    }
-                    if (MaxHillBasedSOIL[j] == 2) {
-                        maxInfiltrationRate[j] = 25.4 * 3.;
-                    }
-                    if (MaxHillBasedSOIL[j] == 3) {
-                        maxInfiltrationRate[j] = 25.4 * 2.;
-                    }
-                    if (MaxHillBasedSOIL[j] == 4 || MaxHillBasedSOIL[j] == 5) {
-                        maxInfiltrationRate[j] = 0.;
-                    }
+                   
 
                     newfile.write(MaxHillBasedSOIL[j] + " ");
                     newfile.write(MaxHillBasedSOILPerc[j] + " ");
