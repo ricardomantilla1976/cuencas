@@ -40,7 +40,7 @@ public class NetworkEquations_HillDelayPlusLinearHillslope implements hydroScali
     private hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo linksHydraulicInfo;
     private int routingType;
     
-    private double qi, effPrecip, qs, qe, Q_trib, K_Q;
+    private double qs, qe, Q_trib, K_Q;
     private double[] output;
     
     private float[][] manningArray, cheziArray, widthArray, lengthArray, slopeArray, CkArray;
@@ -48,6 +48,8 @@ public class NetworkEquations_HillDelayPlusLinearHillslope implements hydroScali
     private double[] So,Ts,Te,k_inf; // not an array because I assume uniform soil properties
     
     private double lamda1,lamda2,vh;
+    
+    private double generalRunoffCoeff;
     
     /**
      * Creates new NetworkEquations_Simple
@@ -98,7 +100,9 @@ public class NetworkEquations_HillDelayPlusLinearHillslope implements hydroScali
         lamda2=linksHydraulicInfo.getLamda2();
         CkArray=linksHydraulicInfo.getCkArray();
         
-        vh=0.1;
+        vh=basinHillSlopesInfo.getHillslopeVh();
+        
+        generalRunoffCoeff=0.55;//basinHillSlopesInfo.infiltRate(0,0);//
         
     }
     
@@ -162,18 +166,18 @@ public class NetworkEquations_HillDelayPlusLinearHillslope implements hydroScali
         for (int i=0;i<nLi;i++){
             
             if (input[i] < 0) input[i]=0;
+            if (input[i+1*nLi] < 0) input[i+1*nLi]=0;
+            if (input[i+2*nLi] < 0) input[i+2*nLi]=0;
             
             double hillPrecIntensity=basinHillSlopesInfo.precipitation(i,time);// for URP event apply this rule*0.143;
             
             maxInt=Math.max(maxInt,hillPrecIntensity);
 
-            double infiltRate=k_inf[i]*Math.pow(1-input[i+2*nLi]/So[i],2);
-
-            effPrecip=Math.max(hillPrecIntensity-infiltRate,0.0);
+            double k2=vh*lengthArray[0][i]/areasHillArray[0][i]/1e3*3.6;
             
-            qs=vh*lengthArray[0][i]/areasHillArray[0][i]*input[i+nLi]/1e3*3.6;
+            qs=k2*input[i+nLi];
 
-            double qsub=1/Ts[i]*input[i+2*nLi]/So[i];
+            double qsub=k2/290.0*input[i+2*nLi];
             
             Q_trib=0.0;
             for (int j=0;j<linksConectionStruct.connectionsArray[i].length;j++){
@@ -214,7 +218,7 @@ public class NetworkEquations_HillDelayPlusLinearHillslope implements hydroScali
                                 *Math.pow(lengthArray[0][i],-1)
                                 *Math.pow(slopeArray[0][i],3/10.);
                             break;
-                case 5:     K_Q=CkArray[0][i]*Math.pow(input[i],lamda1)*Math.pow(upAreasArray[0][i],lamda2)*Math.pow(lengthArray[0][i],-1);
+                case 5:     K_Q=CkArray[0][i]*Math.pow(input[i],lamda1)*Math.pow(upAreasArray[0][i],lamda2)*Math.pow(lengthArray[0][i],-1)/(1-lamda1);
             }
             
             if (input[i] == 0) K_Q=0.1/(lengthArray[0][i]);
@@ -227,18 +231,14 @@ public class NetworkEquations_HillDelayPlusLinearHillslope implements hydroScali
                 System.out.println("  --> !!  When Discharge is "+typDisch+" m^3/s, A typical Velocity-Depth-Width triplet is "+typVel+" m/s - "+typDepth+" cm - "+typWidth+" cm >> for Link "+i+" with upstream area : "+linksHydraulicInfo.upStreamArea(i)+" km^2");
             }*/
             
-            double ks=0/3.6e6;
-
-            double chanLoss=lengthArray[0][i]*widthArray[0][i]*ks;
-            
             //the links
-            output[i]=60*K_Q*(1/3.6*areasHillArray[0][i]*(qs+qsub)+Q_trib-input[i]-chanLoss);
+            output[i]=60*K_Q*(1/3.6*areasHillArray[0][i]*(qs+qsub)+Q_trib-input[i]);
             
             //the hillslope surface (hydraulic delay)
-            output[i+linksConectionStruct.connectionsArray.length]=1/60.*(effPrecip-qs);
+            output[i+linksConectionStruct.connectionsArray.length]=1/60.*(generalRunoffCoeff*hillPrecIntensity-qs);
 
             //the hillslope storage (soil moisture and redistribution)
-            output[i+2*linksConectionStruct.connectionsArray.length]=1/60.*(hillPrecIntensity-effPrecip-qsub);
+            output[i+2*linksConectionStruct.connectionsArray.length]=1/60.*((1-generalRunoffCoeff)*hillPrecIntensity-qsub);
 
 //            if(hillPrecIntensity > 0.0){
 //                System.out.println("Hillslope "+i+ "Time "+time);
