@@ -937,15 +937,17 @@ public class LinksAnalysis extends java.lang.Object {
         //main6(args);  // Writing Link-IDs and connectivity for a DEM and map of hillslopes
         //main6_1(args);  // Writing connectivity for a DEM and map of hillslopes
         //main7(args);  //Writing connectivity for Clear Creek to share with The Mathematicians
-        main8_1(args);  //Wrting connectivity and Full model parameters for The Mathematicians
+        //main7_Brandon(args);  //Writing Info for Brandon (student) project
+        //main8_1(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_2(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_3(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_Rodica(args);
         //main8(args);  //Writing connectivity for Cedar River at Cedar Rapids to share with The Mathematicians
         //main9(args);  // Writing connectivity for Cedar River at Cedar Rapids (30 m DEM) to share with The Mathematicians
         //main_MODLU(args); //link-ids
-        //main10(args);  // Writing connectivity for Equation (Evaluation by Walter)
-        main11(args);  // Writing connectivity for Scott's code directly (2 files .rvr and .prm)
+        main10(args);  // Writing connectivity for Equation (Evaluation by Walter)
+        //main11(args);  // Writing connectivity for Scott's code directly (2 files .rvr and .prm)
+        //main12(args);  // Writing connectivity for Chi's code
     }
 
     /**
@@ -1853,7 +1855,7 @@ System.out.println("X  " +x  + "   Y  " +  y);
             float[][] upAreas=mylinksAnalysis.getVarValues(2);
             float[][] areas=mylinksAnalysis.getVarValues(0);
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
-
+            
             String outputMetaFile="/Users/ricardo/temp/NextLinkClearCreek.txt";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
@@ -1865,6 +1867,64 @@ System.out.println("X  " +x  + "   Y  " +  y);
                 for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
                     metaBuffer.write(" "+mylinksAnalysis.connectionsArray[i][j]);
                 metaBuffer.write(" "+lenghts[0][i]+" "+areas[0][i]+" "+upAreas[0][i]+"\n");
+            }
+
+            metaBuffer.close();
+
+
+
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+    
+    /**
+     * Tests for the class
+     * @param args the command line arguments
+     */
+    public static void main7_Brandon(String args[]) {
+
+        int x=1570; int y=127;
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try{
+
+            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.dir"));
+
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
+
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
+            
+            float[][] upAreas=mylinksAnalysis.getVarValues(2);
+            float[][] areas=mylinksAnalysis.getVarValues(0);
+            float[][] lenghts=mylinksAnalysis.getVarValues(1);
+            float[][] dToOut=mylinksAnalysis.getVarValues(8);
+
+            String outputMetaFile="/Users/ricardo/temp/Brandon_ClearCreek.txt";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("Number of Links\n");
+            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+            metaBuffer.write("Link-ID Length[km] Area[km^2] upArea[km^2] TopologicalDistanceToOulet[count]"+"\n");
+            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+                metaBuffer.write(""+(i+1)+" "+lenghts[0][i]+" "+areas[0][i]+" "+upAreas[0][i]+" "+dToOut[0][i]+"\n");
             }
 
             metaBuffer.close();
@@ -2309,6 +2369,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
             float[][] dToB=mylinksAnalysis.getVarValues(7);
             float[][] longest=mylinksAnalysis.getVarValues(11);
+            float[][] hortonO=mylinksAnalysis.getVarValues(4);
             
 
             String outputMetaFile="/Users/ricardo/temp/DataLinksIowa.txt";
@@ -2328,9 +2389,9 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             
             metaBuffer.write("Number of Links\n");
             metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
-            metaBuffer.write("Link-ID;Distance to Border[km];Area[km^2];upArea[km^2];longestChannelPath[km]"+"\n");
+            metaBuffer.write("Link-ID;Distance to Border[km];HIllArea[km^2];linkLenght[km];upArea[km^2];longestChannelPath[km];HortonOrder"+"\n");
             for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
-                metaBuffer.write(""+(i+1)+";"+dToB[0][i]+";"+areas[0][i]+";"+upAreas[0][i]+";"+longest[0][i]+"\n");
+                metaBuffer.write(""+(i+2)+";"+dToB[0][i]+";"+areas[0][i]+";"+lenghts[0][i]+";"+upAreas[0][i]+";"+longest[0][i]+";"+hortonO[0][i]+"\n");
             }
 
             metaBuffer.close();
@@ -2564,12 +2625,22 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                     matrizPintada[myHillActual.getXYHillSlope()[1][j]][myHillActual.getXYHillSlope()[0][j]]=tileColor;
                 }
             }
+            
+            
+            System.out.println(matrizPintada[2319][3495]);
+            System.out.println(matrizPintada[2659][4712]);
+            System.out.println(matrizPintada[1932][4468]);
+            System.out.println(matrizPintada[1735][1998]);
+            System.out.println(matrizPintada[2671][2416]);
+            
+            System.exit(0);
 
             System.out.println(">> Aquiring distances, areas and lenghts");
             
             float[][] bigDtoO=mylinksAnalysis.getDistancesToOutlet();
             float[][] areas=mylinksAnalysis.getVarValues(0);
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
+            float[][] orders=mylinksAnalysis.getVarValues(4);
 
             String outputMetaFile="/Users/ricardo/temp/LinksInBasinsIowa.csv";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
@@ -2607,7 +2678,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                         System.out.println("Total # of links on this basin;"+numLinksUp);
                         
                         metaBuffer.write("Total # of links on this basin;"+numLinksUp+"\n");
-                        metaBuffer.write("Link-ID;Topological Distance to Outlet;Longitude;Latitude;hillArea[km^2];linkLength[km]"+"\n");
+                        metaBuffer.write("Link-ID;Topological Distance to Outlet;Longitude;Latitude;hillArea[km^2];linkLength[km];HortonOrder"+"\n");
                         
                         float[] valuesOutlet=(float[])distsAndPos.get(0);
                         int dOutlet=(int)(valuesOutlet[0]);
@@ -2618,7 +2689,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                             double xxx=(mylinksAnalysis.contactsArray[(int)values[2]]%nCols)*mRes/3600.+minLon;
                             double yyy=(mylinksAnalysis.contactsArray[(int)values[2]]/nCols)*mRes/3600.+minLat;
                             
-                            metaBuffer.write((int)(values[2]+1)+";"+(int)(values[0]-dOutlet+1)+";"+xxx+";"+yyy+";"+areas[0][(int)values[2]]+";"+lenghts[0][(int)values[2]]+"\n");
+                            metaBuffer.write((int)(values[2]+1)+";"+(int)(values[0]-dOutlet+1)+";"+xxx+";"+yyy+";"+areas[0][(int)values[2]]+";"+lenghts[0][(int)values[2]]+";"+orders[0][(int)values[2]]+"\n");
                         }
 
                     }
@@ -2718,6 +2789,119 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             metaBuffer.close();
 
 
+
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+    
+    /**
+     * Tests for the class
+     * @param args the command line arguments
+     */
+    public static void main12(String args[]) {
+
+        int x=10989; int y=440; //Full Basin
+        //int x=4031; int y=1281; //Sub Basin (~6km^2)
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try{
+
+            java.io.File theFile=new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/burned/burneddem5cc.asc.metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/burned/burneddem5cc.asc.dir"));
+
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
+
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
+            
+            System.out.println(mylinksAnalysis.nextLinkArray.length);
+
+            String outputMetaFile="/Users/ricardo/temp/NextLinkClearCreek_Chi.txt";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
+
+            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+(mylinksAnalysis.nextLinkArray[i]+1)+"\n");
+            
+            metaBuffer.close();
+            
+            outputMetaFile="/Users/ricardo/temp/LinkInfoClearCreek_Chi.txt";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
+            
+            metaBuffer.write("Link ID,Link lenght [km], Slope [*], upstreamArea [km^2], hillslopeArea [km^2]\n");
+            
+            float[][] lenghts=mylinksAnalysis.getVarValues(1);
+            float[][] drop=mylinksAnalysis.getVarValues(3);
+            
+            float[][] upAreas=mylinksAnalysis.getVarValues(2);
+            float[][] hillAreas=mylinksAnalysis.getVarValues(0);
+
+            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+lenghts[0][i]+","+drop[0][i]/lenghts[0][i]/1000.0+","+upAreas[0][i]+","+hillAreas[0][i]+"\n");
+            
+            metaBuffer.close();
+            
+            int[][] matrizPintada=new int[metaModif.getNumRows()][metaModif.getNumCols()];
+
+            int xOulet,yOulet;
+            hydroScalingAPI.util.geomorphology.objects.HillSlope myHillActual;
+
+            int demNumCols=metaModif.getNumCols();
+
+            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++){
+                if (mylinksAnalysis.magnitudeArray[i] < mylinksAnalysis.basinMagnitude){
+
+                    xOulet=mylinksAnalysis.contactsArray[i]%demNumCols;
+                    yOulet=mylinksAnalysis.contactsArray[i]/demNumCols;
+
+                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
+                    int[][] xyHillSlope=myHillActual.getXYHillSlope();
+                    for (int j=0;j<xyHillSlope[0].length;j++){
+                        matrizPintada[xyHillSlope[1][j]][xyHillSlope[0][j]]=i+1;
+
+                    }
+                } else {
+                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(x,y,matDirs,magnitudes,metaModif);
+                    int[][] xyHillSlope=myHillActual.getXYHillSlope();
+                    for (int j=0;j<xyHillSlope[0].length;j++){
+                        matrizPintada[xyHillSlope[1][j]][xyHillSlope[0][j]]=i+1;
+                    }
+                }
+            }
+
+            String fileBinSalida="/CuencasDataBases/ClearCreek_Database/Rasters/Hydrology/burneddem5cc.asc_BasinWatershedsFull_Level1.vhc";
+            java.io.File outputBinaryFile=new java.io.File(fileBinSalida);
+            java.io.DataOutputStream rasterBuffer = new java.io.DataOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(outputBinaryFile)));
+
+            int nRows=matrizPintada.length;
+            int nCols=matrizPintada[0].length;
+
+
+            for (int i=0;i<nRows;i++){
+                for (int j=0;j<nCols;j++){
+                    rasterBuffer.writeInt(matrizPintada[i][j]);
+                }
+            }
+
+            rasterBuffer.close();
+            
 
         } catch (java.io.IOException IOE){
             System.out.print(IOE);

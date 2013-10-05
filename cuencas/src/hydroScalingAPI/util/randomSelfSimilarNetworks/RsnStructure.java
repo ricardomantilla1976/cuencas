@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package hydroScalingAPI.util.randomSelfSimilarNetworks;
 
+import java.io.IOException;
+
 /**
  * Manages information related to the topologic and geometric information associated
  * to a Random Self-similar Network.
@@ -462,12 +464,13 @@ public class RsnStructure {
      * Tests for the class
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //main0(args); //Test features of this Object
         //main1(args); //Test write-read feature
         //main2(args); //Test Dd vs A relationship for RSNs
         //main3(args); //Read Info from Embeded trees
-        main4(args); //Non-self-similar trees
+        //main4(args); //Non-self-similar trees
+        main5(args); //Networks for Scott's code
     }
     
     private static void main0(String[] args) {
@@ -507,7 +510,7 @@ public class RsnStructure {
     private static void main1(String[] args) {
         hydroScalingAPI.util.probability.DiscreteDistribution myUD_I=new hydroScalingAPI.util.probability.GeneralGeometricDistribution(0.59062127,0.25756657, 0);
         hydroScalingAPI.util.probability.DiscreteDistribution myUD_E=new hydroScalingAPI.util.probability.GeneralGeometricDistribution(0.57253316,0.19803630, 1);
-        RsnStructure myRsnStruc=new RsnStructure(3,myUD_I,myUD_E);
+        RsnStructure myRsnStruc=new RsnStructure(15 ,myUD_I,myUD_E);
         
         java.io.File theFile=new java.io.File("/Users/ricardo/temp/testRSNdecode.rsn");
         
@@ -625,6 +628,86 @@ public class RsnStructure {
         System.exit(0);
         
         System.exit(0);
+    }
+    
+    private static void main5(String[] args) throws java.io.IOException{
+        
+        for(double pe=0.44;pe<=0.53;pe+=0.02){
+            for(double pi=0.35;pi<=0.48;pi+=0.02){
+        
+        
+                String fileNameBase="/Users/ricardo/simulationResults/geometricRSNs/variableL/network_"+(float)pe+"_"+(float)pi+".";
+
+                hydroScalingAPI.util.probability.DiscreteDistribution myUD_I=new hydroScalingAPI.util.probability.GeometricDistribution(pi,0);
+                hydroScalingAPI.util.probability.DiscreteDistribution myUD_E=new hydroScalingAPI.util.probability.GeometricDistribution(pe,1);
+
+                float Elae=0.1f;
+                float SDlae=0.2f;
+
+                hydroScalingAPI.util.probability.ContinuousDistribution myLinkAreaDistro_E=new hydroScalingAPI.util.probability.LogGaussianDistribution(Elae,SDlae);
+                hydroScalingAPI.util.probability.ContinuousDistribution myLinkAreaDistro_I=new hydroScalingAPI.util.probability.LogGaussianDistribution(0.01f+0.88f*Elae,0.04f+0.85f*SDlae);
+
+                RsnStructure myRsnStruc=new RsnStructure(8,myUD_I,myUD_E, myLinkAreaDistro_E, myLinkAreaDistro_I);
+
+                String fileAscSalida=fileNameBase+"rvr";
+
+                java.io.File outputMetaFile=new java.io.File(fileAscSalida);
+
+                java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                metaBuffer.write(myRsnStruc.linkAreas[0].length+"\n\n");
+
+                int[][] connSt=myRsnStruc.getConnectionStructure();
+                for (int i=0;i<connSt.length;i++){
+
+                    metaBuffer.write((i+1)+"\n");
+                    metaBuffer.write(""+connSt[i].length);
+                    for (int j=0;j<connSt[i].length;j++){
+                        metaBuffer.write(" "+(connSt[i][j]+1));
+                    }
+                    metaBuffer.write("\n\n");
+                }
+
+                metaBuffer.close();
+
+                fileAscSalida=fileNameBase+"prm";
+                outputMetaFile=new java.io.File(fileAscSalida);
+                metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                metaBuffer.write(myRsnStruc.linkAreas[0].length+"\n\n");
+
+
+                float[][] upAreas=myRsnStruc.getUpAreas();
+                float[][] hillAreas=myRsnStruc.getLinkAreas();
+                float[][] linkLenghts=myRsnStruc.getLinkLengths();
+
+                for (int i=0;i<upAreas[0].length;i++){
+                    metaBuffer.write((i+1)+"\n");
+                    metaBuffer.write(upAreas[0][i]+" "+linkLenghts[0][i]+" "+hillAreas[0][i]+"\n\n");
+                }
+
+                metaBuffer.close();
+
+                fileAscSalida=fileNameBase+"sav";
+                outputMetaFile=new java.io.File(fileAscSalida);
+                metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                int[] compLinks=myRsnStruc.getCompleteStreamLinksArray();
+                float[][] linkOrder=myRsnStruc.getHortonOrders();
+
+
+                int OrderToPrint=myRsnStruc.getNetworkOrder();
+                for (int i=0;i<compLinks.length;i++){
+                    if(linkOrder[0][compLinks[i]] == OrderToPrint) {
+                        metaBuffer.write((compLinks[i]+1)+" ");
+                        OrderToPrint--;
+                    }
+                }
+
+                metaBuffer.close();
+            }
+        }
+        
     }
     
 }
