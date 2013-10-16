@@ -1087,9 +1087,9 @@ public class NetworkExtractionModule implements Runnable {
     public static void main(String[] Arguments){
         
  
-System.out.print("nlda");
-        Arguments=new String[] { "//nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs250.metaDEM",
-                                 "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs250.dem"};
+//System.out.print("nlda");
+//        Arguments=new String[] { "//nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs250.metaDEM",
+//                                 "/nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs250.dem"};
 //
 //System.out.print("5meter");
 //        Arguments=new String[] { "/usr/home/rmantill/CuencasDataBases/ClearCreek/Rasters/Topography/5meters/5meterc1.metaDEM",

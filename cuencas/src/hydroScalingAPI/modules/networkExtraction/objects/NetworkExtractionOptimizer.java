@@ -43,7 +43,7 @@ public class NetworkExtractionOptimizer implements Runnable {
     
     /**
      * Creates a new instance of NetworkExtractionOptimizer
-     * @param exOp The stettings GUI associated to the NetworkExtractionModule
+     * @param exOp The settings GUI associated to the NetworkExtractionModule
      */
     public NetworkExtractionOptimizer(hydroScalingAPI.modules.networkExtraction.widgets.ExtractionOptions exOp) {
         
@@ -80,8 +80,15 @@ public class NetworkExtractionOptimizer implements Runnable {
             for(int i=0;i<numProcessors;i++) localExtractors[i]=new ExternalNetworkExtraction("null");
 
             String metaName=Proc.metaDEM.getLocationMeta().getName();
-            java.io.File tempDirectory=new java.io.File(System.getProperty("java.io.tmpdir")+System.getProperty("file.separator")+"pandoraOptimizer"+System.getProperty("file.separator")+metaName.substring(0,metaName.lastIndexOf("."))+System.getProperty("file.separator"));
+            //String pathToTemp=System.getProperty("java.io.tmpdir");
+            
+            
+            String tempDirectoryPath=System.getProperty("java.io.tmpdir");
+            
+            java.io.File tempDirectory=new java.io.File(tempDirectoryPath+System.getProperty("file.separator")+"pandoraOptimizer"+System.getProperty("file.separator")+metaName.substring(0,metaName.lastIndexOf("."))+System.getProperty("file.separator"));
             tempDirectory.mkdirs();
+            
+            String pathToTemp=tempDirectory.getAbsolutePath();
             
             boolean availTest=true;
 
@@ -111,10 +118,10 @@ public class NetworkExtractionOptimizer implements Runnable {
                         theMeta.setUnits(Proc.metaDEM.getUnits());
                         theMeta.setInformation("temporary file");
                         
-                        java.io.File demChunkMeta=new java.io.File(tempDirectory.getPath()+System.getProperty("file.separator")+"chunk"+i+"-"+j+".metaDEM");
+                        java.io.File demChunkMeta=new java.io.File(pathToTemp+System.getProperty("file.separator")+"chunk"+i+"-"+j+".metaDEM");
                         theMeta.writeMetaRaster(demChunkMeta);
 
-                        java.io.File demChunkData=new java.io.File(tempDirectory.getPath()+System.getProperty("file.separator")+"chunk"+i+"-"+j+".dem");
+                        java.io.File demChunkData=new java.io.File(pathToTemp+System.getProperty("file.separator")+"chunk"+i+"-"+j+".dem");
 
                         theMeta.setLocationMeta(demChunkMeta);
                         theMeta.setLocationBinaryFile(demChunkData);
@@ -194,7 +201,7 @@ public class NetworkExtractionOptimizer implements Runnable {
 
                     try{
 
-                        java.io.File demChunkData=new java.io.File(tempDirectory.getPath()+System.getProperty("file.separator")+"chunk"+i+"-"+j+".corrDEM");
+                        java.io.File demChunkData=new java.io.File(pathToTemp+System.getProperty("file.separator")+"chunk"+i+"-"+j+".corrDEM");
                         java.io.DataInputStream dataReader=new java.io.DataInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(demChunkData)));
 
                         for(int l=yStartIndex;l<=yFinalIndex;l++){
