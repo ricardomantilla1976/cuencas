@@ -945,9 +945,10 @@ public class LinksAnalysis extends java.lang.Object {
         //main8(args);  //Writing connectivity for Cedar River at Cedar Rapids to share with The Mathematicians
         //main9(args);  // Writing connectivity for Cedar River at Cedar Rapids (30 m DEM) to share with The Mathematicians
         //main_MODLU(args); //link-ids
-        main10(args);  // Writing connectivity for Equation (Evaluation by Walter)
+        //main10(args);  // Writing connectivity for Equation (Evaluation by Walter)
         //main11(args);  // Writing connectivity for Scott's code directly (2 files .rvr and .prm)
-        //main12(args);  // Writing connectivity for Chi's code
+        //main12(args);  // Writing connectivity for Chi's code (Clear Creek Case)
+        main12_1(args);  // Writing connectivity for Chi's code (Squaw Creek Case)
     }
 
     /**
@@ -2887,6 +2888,118 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             }
 
             String fileBinSalida="/CuencasDataBases/ClearCreek_Database/Rasters/Hydrology/burneddem5cc.asc_BasinWatershedsFull_Level1.vhc";
+            java.io.File outputBinaryFile=new java.io.File(fileBinSalida);
+            java.io.DataOutputStream rasterBuffer = new java.io.DataOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(outputBinaryFile)));
+
+            int nRows=matrizPintada.length;
+            int nCols=matrizPintada[0].length;
+
+
+            for (int i=0;i<nRows;i++){
+                for (int j=0;j<nCols;j++){
+                    rasterBuffer.writeInt(matrizPintada[i][j]);
+                }
+            }
+
+            rasterBuffer.close();
+            
+
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+    
+    /**
+     * Tests for the class
+     * @param args the command line arguments
+     */
+    public static void main12_1(String args[]) {
+
+        int x=7055, y= 1242;
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try{
+
+            java.io.File theFile=new java.io.File("/CuencasDataBases/SquawCreek/Rasters/Topography/5meter/ames_dem_10.metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/SquawCreek/Rasters/Topography/5meter/ames_dem_10.dir"));
+
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
+
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
+            
+            System.out.println(mylinksAnalysis.nextLinkArray.length);
+
+            String outputMetaFile="/Users/ricardo/temp/NextLinkSquawCreek_Chi.txt";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
+
+            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+(mylinksAnalysis.nextLinkArray[i]+1)+"\n");
+            
+            metaBuffer.close();
+            
+            outputMetaFile="/Users/ricardo/temp/LinkInfoSquawCreek_Chi.txt";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
+            
+            metaBuffer.write("Link ID,Link lenght [km], Slope [*], upstreamArea [km^2], hillslopeArea [km^2]\n");
+            
+            float[][] lenghts=mylinksAnalysis.getVarValues(1);
+            float[][] drop=mylinksAnalysis.getVarValues(3);
+            
+            float[][] upAreas=mylinksAnalysis.getVarValues(2);
+            float[][] hillAreas=mylinksAnalysis.getVarValues(0);
+
+            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+lenghts[0][i]+","+drop[0][i]/lenghts[0][i]/1000.0+","+upAreas[0][i]+","+hillAreas[0][i]+"\n");
+            
+            metaBuffer.close();
+            
+            int[][] matrizPintada=new int[metaModif.getNumRows()][metaModif.getNumCols()];
+
+            int xOulet,yOulet;
+            hydroScalingAPI.util.geomorphology.objects.HillSlope myHillActual;
+
+            int demNumCols=metaModif.getNumCols();
+
+            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++){
+                if (mylinksAnalysis.magnitudeArray[i] < mylinksAnalysis.basinMagnitude){
+
+                    xOulet=mylinksAnalysis.contactsArray[i]%demNumCols;
+                    yOulet=mylinksAnalysis.contactsArray[i]/demNumCols;
+
+                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
+                    int[][] xyHillSlope=myHillActual.getXYHillSlope();
+                    for (int j=0;j<xyHillSlope[0].length;j++){
+                        matrizPintada[xyHillSlope[1][j]][xyHillSlope[0][j]]=i+1;
+
+                    }
+                } else {
+                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(x,y,matDirs,magnitudes,metaModif);
+                    int[][] xyHillSlope=myHillActual.getXYHillSlope();
+                    for (int j=0;j<xyHillSlope[0].length;j++){
+                        matrizPintada[xyHillSlope[1][j]][xyHillSlope[0][j]]=i+1;
+                    }
+                }
+            }
+
+            String fileBinSalida="/CuencasDataBases/SquawCreek/Rasters/Topography/5meter/ames_dem_10_BasinWatershedsFull_Level1.vhc";
             java.io.File outputBinaryFile=new java.io.File(fileBinSalida);
             java.io.DataOutputStream rasterBuffer = new java.io.DataOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(outputBinaryFile)));
 
