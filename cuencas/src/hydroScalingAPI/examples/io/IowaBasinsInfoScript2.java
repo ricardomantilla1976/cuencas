@@ -56,7 +56,7 @@ public class IowaBasinsInfoScript2{
     float[] counters;
     int[] nextLinkArray;
 
-    int[][] dbID_linkID;
+    long[][] dbID_linkID;
 
     float[] peakIndex;
 
@@ -574,10 +574,10 @@ public class IowaBasinsInfoScript2{
 
         //Determine if a connection can be established from this machine
 
-        String url = "jdbc:postgresql://ut.iihr.uiowa.edu/afali_tmp";
+        String url = "jdbc:postgresql://ut.iihr.uiowa.edu/ifis";
         java.util.Properties props = new java.util.Properties();
-        props.setProperty("user","afali");
-        props.setProperty("password","");
+        props.setProperty("user","ifc_user");
+        props.setProperty("password","ifc.iihr2008");
         props.setProperty("loginTimeout","2");
 
 //        try {
@@ -594,14 +594,14 @@ public class IowaBasinsInfoScript2{
 //            rs.next();
 //            int rowCount = rs.getInt(1);
 //
-//            dbID_linkID=new int[2][rowCount];
+//            dbID_linkID=new long[2][rowCount];
 //
 //            rs = st.executeQuery("SELECT id,link_id FROM pois_adv");
 //            java.util.Vector avaObjects=new java.util.Vector<String>();
 //            for(int kk=0;kk<rowCount;kk++) {
 //                rs.next();
-//                dbID_linkID[0][kk]=rs.getInt(1);
-//                dbID_linkID[1][kk]=rs.getInt(2)-2;
+//                dbID_linkID[0][kk]=rs.getLong(1);
+//                dbID_linkID[1][kk]=rs.getLong(2)-2;
 //            }
 //            rs.close();
 //
@@ -610,8 +610,8 @@ public class IowaBasinsInfoScript2{
 //            int forecast=0;
 //            for(int kk=0;kk<rowCount;kk++) {
 //                if(dbID_linkID[1][kk] < peakValues.length){
-//                    forecast=peakValues[dbID_linkID[1][kk]]<0.8?0:peakValues[dbID_linkID[1][kk]]>1.2?2:1;
-//                    st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakValues[dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
+//                    forecast=peakValues[(int)dbID_linkID[1][kk]]<0.8?0:peakValues[(int)dbID_linkID[1][kk]]>1.2?2:1;
+//                    st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakValues[(int)dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
 //                }
 //            }
 //
@@ -637,56 +637,59 @@ public class IowaBasinsInfoScript2{
         props.setProperty("password","ifc.iihr2008");
         props.setProperty("loginTimeout","2");
 
-        try {
-
-            Connection conn = DriverManager.getConnection(url, props);
-
-            System.out.println(">> Obtaining Object's list");
-
-            Statement st = conn.createStatement();
-
-            ResultSet rs;
-
-            rs = st.executeQuery("SELECT count(*) FROM pois_adv");
-            rs.next();
-            int rowCount = rs.getInt(1);
-
-            dbID_linkID=new int[2][rowCount];
-
-            rs = st.executeQuery("SELECT id,link_id FROM pois_adv");
-            java.util.Vector avaObjects=new java.util.Vector<String>();
-            for(int kk=0;kk<rowCount;kk++) {
-                rs.next();
-                dbID_linkID[0][kk]=rs.getInt(1);
-                dbID_linkID[1][kk]=rs.getInt(2)-2;
-            }
-            rs.close();
-
-            st = conn.createStatement();
-
-            int forecast=0;
-            for(int kk=0;kk<rowCount;kk++) {
-                if(dbID_linkID[1][kk] < peakValues.length){
-                    forecast=peakValues[dbID_linkID[1][kk]]<0.8?0:peakValues[dbID_linkID[1][kk]]>1.2?2:1;
-                    st.addBatch("UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakValues[dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk]);
-                }
-            }
-
-            st.executeBatch();
-
-            conn.close();
-            
-            System.out.println(">> Database IFIS-2 Update Successfull");
-            
-            java.util.Date endTime = new java.util.Date();
-            System.out.println(">> Update time Time: " + endTime.toString());
-
-
-
-        } catch (SQLException ex) {
-            System.out.println("Connection to UT server failed");
-            ex.printStackTrace();
-        }
+//        try {
+//
+//            Connection conn = DriverManager.getConnection(url, props);
+//
+//            System.out.println(">> Obtaining Object's list");
+//
+//            Statement st = conn.createStatement();
+//
+//            ResultSet rs;
+//
+//            rs = st.executeQuery("SELECT count(*) FROM pois_adv");
+//            rs.next();
+//            int rowCount = rs.getInt(1);
+//
+//            dbID_linkID=new long[2][rowCount];
+//
+//            rs = st.executeQuery("SELECT id,link_id FROM pois_adv");
+//            java.util.Vector avaObjects=new java.util.Vector<String>();
+//            for(int kk=0;kk<rowCount;kk++) {
+//                rs.next();
+//                dbID_linkID[0][kk]=rs.getLong(1);
+//                dbID_linkID[1][kk]=rs.getLong(2)-2;
+//            }
+//            rs.close();
+//
+//            st = conn.createStatement();
+//
+//            int forecast=0;
+//            for(int kk=0;kk<rowCount;kk++) {
+//                if(dbID_linkID[1][kk] < peakValues.length && dbID_linkID[1][kk] > 0){
+//                    forecast=peakValues[(int)dbID_linkID[1][kk]]<0.8?0:peakValues[(int)dbID_linkID[1][kk]]>1.2?2:1;
+//                    String myQuery="UPDATE pois_adv SET forecast="+forecast+", forecast_time=now(), forecast_index="+peakValues[(int)dbID_linkID[1][kk]]+" WHERE id="+dbID_linkID[0][kk];
+//                    st.addBatch(myQuery);
+//                }
+//            }
+//            
+//            st.executeBatch();
+//            
+//            st.executeUpdate("VACUUM FULL pois_adv;");
+//
+//            conn.close();
+//            
+//            System.out.println(">> Database IFIS-2 Update Successfull");
+//            
+//            java.util.Date endTime = new java.util.Date();
+//            System.out.println(">> Update time Time: " + endTime.toString());
+//
+//
+//
+//        } catch (SQLException ex) {
+//            System.out.println("Connection to UT server failed");
+//            ex.printStackTrace();
+//        }
         
     }
 

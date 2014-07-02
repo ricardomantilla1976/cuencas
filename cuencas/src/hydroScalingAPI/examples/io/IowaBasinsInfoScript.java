@@ -11,6 +11,7 @@ package hydroScalingAPI.examples.io;
 import java.io.*;
 import java.util.zip.*;
 import java.net.*;
+import java.util.Arrays;
 
 public class IowaBasinsInfoScript{
 
@@ -433,28 +434,28 @@ public class IowaBasinsInfoScript{
                 System.out.println(">> Recreating file "+inCity2[j].getName());
                 System.out.println(">> >> /Users/ricardo/rawData/RainfallAccumulations/Current/accum"+fileIndex);
 
-                dataPath=new java.io.FileInputStream("/Users/ricardo/rawData/RainfallAccumulations/Current/accum"+fileIndex);
-                dataBuffer=new java.io.BufferedInputStream(dataPath);
-                dataDataStream=new java.io.DataInputStream(dataBuffer);
+//                dataPath=new java.io.FileInputStream("/Users/ricardo/rawData/RainfallAccumulations/Current/accum"+fileIndex);
+//                dataBuffer=new java.io.BufferedInputStream(dataPath);
+//                dataDataStream=new java.io.DataInputStream(dataBuffer);
 //
 //                for (int ii=0;ii<numRow_Rain;ii++) for(int jj=0;jj<numCol_Rain;jj++) {
 //                    matrix[ii][jj]=dataDataStream.readFloat();
 //                    //matrix[ii][jj] = (float)Math.random()+(float)ii/(float)numRow_Rain*10.0f;
 //                }
-
-
-                dataBuffer.close();
-                dataDataStream.close();
+//
+//
+//                dataBuffer.close();
+//                dataDataStream.close();
 
                 float averageValue = 0.0f;
                 float averageValueTimeMachine = 0.0f;
                 float numElements = 0.0f;
 
-                java.io.RandomAccessFile[] accumFiles=new java.io.RandomAccessFile[500];
-                for (int k = 0; k < accumFiles.length; k++) {
-                    java.io.File rutaQuantity=new java.io.File("/Users/ricardo/rawData/RainfallAccumulations/Current/accum"+(k+1));
-                    accumFiles[k]=new java.io.RandomAccessFile(rutaQuantity,"r");
-                }
+//                java.io.RandomAccessFile[] accumFiles=new java.io.RandomAccessFile[500];
+//                for (int k = 0; k < accumFiles.length; k++) {
+//                    java.io.File rutaQuantity=new java.io.File("/Users/ricardo/rawData/RainfallAccumulations/Current/accum"+(k+1));
+//                    accumFiles[k]=new java.io.RandomAccessFile(rutaQuantity,"r");
+//                }
 
                 String[] uniqueIdentifier=inCity1[j].getName().split("_");
                 String[] cityName=uniqueIdentifier[1].split(" \\(");
@@ -497,8 +498,11 @@ public class IowaBasinsInfoScript{
                     float yLat=Float.parseFloat(linarray2[1].trim());
                     int tTime=(int)Math.floor(Float.parseFloat(linarray2[2].trim())*1000/0.75/3600.0)+1;
 
-                    int xxx = (int)((xLon-minLon_Rain)/matRes_Rain);
-                    int yyy = (int)((yLat-minLat_Rain)/matRes_Rain);
+                    //int xxx = (int)((xLon-minLon_Rain)/matRes_Rain);
+                    //int yyy = (int)((yLat-minLat_Rain)/matRes_Rain);
+                    
+                    int xxx = (int)Math.round((xLon-minLon_DEM)/matRes_DEM);
+                    int yyy = (int)Math.round((yLat-minLat_DEM)/matRes_DEM);
                     
                     //UNCOMMENT TO WRITE Lat-Longs
                     //newfile.write(""+xLon+" "+yLat+"\n");
@@ -506,8 +510,9 @@ public class IowaBasinsInfoScript{
                     
                     //UNCOMMENT TO WRITE RAINFALL LOOKUP TABLE
                     newfile.write(""+xxx+" "+yyy+"\n");
+                    
 
-                    averageValue += matrix[yyy][xxx];
+                    //averageValue += matrix[yyy][xxx];
                     numElements++;
 
                     minX=Math.min(minX, xLon);
@@ -559,9 +564,9 @@ public class IowaBasinsInfoScript{
                 gzis.close();
                 fin.close();
 
-                for (int k = 0; k < accumFiles.length; k++) {
-                    accumFiles[k].close();
-                }
+//                for (int k = 0; k < accumFiles.length; k++) {
+//                    accumFiles[k].close();
+//                }
 
                 System.out.println(">> >> Rates for this basin "+"Rain Rate: "+averageValue+" [mm] "+averageValueTimeMachine+" [mm] ");
 
@@ -686,13 +691,13 @@ public class IowaBasinsInfoScript{
 
         if(args.length == 0) {
 
-            command=new String[] {  System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
-                                    "-Xmx1500m",
-                                    "-Xrs",
-                                    "-cp",
-                                    System.getProperty("java.class.path"),
-                                    "hydroScalingAPI.examples.io.IowaBasinsInfoScript",
-                                    "reload-rain"};
+//            command=new String[] {  System.getProperty("java.home")+System.getProperty("file.separator")+"bin"+System.getProperty("file.separator")+"java",
+//                                    "-Xmx1500m",
+//                                    "-Xrs",
+//                                    "-cp",
+//                                    System.getProperty("java.class.path"),
+//                                    "hydroScalingAPI.examples.io.IowaBasinsInfoScript",
+//                                    "reload-rain"};
 //            localProcess0=java.lang.Runtime.getRuntime().exec(command);
 //
 //            String concat0="";
