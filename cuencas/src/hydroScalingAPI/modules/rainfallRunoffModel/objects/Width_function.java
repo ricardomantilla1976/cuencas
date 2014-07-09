@@ -684,7 +684,7 @@ public class Width_function {
      
             hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada Matrix;
             System.out.println("OutputM"+OutputM);
-            Matrix=new hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada(OutputM,OutputL, myCuenca, linksStructure, metaModif, matDirs, HortonLinks, magnitudes,DEMCorr);
+            Matrix=new hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada(OutputM, myCuenca, linksStructure, metaModif, matDirs, HortonLinks, magnitudes,DEMCorr);
 
      
             }

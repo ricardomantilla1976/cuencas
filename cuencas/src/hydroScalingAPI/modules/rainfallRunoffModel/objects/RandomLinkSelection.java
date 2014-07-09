@@ -114,7 +114,7 @@ public class RandomLinkSelection {
                hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksStructure2 = new hydroScalingAPI.util.geomorphology.objects.LinksAnalysis(myCuenca2, metaModif, matDirs);
                hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom2 = new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(linksStructure2);
                hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada Matrix;
-               Matrix = new hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada(OutputM, OutputL, myCuenca2, linksStructure2, metaModif, matDirs, HortonLinks, magnitudes, DEM);
+               Matrix = new hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada(OutputM, myCuenca2, linksStructure2, metaModif, matDirs, HortonLinks, magnitudes, DEM);
                ncount=ncount+1;
            
         }         
