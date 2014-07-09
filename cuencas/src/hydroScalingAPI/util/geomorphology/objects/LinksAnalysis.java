@@ -949,6 +949,12 @@ public class LinksAnalysis extends java.lang.Object {
         //main11(args);  // Writing connectivity for Scott's code directly (2 files .rvr and .prm)
         //main12(args);  // Writing connectivity for Chi's code (Clear Creek Case)
         main12_1(args);  // Writing connectivity for Chi's code (Squaw Creek Case)
+        //mainScott_Type50(args);
+        //IowaAllLinks(args);
+        mainScott_Type31Geral(args);
+        //mainScott_Type30(args);
+        //mainScott_Type31(args);
+
     }
 
     /**
@@ -1433,6 +1439,1549 @@ System.out.println("X  " +x  + "   Y  " +  y);
      * Tests for the class
      * @param args the command line arguments
      */
+
+
+
+    public static void mainScott_Type50(String args[]) {
+
+        int x = 1504;
+        int y = 67;
+        double vh = 0.1;
+        double vr = 0.55;
+
+//Delaware trenton
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat) number2;
+        dpoint2.applyPattern("0.00000000");
+        float[] RCAr = {0.66f, 0.55f, 0.6f, 1.0f};
+        float[] VRCoefAr = {0.01f, 0.1f};
+
+        for (float RC : RCAr) {
+            for (float VRCoef : VRCoefAr) {
+
+                try {
+
+                    //java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.metaDEM");
+                    java.io.File theFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/USGS/Usgs3xPr6/delusgs3arc.metaDEM");
+
+                    hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(theFile);
+                    metaModif.setLocationBinaryFile(new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/USGS/Usgs3xPr6/delusgs3arc.dir"));
+
+                    metaModif.setFormat("Byte");
+                    byte[][] matDirs = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+                    metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".magn"));
+                    metaModif.setFormat("Integer");
+                    int[][] magnitudes = new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+                    hydroScalingAPI.util.geomorphology.objects.Basin laCuenca = new hydroScalingAPI.util.geomorphology.objects.Basin(x, y, matDirs, metaModif);
+
+                    LinksAnalysis mylinksAnalysis = new LinksAnalysis(laCuenca, metaModif, matDirs);
+                    hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom = new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(mylinksAnalysis);
+                    hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo thisHillsInfo = new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo(mylinksAnalysis);
+                    String LandUse = "null";
+                    String SoilData = "null";
+                    String SoilHydData = "null";
+                    String Soil150SWAData = "null";
+
+                    java.io.File LandUseFile = new java.io.File(LandUse);
+                    java.io.File SoilFile = new java.io.File(SoilData);
+                    java.io.File SoilHydFile = new java.io.File(SoilHydData);
+                    java.io.File SwaFileFile = new java.io.File(Soil150SWAData);
+
+                    hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
+                    java.io.File DEMFile = metaModif.getLocationMeta();
+
+                    SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, SoilHydFile, SwaFileFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes, 0);
+                    thisHillsInfo.setSCSManager(SCSObj);
+
+                    float[][] upAreas = mylinksAnalysis.getVarValues(2);
+                    float[][] areas = mylinksAnalysis.getVarValues(0);
+                    float[][] lenghts = mylinksAnalysis.getVarValues(1);
+                    java.io.File outputDirectory = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/");
+                    outputDirectory.mkdirs();
+                    String outputMetaFile = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/Del" + x + "_" + y + ".rvr";
+
+                    java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                    metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+                    metaBuffer.write("\n");
+                    for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                        metaBuffer.write("" + i + "\n");
+                        metaBuffer.write("" + mylinksAnalysis.connectionsArray[i].length);
+
+                        for (int j = 0; j < mylinksAnalysis.connectionsArray[i].length; j++) {
+                            metaBuffer.write(" " + mylinksAnalysis.connectionsArray[i][j]);
+                        }
+
+                        metaBuffer.write("\n");
+                        metaBuffer.write("\n");
+
+                    }
+                    metaBuffer.write("\n");
+
+                    metaBuffer.close();
+
+                    outputMetaFile = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/Del_50_" + x + "_" + y + "_" + RC + "VR" + vr + "CR" + VRCoef + ".prm";
+                    System.out.printf(outputMetaFile);
+//L_i,A_h,A_i,h_b,h_H,max_inf_rate,K_sat,S_h,eta,b_H,c_H,d_H,invtau,epsilon,c_1,c_2,c_3,c_4,c_5,c_6
+                    metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                    metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+                    metaBuffer.write("\n");
+
+                    for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                        double vrf = vr;
+                        // H==> Hydro-power     
+                        if (i == 1403 || i == 1404 || i == 1450 || i == 1456 || i == 1039 || i == 1081 || i == 261) {
+                            vrf = 10 * VRCoef * vr;
+                        }
+                        // R==> Recreation      
+                        if (i == 1792 || i == 1023 || i == 46) {
+                            vrf = 10 * VRCoef * vr;
+                        }
+                        // S==> Water Supply   
+                        if (i == 1880 || i == 1766 || i == 1664 || i == 1468 || i == 359 || i == 457) {
+                            vrf = 10 * VRCoef * vr;
+                        }
+                        // water bodies - lakes
+                        if (i == 1501 || i == 1425 || i == 1369 || i == 1311 || i == 1330 || i == 1328 || i == 1491 || i == 1314 || i == 1118 || i == 1112 || i == 979 || i == 963 || i == 956 || i == 871 || i == 1051 || i == 1000 || i == 789 || i == 789) {
+                            vrf = 10 * VRCoef * vr;
+                        }
+                        // water bodies - swamps or marsh
+                        if (i == 722 || i == 480 || i == 440 || i == 618 || i == 618 || i == 889 || i == 866 || i == 771) {
+                            vrf = 5 * VRCoef * vr;
+                        }
+                        // C==>Flood Control
+                        if (i == 708 || i == 618 || i == 789 || i == 457 || i == 359 || i == 1410 || i == 1433 || i == 911 || i == 913 || i == 872 || i == 737 || i == 298 || i == 417 || i == 335 || i == 461 || i == 261) {
+                            vrf = VRCoef * vr;
+                        }
+
+                        metaBuffer.write(i + "\n");
+                        metaBuffer.write(upAreas[0][i] + " " + lenghts[0][i] + " " + areas[0][i] + " ");
+                        metaBuffer.write(RC + " " + "0.4" + " " + thisNetworkGeom.Slope(i) + " " + vrf + "\n");
+                        // OLD  thisHillsInfo.getHillslope(i)
+                        metaBuffer.write("\n");
+                    }
+                    metaBuffer.write("\n");
+
+                    metaBuffer.close();
+
+                    outputMetaFile = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/Del_50_" + x + "_" + y + "_" + RC + "VR" + vr + "NoDam.prm";
+                    //L_i,A_h,A_i,h_b,h_H,max_inf_rate,K_sat,S_h,eta,b_H,c_H,d_H,invtau,epsilon,c_1,c_2,c_3,c_4,c_5,c_6
+                    metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                    metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+                    metaBuffer.write("\n");
+
+                    for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                        double vrf = vr;
+                        // H==> Hydro-power     
+
+                        metaBuffer.write(i + "\n");
+                        metaBuffer.write(upAreas[0][i] + " " + lenghts[0][i] + " " + areas[0][i] + " ");
+                        metaBuffer.write(RC + " " + "0.4" + " " + thisNetworkGeom.Slope(i) + " " + vrf + "\n");
+                        // OLD  thisHillsInfo.getHillslope(i)
+                        metaBuffer.write("\n");
+                    }
+                    metaBuffer.write("\n");
+
+                    metaBuffer.close();
+                    outputMetaFile = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/Del_" + x + "_" + y + ".listComplete";
+                    metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                    float[][] hortonOrders = mylinksAnalysis.getVarValues(4);
+                    System.out.println("mylinksAnalysis.contactsArray.length = " + mylinksAnalysis.contactsArray.length + " mylinksAnalysis.nextLinkArray.length " + mylinksAnalysis.nextLinkArray.length);
+                    // metaBuffer.write("" + mylinksAnalysis.contactsArray.length + "\n");
+                    // metaBuffer.write("\n");
+
+                    for (int i = 0; i < mylinksAnalysis.contactsArray.length; i++) {
+
+                        if (mylinksAnalysis.nextLinkArray[i] > 0) {
+
+                            metaBuffer.write(i + "," + mylinksAnalysis.contactsArray[i] + "," + hortonOrders[0][i] + "," + mylinksAnalysis.contactsArray[mylinksAnalysis.nextLinkArray[i]] + "," + upAreas[0][i] + "," + lenghts[0][i] + "," + areas[0][i]);
+                        } else {
+                            metaBuffer.write(i + "," + mylinksAnalysis.contactsArray[i] + "," + hortonOrders[0][i] + " " + "-1" + "," + upAreas[0][i] + "," + lenghts[0][i] + "," + areas[0][i]);
+                        }
+
+                        for (int j = 0; j < mylinksAnalysis.connectionsArray[i].length; j++) {
+                            metaBuffer.write("," + mylinksAnalysis.contactsArray[mylinksAnalysis.connectionsArray[i][j]]);
+                        }
+                        metaBuffer.write("\n");
+                    }
+                    metaBuffer.write("\n");
+
+                    metaBuffer.close();
+                    outputMetaFile = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/Del_" + x + "_" + y + ".sav";
+                    metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                    //metaBuffer.write(""+mylinksAnalysis.completeStreamLinksArray.length+"\n");
+                    //metaBuffer.write("\n");
+                    for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                        metaBuffer.write(i + "\n");
+                    }
+                    metaBuffer.write("\n");
+
+                    metaBuffer.close();
+
+                } catch (java.io.IOException IOE) {
+                    System.out.print(IOE);
+                    System.exit(0);
+                }
+            }
+        }
+        System.exit(0);
+
+    }
+
+    public static void mainScott_Type30(String args[]) {
+
+        int flag = 2;
+        //flag=1; Iowa 
+        //flag=2; Delaware
+        int x = 2949;
+        int y = 741;// Basin Code 05464500 Cedar River at Cedar Rapids, IA
+        if (flag == 2) {
+            x = 2949;
+            y = 741;
+        }
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat) number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try {
+
+//            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            java.io.File theFile = new java.io.File("D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File("D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            metaModif.setFormat("Byte");
+            byte[][] matDirs = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".magn"));
+            metaModif.setFormat("Integer");
+            int[][] magnitudes = new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca = new hydroScalingAPI.util.geomorphology.objects.Basin(x, y, matDirs, metaModif);
+
+            LinksAnalysis mylinksAnalysis = new LinksAnalysis(laCuenca, metaModif, matDirs);
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom = new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(mylinksAnalysis);
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo thisHillsInfo = new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo(mylinksAnalysis);
+
+            String LandUse = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+            String SoilData = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            String SoilHydData = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            String Soil150SWAData = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+
+            java.io.File LandUseFile = new java.io.File(LandUse);
+            java.io.File SoilFile = new java.io.File(SoilData);
+            java.io.File SoilHydFile = new java.io.File(SoilHydData);
+            java.io.File SwaFileFile = new java.io.File(Soil150SWAData);
+
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
+            java.io.File DEMFile = metaModif.getLocationMeta();
+
+            SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, SoilHydFile, SwaFileFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes, 0);
+
+            thisHillsInfo.setSCSManager(SCSObj);
+
+            float[][] upAreas = mylinksAnalysis.getVarValues(2);
+            float[][] areas = mylinksAnalysis.getVarValues(0);
+            float[][] lenghts = mylinksAnalysis.getVarValues(1);
+            float[][] hb = new float[1][mylinksAnalysis.connectionsArray.length]; // mmfloat 
+            float[][] MaxInf = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Hh = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] HydCond = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Terms = new float[4][mylinksAnalysis.connectionsArray.length];
+            float[][] Slope = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Manning = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Area_Relief_Param = new float[4][mylinksAnalysis.connectionsArray.length]; //Area in km and depth in m
+
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                hb[0][i] = (float) thisHillsInfo.SWA150(i);
+
+                if (hb[0][i] < 0) {
+                    System.out.println("hb " + hb[0][i] + " thisHillsInfo.SCS_S1(i) " + thisHillsInfo.SWA150(i));
+                    System.exit(1);
+                }
+                MaxInf[0][i] = (float) thisHillsInfo.MaxInfRate(i);
+                Hh[0][i] = (float) thisHillsInfo.HillRelief(i) * 1000;
+                //System.out.println("hb " + hb[0][i] + " thisHillsInfo.SCS_S1(i) " + thisHillsInfo.SCS_S1(i));
+
+                HydCond[0][i] = (float) thisHillsInfo.AveHydCond(i);
+                //System.out.println("i" + i);
+                Area_Relief_Param[0][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 0);
+                Area_Relief_Param[1][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 1);
+                Area_Relief_Param[2][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 2);
+                Area_Relief_Param[3][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 3);
+                if (Hh[0][i] == 0) {
+                    Hh[0][i] = 10;
+                    Area_Relief_Param[0][i] = 0;
+                    Area_Relief_Param[1][i] = 1;
+                    Area_Relief_Param[2][i] = 0;
+                    Area_Relief_Param[3][i] = 0;
+                }
+
+                Slope[0][i] = (float) thisNetworkGeom.Slope(i);
+                Manning[0][i] = (float) thisHillsInfo.HillManning(i);
+            }
+
+            java.io.File outputDirectory = new java.io.File("/scratch/dataScott/");
+            outputDirectory.mkdirs();
+            String outputMetaFile = "D:/usr/Iowa/CUENCASCheck/Princeton/InputFilesTest/Iowa30_" + x + "_" + y + ".rvr";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                metaBuffer.write("" + mylinksAnalysis.connectionsArray[i].length);
+
+                for (int j = 0; j < mylinksAnalysis.connectionsArray[i].length; j++) {
+                    metaBuffer.write(" " + mylinksAnalysis.connectionsArray[i][j]);
+                }
+
+                metaBuffer.write("\n");
+                metaBuffer.write("\n");
+
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+            outputMetaFile = "D:/usr/Iowa/CUENCASCheck/Princeton/InputFilesTest/Iowa30_" + x + "_" + y + ".prm";
+            System.out.printf(outputMetaFile);
+//L_i,A_h,A_i,h_b,h_H,max_inf_rate,K_sat,S_h,eta,b_H,c_H,d_H,invtau,epsilon,c_1,c_2,c_3,c_4,c_5,c_6
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+            metaBuffer.write("\n");
+
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+
+                metaBuffer.write("" + i + "\n");
+                metaBuffer.write(lenghts[0][i] + " " + areas[0][i] + " " + upAreas[0][i]);
+                metaBuffer.write(" " + hb[0][i] + " " + Hh[0][i] + " " + MaxInf[0][i]);
+                metaBuffer.write(" " + HydCond[0][i] + " " + Slope[0][i] + " " + Manning[0][i]);
+                metaBuffer.write(" " + Area_Relief_Param[1][i] + " " + Area_Relief_Param[2][i] + " " + Area_Relief_Param[3][i]);
+                metaBuffer.write("\n");
+                //System.out.println("hb " + hb[0][i] + " Hh " + Hh[0][i] + " MaxInf " + MaxInf[0][i]);
+// OLD  thisHillsInfo.getHillslope(i)
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+
+            outputMetaFile = "D:/usr/Iowa/CUENCASCheck/Princeton/InputFilesTest/Iowa30_" + x + "_" + y + ".listComplete";
+
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            float[][] hortonOrders = mylinksAnalysis.getVarValues(4);
+            System.out.println("mylinksAnalysis.contactsArray.length = " + mylinksAnalysis.contactsArray.length + " mylinksAnalysis.nextLinkArray.length " + mylinksAnalysis.nextLinkArray.length);
+            // metaBuffer.write("" + mylinksAnalysis.contactsArray.length + "\n");
+            // metaBuffer.write("\n");
+
+            for (int i = 0; i < mylinksAnalysis.contactsArray.length; i++) {
+
+                if (mylinksAnalysis.nextLinkArray[i] > 0) {
+
+                    metaBuffer.write(i + "," + mylinksAnalysis.contactsArray[i] + "," + hortonOrders[0][i] + "," + mylinksAnalysis.contactsArray[mylinksAnalysis.nextLinkArray[i]] + "," + upAreas[0][i] + "," + lenghts[0][i] + "," + areas[0][i]);
+                } else {
+                    metaBuffer.write(i + "," + mylinksAnalysis.contactsArray[i] + "," + hortonOrders[0][i] + " " + "-1" + "," + upAreas[0][i] + "," + lenghts[0][i] + "," + areas[0][i]);
+                }
+
+                for (int j = 0; j < mylinksAnalysis.connectionsArray[i].length; j++) {
+                    metaBuffer.write("," + mylinksAnalysis.contactsArray[mylinksAnalysis.connectionsArray[i][j]]);
+                }
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+            outputMetaFile = "D:/usr/Iowa/CUENCASCheck/Princeton/InputFilesTest/Iowa30_" + x + "_" + y + ".sav";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write(i + "\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+
+        } catch (java.io.IOException IOE) {
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+
+    public static void mainScott_Type31(String args[]) {
+
+        int flag = 2;
+        //flag=1; Iowa 
+        //flag=2; Delaware
+        int x = 2949;// Iowa Test 
+        int y = 741;// Iowa Test
+        if (flag == 2) {
+            x = 1504;
+            y = 67;
+        }
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat) number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try {
+
+//            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            java.io.File theFile = new java.io.File("D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+
+            // hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(theFile);
+            // metaModif.setLocationBinaryFile(new java.io.File("D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            //java.io.File theFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/USGS/Usgs3xPr6/delusgs3arc.metaDEM");
+            if (flag == 2) {
+                theFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/USGS/Usgs3xPr6/delusgs3arc.metaDEM");
+            }
+            hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setFormat("Byte");
+            if (flag == 1) {
+                metaModif.setLocationBinaryFile(new java.io.File("D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            } else {
+                metaModif.setFormat("Byte");
+                metaModif.setLocationBinaryFile(new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/USGS/Usgs3xPr6/delusgs3arc.dir"));
+            }
+
+            byte[][] matDirs = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+            System.out.println("theFile " + new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".magn"));
+            System.out.println("x  " + x + " y " + y);
+
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".magn"));
+            metaModif.setFormat("Integer");
+            int[][] magnitudes = new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca = new hydroScalingAPI.util.geomorphology.objects.Basin(x, y, matDirs, metaModif);
+
+            LinksAnalysis mylinksAnalysis = new LinksAnalysis(laCuenca, metaModif, matDirs);
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom = new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(mylinksAnalysis);
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo thisHillsInfo = new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo(mylinksAnalysis);
+
+            String LandUse = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+            String SoilData = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+            String SoilHydData = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+            String Soil150SWAData = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+            if (flag == 2) {
+
+                LandUse = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/landcover90.metaVHC";
+                SoilData = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/hydrogroup.metaVHC";
+                SoilHydData = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/hydcond.metaVHC";
+                Soil150SWAData = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/aws150mm.metaVHC";
+
+            }
+
+            java.io.File LandUseFile = new java.io.File(LandUse);
+            java.io.File SoilFile = new java.io.File(SoilData);
+            java.io.File SoilHydFile = new java.io.File(SoilHydData);
+            java.io.File SwaFileFile = new java.io.File(Soil150SWAData);
+
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
+            java.io.File DEMFile = metaModif.getLocationMeta();
+
+            SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, SoilHydFile, SwaFileFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes, 0);
+
+            thisHillsInfo.setSCSManager(SCSObj);
+            /////////////////////// Initial condition for 2006 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            float[][] upAreas = mylinksAnalysis.getVarValues(2);
+            float[][] areas = mylinksAnalysis.getVarValues(0);
+            float[][] lenghts = mylinksAnalysis.getVarValues(1);
+            float[][] hb = new float[1][mylinksAnalysis.connectionsArray.length]; // mmfloat 
+            float[][] MaxInf = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Hh = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] HydCond = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Terms = new float[4][mylinksAnalysis.connectionsArray.length];
+            float[][] Slope = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Manning = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Area_Relief_Param = new float[4][mylinksAnalysis.connectionsArray.length]; //Area in km and depth in m
+
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                hb[0][i] = (float) thisHillsInfo.SWA150(i);
+
+                if (hb[0][i] < 0) {
+                    System.out.println("hb " + hb[0][i] + " thisHillsInfo.SCS_S1(i) " + thisHillsInfo.SWA150(i));
+                    System.exit(1);
+                }
+                MaxInf[0][i] = (float) thisHillsInfo.MaxInfRate(i);
+                Hh[0][i] = (float) thisHillsInfo.HillRelief(i) * 1000;
+                //System.out.println("hb " + hb[0][i] + " thisHillsInfo.SCS_S1(i) " + thisHillsInfo.SCS_S1(i));
+
+                HydCond[0][i] = (float) thisHillsInfo.AveHydCond(i);
+                //System.out.println("i" + i);
+                Area_Relief_Param[0][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 0);
+                Area_Relief_Param[1][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 1);
+                Area_Relief_Param[2][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 2);
+                Area_Relief_Param[3][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 3);
+                if (Hh[0][i] == 0) {
+                    Hh[0][i] = 10;
+                    Area_Relief_Param[0][i] = 0;
+                    Area_Relief_Param[1][i] = 1;
+                    Area_Relief_Param[2][i] = 0;
+                    Area_Relief_Param[3][i] = 0;
+                }
+
+                Slope[0][i] = (float) thisNetworkGeom.Slope(i);
+                Manning[0][i] = (float) thisHillsInfo.HillManning(i);
+            }
+
+            java.io.File outputDirectory = new java.io.File("/scratch/dataScott/");
+            outputDirectory.mkdirs();
+            String Dir = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/";
+
+            String outputMetaFile = "D:/usr/Iowa/CUENCASCheck/Princeton/InputFilesTest/Iowa31_" + x + "_" + y + ".rvr";
+            if (flag == 2) {
+                outputMetaFile = Dir + "Del_31_" + x + "_" + y + ".rvr";
+            }
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                metaBuffer.write("" + mylinksAnalysis.connectionsArray[i].length);
+
+                for (int j = 0; j < mylinksAnalysis.connectionsArray[i].length; j++) {
+                    metaBuffer.write(" " + mylinksAnalysis.connectionsArray[i][j]);
+                }
+
+                metaBuffer.write("\n");
+                metaBuffer.write("\n");
+
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+            outputMetaFile = "D:/usr/Iowa/CUENCASCheck/Princeton/InputFilesTest/Iowa31_NoDam" + x + "_" + y + ".prm";
+            if (flag == 2) {
+                outputMetaFile = Dir + "/Del_31NoDam" + x + "_" + y + ".prm";
+            }
+            System.out.printf(outputMetaFile);
+//L_i,A_h,A_i,h_b,h_H,max_inf_rate,K_sat,S_h,eta,b_H,c_H,d_H,invtau,epsilon,c_1,c_2,c_3,c_4,c_5,c_6
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+            metaBuffer.write("\n");
+
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                float vrf = 1f;
+                metaBuffer.write("" + i + "\n");
+                metaBuffer.write(lenghts[0][i] + " " + areas[0][i] + " " + upAreas[0][i]);
+                metaBuffer.write(" " + hb[0][i] + " " + Hh[0][i] + " " + MaxInf[0][i]);
+
+                double finalSlope = Math.max(0.001, Slope[0][i]);
+                metaBuffer.write(" " + HydCond[0][i] + " " + finalSlope + " " + Manning[0][i]);
+                metaBuffer.write(" " + Area_Relief_Param[1][i] + " " + Area_Relief_Param[2][i] + " " + Area_Relief_Param[3][i]);
+                metaBuffer.write(" " + vrf);
+                metaBuffer.write("\n");
+                System.out.println("Parameters hill relief" + Area_Relief_Param[0][i] + " " + Area_Relief_Param[1][i] + " " + Area_Relief_Param[2][i] + " " + Area_Relief_Param[3][i]);
+                System.out.println("hb " + hb[0][i] + " Hh " + Hh[0][i] + " MaxInf " + MaxInf[0][i]);
+// OLD  thisHillsInfo.getHillslope(i)
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+
+            outputMetaFile = "D:/usr/Iowa/CUENCASCheck/Princeton/InputFilesTest/Iowa31_" + x + "_" + y + ".prm";
+            if (flag == 2) {
+                outputMetaFile = Dir + "/Del_31WDam" + x + "_" + y + ".prm";
+            }
+            System.out.printf(outputMetaFile);
+//L_i,A_h,A_i,h_b,h_H,max_inf_rate,K_sat,S_h,eta,b_H,c_H,d_H,invtau,epsilon,c_1,c_2,c_3,c_4,c_5,c_6
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+            metaBuffer.write("\n");
+
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+
+                metaBuffer.write("" + i + "\n");
+                metaBuffer.write(lenghts[0][i] + " " + areas[0][i] + " " + upAreas[0][i]);
+                metaBuffer.write(" " + hb[0][i] + " " + Hh[0][i] + " " + MaxInf[0][i]);
+                double finalSlope = Math.max(0.0001, Slope[0][i]);
+                metaBuffer.write(" " + HydCond[0][i] + " " + finalSlope + " " + Manning[0][i]);
+                metaBuffer.write(" " + Area_Relief_Param[1][i] + " " + Area_Relief_Param[2][i] + " " + Area_Relief_Param[3][i]);
+                float vrf = 1f;
+                if (flag == 2) {
+                    // H==> Hydro-power     
+
+                    if (i == 1403 || i == 1404 || i == 1450 || i == 1456 || i == 1039 || i == 1081 || i == 261) {
+                        vrf = 10 * 0.01f;
+                    }
+                    // R==> Recreation      
+                    if (i == 1792 || i == 1023 || i == 46) {
+                        vrf = 10 * 0.01f;
+                    }
+                    // S==> Water Supply   
+                    if (i == 1880 || i == 1766 || i == 1664 || i == 1468 || i == 359 || i == 457) {
+                        vrf = 10 * 0.01f;
+                    }
+                    // water bodies - lakes
+                    if (i == 1501 || i == 1425 || i == 1369 || i == 1311 || i == 1330 || i == 1328 || i == 1491 || i == 1314 || i == 1118 || i == 1112 || i == 979 || i == 963 || i == 956 || i == 871 || i == 1051 || i == 1000 || i == 789 || i == 789) {
+                        vrf = 10 * 0.01f;
+                    }
+                    // water bodies - swamps or marsh
+                    if (i == 722 || i == 480 || i == 440 || i == 618 || i == 618 || i == 889 || i == 866 || i == 771) {
+                        vrf = 5 * 0.01f;
+                    }
+                    // C==>Flood Control
+                    if (i == 708 || i == 618 || i == 789 || i == 457 || i == 359 || i == 1410 || i == 1433 || i == 911 || i == 913 || i == 872 || i == 737 || i == 298 || i == 417 || i == 335 || i == 461 || i == 261) {
+                        vrf = 0.01f;
+                    }
+                }
+
+                metaBuffer.write(" " + vrf);
+
+                metaBuffer.write("\n");
+                //System.out.println("hb " + hb[0][i] + " Hh " + Hh[0][i] + " MaxInf " + MaxInf[0][i]);
+// OLD  thisHillsInfo.getHillslope(i)
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+
+            outputMetaFile = Dir + "/Del_31_" + x + "_" + y + ".listComplete";
+
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            float[][] hortonOrders = mylinksAnalysis.getVarValues(4);
+            System.out.println("mylinksAnalysis.contactsArray.length = " + mylinksAnalysis.contactsArray.length + " mylinksAnalysis.nextLinkArray.length " + mylinksAnalysis.nextLinkArray.length);
+            // metaBuffer.write("" + mylinksAnalysis.contactsArray.length + "\n");
+            // metaBuffer.write("\n");
+
+            for (int i = 0; i < mylinksAnalysis.contactsArray.length; i++) {
+
+                if (mylinksAnalysis.nextLinkArray[i] > 0) {
+
+                    metaBuffer.write(i + "," + mylinksAnalysis.contactsArray[i] + "," + hortonOrders[0][i] + "," + mylinksAnalysis.contactsArray[mylinksAnalysis.nextLinkArray[i]] + "," + upAreas[0][i] + "," + lenghts[0][i] + "," + areas[0][i]);
+                } else {
+                    metaBuffer.write(i + "," + mylinksAnalysis.contactsArray[i] + "," + hortonOrders[0][i] + " " + "-1" + "," + upAreas[0][i] + "," + lenghts[0][i] + "," + areas[0][i]);
+                }
+                metaBuffer.write("," + mylinksAnalysis.connectionsArray[i].length);
+                for (int j = 0; j < mylinksAnalysis.connectionsArray[i].length; j++) {
+                    metaBuffer.write("," + mylinksAnalysis.contactsArray[mylinksAnalysis.connectionsArray[i][j]]);
+                }
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+            outputMetaFile = Dir + "/Del_31_" + x + "_" + y + ".sav";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write(i + "\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+
+            java.io.File SOILMFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/NLDAS/MSTAV0-200_VHC/2006/NLDAS2-MSTAV0-200.metavhc");
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager SOILM;
+            SOILM = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager(SOILMFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes);
+            if (!SOILM.isCompleted()) {
+                System.out.println("Problem with SOILM");
+                return;
+            }
+            thisHillsInfo.setSoilMoistureManager(SOILM);
+
+            outputMetaFile = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/Del_31_2006_" + x + "_" + y + ".ini";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            metaBuffer.write("31\n");
+            metaBuffer.write(mylinksAnalysis.contactsArray.length + "\n");
+            metaBuffer.write("0 \n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                double currTime = SOILM.SOILM040InitialTimeInMinutes();
+                double INIC = thisHillsInfo.SoilMoisture(i, currTime);
+                if (INIC < 0) {
+                    System.out.println("check the current time of the file\n");
+                    System.exit(1);
+                }
+
+                //System.out.println(1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, 0) + "\n");
+                //System.out.println("i=" + i + " "+ 1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                metaBuffer.write("1e-6" + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                //metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+
+            SOILMFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/NLDAS/MSTAV0-200_VHC/2004/NLDAS2-MSTAV0-200.metavhc");
+            //      hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager SOILM;
+            SOILM = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager(SOILMFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes);
+            if (!SOILM.isCompleted()) {
+                System.out.println("Problem with SOILM");
+                return;
+            }
+            thisHillsInfo.setSoilMoistureManager(SOILM);
+
+            outputMetaFile = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/Del_31_2004_" + x + "_" + y + ".ini";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            metaBuffer.write("31\n");
+            metaBuffer.write(mylinksAnalysis.contactsArray.length + "\n");
+            metaBuffer.write("0 \n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                double currTime = SOILM.SOILM040InitialTimeInMinutes();
+                double INIC = thisHillsInfo.SoilMoisture(i, currTime);
+                if (INIC < 0) {
+                    System.out.println("check the current time of the file\n");
+                    System.exit(1);
+                }
+
+                //System.out.println(1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, 0) + "\n");
+                //System.out.println("i=" + i + " "+ 1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                metaBuffer.write("1e-6" + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                //metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+
+            SOILMFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/NLDAS/MSTAV0-200_VHC/2005/NLDAS2-MSTAV0-200.metavhc");
+            //      hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager SOILM;
+            SOILM = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager(SOILMFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes);
+            if (!SOILM.isCompleted()) {
+                System.out.println("Problem with SOILM");
+                return;
+            }
+            thisHillsInfo.setSoilMoistureManager(SOILM);
+
+            outputMetaFile = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/Del_31_2005_" + x + "_" + y + ".ini";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            // metaBuffer.write("30\n");
+            metaBuffer.write("31\n");
+            metaBuffer.write(mylinksAnalysis.contactsArray.length + "\n");
+            metaBuffer.write("0 \n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                double currTime = SOILM.SOILM040InitialTimeInMinutes();
+                double INIC = thisHillsInfo.SoilMoisture(i, currTime);
+                if (INIC < 0) {
+                    System.out.println("check the current time of the file\n");
+                    System.exit(1);
+                }
+
+                //System.out.println(1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, 0) + "\n");
+                //System.out.println("i=" + i + " "+ 1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                metaBuffer.write("1e-6" + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                //metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+
+            SOILMFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/NLDAS/MSTAV0-200_VHC/2011/NLDAS2-MSTAV0-200.metavhc");
+            //      hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager SOILM;
+            SOILM = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager(SOILMFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes);
+            if (!SOILM.isCompleted()) {
+                System.out.println("Problem with SOILM");
+                return;
+            }
+            thisHillsInfo.setSoilMoistureManager(SOILM);
+
+            outputMetaFile = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/Del_31_2011_" + x + "_" + y + ".ini";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            metaBuffer.write("31\n");
+            metaBuffer.write(mylinksAnalysis.contactsArray.length + "\n");
+            metaBuffer.write("0 \n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                double currTime = SOILM.SOILM040InitialTimeInMinutes();
+                double INIC = thisHillsInfo.SoilMoisture(i, currTime);
+                if (INIC < 0) {
+                    System.out.println("check the current time of the file\n");
+                    System.exit(1);
+                }
+
+                //System.out.println(1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, 0) + "\n");
+                //System.out.println("i=" + i + " "+ 1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                metaBuffer.write("1e-6" + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                //metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+            //Dir = "D:/usr/ArcGisLayers/Haiti/Rasters/Topography/";
+            String Output = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/Del_31_2011" + "/MPHShed" + x + "_" + y + "_";
+
+            double[][] DEM = new hydroScalingAPI.io.DataRaster(metaModif).getDouble();
+            byte[][] HortonLinks = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada Matrix;
+            Matrix = new hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada(Output, laCuenca, mylinksAnalysis, metaModif, matDirs, HortonLinks, magnitudes, DEM);
+
+            
+        } catch (java.io.IOException IOE) {
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+
+    public static void mainScott_Type31Geral(String args[]) {
+
+        int x = 5533;// Turkey Outlet 
+        int y = 2577;// Turkey Outlet
+        //int x = 4764;// Turkey Spillville
+        //int y = 2996;// Turkey Spillville
+        String Directory = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/";
+        String DEMName = "res";
+        String LandUse = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/landcover2001_90_2.metaVHC";
+        String SoilData = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/soil_rec90.metaVHC";
+        String SoilHydData = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/hydcondint.metaVHC";
+        String Soil150SWAData = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Hydrology/LandCover/90/swa150int.metaVHC";
+        String DirOutput = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/ScottCodeFiles/InputFiles/Turkey/";
+        String FileOutput = "TurkeySpillville" + x + "_" + y;
+        FileOutput = "TurkeyOutlet" + x + "_" + y;
+        String Soil = "null";
+
+        int flag = 6; // 
+        // 1 for Iowa 
+        // 2 for Delaware Flag Prunning 6 
+        // 3 for Delaware Flag Prunning 8;
+        // 4 for Delaware Flag Prunning 8;
+        // 5 for Delaware Flag Prunning 9;
+        // 6 test with null;
+       
+    
+        if(flag>=2) {
+            x = 1504;// 
+            y = 67;// 
+            LandUse = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/Soils90mFinal/landcover90.metaVHC";
+            SoilData = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/Soils90mFinal/hydrogroup.metaVHC";
+           //SoilHydData = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/hydcond.metaVHC";
+            SoilHydData = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/Soils90mFinal/DelawareKsatmmh.metaVHC";
+            Soil150SWAData = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/Soils90mFinal/DelawareHB150mm90m.metaVHC";
+            DirOutput = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/";
+            Soil = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/NLDAS/MSTAV0-200_VHC/2011/NLDAS2-MSTAV0-200.metavhc";
+        }
+         if (flag == 2) {// Delaware 
+            Directory = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/USGS/Usgs3xPr6/";
+            DEMName = "delusgs3arc";
+            FileOutput = "DelOrder6" + x + "_" + y;
+        }
+         
+              if (flag == 3) {// Delaware 
+            Directory = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/USGS/Usgs3xPr7/";
+            DEMName = "delusgs3arc";
+            FileOutput = "DelOrder7" + x + "_" + y;
+        }
+                    if (flag == 4) {// Delaware 
+            Directory = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/USGS/Usgs3xPr8/";
+            DEMName = "delusgs3arc";
+            FileOutput = "DelOrder8" + x + "_" + y;
+        }
+            if (flag == 5) {// Delaware 
+            Directory = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/USGS/Usgs3x/";
+            DEMName = "delusgs3arc";
+            FileOutput = "DelOrder9" + x + "_" + y;
+        }
+            if (flag == 6) {// Delaware 
+           
+            Directory = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Topography/USGS/Usgs3xPr6/";
+            DEMName = "delusgs3arc";
+            FileOutput = "DelOrder6" + x + "_" + y;
+            LandUse = "null";
+            SoilData = "null";
+           //SoilHydData = "D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/hydcond.metaVHC";
+            SoilHydData = "null";
+            Soil150SWAData = "null";
+            DirOutput = "D:/usr/Delaware_luciana/CUENCASDelaware/ScottCodeFiles/InputFiles/";
+            Soil = "null";
+        }
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat) number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try {
+
+//            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+            java.io.File theFile = new java.io.File(Directory + DEMName + ".metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File(Directory + DEMName + ".dir"));
+            metaModif.setFormat("Byte");
+            byte[][] matDirs = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+            metaModif.setLocationBinaryFile(new java.io.File(Directory + DEMName + ".magn"));
+            metaModif.setFormat("Integer");
+            int[][] magnitudes = new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca = new hydroScalingAPI.util.geomorphology.objects.Basin(x, y, matDirs, metaModif);
+
+            LinksAnalysis mylinksAnalysis = new LinksAnalysis(laCuenca, metaModif, matDirs);
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom = new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(mylinksAnalysis);
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo thisHillsInfo = new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo(mylinksAnalysis);
+
+            java.io.File LandUseFile = new java.io.File(LandUse);
+            java.io.File SoilFile = new java.io.File(SoilData);
+            java.io.File SoilHydFile = new java.io.File(SoilHydData);
+            java.io.File SwaFileFile = new java.io.File(Soil150SWAData);
+
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
+            java.io.File DEMFile = metaModif.getLocationMeta();
+
+           
+            SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, SoilHydFile, SwaFileFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes, 0);
+
+            thisHillsInfo.setSCSManager(SCSObj);
+            //System.exit(1);
+            /////////////////////// Initial condition for 2006 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            float[][] upAreas = mylinksAnalysis.getVarValues(2);
+            float[][] areas = mylinksAnalysis.getVarValues(0);
+            float[][] lenghts = mylinksAnalysis.getVarValues(1);
+            float[][] hb = new float[1][mylinksAnalysis.connectionsArray.length]; // mmfloat 
+            float[][] MaxInf = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Hh = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] HydCond = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Terms = new float[4][mylinksAnalysis.connectionsArray.length];
+            float[][] Slope = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Manning = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] Area_Relief_Param = new float[4][mylinksAnalysis.connectionsArray.length]; //Area in km and depth in m
+            float[][] SlopeLand1 = new float[1][mylinksAnalysis.connectionsArray.length];
+            float[][] SlopeLand2 = new float[1][mylinksAnalysis.connectionsArray.length];
+
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                hb[0][i] = (float) thisHillsInfo.SWA150(i);
+
+                if (hb[0][i] < 0) {
+                    System.out.println("hb " + hb[0][i] + " thisHillsInfo.SCS_S1(i) " + thisHillsInfo.SWA150(i));
+                    System.exit(1);
+                }
+                MaxInf[0][i] = (float) thisHillsInfo.MaxInfRate(i);
+                Hh[0][i] = (float) thisHillsInfo.HillRelief(i) * 1000;
+                //System.out.println("hb " + hb[0][i] + " thisHillsInfo.SCS_S1(i) " + thisHillsInfo.SCS_S1(i));
+
+                HydCond[0][i] = (float) thisHillsInfo.AveHydCond(i);
+                if (flag == 1) // because before I was multiplying by 0.0036 and not 0.001
+                // Now I require that HydCond is in mm/h
+                {
+                    HydCond[0][i] = 3.6f * (float) thisHillsInfo.AveHydCond(i);
+                }
+                //System.out.println("i" + i);
+                Area_Relief_Param[0][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 0);
+                Area_Relief_Param[1][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 1);
+                Area_Relief_Param[2][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 2);
+                Area_Relief_Param[3][i] = (float) thisHillsInfo.getArea_ReliefParam(i, 3);
+                if (Hh[0][i] == 0) {
+                    Hh[0][i] = 10;
+                    Area_Relief_Param[0][i] = 0;
+                    Area_Relief_Param[1][i] = 1;
+                    Area_Relief_Param[2][i] = 0;
+                    Area_Relief_Param[3][i] = 0;
+                }
+
+                Slope[0][i] = (float) thisNetworkGeom.Slope(i);
+                Manning[0][i] = (float) thisHillsInfo.HillManning(i);
+                SlopeLand1[0][i] = (float) thisHillsInfo.getHillslope(i);
+                SlopeLand2[0][i] = (float) thisHillsInfo.getHillslope2(i);
+            }
+
+            java.io.File outputDirectory = new java.io.File(DirOutput);
+            outputDirectory.mkdirs();
+
+            String outputMetaFile = DirOutput + FileOutput + ".rvr";
+
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                metaBuffer.write("" + mylinksAnalysis.connectionsArray[i].length);
+
+                for (int j = 0; j < mylinksAnalysis.connectionsArray[i].length; j++) {
+                    metaBuffer.write(" " + mylinksAnalysis.connectionsArray[i][j]);
+                }
+
+                metaBuffer.write("\n");
+                metaBuffer.write("\n");
+
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+            outputMetaFile = DirOutput + FileOutput + "NoDam.prm";
+
+            System.out.printf(outputMetaFile);
+//L_i,A_h,A_i,h_b,h_H,max_inf_rate,K_sat,S_h,eta,b_H,c_H,d_H,invtau,epsilon,c_1,c_2,c_3,c_4,c_5,c_6
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+            metaBuffer.write("\n");
+
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                float vrf = 1f;
+                metaBuffer.write("" + i + "\n");
+                metaBuffer.write(lenghts[0][i] + " " + areas[0][i] + " " + upAreas[0][i]);
+                metaBuffer.write(" " + hb[0][i] + " " + Hh[0][i] + " " + MaxInf[0][i]);
+                System.out.println("Slope  " + Slope[0][i] + "  SlopeLand1 " + SlopeLand1[0][i] + "  SlopeLand2 " + SlopeLand2[0][i]);
+                double finalSlope = Math.max(0.001, SlopeLand2[0][i]);
+                metaBuffer.write(" " + HydCond[0][i] + " " + finalSlope + " " + Manning[0][i]);
+                metaBuffer.write(" " + 1.0 + " " + 0.0 + " " + 0.0);
+                metaBuffer.write("\n");
+                metaBuffer.write(" " + vrf);
+                System.out.println("Parameters hill relief" + Area_Relief_Param[0][i] + " " + Area_Relief_Param[1][i] + " " + Area_Relief_Param[2][i] + " " + Area_Relief_Param[3][i] + "\n");
+                System.out.println("hb " + hb[0][i] + " Hh " + Hh[0][i] + " MaxInf " + MaxInf[0][i]);
+// OLD  thisHillsInfo.getHillslope(i)
+                metaBuffer.write("\n");
+            }
+
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+
+            outputMetaFile = DirOutput + FileOutput + "WithDam.prm";
+
+            System.out.printf(outputMetaFile);
+//L_i,A_h,A_i,h_b,h_H,max_inf_rate,K_sat,S_h,eta,b_H,c_H,d_H,invtau,epsilon,c_1,c_2,c_3,c_4,c_5,c_6
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+            metaBuffer.write("\n");
+
+            
+
+            String outputMetaFile2 = DirOutput + FileOutput + "reservoir.csv";
+
+            java.io.BufferedWriter metaBuffer2 = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile2));
+            metaBuffer2.write("iD,RelInd,upAreas,vrf,Lat,Long\n");
+          
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                int RelInd = mylinksAnalysis.contactsArray[i];
+                metaBuffer.write("" + i + "\n");
+                metaBuffer.write(lenghts[0][i] + " " + areas[0][i] + " " + upAreas[0][i]);
+                metaBuffer.write(" " + hb[0][i] + " " + Hh[0][i] + " " + MaxInf[0][i]);
+                double finalSlope =Math.max(0.001, SlopeLand2[0][i]);
+                metaBuffer.write(" " + HydCond[0][i] + " " + finalSlope + " " + Manning[0][i]);
+                metaBuffer.write(" " + Area_Relief_Param[1][i] + " " + Area_Relief_Param[2][i] + " " + Area_Relief_Param[3][i]);
+                float vrf = 1f;
+                if (flag >= 2) {
+                     int X = mylinksAnalysis.contactsArray[i] % metaModif.getNumCols();
+                        int Y = mylinksAnalysis.contactsArray[i] / metaModif.getNumCols();
+                        double Long = metaModif.getMinLon() + X * metaModif.getResLat() / 3600.;
+                        double Lat = metaModif.getMinLat() + Y * metaModif.getResLat() / 3600.;
+                    // H==> Hydro-power     
+                    if (RelInd == 3588876 || RelInd == 3459314 || RelInd == 3459316 || RelInd == 3214573 || RelInd == 3236695 || RelInd == 3203834 ) {
+                        //if (i == 1403 || i == 1404 || i == 1450 || i == 1456 || i == 1039 || i == 1081 || i == 261) {
+                         
+                        vrf = 10 * 0.01f;
+                        metaBuffer2.write(i + "," + RelInd + "," + upAreas[0][i] + ","+vrf+ ","+Lat+","+Long+"\n");
+                    }
+                    // R==> Recreation 
+                    if (RelInd == 4956011 || RelInd == 3078540) {
+                        //if (i == 1792 || i == 1023 || i == 46) {
+                        vrf = 10 * 0.01f;
+                        metaBuffer2.write(i + "," + RelInd + "," + upAreas[0][i] + ","+vrf+ ","+Lat+","+Long+"\n");
+                    }
+                    // S==> Water Supply   
+                    if (RelInd == 4086880 || RelInd == 1726077 || RelInd == 1759289) {
+                        //if ( i == 1766 || i == 1664 || i == 1468 || i == 359 || i == 457) {
+                        vrf = 10 * 0.01f;
+                        metaBuffer2.write(i + "," + RelInd + "," + upAreas[0][i] + ","+vrf+ ","+Lat+","+Long+"\n");
+                    }
+                    // water bodies - lakes
+                    if (RelInd == 3841910 || RelInd == 3765760 || RelInd == 3506690 || RelInd == 3451084 || RelInd == 3410201 || RelInd == 3303262  || RelInd == 3522375 || RelInd == 3174851
+                            || RelInd == 3110906 || RelInd == 2849918 || RelInd == 2699924 || RelInd == 2628022 || RelInd == 2615675 || RelInd == 3128013 || RelInd == 2909933 ) {
+                        //if (i == 1501 || i == 1425 || i == 1369 || i == 1311 || i == 1330 || i == 1328 || i == 1491 || i == 1314 || i == 1118 || i == 1112 || i == 979 || i == 963 || i == 956 || i == 871 || i == 1051 || i == 1000 || i == 789 || i == 789) {
+                        vrf = 10 * 0.01f;
+                        metaBuffer2.write(i + "," + RelInd + "," + upAreas[0][i] + ","+vrf+ ","+Lat+","+Long+"\n");
+                        
+                    }
+                    // water bodies - swamps or marsh
+                    if (  RelInd == 4711808 || RelInd == 2271467 || RelInd == 2198291 || RelInd == 1863152   || RelInd == 3565702 || RelInd == 2520579 || RelInd == 2664513 || RelInd == 2349805) {
+                        // if (i == 1881 || i == 722 || i == 480 || i == 440 || i == 618 || i == 618 || i == 889 || i == 866 || i == 771 || i == 1410) {
+                        vrf = 5 * 0.01f;
+                       metaBuffer2.write(i + "," + RelInd + "," + upAreas[0][i] + ","+vrf+ ","+Lat+","+Long+"\n");
+                    }
+                    // C==>Flood Control
+                    if ( RelInd == 4723635|| RelInd == 1764204  || RelInd == 2422634 || RelInd == 1759289 || RelInd == 1726077  || RelInd == 2689334 || RelInd == 2547499
+                            || RelInd == 2533107 || RelInd == 2316518 || RelInd == 1635713 || RelInd == 1683091 || RelInd == 1618065 || RelInd == 1840563 || RelInd == 1276451) {
+                        //  if (i == 708 || i == 618 || i == 789 || i == 457 || i == 359  || i == 1434 || i == 911 || i == 913 || i == 872 || i == 737 || i == 298 || i == 417 || i == 335 || i == 461 || i == 261) {
+                        vrf = 0.01f;
+                        metaBuffer2.write(i + "," + RelInd + "," + upAreas[0][i] + ","+vrf+ ","+Lat+","+Long+"\n");
+                    }
+                    // Reservoirs that were removed because they do not have any effect
+                    if(RelInd == 3503922 || RelInd == 2218083 || RelInd == 692198 || RelInd == 3999836|| RelInd == 3718152 )
+                    {
+                          vrf = 1f;
+                         metaBuffer2.write(i + "," + RelInd + "," + upAreas[0][i] + ","+vrf+ ","+Lat+","+Long+"\n");
+                    }
+                }
+
+                metaBuffer.write(" " + vrf);
+
+                metaBuffer.write("\n");
+                //System.out.println("hb " + hb[0][i] + " Hh " + Hh[0][i] + " MaxInf " + MaxInf[0][i]);
+// OLD  thisHillsInfo.getHillslope(i)
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+            metaBuffer2.close();
+            System.out.println("Start to write the file for checking \n");
+            outputMetaFile = DirOutput + FileOutput + "ForChecking.csv";
+
+            System.out.printf(outputMetaFile);
+//L_i,A_h,A_i,h_b,h_H,max_inf_rate,K_sat,S_h,eta,b_H,c_H,d_H,invtau,epsilon,c_1,c_2,c_3,c_4,c_5,c_6
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+            metaBuffer.write("\n");
+            metaBuffer.write("ID,LEngth,area,UpsArea,hb,Hh,MAxInf,HydCond,Slope,SlopeLand1,SlopeLand2,Manning,b,c,d,vrf\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                int RelInd = mylinksAnalysis.contactsArray[i];
+                metaBuffer.write("" + i + ",");
+                metaBuffer.write(lenghts[0][i] + "," + areas[0][i] + "," + upAreas[0][i]);
+                metaBuffer.write("," + hb[0][i] + "," + Hh[0][i] + "," + MaxInf[0][i]);
+
+                metaBuffer.write("," + HydCond[0][i] + "," + Slope[0][i] + "," + SlopeLand1[0][i] + "," + SlopeLand2[0][i] + "," + Manning[0][i]);
+                metaBuffer.write("," + Area_Relief_Param[1][i] + "," + Area_Relief_Param[2][i] + "," + Area_Relief_Param[3][i]);
+                float vrf = 1f;
+                  if (flag >= 2) {
+                     int X = mylinksAnalysis.contactsArray[i] % metaModif.getNumCols();
+                        int Y = mylinksAnalysis.contactsArray[i] / metaModif.getNumCols();
+                        double Long = metaModif.getMinLon() + X * metaModif.getResLat() / 3600.;
+                        double Lat = metaModif.getMinLat() + Y * metaModif.getResLat() / 3600.;
+                    // H==> Hydro-power     
+                    if (RelInd == 3588876 || RelInd == 3459314 || RelInd == 3459316 || RelInd == 3214573 || RelInd == 3236695 || RelInd == 3203834 ) {
+                        //if (i == 1403 || i == 1404 || i == 1450 || i == 1456 || i == 1039 || i == 1081 || i == 261) {
+                         
+                        vrf = 10 * 0.01f;
+                    }
+                    // R==> Recreation 
+                    if (RelInd == 4956011 || RelInd == 3078540) {
+                        //if (i == 1792 || i == 1023 || i == 46) {
+                        vrf = 10 * 0.01f;
+                    }
+                    // S==> Water Supply   
+                    if (RelInd == 4086880 || RelInd == 1726077 || RelInd == 1759289) {
+                        //if ( i == 1766 || i == 1664 || i == 1468 || i == 359 || i == 457) {
+                        vrf = 10 * 0.01f;
+                     }
+                    // water bodies - lakes
+                    if (RelInd == 3841910 || RelInd == 3765760 || RelInd == 3506690 || RelInd == 3451084 || RelInd == 3410201 || RelInd == 3303262  || RelInd == 3522375 || RelInd == 3174851
+                            || RelInd == 3110906 || RelInd == 2849918 || RelInd == 2699924 || RelInd == 2628022 || RelInd == 2615675 || RelInd == 3128013 || RelInd == 2909933 ) {
+                        //if (i == 1501 || i == 1425 || i == 1369 || i == 1311 || i == 1330 || i == 1328 || i == 1491 || i == 1314 || i == 1118 || i == 1112 || i == 979 || i == 963 || i == 956 || i == 871 || i == 1051 || i == 1000 || i == 789 || i == 789) {
+                        vrf = 10 * 0.01f;
+                     }
+                    // water bodies - swamps or marsh
+                    if (  RelInd == 4711808 || RelInd == 2271467 || RelInd == 2198291 || RelInd == 1863152   || RelInd == 3565702 || RelInd == 2520579 || RelInd == 2664513 || RelInd == 2349805) {
+                        // if (i == 1881 || i == 722 || i == 480 || i == 440 || i == 618 || i == 618 || i == 889 || i == 866 || i == 771 || i == 1410) {
+                        vrf = 5 * 0.01f;
+                     }
+                    // C==>Flood Control
+                    if ( RelInd == 4723635|| RelInd == 1764204  || RelInd == 2422634 || RelInd == 1759289 || RelInd == 1726077  || RelInd == 2689334 || RelInd == 2547499
+                            || RelInd == 2533107 || RelInd == 2316518 || RelInd == 1635713 || RelInd == 1683091 || RelInd == 1618065 || RelInd == 1840563 || RelInd == 1276451) {
+                        //  if (i == 708 || i == 618 || i == 789 || i == 457 || i == 359  || i == 1434 || i == 911 || i == 913 || i == 872 || i == 737 || i == 298 || i == 417 || i == 335 || i == 461 || i == 261) {
+                        vrf = 0.01f;
+                       }
+                    // Reservoirs that were removed because they do not have any effect
+                    if(RelInd == 3503922 || RelInd == 2218083 || RelInd == 692198 || RelInd == 3999836|| RelInd == 3718152 )
+                    {
+                          vrf = 1f;
+                           }
+                }
+
+
+                metaBuffer.write("," + vrf);
+
+                metaBuffer.write("\n");
+                //System.out.println("hb " + hb[0][i] + " Hh " + Hh[0][i] + " MaxInf " + MaxInf[0][i]);
+// OLD  thisHillsInfo.getHillslope(i)
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+
+            outputMetaFile = DirOutput + FileOutput + ".listComplete";
+
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            float[][] hortonOrders = mylinksAnalysis.getVarValues(4);
+            System.out.println("mylinksAnalysis.contactsArray.length = " + mylinksAnalysis.contactsArray.length + " mylinksAnalysis.nextLinkArray.length " + mylinksAnalysis.nextLinkArray.length);
+            // metaBuffer.write("" + mylinksAnalysis.contactsArray.length + "\n");
+            // metaBuffer.write("\n");
+
+            for (int i = 0; i < mylinksAnalysis.contactsArray.length; i++) {
+                 int X = mylinksAnalysis.contactsArray[i] % metaModif.getNumCols();
+                        int Y = mylinksAnalysis.contactsArray[i] / metaModif.getNumCols();
+                        double Long = metaModif.getMinLon() + X * metaModif.getResLat() / 3600.;
+                        double Lat = metaModif.getMinLat() + Y * metaModif.getResLat() / 3600.;
+                        
+                if (mylinksAnalysis.nextLinkArray[i] > 0) {
+
+                    metaBuffer.write(i + "," + mylinksAnalysis.contactsArray[i] + "," + hortonOrders[0][i] + "," + Lat + "," + Long +  "," + mylinksAnalysis.contactsArray[mylinksAnalysis.nextLinkArray[i]] + "," + upAreas[0][i] + "," + lenghts[0][i] + "," + areas[0][i]);
+                } else {
+                    metaBuffer.write(i + "," + mylinksAnalysis.contactsArray[i] + "," + hortonOrders[0][i] + "," + Lat + "," + Long + "-1" + "," + upAreas[0][i] + "," + lenghts[0][i] + "," + areas[0][i]);
+                }
+                metaBuffer.write("," + mylinksAnalysis.connectionsArray[i].length);
+                for (int j = 0; j < mylinksAnalysis.connectionsArray[i].length; j++) {
+                    metaBuffer.write("," + mylinksAnalysis.contactsArray[mylinksAnalysis.connectionsArray[i][j]]);
+                }
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+            outputMetaFile = DirOutput + FileOutput + ".sav";
+
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write(i + "\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+           
+            
+
+            //Dir = "D:/usr/ArcGisLayers/Haiti/Rasters/Topography/";
+            String Output = DirOutput + FileOutput + "MP";
+            metaModif.setLocationBinaryFile(new java.io.File(Directory + DEMName + ".horton"));
+            metaModif.setFormat("Byte");
+            byte[][] HortonLinks = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+            metaModif.setFormat("Double");
+            //metaModif.setLocationBinaryFile(new java.io.File(pathinput + "AveragedIowaRiverAtColumbusJunctions" + ".corrDEM"));
+            metaModif.setLocationBinaryFile(new java.io.File(Directory + DEMName + ".corrDEM"));
+
+            double[][] DEM = new hydroScalingAPI.io.DataRaster(metaModif).getDouble();
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada Matrix;
+            Matrix = new hydroScalingAPI.modules.rainfallRunoffModel.objects.Gen_MatrixPintada(Output, laCuenca, mylinksAnalysis, metaModif, matDirs, HortonLinks, magnitudes, DEM);
+            
+            if(flag>=2) {
+                  java.io.File SOILMFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/NLDAS/MSTAV0-200_VHC/2006/NLDAS2-MSTAV0-200.metavhc");
+            hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager SOILM;
+            SOILM = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager(SOILMFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes);
+            if (!SOILM.isCompleted()) {
+                System.out.println("Problem with SOILM");
+                return;
+            }
+            thisHillsInfo.setSoilMoistureManager(SOILM);
+
+            outputMetaFile = DirOutput + FileOutput + "2006.ini";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            metaBuffer.write("31\n");
+            metaBuffer.write(mylinksAnalysis.contactsArray.length + "\n");
+            metaBuffer.write("0 \n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                double currTime = SOILM.SOILM040InitialTimeInMinutes();
+                double INIC = thisHillsInfo.SoilMoisture(i, currTime);
+                if (INIC < 0) {
+                    System.out.println("check the current time of the file\n");
+                    System.exit(1);
+                }
+
+                //System.out.println(1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, 0) + "\n");
+                //System.out.println("i=" + i + " "+ 1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                double inidisch=0.08*Math.pow(upAreas[0][i],0.87);
+                metaBuffer.write(inidisch + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                //metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+
+            SOILMFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/NLDAS/MSTAV0-200_VHC/2004/NLDAS2-MSTAV0-200.metavhc");
+            //      hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager SOILM;
+            SOILM = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager(SOILMFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes);
+            if (!SOILM.isCompleted()) {
+                System.out.println("Problem with SOILM");
+                return;
+            }
+            thisHillsInfo.setSoilMoistureManager(SOILM);
+            outputMetaFile = DirOutput + FileOutput + "2004.ini";
+           
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            metaBuffer.write("31\n");
+            metaBuffer.write(mylinksAnalysis.contactsArray.length + "\n");
+            metaBuffer.write("0 \n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                double currTime = SOILM.SOILM040InitialTimeInMinutes();
+                double INIC = thisHillsInfo.SoilMoisture(i, currTime);
+                if (INIC < 0) {
+                    System.out.println("check the current time of the file\n");
+                    System.exit(1);
+                }
+
+                //System.out.println(1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, 0) + "\n");
+                //System.out.println("i=" + i + " "+ 1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                double inidisch=0.08*Math.pow(upAreas[0][i],0.87);
+                metaBuffer.write(inidisch + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                //metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+
+            SOILMFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/NLDAS/MSTAV0-200_VHC/2005/NLDAS2-MSTAV0-200.metavhc");
+            //      hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager SOILM;
+            SOILM = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager(SOILMFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes);
+            if (!SOILM.isCompleted()) {
+                System.out.println("Problem with SOILM");
+                return;
+            }
+            thisHillsInfo.setSoilMoistureManager(SOILM);
+            outputMetaFile = DirOutput + FileOutput + "2005.ini";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            // metaBuffer.write("30\n");
+            metaBuffer.write("31\n");
+            metaBuffer.write(mylinksAnalysis.contactsArray.length + "\n");
+            metaBuffer.write("0 \n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                double currTime = SOILM.SOILM040InitialTimeInMinutes();
+                double INIC = thisHillsInfo.SoilMoisture(i, currTime);
+                if (INIC < 0) {
+                    System.out.println("check the current time of the file\n");
+                    System.exit(1);
+                }
+
+                //System.out.println(1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, 0) + "\n");
+                //System.out.println("i=" + i + " "+ 1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                double inidisch=0.08*Math.pow(upAreas[0][i],0.87);
+                metaBuffer.write(inidisch + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                //metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+
+            SOILMFile = new java.io.File("D:/usr/Delaware_luciana/CUENCASDelaware/Rasters/Hydrology/NLDAS/MSTAV0-200_VHC/2011/NLDAS2-MSTAV0-200.metavhc");
+            //      hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager SOILM;
+            SOILM = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SoilMoistureManager(SOILMFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes);
+            if (!SOILM.isCompleted()) {
+                System.out.println("Problem with SOILM");
+                return;
+            }
+            thisHillsInfo.setSoilMoistureManager(SOILM);
+           outputMetaFile = DirOutput + FileOutput + "2011.ini";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            metaBuffer.write("31\n");
+            metaBuffer.write(mylinksAnalysis.contactsArray.length + "\n");
+            metaBuffer.write("0 \n");
+            metaBuffer.write("\n");
+            for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                metaBuffer.write("" + i + "\n");
+                double currTime = SOILM.SOILM040InitialTimeInMinutes();
+                double INIC = thisHillsInfo.SoilMoisture(i, currTime);
+                if (INIC < 0) {
+                    System.out.println("check the current time of the file\n");
+                    System.exit(1);
+                }
+
+                //System.out.println(1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, 0) + "\n");
+                //System.out.println("i=" + i + " "+ 1e-6 + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                double inidisch=0.08*Math.pow(upAreas[0][i],0.87);
+                metaBuffer.write(inidisch + " " + 0.0 + " " + 1e-6 + " " + thisHillsInfo.SoilMoisture(i, currTime) + "\n");
+                //metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+            //Dir = "D:/usr/ArcGisLayers/Haiti/Rasters/Topography/";
+         
+            }
+        } catch (java.io.IOException IOE) {
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+
+    public static void IowaAllLinks(String args[]) {
+
+        int x = 5142;
+        int y = 446;
+        double vh = 0.1;
+        double vr = 0.33;
+
+//Delaware trenton
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat) number2;
+        dpoint2.applyPattern("0.00000000");
+        float[] RCAr = {0.45f};
+        float[] VRCoefAr = {0.01f};
+
+        for (float RC : RCAr) {
+            for (float VRCoef : VRCoefAr) {
+
+                try {
+
+                    //java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.metaDEM");
+                    java.io.File theFile = new java.io.File("D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res.metaDEM");
+
+                    hydroScalingAPI.io.MetaRaster metaModif = new hydroScalingAPI.io.MetaRaster(theFile);
+                    metaModif.setLocationBinaryFile(new java.io.File("D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res.dir"));
+
+                    metaModif.setFormat("Byte");
+                    byte[][] matDirs = new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+                    metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0, theFile.getPath().lastIndexOf(".")) + ".magn"));
+                    metaModif.setFormat("Integer");
+                    int[][] magnitudes = new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+                    hydroScalingAPI.util.geomorphology.objects.Basin laCuenca = new hydroScalingAPI.util.geomorphology.objects.Basin(x, y, matDirs, metaModif);
+
+                    LinksAnalysis mylinksAnalysis = new LinksAnalysis(laCuenca, metaModif, matDirs);
+                    hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo thisNetworkGeom = new hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo(mylinksAnalysis);
+                    hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo thisHillsInfo = new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo(mylinksAnalysis);
+                    String LandUse = "null";
+                    String SoilData = "null";
+                    String SoilHydData = "null";
+                    String Soil150SWAData = "null";
+
+                    java.io.File LandUseFile = new java.io.File(LandUse);
+                    java.io.File SoilFile = new java.io.File(SoilData);
+                    java.io.File SoilHydFile = new java.io.File(SoilHydData);
+                    java.io.File SwaFileFile = new java.io.File(Soil150SWAData);
+
+                    hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSObj;
+                    java.io.File DEMFile = metaModif.getLocationMeta();
+
+                    SCSObj = new hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager(DEMFile, LandUseFile, SoilFile, SoilHydFile, SwaFileFile, laCuenca, mylinksAnalysis, metaModif, matDirs, magnitudes, 0);
+                    thisHillsInfo.setSCSManager(SCSObj);
+
+                    float[][] upAreas = mylinksAnalysis.getVarValues(2);
+                    float[][] areas = mylinksAnalysis.getVarValues(0);
+                    float[][] lenghts = mylinksAnalysis.getVarValues(1);
+                    java.io.File outputDirectory = new java.io.File("D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/ScottCodeFiles/InputFiles/");
+                    outputDirectory.mkdirs();
+                    String outputMetaFile = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/ScottCodeFiles/InputFiles/Del" + x + "_" + y + ".rvr";
+
+                    java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                    metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+                    metaBuffer.write("\n");
+                    for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                        metaBuffer.write("" + i + "\n");
+                        metaBuffer.write("" + mylinksAnalysis.connectionsArray[i].length);
+
+                        for (int j = 0; j < mylinksAnalysis.connectionsArray[i].length; j++) {
+                            metaBuffer.write(" " + mylinksAnalysis.connectionsArray[i][j]);
+                        }
+
+                        metaBuffer.write("\n");
+                        metaBuffer.write("\n");
+
+                    }
+                    metaBuffer.write("\n");
+
+                    metaBuffer.close();
+
+                    outputMetaFile = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/ScottCodeFiles/InputFiles/Del_50_" + x + "_" + y + "_" + RC + "VR" + vr + ".prm";
+                    System.out.printf(outputMetaFile);
+//L_i,A_h,A_i,h_b,h_H,max_inf_rate,K_sat,S_h,eta,b_H,c_H,d_H,invtau,epsilon,c_1,c_2,c_3,c_4,c_5,c_6
+                    metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                    metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+                    metaBuffer.write("\n");
+
+                    for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                        double vrf = vr;
+                        // H==> Hydro-power     
+
+                        metaBuffer.write(i + "\n");
+                        metaBuffer.write(upAreas[0][i] + " " + lenghts[0][i] + " " + areas[0][i] + " ");
+                        metaBuffer.write(RC + " " + "0.4" + " " + thisNetworkGeom.Slope(i) + " " + vrf + "\n");
+                        // OLD  thisHillsInfo.getHillslope(i)
+                        metaBuffer.write("\n");
+                    }
+                    metaBuffer.write("\n");
+
+                    metaBuffer.close();
+
+                    outputMetaFile = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/ScottCodeFiles/InputFiles/Del_" + x + "_" + y + ".listComplete";
+                    metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                    float[][] hortonOrders = mylinksAnalysis.getVarValues(4);
+                    System.out.println("mylinksAnalysis.contactsArray.length = " + mylinksAnalysis.contactsArray.length + " mylinksAnalysis.nextLinkArray.length " + mylinksAnalysis.nextLinkArray.length);
+                    // metaBuffer.write("" + mylinksAnalysis.contactsArray.length + "\n");
+                    // metaBuffer.write("\n");
+
+                    for (int i = 0; i < mylinksAnalysis.contactsArray.length; i++) {
+                        int X = mylinksAnalysis.contactsArray[i] % metaModif.getNumCols();
+                        int Y = mylinksAnalysis.contactsArray[i] / metaModif.getNumCols();
+                        double Long = metaModif.getMinLon() + X * metaModif.getResLat() / 3600.;
+                        double Lat = metaModif.getMinLat() + Y * metaModif.getResLat() / 3600.;
+                        metaBuffer.write(i + "," + mylinksAnalysis.contactsArray[i] + "," + hortonOrders[0][i] + "," + X + "," + Y + "," + Lat + "," + Long + "," + upAreas[0][i] + "," + lenghts[0][i] + "," + areas[0][i]);
+
+                        if (mylinksAnalysis.connectionsArray[i].length > 0) {
+                            metaBuffer.write("," + mylinksAnalysis.connectionsArray[i].length);
+                        } else {
+                            metaBuffer.write("," + "-1");
+                        }
+
+                        for (int j = 0; j < mylinksAnalysis.connectionsArray[i].length; j++) {
+                            metaBuffer.write("," + mylinksAnalysis.contactsArray[mylinksAnalysis.connectionsArray[i][j]]);
+                        }
+                        metaBuffer.write("\n");
+                    }
+                    metaBuffer.write("\n");
+
+                    metaBuffer.close();
+
+                    outputMetaFile = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/ScottCodeFiles/InputFiles/Del_" + x + "_" + y + ".listCompleteOrder";
+                    metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                    //float[][] hortonOrders = mylinksAnalysis.getVarValues(4);
+                    System.out.println("mylinksAnalysis.contactsArray.length = " + mylinksAnalysis.contactsArray.length + " mylinksAnalysis.nextLinkArray.length " + mylinksAnalysis.nextLinkArray.length);
+                    // metaBuffer.write("" + mylinksAnalysis.contactsArray.length + "\n");
+                    // metaBuffer.write("\n");
+/////////////////HERE
+
+                    for (int i = 0; i < mylinksAnalysis.completeStreamLinksArray.length; i++) {
+                        metaBuffer.write(mylinksAnalysis.completeStreamLinksArray[i] + "\n");
+                    }
+                    metaBuffer.write("\n");
+
+                    metaBuffer.close();
+                    outputMetaFile = "D:/usr/Iowa/HydrologicalStudies/Iowa_Rivers_DB/ScottCodeFiles/InputFiles/Del_" + x + "_" + y + ".sav";
+                    metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                    //metaBuffer.write(""+mylinksAnalysis.completeStreamLinksArray.length+"\n");
+                    //metaBuffer.write("\n");
+                    for (int i = 0; i < mylinksAnalysis.connectionsArray.length; i++) {
+                        metaBuffer.write(i + "\n");
+                    }
+                    metaBuffer.write("\n");
+
+                    metaBuffer.close();
+
+                } catch (java.io.IOException IOE) {
+                    System.out.print(IOE);
+                    System.exit(0);
+                }
+            }
+        }
+        System.exit(0);
+
+    }
+
+
+
     public static void main_MODLU(String args[]) {
 
         java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
