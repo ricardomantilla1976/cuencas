@@ -165,8 +165,9 @@ public class drainageDensity {
     public static void main(String[] args) {
         
         //try {
-            main1(args);
+            //main1(args);
             //main2(args);
+            main3(args); //Creates basin divides
 
 //        } catch(java.io.IOException IOE){
 //            System.err.println(IOE);
@@ -222,6 +223,37 @@ public class drainageDensity {
             String formatoOriginal=metaModif.getFormat();
             metaModif.setFormat("Byte");
             byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+            new drainageDensity(x_outlet,y_outlet,matDirs,metaModif);
+
+        } catch(java.io.IOException IOE){
+            System.err.println(IOE);
+        }
+        
+    }
+    
+    public static void main3(String[] args) {
+        
+        //StringTokenizer tokenizer = new StringTokenizer("B_26	1104	474	B_26");
+        StringTokenizer tokenizer = new StringTokenizer(args[0]);
+        String path = "/hidrosigDataBases/Continental_US_database/Rasters/";
+        String filepath = path + "Topography/Dd_Basins_1_ArcSec/" + tokenizer.nextToken();
+        int x_outlet = Integer.parseInt(tokenizer.nextToken());
+        int y_outlet = Integer.parseInt(tokenizer.nextToken());
+        String filename = filepath + "/" + tokenizer.nextToken();
+        
+        try {
+            java.io.File theFile=new java.io.File(filename + ".metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File(filename + ".dir"));
+
+            String formatoOriginal=metaModif.getFormat();
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
 
             new drainageDensity(x_outlet,y_outlet,matDirs,metaModif);
 

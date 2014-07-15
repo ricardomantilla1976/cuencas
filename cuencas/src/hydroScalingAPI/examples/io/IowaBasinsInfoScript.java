@@ -721,7 +721,7 @@ public class IowaBasinsInfoScript{
 //                                                   {"/Users/ricardo/rawData/BasinMasks/medium_cities/","/Volumes/ricardo/temp/iowa_basins_data1/medium_cities/"},
 //                                                   {"/Users/ricardo/rawData/BasinMasks/small_cities/","/Volumes/ricardo/temp/iowa_basins_data1/small_cities/"},
 //                                                   {"/Users/ricardo/rawData/BasinMasks/ifc_sensors/","/Volumes/ricardo/temp/iowa_basins_data1/ifc_sensors/"},
-                                                   {"/Users/ricardo/rawData/BasinMasks/ifis_locations/","/Volumes/ricardo/temp/iowa_basins_data1/ifis_locations/"}
+                                                   {"/Users/ricardo/rawData/BasinMasks/ifis_locations/","/Users/ricardo/rawData/FinalBasinMasks/ifis_locations/"}
                                                   };
 
 

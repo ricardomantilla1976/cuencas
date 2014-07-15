@@ -57,7 +57,7 @@ public class MetaFullNetToKML {
         newfile.write("  <name>RiverNetwork_"+uniqueIdentifier+".kml</name>"+ret);
         newfile.write("  <open>0</open>"+ret);
         
-        for(int i=2;i<=netStructure.getLargestOrder();i++){
+        for(int i=1;i<=netStructure.getLargestOrder();i++){
             newfile.write("  <Style id=\"linestyleO"+i+"\">"+ret);
             newfile.write("    <LineStyle>"+ret);
             newfile.write("      <color>7f"+Integer.toHexString(i*20)+"0000</color>"+ret);
@@ -65,7 +65,8 @@ public class MetaFullNetToKML {
             newfile.write("    </LineStyle>"+ret);
             newfile.write("  </Style>"+ret);
         }
-        for(int i=2;i<=netStructure.getLargestOrder();i++){
+        for(int i=1;i<=netStructure.getLargestOrder();i++){
+            System.out.println("Working on order "+i+"s");
             newfile.write("  <Folder>"+ret);
             newfile.write("    <name>Order "+i+" Streams</name>"+ret);
             newfile.write("    <visibility>1</visibility>"+ret);
@@ -115,8 +116,11 @@ public class MetaFullNetToKML {
 //            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011";
 //            String uniqueIdentifier="ClearCreekDEM";
             
-            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res";
-            String uniqueIdentifier="Iowa100mDEM";
+//            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res";
+//            String uniqueIdentifier="Iowa100mDEM";
+
+            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem";
+            String uniqueIdentifier="Iowa30mDEM";
 
 //            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver";
 //            int x=7875, y= 1361;

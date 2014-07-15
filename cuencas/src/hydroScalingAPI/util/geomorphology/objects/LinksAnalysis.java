@@ -282,11 +282,11 @@ public class LinksAnalysis extends java.lang.Object {
         int myOrder,frontOrder;
 
         for(int i=0;i<nextLinkArray.length;i++){
-            fileHorton.seek(contactsArray[i]);
+            fileHorton.seek((long)contactsArray[i]);
             myOrder=fileHorton.readByte();
             basinOrder=Math.max(basinOrder,myOrder);
             if (nextLinkArray[i] > 0){
-                fileHorton.seek(contactsArray[nextLinkArray[i]]);
+                fileHorton.seek((long)contactsArray[nextLinkArray[i]]);
                 frontOrder=fileHorton.readByte();
                 if (frontOrder>myOrder){
                     linksCompletos.addElement(new int[] {i});
@@ -663,7 +663,7 @@ public class LinksAnalysis extends java.lang.Object {
             case 0:
                 //Link's Hillslope Area.  This is done by subtraction of area at head and area at incoming links head
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(4*contactsArray[i]);
+                    fileQuantity.seek((long)4*(long)contactsArray[i]);
                     
                     quantityArray[0][i]=fileQuantity.readFloat();
                     
@@ -674,7 +674,7 @@ public class LinksAnalysis extends java.lang.Object {
                     float pixelarea=pixelsize*pixelsize*1e-6f;
                     
                     for (int j=0;j<connectionsArray[i].length;j++){
-                        fileQuantity.seek(4*contactsArray[connectionsArray[i][j]]);
+                        fileQuantity.seek((long)4*(long)contactsArray[connectionsArray[i][j]]);
                         tempVar2[j]=fileQuantity.readFloat();
                         quantityArray[0][i]-=tempVar2[j];
                         
@@ -700,10 +700,10 @@ public class LinksAnalysis extends java.lang.Object {
                 //Link's Length.  This is done by subtraction of tcl at head and tcl at incoming links head
 
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(4*contactsArray[i]);
+                    fileQuantity.seek((long)4*(long)contactsArray[i]);
                     quantityArray[0][i]=fileQuantity.readFloat();
                     for (int j=0;j<connectionsArray[i].length;j++){
-                        fileQuantity.seek(4*contactsArray[connectionsArray[i][j]]);
+                        fileQuantity.seek((long)4*(long)contactsArray[connectionsArray[i][j]]);
                         quantityArray[0][i]-=fileQuantity.readFloat();
                     }
                 }
@@ -713,7 +713,7 @@ public class LinksAnalysis extends java.lang.Object {
                 //Link's Upstream area.
 
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(4*contactsArray[i]);
+                    fileQuantity.seek((long)4*(long)contactsArray[i]);
                     quantityArray[0][i]=fileQuantity.readFloat();
                 }
 
@@ -722,10 +722,11 @@ public class LinksAnalysis extends java.lang.Object {
                 //Link's drop
 
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(8*headsArray[i]);
+                    fileQuantity.seek((long)8*(long)headsArray[i]);
                     double altUp=fileQuantity.readDouble();
-                    fileQuantity.seek(8*tailsArray[i]);
-                    quantityArray[0][i]=(float) (altUp-fileQuantity.readDouble());
+                    fileQuantity.seek((long)8*(long)tailsArray[i]);
+                    double altDn=fileQuantity.readDouble();
+                    if(altDn>0) quantityArray[0][i]=(float) (altUp-altDn);
                 }
 
                 break;
@@ -733,7 +734,7 @@ public class LinksAnalysis extends java.lang.Object {
                 //Link's order
 
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(headsArray[i]);
+                    fileQuantity.seek((long)headsArray[i]);
                     quantityArray[0][i]=(float) fileQuantity.readByte();
                 }
 
@@ -742,7 +743,7 @@ public class LinksAnalysis extends java.lang.Object {
                 //Total Channel Length
 
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(4*contactsArray[i]);
+                    fileQuantity.seek((long)4*(long)contactsArray[i]);
                     quantityArray[0][i]=(float) fileQuantity.readFloat();
                 }
 
@@ -751,7 +752,7 @@ public class LinksAnalysis extends java.lang.Object {
                 //Link's Magnitude
 
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(4*contactsArray[i]);
+                    fileQuantity.seek((long)4*(long)contactsArray[i]);
                     quantityArray[0][i]=fileQuantity.readInt();
                 }
 
@@ -761,13 +762,13 @@ public class LinksAnalysis extends java.lang.Object {
                 float GoToB;
 
                 if(basin != null){
-                    fileQuantity.seek(4*basin.getOutletID());
+                    fileQuantity.seek((long)4*(long)basin.getOutletID());
                     GoToB=fileQuantity.readFloat();
                 } else {
                     GoToB=0;
                 }
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(4*headsArray[i]);
+                    fileQuantity.seek((long)4*(long)headsArray[i]);
                     quantityArray[0][i]=fileQuantity.readFloat()-GoToB;
                 }
 
@@ -777,13 +778,13 @@ public class LinksAnalysis extends java.lang.Object {
                 int ToToB;
 
                 if(basin != null){
-                    fileQuantity.seek(4*basin.getOutletID());
+                    fileQuantity.seek((long)4*(long)basin.getOutletID());
                     ToToB=fileQuantity.readInt();
                 } else {
                     ToToB=0;
                 }
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(4*tailsArray[i]);
+                    fileQuantity.seek((long)4*(long)tailsArray[i]);
                     quantityArray[0][i]=fileQuantity.readInt()-ToToB+1;
                 }
 
@@ -794,9 +795,9 @@ public class LinksAnalysis extends java.lang.Object {
                 float[][] linkLengths=getVarValues(1);
 
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(8*headsArray[i]);
+                    fileQuantity.seek((long)8*(long)headsArray[i]);
                     double altUp=fileQuantity.readDouble();
-                    fileQuantity.seek(8*tailsArray[i]);
+                    fileQuantity.seek((long)8*(long)tailsArray[i]);
                     quantityArray[0][i]=(float) (altUp-fileQuantity.readDouble());
 
                     quantityArray[0][i]/=linkLengths[0][i]*1000;
@@ -807,7 +808,7 @@ public class LinksAnalysis extends java.lang.Object {
                 //Link's Elevation
 
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(8*headsArray[i]);
+                    fileQuantity.seek((long)8*(long)headsArray[i]);
                     quantityArray[0][i]=(float) (fileQuantity.readDouble());
                 }
 
@@ -816,7 +817,7 @@ public class LinksAnalysis extends java.lang.Object {
                 //Longest Channel Length
 
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(4*contactsArray[i]);
+                    fileQuantity.seek((long)4*(long)contactsArray[i]);
                     quantityArray[0][i]=fileQuantity.readFloat();
                 }
 
@@ -831,7 +832,7 @@ public class LinksAnalysis extends java.lang.Object {
                 //Total Channel Drop
 
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(4*contactsArray[i]);
+                    fileQuantity.seek((long)4*(long)contactsArray[i]);
                     quantityArray[0][i]=fileQuantity.readFloat();
                     if(quantityArray[0][i] == 0) quantityArray[0][i]=1E-5f;
                 }
@@ -840,7 +841,7 @@ public class LinksAnalysis extends java.lang.Object {
             case 14:
                 // Links Upstream Area at Head
                 for (int i=0;i<quantityArray[0].length;i++){
-                    fileQuantity.seek(4*headsArray[i]);
+                    fileQuantity.seek((long)4*(long)headsArray[i]);
                     quantityArray[0][i]=fileQuantity.readFloat();
                 }
                 break;
@@ -948,14 +949,82 @@ public class LinksAnalysis extends java.lang.Object {
         //main10(args);  // Writing connectivity for Equation (Evaluation by Walter)
         //main11(args);  // Writing connectivity for Scott's code directly (2 files .rvr and .prm)
         //main12(args);  // Writing connectivity for Chi's code (Clear Creek Case)
-        main12_1(args);  // Writing connectivity for Chi's code (Squaw Creek Case)
+        //main12_1(args);  // Writing connectivity for Chi's code (Squaw Creek Case)
         //mainScott_Type50(args);
         //IowaAllLinks(args);
-        mainScott_Type31Geral(args);
+        //mainScott_Type31Geral(args);
         //mainScott_Type30(args);
         //mainScott_Type31(args);
+        mainTibebuIowaDEM(args);
 
     }
+    
+    /**
+     * Tests for the class
+     * @param args the command line arguments
+     */
+    public static void mainTibebuIowaDEM(String args[]) {
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try{
+
+            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem.metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem.dir"));
+
+            String formatoOriginal=metaModif.getFormat();
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(23426,2735,matDirs,metaModif);
+
+            LinksAnalysis linksStructure=new LinksAnalysis(laCuenca, metaModif, matDirs);
+
+            theFile=new java.io.File("/Users/ricardo/temp/IowaRiverBasin.wfs.csv");
+            System.out.println("Writing Width Functions - "+theFile);
+            java.io.FileOutputStream salida = new java.io.FileOutputStream(theFile);
+            java.io.BufferedOutputStream bufferout = new java.io.BufferedOutputStream(salida);
+            java.io.OutputStreamWriter newfile = new java.io.OutputStreamWriter(bufferout);
+
+            double[][] wfs=linksStructure.getWidthFunctions(linksStructure.completeStreamLinksArray,0);
+
+            for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
+                if(linksStructure.magnitudeArray[linksStructure.completeStreamLinksArray[i]] != 1){
+                    newfile.write("Link #"+linksStructure.completeStreamLinksArray[i]+",");
+                    double maxWF=0.0;
+                    for (int j=0;j<wfs[i].length;j++) maxWF=Math.max(maxWF,wfs[i][j]);
+                    newfile.write(maxWF+"\n");
+                }
+
+            }
+            
+            int outletID=linksStructure.getOutletID();
+            
+            for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
+                if(linksStructure.completeStreamLinksArray[i] == outletID){
+                    newfile.write("Link #"+linksStructure.completeStreamLinksArray[i]+",");
+                    for (int j=0;j<wfs[i].length;j++) newfile.write(wfs[i][j]+",");
+                    newfile.write("\n");
+                }
+
+            }
+
+            newfile.close();
+            bufferout.close();
+            
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+
+    
 
     /**
      * Tests for the class
@@ -3405,18 +3474,19 @@ System.out.println("X  " +x  + "   Y  " +  y);
             float[][] upAreas=mylinksAnalysis.getVarValues(2);
             float[][] areas=mylinksAnalysis.getVarValues(0);
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
+            float[][] drops=mylinksAnalysis.getVarValues(3);
             
             String outputMetaFile="/Users/ricardo/temp/NextLinkClearCreek.txt";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write("Number of Links\n");
             metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
-            metaBuffer.write("Link-ID Num-connected-links List-of-connected-links Length[km] Area[km^2] upArea[km^2]"+"\n");
+            metaBuffer.write("Link-ID Num-connected-links List-of-connected-links Length[km] Area[km^2] upArea[km^2] Slope[*]"+"\n");
             for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
                 metaBuffer.write(""+i+" "+mylinksAnalysis.connectionsArray[i].length);
                 for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
                     metaBuffer.write(" "+mylinksAnalysis.connectionsArray[i][j]);
-                metaBuffer.write(" "+lenghts[0][i]+" "+areas[0][i]+" "+upAreas[0][i]+"\n");
+                metaBuffer.write(" "+lenghts[0][i]+" "+areas[0][i]+" "+upAreas[0][i]+" "+Math.max(0.0001,drops[0][i]/(lenghts[0][i]*1000))+"\n");
             }
 
             metaBuffer.close();
@@ -3893,9 +3963,13 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
         try{
 
-            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res.metaDEM");
+            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem.metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res.dir"));
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem.dir"));
+
+//            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res.dir"));
 
 //            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/DryCreek/NED_79047246.metaDEM");
 //            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
@@ -3905,6 +3979,9 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 //            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
 //            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Goodwin_Creek_MS_database/Rasters/Topography/1_ArcSec_USGS/newDEM/goodwinCreek-nov03.dir"));
 
+            
+            System.out.println(">> Starting up");
+
             metaModif.setFormat("Byte");
             byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
 
@@ -3912,8 +3989,98 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             metaModif.setFormat("Integer");
             int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
 
-            LinksAnalysis mylinksAnalysis=new LinksAnalysis(metaModif, matDirs);
+            System.out.println(">> Reading Matrixes Completed");
 
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(metaModif, matDirs);
+            
+            System.out.println(">> LinkAnalysis Completed");
+
+//            int[][] matrizPintada=new int[metaModif.getNumRows()][metaModif.getNumCols()];
+//            int[] headsTails=mylinksAnalysis.contactsArray;
+//
+//            hydroScalingAPI.util.geomorphology.objects.HillSlope myHillActual;
+//
+//            int numCols=metaModif.getNumCols();
+//            int numRows=metaModif.getNumRows();
+//            
+//            for(int i=0;i<headsTails.length;i++){
+//            //for(int i=0;i<10;i++){
+//                int xOulet=headsTails[i]%numCols;
+//                int yOulet=headsTails[i]/numCols;
+//
+//                int tileColor=i+2;
+//                myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
+//                int elementsInTile=myHillActual.getXYHillSlope()[0].length;
+//                for (int j=0;j<elementsInTile;j++){
+//                    matrizPintada[myHillActual.getXYHillSlope()[1][j]][myHillActual.getXYHillSlope()[0][j]]=tileColor;
+//                }
+//                myHillActual=null;
+//                
+//                if(i%1000 == 0) {
+//                    System.out.println(">> GC call - "+i+" out of "+headsTails.length);
+//                    System.gc();
+//                }
+//            }
+//
+//            System.out.println(">> Matrix Pintada Completed");
+//
+//            //CREATE MASK FILE FOR IOWA (Starting at link +2)
+//
+            java.io.FileOutputStream        outputDir;
+            java.io.DataOutputStream        newfile;
+            java.io.BufferedOutputStream    bufferout;
+//
+//            java.io.File inputFile=new java.io.File("/Users/ricardo/rawData/IowaConnectivity/linksMask_Iowa30m.vhc");
+//
+//            outputDir = new java.io.FileOutputStream(inputFile);
+//            bufferout=new java.io.BufferedOutputStream(outputDir);
+//            newfile=new java.io.DataOutputStream(bufferout);
+//
+//            for (int i=0;i<numRows;i++) for (int j=0;j<numCols;j++) {
+//                newfile.writeFloat(matrizPintada[i][j]);
+//            }
+//            newfile.close();
+//            bufferout.close();
+//            outputDir.close();
+//            
+//            System.out.println(">> Matrix Pintada Writing Completed");
+//
+//            //Writing upstream connectivity
+//            
+            String outputMetaFile="/Users/ricardo/temp/Iowa30Connectivity.txt";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//
+//            metaBuffer.write("Number of Links\n");
+//            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+//            metaBuffer.write("Link-ID;Num-connected-links;List-of-connected-links;Length[km];Area[km^2];upArea[km^2]"+"\n");
+//            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+//                metaBuffer.write(""+(i+2)+";"+mylinksAnalysis.connectionsArray[i].length);
+//                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
+//                    metaBuffer.write(";"+(mylinksAnalysis.connectionsArray[i][j]+2));
+//            }
+//            
+//            metaBuffer.close();
+//            
+//            System.out.println(">> Upstream Connectivity Writing Completed");
+//            
+//            
+//            //Writing downstream connectivity
+//            
+//            outputMetaFile="/Users/ricardo/temp/NextLinkIowa.csv";
+//            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//
+//            metaBuffer.write("Number of Links\n");
+//            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
+//
+//            metaBuffer.write("Link-ID;DownstreamLink-ID"+"\n");
+//            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+2)+";"+(mylinksAnalysis.nextLinkArray[i]+2)+"\n");
+//
+//            metaBuffer.close();
+//
+//            System.out.println(">> Downstream Connectivity Writing Completed");
+            
+            //Writing LinksInfo
+            
             float[][] upAreas=mylinksAnalysis.getVarValues(2);
             float[][] areas=mylinksAnalysis.getVarValues(0);
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
@@ -3921,11 +4088,10 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             float[][] longest=mylinksAnalysis.getVarValues(11);
             float[][] hortonO=mylinksAnalysis.getVarValues(4);
             
-
-            String outputMetaFile="/Users/ricardo/temp/DataLinksIowa.txt";
+            outputMetaFile="/Users/ricardo/temp/DataLinksIowa30.txt";
             //String outputMetaFile="/Users/ricardo/temp/IowaConnectivity.txt";
             //String outputMetaFile="/Users/ricardo/temp/GoodwinConnectivity.txt";
-            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
 //            metaBuffer.write("Number of Links\n");
 //            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
@@ -3945,6 +4111,12 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             }
 
             metaBuffer.close();
+            
+            System.out.println(">> Links Info Writing Completed");
+
+            System.exit(0);
+            
+            
 
 
         } catch (java.io.IOException IOE){

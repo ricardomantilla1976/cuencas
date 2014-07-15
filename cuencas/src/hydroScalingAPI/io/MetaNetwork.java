@@ -405,53 +405,52 @@ public class MetaNetwork {
         double demResLat=metaData.getResLat();
         int demNumCols=metaData.getNumCols();
 
-        java.util.Vector allStreams=new java.util.Vector();
+        //java.util.Vector allStreams=new java.util.Vector();
+        int counter =0;
         for (int i=0;i<streamRecord.length;i++){
+
             if(streamRecord[i][3] == orderRequested) {
+                counter++;
+                newfile.write("    <Placemark>"+ret);
+                newfile.write("        <name>Stream "+(int)(orderRequested*1e8+counter+1)+"</name>"+ret);
+                newfile.write("        <styleUrl>#linestyleO"+orderRequested+"</styleUrl>"+ret);
+                newfile.write("        <visibility>"+(orderRequested>4?1:0)+"</visibility>"+ret);
+                newfile.write("        <LineString>"+ret);
+                newfile.write("            <coordinates>"+ret);
+
+
                 int iniLink=streamRecord[i][4]/8;
                 int numLink=streamRecord[i][5];
+                
+                newfile.write("                  ");
+                
+                for(int j=0;j<numLink;j++){
 
-                int iniPoint=linkRecord[iniLink][4]/4;
-                int numPoint=linkRecord[iniLink][5];
+                    int iniPoint=linkRecord[iniLink+j][4]/4;
+                    int numPoint=linkRecord[iniLink+j][5];
 
-                java.util.Vector oneStream=new java.util.Vector();
-                for (int j=0;j<numLink;j++){
-                    iniPoint=linkRecord[iniLink+j][4]/4;
-                    numPoint=linkRecord[iniLink+j][5];
+                    //java.util.Vector oneStream=new java.util.Vector();
                     for (int k=0;k<numPoint;k++){
 
                         float lon=(float)((pointRecord[iniPoint+k]%demNumCols)*demResLon/3600.+demMinLon+0.5*demResLon/3600.);
                         float lat=(float)((pointRecord[iniPoint+k]/demNumCols)*demResLat/3600.+demMinLat+0.5*demResLat/3600.);
+                        newfile.write(lon+","+lat+" ");
+                        //oneStream.add(new float[] {lon,lat});
+                    }//for k
 
-                        oneStream.add(new float[] {lon,lat});
-                    }
                 }
-                allStreams.add(oneStream);
-            }
-        }
 
-        int totalNumS=allStreams.size();
-        for (int i=0;i<totalNumS;i++){
-            newfile.write("    <Placemark>"+ret);
-            newfile.write("        <name>Stream "+(int)(orderRequested*1e6+i+1)+"</name>"+ret);
-            newfile.write("        <styleUrl>#linestyleO"+orderRequested+"</styleUrl>"+ret);
-            newfile.write("        <visibility>"+(orderRequested>4?1:0)+"</visibility>"+ret);
-            String listOfStreams="";
-            java.util.Vector oneStream=(java.util.Vector)allStreams.get(i);
-            float[][] riverPath=new float[2][oneStream.size()];
-            newfile.write("        <LineString>"+ret);
-//            newfile.write("            <extrude>1</extrude>"+ret);
-//            newfile.write("            <tessellate>1</tessellate>"+ret);
-            newfile.write("            <coordinates>"+ret);
-            for (int j=0;j<riverPath[0].length;j++){
-                float[] riverNode=(float[])oneStream.get(j);
-                listOfStreams+=(riverNode[0]+","+riverNode[1]+" ");
-            }
-            newfile.write("                "+listOfStreams+ret);
-            newfile.write("            </coordinates>"+ret);
-            newfile.write("        </LineString>"+ret);
-            newfile.write("    </Placemark>"+ret);
-        }
+                newfile.write(ret);
+                newfile.write("            </coordinates>"+ret);
+                newfile.write("        </LineString>"+ret);
+                newfile.write("    </Placemark>"+ret);
+                
+                if(counter%5000 == 0) System.out.println(">> It has written "+counter);
+                
+            }//if order
+        }//i
+
+
 
     }
     

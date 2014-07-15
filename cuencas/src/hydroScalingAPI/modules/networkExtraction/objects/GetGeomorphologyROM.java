@@ -171,109 +171,187 @@ public class GetGeomorphologyROM extends Object {
                     if (GEO[i][j] < 0)
                         contn++;
                     if (GEO[i][j] == 0){
-                        GEOcero(i,j,contn);
+                        GEOcero(i,j);
                     }//en cada cero
                 }//for j
             }//for i
+            
+            System.out.println(">>> negatives are: "+contn+" which is: "+contn/(float)((GEO.length)*(GEO[0].length))*100+"%");
+            
         }while(contn < (GEO.length)*(GEO[0].length) );
         
     }
     
     //---------------------------------------------------------------------------------------------------------------------------
     
-    void GEOcero(int i, int j,int contn){
-        try{
-            double[] dist = {dxy[i],dy,dxy[i],dx[i],1,dx[i],dxy[i],dy,dxy[i]};
-            GEO[i][j] = -1;
-            esc("Ltc",i,j,true,(float)dist[Proc.DIR[i+1][j+1]-1]);
-            esc("Lcp",i,j,true,(float)dist[Proc.DIR[i+1][j+1]-1]);
-            if (llegan[i][j] == 0){
-                esc("Magn",i,j,false,(int)1);
-                esc("Orden",i,j,false,(byte)1);
-                esc("Dtopo",i,j,false,(int)1);
-            }
-            int x1=i-1+(Proc.DIR[i+1][j+1]-1)/3 ; int y1=j-1+(Proc.DIR[i+1][j+1]-1)%3;
-            if (GEO[x1][y1] >= 0 ){
-                GEO[x1][y1]--  ;
-                Magn.seek((long)4*(i*nc+j)); int m2=Magn.readInt();
-                Ltc.seek((long)4*(i*nc+j)); float lt2=Ltc.readFloat();
-                Lcp.seek((long)4*(i*nc+j)); float lc2=Lcp.readFloat();
-                Lcp.seek((long)4*(x1*nc+y1)); float lc3=Lcp.readFloat();
-                if (GEO[x1][y1] == 0)
-                    esc("Magn", x1,y1,true,m2);
-                else 
-                    esc("Magn",x1,y1,true,m2);
-                esc("Ltc",x1,y1,true,lt2);
-                esc("Lcp",x1,y1,false,Math.max(lc2,lc3));
-            }
-            if(llegan[i][j]> 0){
-                java.util.Vector diamt = new java.util.Vector(0,1);
-                java.util.Vector ord = new java.util.Vector(0,1);
-                for (int k=0; k <= 8; k++){
-                    if (Proc.DIR[1+i+(k/3)-1][1+j+(k%3)-1]==9-k && Proc.RedRas[1+i+(k/3)-1][1+j+(k%3)-1]!=0){
-                        Orden.seek((i+(k/3)-1)*nc+(j+(k%3)-1));
-                        Dtopo.seek(4*((i+(k/3)-1)*nc+(j+(k%3)-1)));
-                        ord.addElement(new Byte(Orden.readByte()));
-                        diamt.addElement(new Integer(Dtopo.readInt()));
-                    }
-                }
-                java.util.Collections.sort(ord);
-                java.util.Collections.sort(diamt);
-                if(llegan[i][j]> 1)
-                    esc("Dtopo",i,j,false,1 + new Integer(diamt.get(diamt.size()-1).toString()).intValue());
-                if(llegan[i][j]==1 )
-                    esc("Dtopo",i,j,false,new Integer(diamt.get(diamt.size()-1).toString()).intValue());
-                if (ord.size()>1){
-                    if (ord.get(ord.size()-1).equals(ord.get(ord.size()-2))){
-                        esc("Orden",i,j,false,(byte)(1 + new Byte(ord.get(ord.size()-1).toString()).byteValue()));
-                        Proc.RedRas[i+1][j+1]=-1;
-                    }
-                    else{ esc("Orden",i,j,false,new Byte(ord.get(ord.size()-1).toString()).byteValue());
-                    }
-                }
-                if (ord.size()==1){
-                    esc("Orden",i,j,false,new Byte(ord.get(0).toString()).byteValue());
-                }
-            }
-            if (llegan[x1][y1]==1 && Proc.DIR[x1+1][y1+1]>0){
-                GEOcero(x1,y1,contn);
-            }
-        }catch (java.io.IOException e1){
-            System.err.println("ERROR** "+e1.getMessage());
-        }
-    }
+    void GEOcero(int i, int j) {
+        
+                int x1=0,y1=0;
+		try {
+			double[] dist = { dxy[i], dy, dxy[i], dx[i], 1, dx[i], dxy[i], dy,
+					dxy[i] };
+			boolean needs_geocero = true;
+			int count_stream_cells =0;
+			while (needs_geocero) {
+				GEO[i][j] = -1; // de entrada asigna -1 a la matriz GEO en esa
+								// posicion -> la resuelve
+				// deberia resolverla cuando este acabado todo el procedimiento
+				// ??
+				esc("Ltc", i, j, true, (float) dist[Proc.DIR[i + 1][j + 1] - 1]);// escribe
+																					// ltc
+				esc("Lcp", i, j, true, (float) dist[Proc.DIR[i + 1][j + 1] - 1]);// escribe
+																					// lcp
+				if (llegan[i][j] == 0) { // si no le llega ninguna (si es
+											// origen) resuelve su magn, orden y
+											// dtopo
+					esc("Magn", i, j, false, (int) 1);
+					esc("Orden", i, j, false, (byte) 1);
+					esc("Dtopo", i, j, false, (int) 1);
+				}
+                                
+                                x1 = i - 1 + (Proc.DIR[i + 1][j + 1] - 1) / 3;
+				y1 = j - 1 + (Proc.DIR[i + 1][j + 1] - 1) % 3; // x1,y1 son
+																	// las
+																	// vecinas
+																	// aguas
+																	// abajo
+				if (GEO[x1][y1] >= 0) { // si a la vecina aguas abajo no se le
+										// ha resuelto su geomorfologia (GEO
+										// >=0)
+					GEO[x1][y1]--; // le descuenta uno a la GEO de la vecina,
+									// producto de haber resuelto la de aguas
+									// arriba
+                                        
+                                        long offset1=((long)4 * ((long)i * (long)nc + (long)j));
+                                        long offset2=((long)4 * ((long)x1 * (long)nc + (long)y1));
+                                        
+					Magn.seek(offset1);
+					int m2 = Magn.readInt();
+					Ltc.seek(offset1);
+					float lt2 = Ltc.readFloat();
+					Lcp.seek(offset1);
+					float lc2 = Lcp.readFloat();
+					Lcp.seek(offset2);
+					float lc3 = Lcp.readFloat();
+					// estas cuatro lineas anteriores se pueden guardar sus
+					// valores en variables para ahorrarle teimpo al seek ?
+					if (GEO[x1][y1] == 0) // si a la vecina aguas abajo
+											// unicamente le llegaba una,
+											// entonces ya ha sido resuelta y se
+											// puede escribir su magn
+						esc("Magn", x1, y1, true, m2);
+					else
+						// si a la vecina aguas abajo aun le llegan celdas, se
+						// le suma m2, lt2 y lc2/3 al archivo en la posicion
+						// x1,y1
+						esc("Magn", x1, y1, true, m2);
+					esc("Ltc", x1, y1, true, lt2);
+					esc("Lcp", x1, y1, false, Math.max(lc2, lc3));
+				}
+
+				if (llegan[i][j] > 0) { // si a la celda ij que estoy analizando
+					java.util.Vector diamt = new java.util.Vector(0, 1);
+					java.util.Vector ord = new java.util.Vector(0, 1);
+					for (int k = 0; k <= 8; k++) {
+						if (Proc.DIR[1 + i + (k / 3) - 1][1 + j + (k % 3) - 1] == 9 - k
+								&& Proc.RedRas[1 + i + (k / 3) - 1][1 + j
+										+ (k % 3) - 1] != 0) {
+                                                    
+                                                        long offset3=(((long)i + ((long)k / 3) - 1) * (long)nc + ((long)j + ((long)k % 3) - 1));
+                                                        
+							Orden.seek(offset3);
+							
+                                                        Dtopo.seek(4*offset3);
+							ord.addElement(new Byte(Orden.readByte()));
+							diamt.addElement(new Integer(Dtopo.readInt()));
+						}
+					}
+					java.util.Collections.sort(ord);
+					java.util.Collections.sort(diamt);
+					if (llegan[i][j] > 1)
+						esc("Dtopo", i, j, false,
+								1 + new Integer(diamt.get(diamt.size() - 1)
+										.toString()).intValue());
+					if (llegan[i][j] == 1)
+						esc("Dtopo", i, j, false,
+								new Integer(diamt.get(diamt.size() - 1)
+										.toString()).intValue());
+					if (ord.size() > 1) {
+						if (ord.get(ord.size() - 1).equals(
+								ord.get(ord.size() - 2))) {
+							esc("Orden", i, j, false,
+									(byte) (1 + new Byte(ord
+											.get(ord.size() - 1).toString())
+											.byteValue()));
+							Proc.RedRas[i + 1][j + 1] = -1;
+						} else {
+							esc("Orden",
+									i,
+									j,
+									false,
+									new Byte(ord.get(ord.size() - 1).toString())
+											.byteValue());
+						}
+					}
+					if (ord.size() == 1) {
+						esc("Orden", i, j, false, new Byte(ord.get(0)
+								.toString()).byteValue());
+					}
+				}
+				//si aun hay celdas aguas abajo
+				if(llegan[x1][y1]==1 && Proc.DIR[x1+1][y1+1]>0){
+				//reinicia ij para continuar el while
+				i=x1;j=y1;
+				count_stream_cells++;
+				}
+				else{
+					needs_geocero=false;
+				}
+				
+			}// needs geocero
+//			System.out.println("GEOCERO ROM non-recursive DONE "+count_stream_cells+" cells in stream");
+//			if (llegan[x1][y1] == 1 && Proc.DIR[x1 + 1][y1 + 1] > 0) {
+//				GEOcero(x1, y1, contn);
+//			}
+			
+		} catch (java.io.IOException e1) {
+			System.err.println("ERROR** " + e1.getMessage() +" started it "+i+" "+j+" failed at "+x1+" "+y1+ "nc:" +nc+" calculation1: "+(4 * (i * nc + j))+" calculation2: "+(4 * (x1 * nc + y1)));
+		}
+	}
     
     private void esc(String s, int i,int j, boolean m, byte v){
         try{
+            long offset1=(((long)i * (long)nc + (long)j));
             if (s.equals("Orden")){
-                Orden.seek((long)(i*nc+j));
+                Orden.seek(offset1);
                 if (m){
                     byte d=Orden.readByte();
-                    Orden.seek((long)(i*nc+j));
+                    Orden.seek(offset1);
                     Orden.writeByte(v+d);
                 }
                 else  Orden.writeByte(v);
             }
         }catch (java.io.IOException e1){
-            System.err.println("ERROR** "+e1.getMessage());}
+            System.err.println("ERROR1** "+e1.getMessage());}
     }
     
     private void esc(String s, int i,int j, boolean m, float v){
         try{
+            long offset1=((long)4 * ((long)i * (long)nc + (long)j));
             if (s.equals("Ltc")){
-                Ltc.seek((long)4*(i*nc+j));
+                Ltc.seek(offset1);
                 if (m){
                     float d=Ltc.readFloat();
-                    Ltc.seek((long)4*(i*nc+j));
+                    Ltc.seek(offset1);
                     Ltc.writeFloat(v+d);
                 }
                 else  Ltc.writeFloat(v);
             }
             if (s.equals("Lcp")){
-                Lcp.seek((long)4*(i*nc+j));
+                Lcp.seek(offset1);
                 if (m){
                     float d=Lcp.readFloat();
-                    Lcp.seek((long)4*(i*nc+j));
+                    Lcp.seek(offset1);
                     Lcp.writeFloat(v+d);
                 }
                 else  Lcp.writeFloat(v);
@@ -284,20 +362,21 @@ public class GetGeomorphologyROM extends Object {
     
     private void esc(String s, int i,int j, boolean m, int v){
         try{
+            long offset1=((long)4 * ((long)i * (long)nc + (long)j));
             if (s.equals("Dtopo")){
-                Dtopo.seek((long)4*(i*nc+j));
+                Dtopo.seek(offset1);
                 if (m){
                     int d=Dtopo.readInt();
-                    Dtopo.seek((long)4*(i*nc+j));
+                    Dtopo.seek(offset1);
                     Dtopo.writeInt(v+d);
                 }
                 else  Dtopo.writeInt(v);
             }
             if (s.equals("Magn")){
-                Magn.seek((long)4*(i*nc+j));
+                Magn.seek(offset1);
                 if (m){
                     int d=Magn.readInt();
-                    Magn.seek((long)4*(i*nc+j));
+                    Magn.seek(offset1);
                     Magn.writeInt(v+d);
                 }
                 else
@@ -306,5 +385,13 @@ public class GetGeomorphologyROM extends Object {
         }catch (java.io.IOException e1){
             System.err.println("ERROR3** "+e1.getMessage());}
     }
+    
+    public static void main(String args[]){
+        
+        System.out.println((long)4*((long)18058*(long)29730+(long)2818)+""); 
+        System.out.println((long)4*((long)18059*(long)29730+(long)2818)+""); 
+        
+    }
+    
     
 }

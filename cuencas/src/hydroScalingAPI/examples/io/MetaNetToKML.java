@@ -207,8 +207,8 @@ public class MetaNetToKML {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        main0(args);
-        //main1(args);
+        //main0(args);
+        main1(args);
     }
     /**
      * Tests for the class

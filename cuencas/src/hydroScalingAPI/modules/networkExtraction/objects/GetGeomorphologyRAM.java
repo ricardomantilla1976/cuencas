@@ -99,12 +99,25 @@ public abstract class GetGeomorphologyRAM extends Object {
                         }
                     }
                 }
+                int yetToDo=(((Proc.DIR.length-1-2+1)*(Proc.DIR[0].length-1-2+1))-contn);
+                System.out.println(">>> >>> Points to visit: "+yetToDo);
+                
+                if(yetToDo <50){
+                    for (int i=1; i <= Proc.DIR.length - 2 ; i++){
+                        for (int j=1 ; j <= Proc.DIR[0].length - 2; j++){
+                            if (red[i][j]>=0) {
+                                System.out.println(">>> >>> >>> Propagating: "+j+" "+i+" Current upstream area is: "+Proc.Areas[i][j]);
+                            }
+                        }
+                    }
+                }
+                
             }while(contn < (Proc.DIR.length-1-2+1)*(Proc.DIR[0].length-1-2+1) );
     }
     
     /**
      * Calculates the direction of the DEM borders and the directions of the pixels
-     * sorounding a lake or ocean
+     * surrounding a lake or ocean
      * @param Proc The parent {@link hydroScalingAPI.modules.networkExtraction.objects.NetworkExtractionModule}
      */
     public static void bordes(NetworkExtractionModule Proc){

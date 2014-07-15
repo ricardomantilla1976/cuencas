@@ -37,7 +37,8 @@ public class NetworkExtractionOptimizer implements Runnable {
     private hydroScalingAPI.modules.networkExtraction.objects.NetworkExtractionModule Proc;
     private int[] xChunks,yChunks;
     private int maxXIndex,maxYIndex;
-    
+    private int chunkSize=100;
+            
     private ExternalNetworkExtraction[] localExtractors;
 //    private ExternalNetworkExtraction ExtractorNo1, ExtractorNo2;
     
@@ -52,12 +53,12 @@ public class NetworkExtractionOptimizer implements Runnable {
         
         int nr=Proc.metaDEM.getNumRows();
         int nc=Proc.metaDEM.getNumCols();
-            
-        xChunks=new int[(int)Math.ceil(nc/100.)];
-        yChunks=new int[(int)Math.ceil(nr/100.)];
         
-        for (int i=0;i<xChunks.length;i++) xChunks[i]=Math.min(100,nc-100*(i));
-        for (int i=0;i<yChunks.length;i++) yChunks[i]=Math.min(100,nr-100*(i));
+        xChunks=new int[(int)Math.ceil(nc/(float)chunkSize)];
+        yChunks=new int[(int)Math.ceil(nr/(float)chunkSize)];
+        
+        for (int i=0;i<xChunks.length;i++) xChunks[i]=Math.min(chunkSize,nc-chunkSize*(i));
+        for (int i=0;i<yChunks.length;i++) yChunks[i]=Math.min(chunkSize,nr-chunkSize*(i));
         
         maxXIndex=Proc.metaDEM.getNumCols()-1;
         maxYIndex=Proc.metaDEM.getNumRows()-1;
@@ -69,10 +70,10 @@ public class NetworkExtractionOptimizer implements Runnable {
     public void optimize(){
 
         //boolean dummyVar=false;
-        if(Proc.taskDIR && xChunks.length*yChunks.length > 1000){
+        if(Proc.taskDIR && xChunks.length*yChunks.length > 1){
         //if(dummyVar){
             
-            int numProcessors=4;
+            int numProcessors=8;
         
             System.out.println("Otimization starts here !!!");
             
@@ -94,11 +95,11 @@ public class NetworkExtractionOptimizer implements Runnable {
 
             for (int i=0;i<xChunks.length;i++){
                 for (int j=0;j<yChunks.length;j++){
-                    int xStartIndex=(100*i);
-                    int xFinalIndex=Math.min((100*i+xChunks[i]-1)+((i<(xChunks.length-1))?15:0),maxXIndex);
+                    int xStartIndex=(chunkSize*i);
+                    int xFinalIndex=Math.min((chunkSize*i+xChunks[i]-1)+((i<(xChunks.length-1))?15:0),maxXIndex);
 
-                    int yStartIndex=(100*j);
-                    int yFinalIndex=Math.min((100*j+yChunks[j]-1)+((j<(yChunks.length-1))?15:0),maxYIndex);
+                    int yStartIndex=(chunkSize*j);
+                    int yFinalIndex=Math.min((chunkSize*j+yChunks[j]-1)+((j<(yChunks.length-1))?15:0),maxYIndex);
 
                     try{
 
@@ -140,7 +141,7 @@ public class NetworkExtractionOptimizer implements Runnable {
                         
                         extractOptions.increaseValueOptimizerBar();
                         
-                        //new hydroScalingAPI.modules.networkExtraction.objects.NetworkExtractionModule(theMeta,new hydroScalingAPI.io.DataRaster(theMeta),true);
+                        //new hydroScalingAPI.modules.networkExtraction.objects.NetworkExtractionModule(theMeta,new hydroScalingAPI.io.DataRaster(theMeta));
                         availTest=true;
                         for (int k = 0; k < numProcessors; k++) {
                             availTest&=localExtractors[k].isBusy();
@@ -193,11 +194,11 @@ public class NetworkExtractionOptimizer implements Runnable {
 
             for (int i=0;i<xChunks.length;i++){
                 for (int j=0;j<yChunks.length;j++){
-                    int xStartIndex=(100*i);
-                    int xFinalIndex=Math.min((100*i+xChunks[i]-1)+((i<(xChunks.length-1))?15:0),maxXIndex);
+                    int xStartIndex=(chunkSize*i);
+                    int xFinalIndex=Math.min((chunkSize*i+xChunks[i]-1)+((i<(xChunks.length-1))?15:0),maxXIndex);
 
-                    int yStartIndex=(100*j);
-                    int yFinalIndex=Math.min((100*j+yChunks[j]-1)+((j<(yChunks.length-1))?15:0),maxYIndex);
+                    int yStartIndex=(chunkSize*j);
+                    int yFinalIndex=Math.min((chunkSize*j+yChunks[j]-1)+((j<(yChunks.length-1))?15:0),maxYIndex);
 
                     try{
 

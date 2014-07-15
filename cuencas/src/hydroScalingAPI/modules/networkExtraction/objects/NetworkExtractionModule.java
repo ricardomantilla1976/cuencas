@@ -309,13 +309,16 @@ public class NetworkExtractionModule implements Runnable {
         
         
         //printDebug=false;
+        
+        System.out.println("La fiesta comienza");
         printDebug=true;
         metaDEM=metaDEM1;
         inicio(dataDEM1);
+        System.out.println("Finish inicio");
         OpProc = new hydroScalingAPI.modules.networkExtraction.widgets.ExtractionOptions(this);
         //taskDIR=true; taskRED=true; taskGEO=false; taskVECT=false;
         pixPodado=Float.parseFloat(moreArgs[2])/(float)dy/(float)dxm;
-        taskDIR=false; taskRED=true; taskGEO=true; taskVECT=true;
+        taskDIR=false; taskRED=true; taskGEO=true; taskVECT=true; archPro=true;
         corrigeDEM();
         OpProc.dispose();
     }
@@ -343,19 +346,19 @@ public class NetworkExtractionModule implements Runnable {
      * @param dataDEM1 The DataRaster associated to the data
      */
     public NetworkExtractionModule(hydroScalingAPI.io.MetaRaster metaDEM1, hydroScalingAPI.io.DataRaster dataDEM1) {
-        printDebug=false;
-        //printDebug=true;
+        //printDebug=false;
+        printDebug=true;
         metaDEM=metaDEM1;
         inicio(dataDEM1);
         System.out.println("Finish inicio");
 
         OpProc = new hydroScalingAPI.modules.networkExtraction.widgets.ExtractionOptions(this);
-        taskDIR=true; taskRED=true; taskGEO=false; taskVECT=false;
+        //taskDIR=true; taskRED=true; taskGEO=false; taskVECT=false;
         
         //taskDIR=false; taskRED=true; taskGEO=true; taskVECT=true;
-        //taskDIR=true; taskRED=true; taskGEO=true; taskVECT=true;
+        taskDIR=true; taskRED=true; taskGEO=true; taskVECT=true;
         
-        pixPodado = 0.05f/(float)dy/(float)dxm;
+        pixPodado = 0.01f/(float)dy/(float)dxm;
         
         System.out.println(" start Corrige DEM");
         corrigeDEM();
@@ -587,7 +590,7 @@ public class NetworkExtractionModule implements Runnable {
                 MaxPend=null;
                 System.gc();
                 
-                GetGeomorphologyRAM.getDistanceToBorder(this);
+                //GetGeomorphologyRAM.getDistanceToBorder(this);
                 OpProc.setValueGeomorphBar(2);
                 
                 
@@ -964,7 +967,7 @@ public class NetworkExtractionModule implements Runnable {
             java.io.DataInputStream datas[] = new java.io.DataInputStream[4];
             String exts[] = {".corrDEM",".dir",".areas",".slope"};
             String path = metaDEM.getLocationBinaryFile().getPath();
-            for(int k=0; k<4; k++){
+            for(int k=0; k<3; k++){
                 files[k] = new java.io.FileInputStream(path.substring(0, path.lastIndexOf(".")) + exts[k]);
                 buffs[k] = new java.io.BufferedInputStream(files[k]);
                 datas[k] = new java.io.DataInputStream(buffs[k]);
@@ -977,7 +980,7 @@ public class NetworkExtractionModule implements Runnable {
                     //MaxPend[i][j] = datas[3].readDouble();
                 }
             }
-            for(int k=0; k<4; k++){
+            for(int k=0; k<3; k++){
                 buffs[k].close(); datas[k].close();
             }
         }catch(java.io.IOException e){e.printStackTrace();}
@@ -1086,6 +1089,7 @@ public class NetworkExtractionModule implements Runnable {
      */
     public static void main(String[] Arguments){
         
+        System.out.println("Program starts "+Arguments.length+" "+java.util.Arrays.toString(Arguments));      
  
 //System.out.print("nlda");
 //        Arguments=new String[] { "//nfsscratch/Users/rmantill/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/USGS/usgs250.metaDEM",
@@ -1123,14 +1127,19 @@ public class NetworkExtractionModule implements Runnable {
         
         /*Arguments=new String[] { "/home/ricardo/temp/pandoraOptimizer/SpecialCases/casePit002.metaDEM",
                                  "/home/ricardo/temp/pandoraOptimizer/SpecialCases/casePit002.dem"};*/
+        
+//        Arguments=new String[] { "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/00_Full-Iowa30m/iowa.metaDEM",
+//                                 "/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/00_Full-Iowa30m/iowa.dem"};
+        
         try{
             hydroScalingAPI.io.MetaRaster metaRaster1= new hydroScalingAPI.io.MetaRaster(new java.io.File(Arguments[0]));
             metaRaster1.setLocationBinaryFile(new java.io.File(Arguments[1]));
             hydroScalingAPI.io.DataRaster datosRaster = new hydroScalingAPI.io.DataRaster(metaRaster1);
             if(Arguments.length == 2){
-                new NetworkExtractionModule(metaRaster1, datosRaster);
+                //new NetworkExtractionModule(metaRaster1, datosRaster);
             }
             if(Arguments.length > 2){
+                System.out.println("Entered the right routine");
                 new NetworkExtractionModule(metaRaster1, datosRaster,Arguments);
             }
             System.exit(0);

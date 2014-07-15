@@ -25,6 +25,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package hydroScalingAPI.io;
 
+import java.util.StringTokenizer;
+
 /**
  *
  * @author Ricardo Mantilla
@@ -218,13 +220,22 @@ public class MetaNetToKML {
         
         try{
 
+            StringTokenizer tokenizer = new StringTokenizer(args[0]);
+            String path = "/CuencasDataBases/Continental_US_database/Rasters/";
+            String filepath = path + "Topography/Dd_Basins_1_ArcSec/" + tokenizer.nextToken();
+            int x = Integer.parseInt(tokenizer.nextToken());
+            int y = Integer.parseInt(tokenizer.nextToken());
+            String demName=tokenizer.nextToken();
+            String fileName = filepath + "/" + demName;
+            String uniqueIdentifier=demName+"_"+x+"_"+y;
+            
 //            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/TurkeyRiverAtElkader/NED_53652717";
 //            int x=4498  , y= 432;
 //            String uniqueIdentifier="TurkeyRiverAtElkader";
 
-            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/TurkeyRiverAtElkader/NED_53652717";
-            int x=2950,   y= 1209;
-            String uniqueIdentifier="TurkeyRiverAtElDorado";
+//            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/TurkeyRiverAtElkader/NED_53652717";
+//            int x=2950,   y= 1209;
+//            String uniqueIdentifier="TurkeyRiverAtElDorado";
 
 
 //            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions";
@@ -276,7 +287,7 @@ public class MetaNetToKML {
             
             hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
             
-            MetaNetToKML exporter=new MetaNetToKML(metaModif,new java.io.File("/Users/ricardo/temp/"),laCuenca,matDirs,uniqueIdentifier);
+            MetaNetToKML exporter=new MetaNetToKML(metaModif,new java.io.File("/Users/ricardo/temp/ForMatt/"),laCuenca,matDirs,uniqueIdentifier);
             
         } catch (Exception IOE){
             System.out.print(IOE);

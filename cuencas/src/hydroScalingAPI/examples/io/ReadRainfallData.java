@@ -37,11 +37,11 @@ public class ReadRainfallData {
                                     "[Units]",
                                     "[Information]"
                                 };
-    public ReadRainfallData(String dirIn) throws java.io.IOException {
+    public ReadRainfallData(String dirIn,String maskFile) throws java.io.IOException {
         
-        java.io.File theFile=new java.io.File("/Users/ricardo/rawData/IowaConnectivity/linksMask_CedarRiver30m.metaVHC");
+        java.io.File theFile=new java.io.File(maskFile);
         hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-        metaModif.setLocationBinaryFile(new java.io.File("/Users/ricardo/rawData/IowaConnectivity/linksMask_CedarRiver30m.vhc"));
+        metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".vhc"));
         int [][] matrizPintada=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
 
         int nColsMP=metaModif.getNumCols();
@@ -73,7 +73,8 @@ public class ReadRainfallData {
 
         java.util.Arrays.sort(lasQueSi);
         
-        for (int kk = 1440; kk < 7296; kk++) {
+        //for (int kk = 1440; kk < 7296; kk++) {
+        for (int kk = 0; kk < lasQueSi.length; kk++) {
 
             System.out.print(lasQueSi[kk]+",");
 
@@ -226,7 +227,8 @@ public class ReadRainfallData {
     public static void main(String[] args) {
 
         try{
-            new hydroScalingAPI.examples.io.ReadRainfallData("/Users/ricardo/rawData/NCEP_Level_IV_Iowa/ascii2010hourly/");
+            new hydroScalingAPI.examples.io.ReadRainfallData("/Users/ricardo/rawData/NCEP_Level_IV_Iowa/ascii2010hourly/",
+                                                             "/Users/ricardo/rawData/IowaConnectivity/linksMask_CedarRiver30m.metaVHC");
         }catch(java.io.IOException ioe){
             System.err.println("error");
             ioe.printStackTrace();

@@ -327,7 +327,7 @@ public class MetaPolygon {
         writerKml.write("<Document>" + ret);
         writerKml.write("<Folder>" + ret);
         writerKml.write("   <Placemark>" + ret);
-        writerKml.write("      <styleUrl>http://ut.iihr.uiowa.edu/ifis/kml/ifc_style3.kml#polygon</styleUrl>" + ret);
+        writerKml.write("      <styleUrl>http://ifis.iowafloodcenter.org/ifis/layers/ifis_style.kml#basin_boundary</styleUrl>" + ret);
         writerKml.write("      <Polygon>" + ret);
         writerKml.write("          <name>" + label + "</name>" + ret);
         writerKml.write("          <outerBoundaryIs>" + ret);

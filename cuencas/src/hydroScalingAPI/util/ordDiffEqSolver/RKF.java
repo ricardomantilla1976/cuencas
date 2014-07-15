@@ -706,7 +706,7 @@ public class RKF extends java.lang.Object {
      * @param finalTime The final time of the solution
      * @param incrementalTime How often the values are desired
      * @param IC The value of the initial condition
-     * @param outputStream The file to which the information will be writen
+     * @param outputStream The file to which the information will be written
      * @param linksStructure The structure describing the topology of the river
      * network
      * @param thisNetworkGeom The descripion the the hydraulic and geomorphic
@@ -722,7 +722,7 @@ public class RKF extends java.lang.Object {
         outputStream.write("\n");
         outputStream.write(currentTime + ",");
         for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
-            if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0) {
+            if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1) {
                 outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
             }
         }
@@ -802,7 +802,7 @@ public class RKF extends java.lang.Object {
             outputStream.write("\n");
             outputStream.write(currentTime + ",");
             for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
-                if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0) {
+                if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1) {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
                 }
             }
@@ -835,7 +835,7 @@ public class RKF extends java.lang.Object {
             outputStream.write("\n");
             outputStream.write(currentTime + ",");
             for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
-                if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0) {
+                if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1) {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
                 }
             }

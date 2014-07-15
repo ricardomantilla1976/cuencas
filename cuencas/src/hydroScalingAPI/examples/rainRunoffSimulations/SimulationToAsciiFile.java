@@ -130,7 +130,9 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         
         thisHillsInfo.setInfManager(infilMan);
         
-        thisHillsInfo.setHillslopeVh(((Float)routingParams.get("v_h")).floatValue());
+        float v_h=(Float)routingParams.get("v_h");
+        
+        thisHillsInfo.setHillslopeVh(v_h);
         
             /*
                 Escribo en un theFile lo siguiente:
@@ -172,7 +174,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         double[][] wfs=linksStructure.getWidthFunctions(linksStructure.completeStreamLinksArray,0);
         
         for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
-            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0){
+            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1){
                 newfile.write("Link #"+linksStructure.completeStreamLinksArray[i]+",");
                 for (int j=0;j<wfs[i].length;j++) newfile.write(wfs[i][j]+",");
                 newfile.write("\n");
@@ -183,7 +185,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         bufferout.close();
         
         if(infiltMetaRaster == null)
-            theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+lam1+"_"+lam2+"_"+v_o+".csv");//theFile=new java.io.File(Directory+demName+"_"+x+"_"+y++"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+widthCoeff+"_"+widthExponent+"_"+widthStdDev+"_"+chezyCoeff+"_"+chezyExponent+".dat");
+            theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+lam1+"_"+lam2+"_"+v_o+"_"+v_h+".csv");//theFile=new java.io.File(Directory+demName+"_"+x+"_"+y++"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+widthCoeff+"_"+widthExponent+"_"+widthStdDev+"_"+chezyCoeff+"_"+chezyExponent+".dat");
         else
             theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+"-"+storm.stormName()+"-IR_"+infiltMetaRaster.getLocationMeta().getName().substring(0,infiltMetaRaster.getLocationMeta().getName().lastIndexOf(".metaVHC"))+"-Routing_"+routingString+"_params_"+lam1+"_"+lam2+".csv");
         System.out.println(theFile);
@@ -197,7 +199,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         newfile.write("Link #,");
         
         for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
-            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0)
+            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1)
                 newfile.write("Link-"+linksStructure.completeStreamLinksArray[i]+",");
         }
         
@@ -205,7 +207,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         newfile.write("Horton Order,");
         
         for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
-            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0)
+            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1)
                 newfile.write(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i])+",");
         }
         
@@ -213,7 +215,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         newfile.write("Upstream Area [km^2],");
         
         for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
-            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0)
+            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1)
                 newfile.write(thisNetworkGeom.upStreamArea(linksStructure.completeStreamLinksArray[i])+",");
         }
         
@@ -221,7 +223,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         newfile.write("Link Outlet ID,");
         
         for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
-            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0)
+            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1)
                 newfile.write(linksStructure.contactsArray[linksStructure.completeStreamLinksArray[i]]+",");
         }
         
@@ -233,7 +235,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         newfile.write("Time,");
         
         for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
-            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0)
+            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1)
                 newfile.write("Link-"+linksStructure.completeStreamLinksArray[i]+",");
         }
         
@@ -244,11 +246,12 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
 //        thisHillsInfo.setInfManager(infilMan);
 
 
-        double[] initialCondition=new double[linksStructure.contactsArray.length*2];
+        double[] initialCondition=new double[linksStructure.contactsArray.length*3];
         
         for (int i=0;i<linksStructure.contactsArray.length;i++){
             initialCondition[i]=0.0;
             initialCondition[i+linksStructure.contactsArray.length]=0.0;
+            initialCondition[i+2*linksStructure.contactsArray.length]=0.0;
         }
 
         java.util.Date startTime=new java.util.Date();
@@ -314,7 +317,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         newfile.write("\n");
         newfile.write("Maximum Discharge [m^3/s],");
         for (int i=0;i<linksStructure.completeStreamLinksArray.length;i++){
-            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0)
+            if(thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1)
                 newfile.write(maximumsAchieved[linksStructure.completeStreamLinksArray[i]]+",");
         }
         
@@ -379,9 +382,10 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
             //subMain2(args);   //Case for Walnut Gulch
             //subMain3(args);   //Case Upper Rio Puerco
             //subMain4(args);   //Case Whitewater
-            subMain5(args);   //Case Clear Creek June 3 to 7
+            //subMain5(args);   //Case Clear Creek June 3 to 7
 
-            //subMain6(args);   //Case Squaw Creek April 20 to May 10
+            subMain6(args);   //Case Squaw Creek April 20 to May 10
+            
             //subMain7(args);   //Case Goodwin Creek
             
             
@@ -599,9 +603,9 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
     
     public static void subMain5(String args[]) throws java.io.IOException, VisADException {
         
-        java.io.File theFile=new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM");
+        java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.metaDEM");
         hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-        metaModif.setLocationBinaryFile(new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.dir"));
+        metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.dir"));
         
         metaModif.setFormat("Byte");
         byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
@@ -620,7 +624,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         
         routingParams.put("lambda1",0.3f);
         routingParams.put("lambda2",-0.1f);
-        routingParams.put("v_o", 0.6f);
+        routingParams.put("v_o", 0.3f);
 
         routingParams.put("v_h", 0.01f);
 
@@ -628,17 +632,17 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         //Routing type: 2 is constant velocity v=vo, 5 variable v=vo q^l1 A^l2
         
 //        new SimulationToAsciiFile(778, 368, matDirs, magnitudes, metaModif, 10000.0f, 15.0f, 30.0f, 2, new java.io.File("E:/CUENCAS/ClearCreek_Database/Results/"), routingParams).executeSimulation();
-        new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, 1000.0f, 15.0f, 30.0f, 2, new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Results/"), routingParams).executeSimulation();
+//        new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, 1000.0f, 15.0f, 30.0f, 2, new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Results/"), routingParams).executeSimulation();
 
-        System.exit(0);
+//        System.exit(0);
         
         java.io.File stormFile;
 
-        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJune/EventIowaJune8thNoon/hydroNexrad.metaVHC");
+        //stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJune/EventIowaJune8thNoon/hydroNexrad.metaVHC");
         //stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneMPE/May15toJune11/hydroNexrad.metaVHC");
-        //stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneMPE/June3toJune5/hydroNexrad.metaVHC");
+        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneMPE/June3toJune5/hydroNexrad.metaVHC");
         //stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneHydroNEXRAD/June3toJune5/hydroNexrad.metaVHC");
-        
+        //stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventIowaJuneMPE/hydroNexrad.metaVHC");
         float infil=0.0f;
 
         new SimulationToAsciiFile(1570, 127, matDirs, magnitudes, metaModif, stormFile, infil, 5, new java.io.File("/Users/ricardo/simulationResults/ClearCreek/"), routingParams).executeSimulation();
@@ -684,6 +688,8 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         routingParams.put("lambda1",0.2f);
         routingParams.put("lambda2",-0.1f);
         routingParams.put("v_o", 0.4f);
+        
+        routingParams.put("v_h", 0.01f);
 
         java.io.File stormFile;
 
@@ -700,17 +706,221 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         //new SimulationToAsciiFile(1425, 349, matDirs, magnitudes, metaModif, 40,60, infil, 2, new java.io.File("/Users/ricardo/simulationResults/SquawCreek/"), routingParams).executeSimulation();
 
 
-        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventOverAmes/hydroNexrad.metaVHC");
-        routingParams.put("v_o", 0.5f);
-        new SimulationToAsciiFile(1425, 349, matDirs, magnitudes, metaModif, stormFile, infil, 2, new java.io.File("/Users/ricardo/simulationResults/SquawCreek/"), routingParams).executeSimulation();
-
 //        stormFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Hydrology/storms/observed_events/EventOverAmes/hydroNexrad.metaVHC");
-//        routingParams.put("lambda1",0.2f);
+//        routingParams.put("v_o", 0.5f);
+//        new SimulationToAsciiFile(1425, 349, matDirs, magnitudes, metaModif, stormFile, infil, 2, new java.io.File("/Users/ricardo/simulationResults/SquawCreek/"), routingParams).executeSimulation();
+
+//        stormFile=new java.io.File("/Users/ricardo/temp/RadarAssimilatedRuns/Rainfall_Scenarios/2008080100_to_2008081500/precipitation.metaVHC");
+//        routingParams.put("lambda1",0.35f);
 //        routingParams.put("lambda2",-0.1f);
 //        routingParams.put("v_o", 0.3f);
-//        new SimulationToAsciiFile(1425, 349, matDirs, magnitudes, metaModif, stormFile, infil, 5, new java.io.File("/Users/ricardo/simulationResults/SquawCreek/"), routingParams).executeSimulation();
+//        routingParams.put("v_h", 0.01f);
+//        
+//        new SimulationToAsciiFile(1302, 378, matDirs, magnitudes, metaModif, stormFile, infil, 5, new java.io.File("/Users/ricardo/simulationResults/SquawCreek/"), routingParams).executeSimulation();
+//
+//        System.exit(0);
 
+              String[] arrayOfsimulations=new String[] {
+//            "Rainfall_Scenarios/2008080100_to_2008080106",
+//            "Rainfall_Scenarios/2008080100_to_2008080112",
+//            "Rainfall_Scenarios/2008080100_to_2008080118",
+//            "Rainfall_Scenarios/2008080100_to_2008080200",
+//            "Rainfall_Scenarios/2008080100_to_2008080206",
+//            "Rainfall_Scenarios/2008080100_to_2008080212",
+//            "Rainfall_Scenarios/2008080100_to_2008080218",
+//            "Rainfall_Scenarios/2008080100_to_2008080300",
+//            "Rainfall_Scenarios/2008080100_to_2008080306",
+//            "Rainfall_Scenarios/2008080100_to_2008080312",
+//            "Rainfall_Scenarios/2008080100_to_2008080318",
+//            "Rainfall_Scenarios/2008080100_to_2008080400",
+//            "Rainfall_Scenarios/2008080100_to_2008080406",
+//            "Rainfall_Scenarios/2008080100_to_2008080412",
+//            "Rainfall_Scenarios/2008080100_to_2008080418",
+//            "Rainfall_Scenarios/2008080100_to_2008080500",
+//            "Rainfall_Scenarios/2008080100_to_2008080506",
+//            "Rainfall_Scenarios/2008080100_to_2008080512",
+//            "Rainfall_Scenarios/2008080100_to_2008080518",
+//            "Rainfall_Scenarios/2008080100_to_2008080600",
+//            "Rainfall_Scenarios/2008080100_to_2008080606",
+//            "Rainfall_Scenarios/2008080100_to_2008080612",
+//            "Rainfall_Scenarios/2008080100_to_2008080618",
+//            "Rainfall_Scenarios/2008080100_to_2008080700",
+//            "Rainfall_Scenarios/2008080100_to_2008080706",
+//            "Rainfall_Scenarios/2008080100_to_2008080712",
+//            "Rainfall_Scenarios/2008080100_to_2008080718",
+//            "Rainfall_Scenarios/2008080100_to_2008080800",
+//            "Rainfall_Scenarios/2008080100_to_2008080806",
+//            "Rainfall_Scenarios/2008080100_to_2008080812",
+//            "Rainfall_Scenarios/2008080100_to_2008080818",
+//            "Rainfall_Scenarios/2008080100_to_2008080900",
+//            "Rainfall_Scenarios/2008080100_to_2008080906",
+//            "Rainfall_Scenarios/2008080100_to_2008080912",
+//            "Rainfall_Scenarios/2008080100_to_2008080918",
+//            "Rainfall_Scenarios/2008080100_to_2008081000",
+//            "Rainfall_Scenarios/2008080100_to_2008081006",
+//            "Rainfall_Scenarios/2008080100_to_2008081012",
+//            "Rainfall_Scenarios/2008080100_to_2008081018",
+//            "Rainfall_Scenarios/2008080100_to_2008081100",
+//            "Rainfall_Scenarios/2008080100_to_2008081106",
+//            "Rainfall_Scenarios/2008080100_to_2008081112",
+//            "Rainfall_Scenarios/2008080100_to_2008081118",
+//            "Rainfall_Scenarios/2008080100_to_2008081200",
+//            "Rainfall_Scenarios/2008080100_to_2008081206",
+//            "Rainfall_Scenarios/2008080100_to_2008081212",
+//            "Rainfall_Scenarios/2008080100_to_2008081218",
+//            "Rainfall_Scenarios/2008080100_to_2008081300",
+//            "Rainfall_Scenarios/2008080100_to_2008081306",
+//            "Rainfall_Scenarios/2008080100_to_2008081312",
+//            "Rainfall_Scenarios/2008080100_to_2008081318",
+//            "Rainfall_Scenarios/2008080100_to_2008081400",
+//            "Rainfall_Scenarios/2008080100_to_2008081406",
+//            "Rainfall_Scenarios/2008080100_to_2008081412",
+//            "Rainfall_Scenarios/2008080100_to_2008081418",
+//            "Rainfall_Scenarios/2008080100_to_2008081500",
+            
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008080712",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008080718",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008080800",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008080806",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008080812",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008080818",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008080900",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008080906",
+            "Rainfall_Scenarios_wrf/2008080100_to_2008080912",
+            "Rainfall_Scenarios_wrf/2008080100_to_2008080918",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081000",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081006",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081012",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081018",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081100",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081106",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081112",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081118",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081200",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081206",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081212",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081218",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081300",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081306",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081312",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081318",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081400",
+//            "Rainfall_Scenarios_wrf/2008080100_to_2008081406",            
+        };
+        
+        for (int i = 0; i < arrayOfsimulations.length; i++) {
+            stormFile=new java.io.File("/Users/ricardo/rawData/RadarAssimilatedRuns/"+arrayOfsimulations[i]+"/precipitation.metaVHC");
+            routingParams.put("lambda1",0.35f);
+            routingParams.put("lambda2",-0.1f);
+            routingParams.put("v_o", 0.3f);
+            routingParams.put("v_h", 0.01f);
+
+            new SimulationToAsciiFile(1302, 378, matDirs, magnitudes, metaModif, stormFile, infil, 5, new java.io.File("/Users/ricardo/simulationResults/SquawCreek/Using_WRF/"), routingParams).executeSimulation();
+
+        }
+        
+        
+        arrayOfsimulations= new String[]{
+//            "Rainfall_Scenarios/2008080100_to_2008080106",
+//            "Rainfall_Scenarios/2008080100_to_2008080112",
+//            "Rainfall_Scenarios/2008080100_to_2008080118",
+//            "Rainfall_Scenarios/2008080100_to_2008080200",
+//            "Rainfall_Scenarios/2008080100_to_2008080206",
+//            "Rainfall_Scenarios/2008080100_to_2008080212",
+//            "Rainfall_Scenarios/2008080100_to_2008080218",
+//            "Rainfall_Scenarios/2008080100_to_2008080300",
+//            "Rainfall_Scenarios/2008080100_to_2008080306",
+//            "Rainfall_Scenarios/2008080100_to_2008080312",
+//            "Rainfall_Scenarios/2008080100_to_2008080318",
+//            "Rainfall_Scenarios/2008080100_to_2008080400",
+//            "Rainfall_Scenarios/2008080100_to_2008080406",
+//            "Rainfall_Scenarios/2008080100_to_2008080412",
+//            "Rainfall_Scenarios/2008080100_to_2008080418",
+//            "Rainfall_Scenarios/2008080100_to_2008080500",
+//            "Rainfall_Scenarios/2008080100_to_2008080506",
+//            "Rainfall_Scenarios/2008080100_to_2008080512",
+//            "Rainfall_Scenarios/2008080100_to_2008080518",
+//            "Rainfall_Scenarios/2008080100_to_2008080600",
+//            "Rainfall_Scenarios/2008080100_to_2008080606",
+//            "Rainfall_Scenarios/2008080100_to_2008080612",
+//            "Rainfall_Scenarios/2008080100_to_2008080618",
+//            "Rainfall_Scenarios/2008080100_to_2008080700",
+//            "Rainfall_Scenarios/2008080100_to_2008080706",
+//            "Rainfall_Scenarios/2008080100_to_2008080712",
+//            "Rainfall_Scenarios/2008080100_to_2008080718",
+//            "Rainfall_Scenarios/2008080100_to_2008080800",
+//            "Rainfall_Scenarios/2008080100_to_2008080806",
+//            "Rainfall_Scenarios/2008080100_to_2008080812",
+//            "Rainfall_Scenarios/2008080100_to_2008080818",
+//            "Rainfall_Scenarios/2008080100_to_2008080900",
+//            "Rainfall_Scenarios/2008080100_to_2008080906",
+//            "Rainfall_Scenarios/2008080100_to_2008080912",
+//            "Rainfall_Scenarios/2008080100_to_2008080918",
+//            "Rainfall_Scenarios/2008080100_to_2008081000",
+//            "Rainfall_Scenarios/2008080100_to_2008081006",
+//            "Rainfall_Scenarios/2008080100_to_2008081012",
+//            "Rainfall_Scenarios/2008080100_to_2008081018",
+//            "Rainfall_Scenarios/2008080100_to_2008081100",
+//            "Rainfall_Scenarios/2008080100_to_2008081106",
+//            "Rainfall_Scenarios/2008080100_to_2008081112",
+//            "Rainfall_Scenarios/2008080100_to_2008081118",
+//            "Rainfall_Scenarios/2008080100_to_2008081200",
+//            "Rainfall_Scenarios/2008080100_to_2008081206",
+//            "Rainfall_Scenarios/2008080100_to_2008081212",
+//            "Rainfall_Scenarios/2008080100_to_2008081218",
+//            "Rainfall_Scenarios/2008080100_to_2008081300",
+//            "Rainfall_Scenarios/2008080100_to_2008081306",
+//            "Rainfall_Scenarios/2008080100_to_2008081312",
+//            "Rainfall_Scenarios/2008080100_to_2008081318",
+//            "Rainfall_Scenarios/2008080100_to_2008081400",
+//            "Rainfall_Scenarios/2008080100_to_2008081406",
+//            "Rainfall_Scenarios/2008080100_to_2008081412",
+//            "Rainfall_Scenarios/2008080100_to_2008081418",
+//            "Rainfall_Scenarios/2008080100_to_2008081500",
+            
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080512",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080612",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080700",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080706",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080712",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080718",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080800",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080806",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080812",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080818",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080900",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080906",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008080912",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081006",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081012",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081106",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081112",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081118",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081200",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081206",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081212",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081218",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081306",
+//            "Rainfall_Scenarios_wrf_assim/2008080100_to_2008081406",
+            
+        };
+        
+        for (int i = 0; i < arrayOfsimulations.length; i++) {
+            stormFile=new java.io.File("/Users/ricardo/rawData/RadarAssimilatedRuns/"+arrayOfsimulations[i]+"/precipitation.metaVHC");
+            routingParams.put("lambda1",0.35f);
+            routingParams.put("lambda2",-0.1f);
+            routingParams.put("v_o", 0.3f);
+            routingParams.put("v_h", 0.01f);
+
+            new SimulationToAsciiFile(1302, 378, matDirs, magnitudes, metaModif, stormFile, infil, 5, new java.io.File("/Users/ricardo/simulationResults/SquawCreek/Using_WRF_assim/"), routingParams).executeSimulation();
+
+        }
+        
+
+        
+        
         System.exit(0);
+        
 
     }
 

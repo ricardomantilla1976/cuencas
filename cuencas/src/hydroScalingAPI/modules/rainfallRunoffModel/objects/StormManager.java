@@ -212,7 +212,6 @@ public class StormManager {
 
                     xOulet=myCuenca.getXYBasin()[0][0];
                     yOulet=myCuenca.getXYBasin()[1][0];
-                    System.out.println("i   " +i);
                     myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDir,magnitudes,metaDatos);
                     for (int j=0;j<myHillActual.getXYHillSlope()[0].length;j++){
                         matrizPintada[myHillActual.getXYHillSlope()[1][j]-myCuenca.getMinY()+1][myHillActual.getXYHillSlope()[0][j]-myCuenca.getMinX()+1]=i+1;
@@ -258,13 +257,13 @@ public class StormManager {
                 //Cargo cada uno
                 metaStorm.setLocationBinaryFile(arCron[i].fileName);
 
-                //System.out.println("--> Loading data from "+arCron[i].fileName.getName());
+                System.out.println("--> Loading data from "+arCron[i].fileName.getName());
 
                 dataSnapShot=new hydroScalingAPI.io.DataRaster(metaStorm).getDouble();
 
 
                 hydroScalingAPI.util.statistics.Stats rainStats=new hydroScalingAPI.util.statistics.Stats(dataSnapShot,new Double(metaStorm.getMissing()).doubleValue());
-                //System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue);
+                System.out.println("    --> Stats of the File:  Max = "+rainStats.maxValue+" Min = "+rainStats.minValue+" Mean = "+rainStats.meanValue+" Time in Min = "+arCron[i].getDate().getTimeInMillis()/1000./60.);
 
 
                 //recorto la seccion que esta en la cuenca (TIENE QUE CONTENERLA)
@@ -307,7 +306,7 @@ public class StormManager {
                             veryFirstDrop=false;
                             System.out.println(" " +firstWaterDrop.getTime());
                         }
-System.out.println("STORM FIRST DROP"+arCron[i].getDate().getTimeInMillis());
+
                         precOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(currentHillBasedPrec[j]/currentHillNumPixels[j])); //
                         totalHillBasedPrecmm[j]+=(currentHillBasedPrec[j]/currentHillNumPixels[j])*(regIntervalmm/60);
                         totalHillBasedPrec[j]+=currentHillBasedPrec[j]/currentHillNumPixels[j];

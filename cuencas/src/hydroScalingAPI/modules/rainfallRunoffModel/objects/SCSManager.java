@@ -29,7 +29,6 @@ import flanagan.analysis.Regression;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 /**
  * This class estimates for each hillslope: --- average Curve Number - f(land
  * cover, soil hyd group) --- average manning roughness - f(land cover, soil hyd
@@ -152,8 +151,8 @@ public class SCSManager {
 
         float[][] AreaHill;
         AreaHill = new float[1][linksStructure.contactsArray.length];
-        
-        
+
+
         if (LandUse.getName() == "null") {
             
               for (int i = 0; i < linksStructure.contactsArray.length; i++) {
@@ -745,7 +744,7 @@ public class SCSManager {
 
                 metaDemData.setLocationBinaryFile(new java.io.File((baseNameDEM)));
                 metaSlope.setLocationBinaryFile(new java.io.File((baseNameGradient)));
-               
+
                 System.out.println("--> Start to load the data Dem\n");
                 dataSnapShotDem = new hydroScalingAPI.io.DataRaster(metaDemData).getDouble();
 

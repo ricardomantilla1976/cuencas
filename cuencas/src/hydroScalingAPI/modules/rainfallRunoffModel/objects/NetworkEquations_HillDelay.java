@@ -40,7 +40,7 @@ public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffE
     private hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo linksHydraulicInfo;
     private int routingType;
     
-    private double qi, effPrecip, qs, qe, Q_trib, K_Q;
+    private double qi, effPrecip, qs, qe, Q_trib, K_Q, qsub;
     private double[] output;
     
     private float[][] manningArray, cheziArray, widthArray, lengthArray, slopeArray, CkArray;
@@ -89,7 +89,7 @@ public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffE
         
         vh=basinHillSlopesInfo.getHillslopeVh();
 
-        generalRunoffCoeff=1.0;//basinHillSlopesInfo.infiltRate(0,0);//
+        generalRunoffCoeff=0.4;//basinHillSlopesInfo.infiltRate(0,0);//
         
     }
     
@@ -151,6 +151,10 @@ public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffE
         double runoffCoeff=generalRunoffCoeff;
 
         //if(time >= 1.966746E7) runoffCoeff=0.3; else runoffCoeff=0.05;
+        
+        if(time >= 21345420) runoffCoeff=0.2;
+        if(time >= 21354060) runoffCoeff=0.2;
+        if(time >= 21356940) runoffCoeff=0.3;
 
         double maxInt=0;
         
@@ -171,6 +175,8 @@ public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffE
 //            }
             
             qs=vh*lengthArray[0][i]/areasHillArray[0][i]*input[i+nLi]/1e3*3.6;
+            qsub=vh/20.0*lengthArray[0][i]/areasHillArray[0][i]*input[i+2*nLi]/1e3*3.6;
+            
             
             Q_trib=0.0;
             for (int j=0;j<linksConectionStruct.connectionsArray[i].length;j++){
@@ -229,11 +235,13 @@ public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffE
             double chanLoss=lengthArray[0][i]*widthArray[0][i]*ks;
             
             //the links
-            output[i]=60*K_Q*(1/3.6*areasHillArray[0][i]*qs+Q_trib-input[i]-chanLoss);
+            output[i]=60*K_Q*(1/3.6*areasHillArray[0][i]*(qs+qsub)+Q_trib-input[i]-chanLoss);
             
             //the hillslopes
+            //the surface
             output[i+linksConectionStruct.connectionsArray.length]=1/60.*(effPrecip-qs);
-            
+            //the subsurface
+            output[i+2*linksConectionStruct.connectionsArray.length]=1/60.*(basinHillSlopesInfo.precipitation(i,time)-effPrecip-qsub);
         }
         
         //if (Math.random() > 0.99) if (maxInt>0) System.out.println("      --> The Max precipitation intensity is: "+maxInt);
