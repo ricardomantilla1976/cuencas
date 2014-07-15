@@ -1,11 +1,10 @@
-package hydroScalingAPI.examples.visad;
 //
 // AspectRatio.java
 //
 
 /*
 VisAD system for interactive analysis and visualization of numerical
-data.  Copyright (C) 1996 - 2006 Bill Hibbard, Curtis Rueden, Tom
+data.  Copyright (C) 1996 - 2011 Bill Hibbard, Curtis Rueden, Tom
 Rink, Dave Glowacki, Steve Emmerson, Tom Whittaker, Don Murray, and
 Tommy Jasmin.
 
@@ -71,21 +70,12 @@ public class AspectRatio extends JFrame {
     FlatField imaget1 = FlatField.makeField(image_tuple, size, false);
 
     // construct display
-    visad.java3d.TwoDDisplayRendererJ3D drI=new  visad.java3d.TwoDDisplayRendererJ3D();
-    visad.java3d.DisplayImplJ3D disp = new visad.java3d.DisplayImplJ3D("disp",drI);
-    
-    visad.java3d.GraphicsModeControlJ3D dispGMC = (visad.java3d.GraphicsModeControlJ3D) disp.getGraphicsModeControl();
-    dispGMC.setScaleEnable(true);
-    //dispGMC.setSceneAntialiasingEnable(true);
+    DisplayImplJ2D disp = new DisplayImplJ2D("disp");
 
     // add scalar maps
-    ScalarMap latitudeMap=new ScalarMap(RealType.Latitude, Display.YAxis);
-    disp.addMap(latitudeMap);
+    disp.addMap(new ScalarMap(RealType.Latitude, Display.YAxis));
     disp.addMap(new ScalarMap(RealType.Longitude, Display.XAxis));
     disp.addMap(new ScalarMap(vis_radiance, Display.RGB));
-    
-    java.awt.Font font = new java.awt.Font("Courier",0,12);
-    latitudeMap.getAxisScale().setFont(font);
 
     // link data to display with a data reference
     DataReferenceImpl ref_imaget1 = new DataReferenceImpl("ref_imaget1");

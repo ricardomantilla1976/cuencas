@@ -45,7 +45,7 @@ public class LinksInfo extends java.lang.Object {
     private float lambda1,lambda2,ChanCteVel;
 
     /**
-     * Creates new instnace of LinksInfo
+     * Creates new instanace of LinksInfo
      * @param linksCon The object describing the topologic connectivity of the river network
      * @throws java.io.IOException Captures errors while retreiving information
      */

@@ -119,6 +119,8 @@ public class RsnFlowSimulationToAsciiFile extends java.lang.Object {
         rsns.writeRsnTreeDecoding(theFile1);
         System.out.println("Done writing results");
         
+        if(true) return;
+        
         java.io.File theFile;
         theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"-SN_"+infiltRate+".wfs.csv");
         System.out.println("Writing Width Functions - "+theFile);
@@ -270,10 +272,10 @@ public class RsnFlowSimulationToAsciiFile extends java.lang.Object {
         try{
             
             //subMain1(args);   //Geometrically Distributed generators, constant link-length
-            subMain2(args);   //Geometrically Distributed generators, random link-length
+            //subMain2(args);   //Geometrically Distributed generators, random link-length
             //subMain3(args);   //Geometrically Distributed generators, random link-length, random link-area
             //subMain4(args);   //Uniformly Distributed generators, constant link-length
-            //subMain5(args);   //Tokunaga Trees E(1,2,3,4)I(0,1,2,3,4)
+            subMain5(args);   //Tokunaga Trees E(1,2,3,4)I(0,1,2,3,4)
             
             //subMain6(args);   //Geometrically Distributed generators, constant link-length, HG and Non-Linear Velocities
             
@@ -405,14 +407,14 @@ public class RsnFlowSimulationToAsciiFile extends java.lang.Object {
         System.out.println("Using Brent's strategy");
         System.out.println();
         
-        for(int E=4;E<=4;E++){
-            for(int I=0;I<=4;I++){
+        for(int E=1;E<=4;E++){
+            for(int I=0;I<=3;I++){
                 for(int sofi=2;sofi<=7;sofi++){
                     
                     System.out.println("Tokunaga = E"+E+"I"+I);
                     
-                    new java.io.File("/home/ricardo/workFiles/myWorkingStuff/MateriasDoctorado/PhD_Thesis/results/flowSimulations/tokunaga/E"+E+"I"+I).mkdir();
-                    new java.io.File("/home/ricardo/workFiles/myWorkingStuff/MateriasDoctorado/PhD_Thesis/results/flowSimulations/tokunaga/E"+E+"I"+I+"/ord_"+sofi).mkdir();
+                    new java.io.File("/Users/ricardo/simulationResults/tokunaga/E"+E+"I"+I).mkdir();
+                    new java.io.File("/Users/ricardo/simulationResults/tokunaga/E"+E+"I"+I+"/ord_"+sofi).mkdir();
 
                     double numExperiments=1;
 
@@ -421,7 +423,7 @@ public class RsnFlowSimulationToAsciiFile extends java.lang.Object {
                         hydroScalingAPI.util.probability.DiscreteDistribution myUD_I=new hydroScalingAPI.util.probability.BinaryDistribution(I,I,0.5);
                         hydroScalingAPI.util.probability.DiscreteDistribution myUD_E=new hydroScalingAPI.util.probability.BinaryDistribution(E,E,0.5);
                         hydroScalingAPI.util.randomSelfSimilarNetworks.RsnStructure myRSN=new hydroScalingAPI.util.randomSelfSimilarNetworks.RsnStructure(sofi,myUD_I,myUD_E);
-                        RsnFlowSimulationToAsciiFile rsnfs=new RsnFlowSimulationToAsciiFile(myRSN,0,10,experiment,2,new java.io.File("/home/ricardo/workFiles/myWorkingStuff/MateriasDoctorado/PhD_Thesis/results/flowSimulations/tokunaga/E"+E+"I"+I+"/ord_"+sofi));
+                        RsnFlowSimulationToAsciiFile rsnfs=new RsnFlowSimulationToAsciiFile(myRSN,0,10,experiment,2,new java.io.File("/Users/ricardo/simulationResults/tokunaga/E"+E+"I"+I+"/ord_"+sofi));
                         rsnfs.executeSimulation();
                     }
                 }

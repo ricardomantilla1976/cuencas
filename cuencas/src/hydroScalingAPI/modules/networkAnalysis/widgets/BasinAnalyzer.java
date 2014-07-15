@@ -1563,6 +1563,16 @@ public class BasinAnalyzer extends javax.swing.JDialog implements visad.DisplayL
 
             writer.close();
             
+//            float[][] dtob=myRSNAnalysis.getVarValues(8,scale);
+//            float[][] areas=myRSNAnalysis.getVarValues(0,scale);
+//            float[][] lenght=myRSNAnalysis.getVarValues(1,scale);
+//            
+//            System.out.println("LinkID,lenght[km],area[km^2],TopoDistance[*]");
+//            for (int i = 0; i < lenght[0].length; i++) {
+//                System.out.println((i+1)+","+lenght[0][i]+","+areas[0][i]+","+dtob[0][i]);
+//                
+//            }
+//            
         } catch (java.io.IOException IOE){
             IOE.printStackTrace();
             return;

@@ -514,6 +514,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         importDemFromGRASS = new javax.swing.JMenuItem();
         importDemFromGRID = new javax.swing.JMenuItem();
         importDemFromBIL_USGS = new javax.swing.JMenuItem();
+        importDemFromFloatBIL_USGS = new javax.swing.JMenuItem();
         importHydro = new javax.swing.JMenu();
         importHydroFromGRASS = new javax.swing.JMenuItem();
         importHydroFromGRID = new javax.swing.JMenuItem();
@@ -567,16 +568,16 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         jSeparator11 = new javax.swing.JSeparator();
         about = new javax.swing.JMenuItem();
 
-        jMenuItem2.setFont(new java.awt.Font("Verdana", 0, 10));
+        jMenuItem2.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         jMenuItem2.setText("Copy");
         mapToolsPopup.add(jMenuItem2);
 
-        jMenuItem3.setFont(new java.awt.Font("Verdana", 0, 10));
+        jMenuItem3.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         jMenuItem3.setText("Delete");
         mapToolsPopup.add(jMenuItem3);
         mapToolsPopup.add(jSeparator5);
 
-        mapEditorItem.setFont(new java.awt.Font("Verdana", 0, 10));
+        mapEditorItem.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         mapEditorItem.setText("Edit Map");
         mapEditorItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -585,7 +586,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         mapToolsPopup.add(mapEditorItem);
 
-        editDBName.setFont(new java.awt.Font("Lucida Grande", 0, 10));
+        editDBName.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         editDBName.setText("Rename Database");
         editDBName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -605,12 +606,12 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        dataBaseTabs.setFont(new java.awt.Font("Verdana", 0, 10));
+        dataBaseTabs.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
         rastersTab.setLayout(new java.awt.GridLayout(3, 1, 5, 7));
 
         jScrollPane4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Metafile", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 10))); // NOI18N
-        jScrollPane4.setFont(new java.awt.Font("Default", 0, 10));
+        jScrollPane4.setFont(new java.awt.Font("Default", 0, 10)); // NOI18N
 
         metaFileViewer.setEditable(false);
         metaFileViewer.setFont(new java.awt.Font("Serif", 0, 11)); // NOI18N
@@ -622,7 +623,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         rastersTab.add(jScrollPane4);
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Topography Database", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 10))); // NOI18N
-        jScrollPane1.setFont(new java.awt.Font("Default", 0, 10));
+        jScrollPane1.setFont(new java.awt.Font("Default", 0, 10)); // NOI18N
 
         topoTree.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -634,7 +635,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         rastersTab.add(jScrollPane1);
 
         jScrollPane3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Hydrology Database", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 10))); // NOI18N
-        jScrollPane3.setFont(new java.awt.Font("Default", 0, 10));
+        jScrollPane3.setFont(new java.awt.Font("Default", 0, 10)); // NOI18N
 
         hydroTree.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -659,11 +660,11 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jPanel8.setLayout(new java.awt.GridLayout(1, 2));
 
-        addShapeFile.setFont(new java.awt.Font("Dialog", 0, 10));
+        addShapeFile.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         addShapeFile.setText("Add Shape File");
         jPanel8.add(addShapeFile);
 
-        importShapeFile.setFont(new java.awt.Font("Dialog", 0, 10));
+        importShapeFile.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         importShapeFile.setText("Import To DB");
         jPanel8.add(importShapeFile);
 
@@ -681,11 +682,11 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jPanel9.setLayout(new java.awt.GridLayout(1, 2));
 
-        addDlgFile.setFont(new java.awt.Font("Dialog", 0, 10));
+        addDlgFile.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         addDlgFile.setText("Add DLG File");
         jPanel9.add(addDlgFile);
 
-        importDlgFile.setFont(new java.awt.Font("Dialog", 0, 10));
+        importDlgFile.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         importDlgFile.setText("Import To DB");
         jPanel9.add(importDlgFile);
 
@@ -708,11 +709,11 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jPanel10.setLayout(new java.awt.GridLayout(1, 2));
 
-        addPolygonFile.setFont(new java.awt.Font("Dialog", 0, 10));
+        addPolygonFile.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         addPolygonFile.setText("Add Polygon File");
         jPanel10.add(addPolygonFile);
 
-        importPolygonFile.setFont(new java.awt.Font("Dialog", 0, 10));
+        importPolygonFile.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         importPolygonFile.setText("Import To DB");
         jPanel10.add(importPolygonFile);
 
@@ -727,7 +728,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         gaugesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "GAUGES", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 10))); // NOI18N
         gaugesPanel.setLayout(new java.awt.BorderLayout());
 
-        activeGaugesContainer.setFont(new java.awt.Font("Dialog", 0, 10));
+        activeGaugesContainer.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         jScrollPane2.setViewportView(activeGaugesContainer);
 
         gaugesPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);
@@ -736,7 +737,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jPanel6.setLayout(new java.awt.GridLayout(1, 3));
 
-        addGauge.setFont(new java.awt.Font("Dialog", 0, 10));
+        addGauge.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         addGauge.setText("New");
         addGauge.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -745,7 +746,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         jPanel6.add(addGauge);
 
-        editGauge.setFont(new java.awt.Font("Dialog", 0, 10));
+        editGauge.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         editGauge.setText("Edit");
         editGauge.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -754,7 +755,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         jPanel6.add(editGauge);
 
-        clearGauges.setFont(new java.awt.Font("Dialog", 0, 10));
+        clearGauges.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         clearGauges.setText("Clear");
         clearGauges.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -767,7 +768,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jPanel4.setLayout(new java.awt.GridLayout(1, 2));
 
-        launchTSAnalyzer.setFont(new java.awt.Font("Dialog", 0, 10));
+        launchTSAnalyzer.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         launchTSAnalyzer.setText("Get Time Series");
         launchTSAnalyzer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -776,7 +777,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         jPanel4.add(launchTSAnalyzer);
 
-        gaugesToDisplay.setFont(new java.awt.Font("Dialog", 0, 10));
+        gaugesToDisplay.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         gaugesToDisplay.setText("Update List");
         gaugesToDisplay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -787,7 +788,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jPanel5.add(jPanel4);
 
-        showGaugeCode.setFont(new java.awt.Font("Dialog", 0, 10));
+        showGaugeCode.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         showGaugeCode.setSelected(true);
         showGaugeCode.setText("Show Gauge Code on Maps");
         showGaugeCode.addActionListener(new java.awt.event.ActionListener() {
@@ -804,7 +805,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         locationsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "LOCATIONS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 10))); // NOI18N
         locationsPanel.setLayout(new java.awt.BorderLayout());
 
-        activeLocationsContainer.setFont(new java.awt.Font("Dialog", 0, 10));
+        activeLocationsContainer.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         jScrollPane21.setViewportView(activeLocationsContainer);
 
         locationsPanel.add(jScrollPane21, java.awt.BorderLayout.CENTER);
@@ -813,7 +814,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jPanel61.setLayout(new java.awt.GridLayout(1, 3));
 
-        addLocation.setFont(new java.awt.Font("Dialog", 0, 10));
+        addLocation.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         addLocation.setText("New");
         addLocation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -822,7 +823,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         jPanel61.add(addLocation);
 
-        editLocation.setFont(new java.awt.Font("Dialog", 0, 10));
+        editLocation.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         editLocation.setText("Edit");
         editLocation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -831,7 +832,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         jPanel61.add(editLocation);
 
-        clearLocations.setFont(new java.awt.Font("Dialog", 0, 10));
+        clearLocations.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         clearLocations.setText("Clear");
         clearLocations.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -844,7 +845,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jPanel7.setLayout(new java.awt.GridLayout(1, 2));
 
-        launchLocationViewer.setFont(new java.awt.Font("Dialog", 0, 10));
+        launchLocationViewer.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         launchLocationViewer.setText("Get Information");
         launchLocationViewer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -853,7 +854,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         jPanel7.add(launchLocationViewer);
 
-        locationsToDisplay.setFont(new java.awt.Font("Dialog", 0, 10));
+        locationsToDisplay.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         locationsToDisplay.setText("Update List");
         locationsToDisplay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -864,7 +865,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jPanel51.add(jPanel7);
 
-        showLocationName.setFont(new java.awt.Font("Dialog", 0, 10));
+        showLocationName.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         showLocationName.setSelected(true);
         showLocationName.setText("Show Location Name on Maps");
         showLocationName.addActionListener(new java.awt.event.ActionListener() {
@@ -884,7 +885,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         jPanel2.add(dataBaseTabs, java.awt.BorderLayout.CENTER);
 
         dbName.setEditable(false);
-        dbName.setFont(new java.awt.Font("Verdana", 1, 12));
+        dbName.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         dbName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         dbName.setText("Database Name");
         dbName.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -902,7 +903,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         gui_info.setEditable(false);
-        gui_info.setFont(new java.awt.Font("Dialog", 0, 10));
+        gui_info.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         gui_info.setText("GUI Status");
         jPanel1.add(gui_info, java.awt.BorderLayout.CENTER);
 
@@ -912,7 +913,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jToolBar1.setToolTipText("System");
 
-        openDEMButton.setFont(new java.awt.Font("Dialog", 0, 10));
+        openDEMButton.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         openDEMButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hydroScalingAPI/mainGUI/configuration/icons/new.gif"))); // NOI18N
         openDEMButton.setToolTipText("Open DEM");
         openDEMButton.setAlignmentX(0.5F);
@@ -988,17 +989,17 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         getContentPane().add(jPanel3, java.awt.BorderLayout.NORTH);
 
-        jMenuBar1.setFont(new java.awt.Font("Verdana", 0, 10));
+        jMenuBar1.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
         file.setMnemonic('f');
         file.setText("File");
-        file.setFont(new java.awt.Font("Verdana", 0, 10));
+        file.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
         openFile.setMnemonic('o');
         openFile.setText("Open File");
-        openFile.setFont(new java.awt.Font("Dialog", 0, 10));
+        openFile.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
 
-        openDEM.setFont(new java.awt.Font("Verdana", 0, 10));
+        openDEM.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         openDEM.setMnemonic('d');
         openDEM.setText("Open DEM");
         openDEM.addActionListener(new java.awt.event.ActionListener() {
@@ -1008,7 +1009,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         openFile.add(openDEM);
 
-        openHydro.setFont(new java.awt.Font("Verdana", 0, 10));
+        openHydro.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         openHydro.setMnemonic('h');
         openHydro.setText("Open HydroClimatic");
         openHydro.addActionListener(new java.awt.event.ActionListener() {
@@ -1018,14 +1019,14 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         openFile.add(openHydro);
 
-        openVector.setFont(new java.awt.Font("Verdana", 0, 10));
+        openVector.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         openVector.setMnemonic('v');
         openVector.setText("Open Vector");
         openFile.add(openVector);
 
         file.add(openFile);
 
-        openDB.setFont(new java.awt.Font("Verdana", 0, 10));
+        openDB.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         openDB.setMnemonic('d');
         openDB.setText("Open Data Base");
         openDB.addActionListener(new java.awt.event.ActionListener() {
@@ -1036,7 +1037,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         file.add(openDB);
         file.add(jSeparator1);
 
-        createDB.setFont(new java.awt.Font("Verdana", 0, 10));
+        createDB.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         createDB.setMnemonic('c');
         createDB.setText("Create New Data Base");
         createDB.addActionListener(new java.awt.event.ActionListener() {
@@ -1049,12 +1050,12 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jMenuImport.setMnemonic('i');
         jMenuImport.setText("Import");
-        jMenuImport.setFont(new java.awt.Font("Verdana", 0, 10));
+        jMenuImport.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
         importDEM.setText("Import DEM");
-        importDEM.setFont(new java.awt.Font("Verdana", 0, 10));
+        importDEM.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        importDemFromGRASS.setFont(new java.awt.Font("Verdana", 0, 10));
+        importDemFromGRASS.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         importDemFromGRASS.setText("From GRASS File");
         importDemFromGRASS.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1063,7 +1064,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         importDEM.add(importDemFromGRASS);
 
-        importDemFromGRID.setFont(new java.awt.Font("Verdana", 0, 10));
+        importDemFromGRID.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         importDemFromGRID.setText("From ARC-INFO Grid File");
         importDemFromGRID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1072,7 +1073,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         importDEM.add(importDemFromGRID);
 
-        importDemFromBIL_USGS.setFont(new java.awt.Font("Dialog", 0, 10));
+        importDemFromBIL_USGS.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         importDemFromBIL_USGS.setText("From USGS BIL Format");
         importDemFromBIL_USGS.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1081,16 +1082,25 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         importDEM.add(importDemFromBIL_USGS);
 
+        importDemFromFloatBIL_USGS.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        importDemFromFloatBIL_USGS.setText("From USGS GridFloat Format");
+        importDemFromFloatBIL_USGS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importDemFromFloatBIL_USGSActionPerformed(evt);
+            }
+        });
+        importDEM.add(importDemFromFloatBIL_USGS);
+
         jMenuImport.add(importDEM);
 
         importHydro.setText("Import Hydroclimatic Raster");
-        importHydro.setFont(new java.awt.Font("Verdana", 0, 10));
+        importHydro.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        importHydroFromGRASS.setFont(new java.awt.Font("Verdana", 0, 10));
+        importHydroFromGRASS.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         importHydroFromGRASS.setText("From GRASS File");
         importHydro.add(importHydroFromGRASS);
 
-        importHydroFromGRID.setFont(new java.awt.Font("Verdana", 0, 10));
+        importHydroFromGRID.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         importHydroFromGRID.setText("From ARC-INFO Grid File");
         importHydroFromGRID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1099,11 +1109,11 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         importHydro.add(importHydroFromGRID);
 
-        importHydroFromNetCDF.setFont(new java.awt.Font("Verdana", 0, 10));
+        importHydroFromNetCDF.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         importHydroFromNetCDF.setText("From NetCDF File");
         importHydro.add(importHydroFromNetCDF);
 
-        importHydroFromBIL_USGS.setFont(new java.awt.Font("Dialog", 0, 10));
+        importHydroFromBIL_USGS.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         importHydroFromBIL_USGS.setText("From USGS BIL Format");
         importHydroFromBIL_USGS.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1115,13 +1125,13 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         jMenuImport.add(importHydro);
 
         importSites.setText("Import Sites");
-        importSites.setFont(new java.awt.Font("Verdana", 0, 10));
+        importSites.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        importSitesFromGazetteer.setFont(new java.awt.Font("Verdana", 0, 10));
+        importSitesFromGazetteer.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         importSitesFromGazetteer.setText("Locations From USGS Gazetteer");
         importSites.add(importSitesFromGazetteer);
 
-        importSitesFromWaterUSGS.setFont(new java.awt.Font("Verdana", 0, 10));
+        importSitesFromWaterUSGS.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         importSitesFromWaterUSGS.setText("Streamflow Gauge From Water.USGS.gov");
         importSites.add(importSitesFromWaterUSGS);
 
@@ -1131,12 +1141,12 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jMenuExport.setMnemonic('e');
         jMenuExport.setText("Export");
-        jMenuExport.setFont(new java.awt.Font("Verdana", 0, 10));
+        jMenuExport.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
         exportDEM.setText("Export DEM");
-        exportDEM.setFont(new java.awt.Font("Verdana", 0, 10));
+        exportDEM.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        exportDemToGRASS.setFont(new java.awt.Font("Verdana", 0, 10));
+        exportDemToGRASS.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         exportDemToGRASS.setText("To GRASS File");
         exportDemToGRASS.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1145,7 +1155,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         exportDEM.add(exportDemToGRASS);
 
-        exportDemToGRID.setFont(new java.awt.Font("Verdana", 0, 10));
+        exportDemToGRID.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         exportDemToGRID.setText("To ARC-INFO Grid File");
         exportDemToGRID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1157,9 +1167,9 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         jMenuExport.add(exportDEM);
 
         exportHydro.setText("Export Hydroclimatic Raster");
-        exportHydro.setFont(new java.awt.Font("Verdana", 0, 10));
+        exportHydro.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        exportHydroToGRASS.setFont(new java.awt.Font("Verdana", 0, 10));
+        exportHydroToGRASS.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         exportHydroToGRASS.setText("To GRASS File");
         exportHydroToGRASS.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1168,7 +1178,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         exportHydro.add(exportHydroToGRASS);
 
-        exportHydroToGRID.setFont(new java.awt.Font("Verdana", 0, 10));
+        exportHydroToGRID.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         exportHydroToGRID.setText("To ARC-INFO Grid File");
         exportHydroToGRID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1177,16 +1187,16 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         exportHydro.add(exportHydroToGRID);
 
-        exportHydroToNetCDF.setFont(new java.awt.Font("Verdana", 0, 10));
+        exportHydroToNetCDF.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         exportHydroToNetCDF.setText("To NetCDF File");
         exportHydro.add(exportHydroToNetCDF);
 
         jMenuExport.add(exportHydro);
 
         exportSites.setText("Export Sites");
-        exportSites.setFont(new java.awt.Font("Verdana", 0, 10));
+        exportSites.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        exportSitesToAscii.setFont(new java.awt.Font("Verdana", 0, 10));
+        exportSitesToAscii.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         exportSitesToAscii.setText("To ASCII File");
         exportSites.add(exportSitesToAscii);
 
@@ -1197,17 +1207,17 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jMenuRecentFiles.setMnemonic('r');
         jMenuRecentFiles.setText("Recent Files");
-        jMenuRecentFiles.setFont(new java.awt.Font("Dialog", 0, 10));
+        jMenuRecentFiles.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         file.add(jMenuRecentFiles);
 
         jMenuRecentDB.setMnemonic('b');
         jMenuRecentDB.setText("Recent Databases");
-        jMenuRecentDB.setFont(new java.awt.Font("Dialog", 0, 10));
+        jMenuRecentDB.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         file.add(jMenuRecentDB);
         file.add(jSeparator4);
 
         quit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
-        quit.setFont(new java.awt.Font("Verdana", 0, 10));
+        quit.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         quit.setText("Quit");
         quit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1220,9 +1230,9 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         tools.setMnemonic('t');
         tools.setText("Tools");
-        tools.setFont(new java.awt.Font("Verdana", 0, 10));
+        tools.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        mapCalc.setFont(new java.awt.Font("Verdana", 0, 10));
+        mapCalc.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         mapCalc.setMnemonic('c');
         mapCalc.setText("Map Calculator");
         mapCalc.setEnabled(false);
@@ -1232,14 +1242,14 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         options.setMnemonic('o');
         options.setText("Options");
-        options.setFont(new java.awt.Font("Verdana", 0, 10));
+        options.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        colors.setFont(new java.awt.Font("Verdana", 0, 10));
+        colors.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         colors.setMnemonic('c');
         colors.setText("System Colors ...");
         options.add(colors);
 
-        preferences.setFont(new java.awt.Font("Verdana", 0, 10));
+        preferences.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         preferences.setMnemonic('p');
         preferences.setText("System Preferences ...");
         options.add(preferences);
@@ -1248,9 +1258,9 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         modules.setMnemonic('m');
         modules.setText("Modules");
-        modules.setFont(new java.awt.Font("Verdana", 0, 10));
+        modules.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        networkExtraction.setFont(new java.awt.Font("Verdana", 0, 10));
+        networkExtraction.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         networkExtraction.setMnemonic('x');
         networkExtraction.setText("Network Extraction");
         networkExtraction.addActionListener(new java.awt.event.ActionListener() {
@@ -1260,45 +1270,45 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         });
         modules.add(networkExtraction);
 
-        networkAnalysis.setFont(new java.awt.Font("Verdana", 0, 10));
+        networkAnalysis.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         networkAnalysis.setMnemonic('a');
         networkAnalysis.setText("Network Analysis");
         modules.add(networkAnalysis);
         modules.add(jSeparator6);
 
-        waterBalance.setFont(new java.awt.Font("Verdana", 0, 10));
+        waterBalance.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         waterBalance.setMnemonic('b');
         waterBalance.setText("Water Balance");
         modules.add(waterBalance);
         modules.add(jSeparator7);
 
-        ts_analysis.setFont(new java.awt.Font("Verdana", 0, 10));
+        ts_analysis.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         ts_analysis.setMnemonic('t');
         ts_analysis.setText("Time Series Analysis");
         modules.add(ts_analysis);
         modules.add(jSeparator8);
 
-        rain_simulator.setFont(new java.awt.Font("Verdana", 0, 10));
+        rain_simulator.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         rain_simulator.setMnemonic('r');
         rain_simulator.setText("Rain Simulator");
         modules.add(rain_simulator);
 
-        rainfall_runoff_simulator.setFont(new java.awt.Font("Verdana", 0, 10));
+        rainfall_runoff_simulator.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         rainfall_runoff_simulator.setMnemonic('o');
         rainfall_runoff_simulator.setText("Rainfall Runoff Simulator");
         modules.add(rainfall_runoff_simulator);
         modules.add(jSeparator12);
 
         jMenu1.setText("tRIBS Visualization Modules");
-        jMenu1.setFont(new java.awt.Font("Verdana", 0, 10));
+        jMenu1.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        tRIBS_input.setFont(new java.awt.Font("Verdana", 0, 10));
+        tRIBS_input.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         tRIBS_input.setMnemonic('o');
         tRIBS_input.setText("Input Module");
         tRIBS_input.setEnabled(false);
         jMenu1.add(tRIBS_input);
 
-        tRIBS_output.setFont(new java.awt.Font("Verdana", 0, 10));
+        tRIBS_output.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         tRIBS_output.setMnemonic('o');
         tRIBS_output.setText("Output Module");
         tRIBS_output.addActionListener(new java.awt.event.ActionListener() {
@@ -1314,9 +1324,9 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         window.setMnemonic('w');
         window.setText("Window");
-        window.setFont(new java.awt.Font("Verdana", 0, 10));
+        window.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        arrange.setFont(new java.awt.Font("Verdana", 0, 10));
+        arrange.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         arrange.setMnemonic('a');
         arrange.setText("Arrange all ...");
         window.add(arrange);
@@ -1326,20 +1336,20 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         help.setMnemonic('h');
         help.setText("Help");
-        help.setFont(new java.awt.Font("Verdana", 0, 10));
+        help.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
 
-        contents.setFont(new java.awt.Font("Verdana", 0, 10));
+        contents.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         contents.setMnemonic('c');
         contents.setText("Contents ...");
         help.add(contents);
 
-        index.setFont(new java.awt.Font("Verdana", 0, 10));
+        index.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         index.setMnemonic('i');
         index.setText("Index");
         help.add(index);
         help.add(jSeparator10);
 
-        license.setFont(new java.awt.Font("Verdana", 0, 10));
+        license.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         license.setMnemonic('l');
         license.setText("License");
         license.addActionListener(new java.awt.event.ActionListener() {
@@ -1350,7 +1360,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         help.add(license);
         help.add(jSeparator11);
 
-        about.setFont(new java.awt.Font("Verdana", 0, 10));
+        about.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         about.setMnemonic('a');
         about.setText("About");
         help.add(about);
@@ -2021,6 +2031,32 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         localInfoManager.writePreferences();
         System.exit(0);
     }//GEN-LAST:event_exitForm
+
+    private void importDemFromFloatBIL_USGSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importDemFromFloatBIL_USGSActionPerformed
+        javax.swing.JFileChooser fcI=new javax.swing.JFileChooser();
+        fcI.setFileSelectionMode(fcI.DIRECTORIES_ONLY);
+        fcI.setMultiSelectionEnabled(true);
+        fcI.setDialogTitle("Select Folder(s) containing GridFloat Files");
+        int result=fcI.showDialog(this,"Select");
+        java.io.File[] dirInput = fcI.getSelectedFiles();
+        if (result == javax.swing.JFileChooser.CANCEL_OPTION) return;
+        
+        javax.swing.JFileChooser fcO=new javax.swing.JFileChooser(localInfoManager.dataBaseRastersDemPath);
+        fcO.setFileSelectionMode(fcO.DIRECTORIES_ONLY);
+        fcO.setDialogTitle("Output Directory");
+        result = fcO.showDialog(this,"Select");
+        
+        if (result == javax.swing.JFileChooser.CANCEL_OPTION) return;
+        
+        java.io.File dirOutput = fcO.getSelectedFile();
+        try{
+            new hydroScalingAPI.io.FloatBilToCRas(dirInput,dirOutput,0);
+            setUpGUI(true);
+        }catch(java.io.IOException ioe){
+            System.err.println("Failed during BIL file import");
+            System.err.println(ioe);
+        }
+    }//GEN-LAST:event_importDemFromFloatBIL_USGSActionPerformed
     
     /**
      * Creates a new instance of the class
@@ -2075,6 +2111,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
     private javax.swing.JTree hydroTree;
     private javax.swing.JMenu importDEM;
     private javax.swing.JMenuItem importDemFromBIL_USGS;
+    private javax.swing.JMenuItem importDemFromFloatBIL_USGS;
     private javax.swing.JMenuItem importDemFromGRASS;
     private javax.swing.JMenuItem importDemFromGRID;
     private javax.swing.JButton importDlgFile;

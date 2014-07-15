@@ -1,7 +1,6 @@
-package hydroScalingAPI.examples.visad;
 /*
 VisAD system for interactive analysis and visualization of numerical
-data.  Copyright (C) 1996 - 2006 Bill Hibbard, Curtis Rueden, Tom
+data.  Copyright (C) 1996 - 2011 Bill Hibbard, Curtis Rueden, Tom
 Rink, Dave Glowacki, Steve Emmerson, Tom Whittaker, Don Murray, and
 Tommy Jasmin.
 
@@ -84,7 +83,7 @@ public class Test69
                                    "A B C D E F G H I J K L M",
                                    "NOPQRSTUVWXYZ",
                                    "0123456789  - + = / [ ] ( ) { }",
-                                   "p p p p p p p p p p p p"};
+                                   "á é í ó ú ñ Á É Í Ó Ú Ñ"};
     if (sphere) {
       names = new String[] {"", "", "a b c d e f g h i j k l m n o p q " +
                             "r s t u v w x y z A B C D E F G H I J K L " +

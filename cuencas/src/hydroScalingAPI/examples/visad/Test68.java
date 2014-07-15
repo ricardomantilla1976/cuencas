@@ -1,7 +1,6 @@
-package hydroScalingAPI.examples.visad;
 /*
 VisAD system for interactive analysis and visualization of numerical
-data.  Copyright (C) 1996 - 2006 Bill Hibbard, Curtis Rueden, Tom
+data.  Copyright (C) 1996 - 2011 Bill Hibbard, Curtis Rueden, Tom
 Rink, Dave Glowacki, Steve Emmerson, Tom Whittaker, Don Murray, and
 Tommy Jasmin.
 
@@ -165,9 +164,7 @@ public class Test68
         "use the VisADApplet applet found in visad/browser.\n" +
         "Note that an applet cannot communicate with a server\n" +
         "via the network unless both applet and server\n" +
-        "originate from the same machine.  In the future,\n" +
-        "VisAD's SocketSlaveDisplay will support communication\n" +
-        "through a proxy server.");
+        "originate from the same machine.");
     }
 
     // set up widget frame

@@ -549,7 +549,7 @@ public class MetaRaster{
         
         float[][] valueAndColor=new float[2][];
         
-        if(getNumCols()*getNumRows() < 1e7){
+        if(getNumCols()*getNumRows() < 1e8){
             valueAndColor[0]=(theData.getFloatLine())[0];
             if(locationBinaryFile.getName().lastIndexOf(".horton") == -1){
                 valueAndColor[1]=(theData.getFloatLineEqualized())[0];

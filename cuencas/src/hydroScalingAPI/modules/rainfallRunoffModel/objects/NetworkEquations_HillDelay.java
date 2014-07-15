@@ -174,7 +174,7 @@ public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffE
 //                System.exit(0);
 //            }
             
-            qs=vh*lengthArray[0][i]/areasHillArray[0][i]*input[i+nLi]/1e3*3.6;
+            qs=vh*lengthArray[0][i]/areasHillArray[0][i]/1e3*3.6*input[i+nLi];
             qsub=vh/20.0*lengthArray[0][i]/areasHillArray[0][i]*input[i+2*nLi]/1e3*3.6;
             
             

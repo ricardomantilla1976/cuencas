@@ -1,7 +1,6 @@
-package hydroScalingAPI.examples.visad;
 /*
 VisAD system for interactive analysis and visualization of numerical
-data.  Copyright (C) 1996 - 2006 Bill Hibbard, Curtis Rueden, Tom
+data.  Copyright (C) 1996 - 2011 Bill Hibbard, Curtis Rueden, Tom
 Rink, Dave Glowacki, Steve Emmerson, Tom Whittaker, Don Murray, and
 Tommy Jasmin.
 
@@ -21,24 +20,19 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA
 */
 
-import java.awt.*;
-import java.awt.color.ColorSpace;
-import java.awt.image.*;
-
+import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
-
-import javax.swing.JPanel;
-
+import java.util.Vector;
 import visad.*;
-
 import visad.bom.ImageRendererJ3D;
-
 import visad.java3d.DisplayImplJ3D;
+import visad.java3d.TwoDDisplayRendererJ3D;
+import visad.util.CursorUtil;
 
-public class Test73
-  extends TestSkeleton
-{
+public class Test73 extends TestSkeleton implements DisplayListener {
   private String fileName;
+  private boolean norm;
+  private ImageFlatField ff;
 
   public Test73() { }
 
@@ -48,25 +42,33 @@ public class Test73
     super(args);
   }
 
-  public int checkKeyword(String testName, int argc, String[] args)
-  {
-    if (fileName == null) {
-      fileName = args[argc];
-    } else {
-      System.err.println(testName + ": Ignoring extra filename \"" +
-                         args[argc] + "\"");
+  public void initializeArgs() { fileName = null; norm = false; }
+
+  public int checkOption(String progName, char ch, String arg) {
+    if (ch == 'n') {
+      norm = true;
+      return 1;
+    }
+
+    return 0;
+  }
+
+
+  public int checkKeyword(String testName, int argc, String[] args) {
+    if (fileName == null) fileName = args[argc];
+    else {
+      System.err.println(testName +
+        ": Ignoring extra filename \"" + args[argc] + "\"");
     }
 
     return 1;
   }
 
-  public String keywordUsage()
-  {
-    return super.keywordUsage() + " file";
+  public String keywordUsage() {
+    return super.keywordUsage() + " [-n(ormalize)] file";
   }
 
-  public boolean finalizeArgs(String mainName)
-  {
+  public boolean finalizeArgs(String mainName) {
     if (fileName == null) {
       System.err.println(mainName + ": No filename specified!");
       return false;
@@ -79,90 +81,95 @@ public class Test73
     throws RemoteException, VisADException
   {
     DisplayImpl[] dpys = new DisplayImpl[1];
-    dpys[0] = new DisplayImplJ3D("display", DisplayImplJ3D.APPLETFRAME);
+    dpys[0] = new DisplayImplJ3D("display",
+      new TwoDDisplayRendererJ3D(), DisplayImplJ3D.APPLETFRAME);
     return dpys;
   }
 
   void setupServerData(LocalDisplay[] dpys)
     throws RemoteException, VisADException
   {
-    // load image in Java 1.2 compliant manner
-    Image img = Toolkit.getDefaultToolkit().getImage(fileName);
-    JPanel obs = new JPanel();
-    MediaTracker tracker = new MediaTracker(obs);
-    tracker.addImage(img, 0);
+    // load image from disk
+    BufferedImage image = null;
     try {
-      tracker.waitForAll();
+      image = javax.imageio.ImageIO.read(new java.io.File(fileName));
     }
-    catch (InterruptedException exc) { exc.printStackTrace(); }
-    int w = img.getWidth(obs);
-    int h = img.getHeight(obs);
+    catch (java.io.IOException exc) {
+      exc.printStackTrace();
+      return;
+    }
 
-    // create BufferedImage of "TYPE_3BYTE_RGB" (TYPE_CUSTOM)
-    // this type of BufferedImage is efficient with ImageFlatField.grabBytes
-    int dataType = DataBuffer.TYPE_BYTE;
-    ColorModel colorModel = new ComponentColorModel(
-      ColorSpace.getInstance(ColorSpace.CS_sRGB),
-      false, false, ColorModel.TRANSLUCENT, dataType);
-    byte[][] data = new byte[3][w * h];
-    SampleModel model = new BandedSampleModel(dataType, w, h, data.length);
-    DataBuffer buffer = new DataBufferByte(data, data[0].length);
-    WritableRaster raster = Raster.createWritableRaster(model, buffer, null);
-    BufferedImage image = new BufferedImage(colorModel, raster, false, null);
-
-    // paint image into buffered image
-    Graphics gr = image.createGraphics();
-    gr.drawImage(img, 0, 0, obs);
-    gr.dispose();
-    gr = null;
+    // convert image to more efficient representation (optional)
+    if (norm) image = ImageFlatField.make3ByteRGB(image);
 
     // convert image to VisAD object
-    RealType x = RealType.getRealType("x");
-    RealType y = RealType.getRealType("y");
-    RealTupleType xy = new RealTupleType(x, y);
-    int num = image.getRaster().getNumBands();
-    RealType r = null, g = null, b = null, v = null;
-    MathType range = null;
-    if (num == 3) {
-      r = RealType.getRealType("r");
-      g = RealType.getRealType("g");
-      b = RealType.getRealType("b");
-      range = new RealTupleType(r, g, b);
-    }
-    else if (num == 1) {
-      v = RealType.getRealType("value");
-      range = v;
-    }
-    else {
-      System.err.println("Image has unsupported # of bands (" + num + ")");
-      System.exit(1);
-    }
-    FunctionType type = new FunctionType(xy, range);
-    Integer2DSet set = new Integer2DSet(xy, w, h);
-    ImageFlatField ff = new ImageFlatField(type, set);
-    ff.setImage(image);
+    ff = new ImageFlatField(image);
 
-    dpys[0].addMap(new ScalarMap(x, Display.XAxis));
-    dpys[0].addMap(new ScalarMap(y, Display.YAxis));
-    if (num == 3) {
-      dpys[0].addMap(new ScalarMap(r, Display.Red));
-      dpys[0].addMap(new ScalarMap(g, Display.Green));
-      dpys[0].addMap(new ScalarMap(b, Display.Blue));
+    // create display mappings
+    RealType[] xy = ff.getDomainTypes();
+    RealType[] v = ff.getRangeTypes();
+    dpys[0].addMap(new ScalarMap(xy[0], Display.XAxis));
+    dpys[0].addMap(new ScalarMap(xy[1], Display.YAxis));
+    if (v.length == 3) {
+      dpys[0].addMap(new ScalarMap(v[0], Display.Red));
+      dpys[0].addMap(new ScalarMap(v[1], Display.Green));
+      dpys[0].addMap(new ScalarMap(v[2], Display.Blue));
     }
     else {
-      dpys[0].addMap(new ScalarMap(v, Display.RGB));
+      for (int i=0; i<v.length; i++) {
+        dpys[0].addMap(new ScalarMap(v[i], Display.RGB));
+      }
     }
-    dpys[0].getGraphicsModeControl().setTextureEnable(true);
+
+    // configure display
+    GraphicsModeControl gmc = dpys[0].getGraphicsModeControl();
+    gmc.setTextureEnable(true);
+    gmc.setScaleEnable(true);
     DataReferenceImpl ref = new DataReferenceImpl("ref");
     ref.setData(ff);
-    dpys[0].addReferences(new ImageRendererJ3D(),
-      new DataReference[] {ref}, null);
+    dpys[0].addReferences(new ImageRendererJ3D(), ref, null);
+    dpys[0].addDisplayListener(this);
+  }
+
+  public void displayChanged(DisplayEvent e) {
+    int id = e.getId();
+    if (id == DisplayEvent.FRAME_DONE) {
+      // check for active cursor
+      Display display = e.getDisplay();
+      if (!(display instanceof DisplayImpl)) return;
+      DisplayImpl d = (DisplayImpl) display;
+      DisplayRenderer dr = d.getDisplayRenderer();
+      Vector cursorStringVector = dr.getCursorStringVector();
+      if (cursorStringVector == null || cursorStringVector.size() == 0) return;
+
+      // get cursor value
+      double[] cur = dr.getCursor();
+      if (cur == null || cur.length == 0 || cur[0] != cur[0]) return;
+
+      // get range values at the given cursor location
+      double[] domain = CursorUtil.cursorToDomain(d, cur);
+      double[] range = null;
+      try {
+        range = CursorUtil.evaluate(ff, domain);
+      }
+      catch (VisADException exc) { exc.printStackTrace(); }
+      catch (RemoteException exc) { exc.printStackTrace(); }
+
+      System.out.print("Cursor =");
+      for (int i=0; i<2; i++) System.out.print(" " + domain[i]);
+      System.out.print(" ->");
+      if (range == null) System.out.println(" null");
+      else {
+        for (int i=0; i<range.length; i++) System.out.print(" " + range[i]);
+        System.out.println();
+      }
+    }
   }
 
   String getFrameTitle() { return "ImageFlatField with ImageRendererJ3D"; }
 
   public String toString() {
-    return " file_name: ImageFlatField with ImageRendererJ3D";
+    return " [-n(ormalize)] file_name: ImageFlatField";
   }
 
   public static void main(String[] args)
@@ -170,4 +177,5 @@ public class Test73
   {
     new Test73(args);
   }
+
 }

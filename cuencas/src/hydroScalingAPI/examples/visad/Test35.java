@@ -1,7 +1,6 @@
-package hydroScalingAPI.examples.visad;
 /*
 VisAD system for interactive analysis and visualization of numerical
-data.  Copyright (C) 1996 - 2006 Bill Hibbard, Curtis Rueden, Tom
+data.  Copyright (C) 1996 - 2011 Bill Hibbard, Curtis Rueden, Tom
 Rink, Dave Glowacki, Steve Emmerson, Tom Whittaker, Don Murray, and
 Tommy Jasmin.
 
@@ -140,8 +139,8 @@ public class Test35
       }
       int[] screen1 = mb.getScreenCoords(position1);
       int[] screen2 = mb.getScreenCoords(position2);
-      System.out.println("screen1 = (" + screen1[0] + ", " + screen1[1] +")");
-      System.out.println("screen2 = (" + screen2[0] + ", " + screen2[1] +")");
+      //System.out.println("screen1 = (" + screen1[0] + ", " + screen1[1] +")");
+      //System.out.println("screen2 = (" + screen2[0] + ", " + screen2[1] +")");
     }
   }
 

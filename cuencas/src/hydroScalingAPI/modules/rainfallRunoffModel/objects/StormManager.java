@@ -304,7 +304,7 @@ public class StormManager {
                         if (veryFirstDrop){
                             firstWaterDrop=arCron[i].getDate();
                             veryFirstDrop=false;
-                            System.out.println(" " +firstWaterDrop.getTime());
+                            //System.out.println(" " +firstWaterDrop.getTime());
                         }
 
                         precOnBasin[j].addDateAndValue(arCron[i].getDate(),new Float(currentHillBasedPrec[j]/currentHillNumPixels[j])); //

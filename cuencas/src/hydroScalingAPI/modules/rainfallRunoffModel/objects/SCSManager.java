@@ -154,42 +154,52 @@ public class SCSManager {
 
 
         if (LandUse.getName() == "null") {
-            
-              for (int i = 0; i < linksStructure.contactsArray.length; i++) {
-              Manning[i] = 0.4;
-              
-        HydCond[i] = 0;
-        Swa150[i] = 0;
-        K_NRCS[i] = 0;
-        Hyd_Group[i] = 0;
-        maxHillBasedCN[i] = 0;
-        minHillBasedCN[i]= 0;
-        maxHillBasedMan[i]= 0;
-        minHillBasedMan[i]= 0;
-        maxHillBasedHydCond[i] = 0;
-        minHillBasedHydCond[i] = 0;
-        maxHillBased_K_NRCS[i] = 0;
-        minHillBased_K_NRCS[i] = 0;
-        SURGOSwa150[i] = 0;
-        CN[i] = 0;
-        for (int j = 0; j < nclasses; j++) LandUseOnBasinArray[i][j] = 0;
-        MaxHillBasedLandUse[i] = 0;
-        MaxHillBasedLandUsePerc[i] = 0f;
-        for (int j = 0; j < 6; j++) SOILOnBasinArray[i][j] = 0;
-        MaxHillBasedSOIL[i] = 0;
-        MaxHillBasedSOILPerc[i] = 0f;
-        HillslopeRelief[i] = 0; //[link]
-        avehillBasedSlopeMet1[i] = 0;
-        avehillBasedSlopeMet2[i] = 0;
-        minHillBasedH[i] = 0;
-        avehillBasedH[i] =0;
-        for (int j = 0; j < 5; j++) HillslopeReliefArea[i][j] = 0;
-        for (int j = 0; j < 10; j++) hillclasses[i][j] = 0; //[link][class]
-        HillslopeRelief[i] = 0; //[link]
-        maxInfiltrationRate[i] = 0;
-        maxHillBasedH[i] = 0;
-        for (int j = 0; j < 4; j++) terms[i][j] = 0;
-              }
+
+            for (int i = 0; i < linksStructure.contactsArray.length; i++) {
+                Manning[i] = 0.4;
+
+                HydCond[i] = 0;
+                Swa150[i] = 0;
+                K_NRCS[i] = 0;
+                Hyd_Group[i] = 0;
+                maxHillBasedCN[i] = 0;
+                minHillBasedCN[i] = 0;
+                maxHillBasedMan[i] = 0;
+                minHillBasedMan[i] = 0;
+                maxHillBasedHydCond[i] = 0;
+                minHillBasedHydCond[i] = 0;
+                maxHillBased_K_NRCS[i] = 0;
+                minHillBased_K_NRCS[i] = 0;
+                SURGOSwa150[i] = 0;
+                CN[i] = 0;
+                for (int j = 0; j < nclasses; j++) {
+                    LandUseOnBasinArray[i][j] = 0;
+                }
+                MaxHillBasedLandUse[i] = 0;
+                MaxHillBasedLandUsePerc[i] = 0f;
+                for (int j = 0; j < 6; j++) {
+                    SOILOnBasinArray[i][j] = 0;
+                }
+                MaxHillBasedSOIL[i] = 0;
+                MaxHillBasedSOILPerc[i] = 0f;
+                HillslopeRelief[i] = 0; //[link]
+                avehillBasedSlopeMet1[i] = 0;
+                avehillBasedSlopeMet2[i] = 0;
+                minHillBasedH[i] = 0;
+                avehillBasedH[i] = 0;
+                for (int j = 0; j < 5; j++) {
+                    HillslopeReliefArea[i][j] = 0;
+                }
+                for (int j = 0; j < 10; j++) {
+                    hillclasses[i][j] = 0; //[link][class]
+                }
+                HillslopeRelief[i] = 0; //[link]
+                maxInfiltrationRate[i] = 0;
+                maxHillBasedH[i] = 0;
+                for (int j = 0; j < 4; j++) {
+                    terms[i][j] = 0;
+                }
+            }
 
             java.io.File directorio = DemData.getParentFile();
             String baseNameDEM = directorio + "/" + (DemData.getName().substring(0, DemData.getName().lastIndexOf("."))) + ".dem";
@@ -214,16 +224,14 @@ public class SCSManager {
 
                 metaDemData = new hydroScalingAPI.io.MetaRaster(DemData);
                 System.out.println("CREATE THE META RASTER _ SOIL DATA \n" + DemData);
-             
+
                 metaSlope = new hydroScalingAPI.io.MetaRaster(DemData);
-             
+
 
                 /**
                  * **** OJO QUE ACA PUEDE HABER UN ERROR (POR LA CUESTION DE LA
                  * COBERTURA DEL MAPA SOBRE LA CUENCA)****************
                  */
-         
-
                 if (metaDemData.getMinLon() > metaDatos.getMinLon() + myCuenca.getMinX() * metaDatos.getResLon() / 3600.0
                         || metaDemData.getMinLat() > metaDatos.getMinLat() + myCuenca.getMinY() * metaDatos.getResLat() / 3600.0
                         || metaDemData.getMaxLon() < metaDatos.getMinLon() + (myCuenca.getMaxX() + 2) * metaDatos.getResLon() / 3600.0
@@ -233,7 +241,7 @@ public class SCSManager {
                 }
 
                 // check if soil data and LC data have the same properties (resolution, ncol, nline,...)
-              
+
 
                 int xOulet, yOulet;
                 hydroScalingAPI.util.geomorphology.objects.HillSlope myHillActual;
@@ -263,9 +271,9 @@ public class SCSManager {
                 }
                 //Regression reg;
                 double[] evalSpotLC, evalSpotSOIL, evalSpotDem;
-                 double[][] dataSnapShotDem;
-                   int MatXDem, MatYDem;
-        
+                double[][] dataSnapShotDem;
+                int MatXDem, MatYDem;
+
                 //System.out.println("-----------------Start of Files Reading - LC----------------");
 
 
@@ -282,31 +290,31 @@ public class SCSManager {
                 PixelSwa150 = -9.9;
                 double PixelK_NRCS;
                 PixelK_NRCS = -9.9;
-       
+
                 metaDemData.setLocationBinaryFile(new java.io.File((baseNameDEM)));
                 metaSlope.setLocationBinaryFile(new java.io.File((baseNameGradient)));
                 metaSlope.setLocationBinaryFile(new java.io.File((baseNameGradient)));
                 System.out.println("--> Start to load the data Dem\n");
                 dataSnapShotDem = new hydroScalingAPI.io.DataRaster(metaDemData).getDouble();
-                 // System.out.println("dataSnapShotDem   "   +  dataSnapShotDem.length  +  "   " + dataSnapShotDem[1].length);
-          
-                 double demMinLon = metaDatos.getMinLon();
+                // System.out.println("dataSnapShotDem   "   +  dataSnapShotDem.length  +  "   " + dataSnapShotDem[1].length);
+
+                double demMinLon = metaDatos.getMinLon();
                 double demMinLat = metaDatos.getMinLat();
                 double demResLon = metaDatos.getResLon();
                 double demResLat = metaDatos.getResLat();
-                System.out.println("demMinLon    "+demMinLon);
+                System.out.println("demMinLon    " + demMinLon);
                 int basinMinX = myCuenca.getMinX();
                 int basinMinY = myCuenca.getMinY();
-  
+
                 double DemMinLon = metaDemData.getMinLon();
-                 System.out.println("DemMinLon    "+DemMinLon);
+                System.out.println("DemMinLon    " + DemMinLon);
                 double DemMinLat = metaDemData.getMinLat();
                 double DemResLon = metaDemData.getResLon();
                 double DemResLat = metaDemData.getResLat();
                 double PixelSize = 6378.0 * DemResLat * Math.PI / (3600.0 * 180.0) * 1000;
-                  
+
                 double PixelDiag = PixelSize * Math.sqrt(2);
-                 int[] currentHillNumPixels = new int[linksStructure.tailsArray.length];
+                int[] currentHillNumPixels = new int[linksStructure.tailsArray.length];
 
                 System.out.println("PixelSize = " + PixelSize + " PixelDiag = " + PixelDiag);
 
@@ -315,7 +323,7 @@ public class SCSManager {
                     for (int k = 2; k < matrizPintada[0].length; k++) {
                         evalSpotDem = new double[]{demMinLon + (basinMinX + k - 1) * demResLon / 3600.0,
                             demMinLat + (basinMinY + j - 1) * demResLat / 3600.0};
-                         //System.out.println("evalSpotDem[0]   "+evalSpotDem[0]+"  evalSpotDem[1] " + evalSpotDem[1]);
+                        //System.out.println("evalSpotDem[0]   "+evalSpotDem[0]+"  evalSpotDem[1] " + evalSpotDem[1]);
                         //double PixelSizeX= 6.3711 * 1e6*(demResLon / 3600.0)*Math.cos(Math.toRadians(evalSpotDem[1]));
                         //double PixelSizeY= 6.3711 * 1e6*(demResLat / 3600.0);
                         //double PixelSizediag=         
@@ -331,7 +339,7 @@ public class SCSManager {
                             // before it was considering negative and positive values in the average
                             // taking the maximum value at each time
                             // the maximum value should be smaller than 0.5
-                           // System.out.println("MatYDem - 1      "+(MatYDem - 1)+"      [MatXDem - 1]  " + (MatXDem - 1));
+                            // System.out.println("MatYDem - 1      "+(MatYDem - 1)+"      [MatXDem - 1]  " + (MatXDem - 1));
                             double slope = ((PixelH - dataSnapShotDem[MatYDem - 1][MatXDem - 1]) / PixelDiag);
                             maxslope = Math.max(maxslope, slope);
                             slope = ((PixelH - dataSnapShotDem[MatYDem - 1][MatXDem]) / PixelSize);
@@ -593,7 +601,7 @@ public class SCSManager {
             java.io.File directorio = LandUse.getParentFile();
             String baseNameLC = directorio + "/" + (LandUse.getName().substring(0, LandUse.getName().lastIndexOf("."))) + ".vhc";
             directorio = SoilData.getParentFile();
-            
+
             String baseNameSOIL = directorio + "/" + (SoilData.getName().substring(0, SoilData.getName().lastIndexOf("."))) + ".vhc";
 
             directorio = SoilHydData.getParentFile();
@@ -758,7 +766,7 @@ public class SCSManager {
                 dataSnapShotSOILHyd = new hydroScalingAPI.io.DataRaster(metaSoilData).getDouble();
                 // System.out.println("--> Start to load the data slope\n");
                 // dataSnapShotSlope = new hydroScalingAPI.io.DataRaster(metaSlope).getDouble();
-                
+
                 System.out.println("--> Start to load the data Swa 150\n" + metaSwa150Data.toString());
                 dataSnapShotSwa150 = new hydroScalingAPI.io.DataRaster(metaSwa150Data).getDouble();
 
@@ -857,42 +865,38 @@ public class SCSManager {
                             }
                             if (dataSnapShotLC[MatYLC][MatXLC] == 101) {
                                 currentHillBasedLandUse[matrizPintada[j][k] - 1][10]++; // Greenroof will be considered as grassland
-                            }///////////////////// Hyd_group ///////////////////
+                            }
+
+                            ///////////////////// Hyd_group ///////////////////
+
                             if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 1) {
                                 currentSoilType[matrizPintada[j][k] - 1][0]++;
-                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 4.;
-                          
-                            maxInfiltrationRate[j] = 25.4 * 4.;}
-                            else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 2) {
+                                currentMaxInf[matrizPintada[j][k] - 1] = currentMaxInf[matrizPintada[j][k] - 1] + 25.4 * 4.;
+                            } else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 2) {
                                 currentSoilType[matrizPintada[j][k] - 1][1]++;
-                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 3.;
-                            }
-                            else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 3) {
+                                currentMaxInf[matrizPintada[j][k] - 1] = currentMaxInf[matrizPintada[j][k] - 1] + 25.4 * 3.;
+                            } else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 3) {
                                 currentSoilType[matrizPintada[j][k] - 1][2]++;
-                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 2.;
-                          
-                            }
-                            else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 4) {
+                                currentMaxInf[matrizPintada[j][k] - 1] = currentMaxInf[matrizPintada[j][k] - 1] + 25.4 * 2.;
+
+                            } else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 4) {
                                 currentSoilType[matrizPintada[j][k] - 1][3]++;
-                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 1.;
-                                
-                            }
-                            else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 5) {
+                                currentMaxInf[matrizPintada[j][k] - 1] = currentMaxInf[matrizPintada[j][k] - 1] + 25.4 * 1.;
+
+                            } else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 5) {
                                 currentSoilType[matrizPintada[j][k] - 1][4]++;
-                                
-                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 0.;
-                            }
-                            else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 6) {
-                                
+
+                                currentMaxInf[matrizPintada[j][k] - 1] = currentMaxInf[matrizPintada[j][k] - 1] + 25.4 * 0.;
+                            } else if (dataSnapShotSOIL[MatYSOIL][MatXSOIL] == 6) {
+
                                 currentSoilType[matrizPintada[j][k] - 1][5]++;
-                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 0.;
-                            }
-                            else {
+                                currentMaxInf[matrizPintada[j][k] - 1] = currentMaxInf[matrizPintada[j][k] - 1] + 25.4 * 0.;
+                            } else {
                                 currentSoilType[matrizPintada[j][k] - 1][1]++;
-                                currentMaxInf[matrizPintada[j][k] - 1]=currentMaxInf[matrizPintada[j][k] - 1]+ 25.4 * 1.;
+                                currentMaxInf[matrizPintada[j][k] - 1] = currentMaxInf[matrizPintada[j][k] - 1] + 25.4 * 1.;
                             }
-                          
-                            
+
+
 
 ///////////////////// SOIL CONSERVATION NUMBER ///////////////////
                             PixelCN = EstimateSCS(dataSnapShotSOIL[MatYSOIL][MatXSOIL], dataSnapShotLC[MatYLC][MatXLC]);
@@ -972,9 +976,9 @@ public class SCSManager {
                     K_NRCS[j] = currentHillBased_K_NRCS[j] / currentHillNumPixels[j];
                     HydCond[j] = currentHillBasedHydCond[j] / currentHillNumPixels[j];
                     Swa150[j] = currentHillSwa150[j] / currentHillNumPixels[j];
-                    maxInfiltrationRate[j] = currentMaxInf[j]/ currentHillNumPixels[j];
+                    maxInfiltrationRate[j] = currentMaxInf[j] / currentHillNumPixels[j];
                     newfile.write(CN[j] + " " + Manning[j] + " " + K_NRCS[j] + " ");
-   // System.out.println("maxInfiltrationRate  "+maxInfiltrationRate[j] + " " +CN[j] + " " + Manning[j] + " " + K_NRCS[j] + " ");
+                    // System.out.println("maxInfiltrationRate  "+maxInfiltrationRate[j] + " " +CN[j] + " " + Manning[j] + " " + K_NRCS[j] + " ");
 
                     for (int n = 0; n < nclasses; n++) {
                         LandUseOnBasinArray[j][n] = (100 * currentHillBasedLandUse[j][n] / currentHillNumPixels[j]);
@@ -1005,7 +1009,7 @@ public class SCSManager {
                             MaxHillBasedSOIL[j] = n;
                         }
                     }
-                   
+
 
                     newfile.write(MaxHillBasedSOIL[j] + " ");
                     newfile.write(MaxHillBasedSOILPerc[j] + " ");
@@ -1615,8 +1619,8 @@ public class SCSManager {
      * @return The average manning roughness parameter
      */
     public Double getAverManning(int HillNumber) {
-        
-        
+
+
         return Manning[HillNumber];
     }
 

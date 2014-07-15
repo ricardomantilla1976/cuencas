@@ -1,7 +1,6 @@
-package hydroScalingAPI.examples.visad;
 /*
 VisAD system for interactive analysis and visualization of numerical
-data.  Copyright (C) 1996 - 2006 Bill Hibbard, Curtis Rueden, Tom
+data.  Copyright (C) 1996 - 2011 Bill Hibbard, Curtis Rueden, Tom
 Rink, Dave Glowacki, Steve Emmerson, Tom Whittaker, Don Murray, and
 Tommy Jasmin.
 
@@ -82,6 +81,7 @@ public class Test05
     dpys[0].addMap(new ScalarMap(RealType.Latitude, Display.YAxis));
     dpys[0].addMap(new ScalarMap(RealType.Longitude, Display.XAxis));
     dpys[0].addMap(new ScalarMap(ir_radiance, Display.Green));
+    dpys[0].addMap(new ScalarMap(vis_radiance, Display.RGB));
     dpys[0].addMap(new ScalarMap(ir_radiance, Display.ZAxis));
     dpys[0].addMap(new ConstantMap(0.5, Display.Blue));
     dpys[0].addMap(new ConstantMap(0.5, Display.Red));
