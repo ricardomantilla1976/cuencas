@@ -5227,6 +5227,369 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
         System.exit(0);
 
     }
+    
+        public static void main11_Tibebu(String args[]) {
+        
+//        int x=23576; int y=2957; // Iowa River at Oakville using Iowa DEM (Ricardo)
+        int x=23426; int y=2735; // Iowa River at Oakville using Iowa DEM (Tibebu)
+//        x=55; y=114;
+//        int x=906; int y=88; // Boone River
+//        int x=2308; int y=199; // Old Mans Creek
+//        int x=1570; int y=127; // Clear Creek
+//        int x=7875; int y=1361; // Cedar River
+//        x=2681; y=4153;//CID order 6 A=240
+//        x=4882; y=3731; //CID order 8 A=2279
+//        x=2100; y=4535; // CID order 5 A =64
+//        int x=2480; int y=552; // Soap Creek
+        
+//        int flag=1;
+//        int x= 7875; int y= 1361 ;// Basin Code 05464500 Cedar River at Cedar Rapids, IA
+//        if(flag==2) {
+//            x=2734;y=1069;
+//        }
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try{
+
+//            java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/BooneRiver_Database/Rasters/Topography/NED_62925931.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//            metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/BooneRiver_Database/Rasters/Topography/NED_62925931.dir"));
+            
+//            java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/OldMansCreek_Database/Rasters/Topography/NED_18879939.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//            metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/OldMansCreek_Database/Rasters/Topography/NED_18879939.dir"));
+            
+//            java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//            metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.dir"));
+            
+//            java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/CedarRiver_Database/Rasters/Topography/CedarRiver.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile); 
+//            metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/CedarRiver_Database/Rasters/Topography/CedarRiver.dir"));
+            
+            java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/IowaRiver_Database2/Rasters/Topography/fullIowaDem/fullIowaDem.metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile); 
+            metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/IowaRiver_Database2/Rasters/Topography/fullIowaDem/fullIowaDem.dir"));
+            
+//            java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/Goodwin_Creek_MS_database/Rasters/Topography/1_ArcSec_USGS/newDEM/goodwinCreek-nov03.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile); 
+//            metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/Goodwin_Creek_MS_database/Rasters/Topography/1_ArcSec_USGS/newDEM/goodwinCreek-nov03.dir"));
+           
+//            java.io.File theFile=new java.io.File("A:/Databases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.metaDEM");
+//            if(flag==2) theFile=new java.io.File("A:/Databases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//            metaModif.setLocationBinaryFile(new java.io.File("A:/Databases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver.dir"));
+//            if(flag==2) metaModif.setLocationBinaryFile(new java.io.File("A:/Databases/Iowa_Rivers_DB/Rasters/Topography/3_arcSec/AveragedIowaRiverAtColumbusJunctions.dir"));
+//            metaModif.setFormat("Byte");
+            
+            
+//            java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/SoapCreek_Database/Rasters/Topography/SoapCreek.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//            metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/SoapCreek_Database/Rasters/Topography/SoapCreek.dir"));
+
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();////
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            
+//            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);            
+            float[][] upAreas=mylinksAnalysis.getVarValues(2);
+            float[][] hortonOrder=mylinksAnalysis.getVarValues(4);
+            float[][] areas=mylinksAnalysis.getVarValues(0);
+            float[][] lenghts=mylinksAnalysis.getVarValues(1);
+//            float[][] longestDist=mylinksAnalysis.getVarValues(11);
+            float[][] distToOut=mylinksAnalysis.getVarValues(7);
+            float[][] topoDistToOut=mylinksAnalysis.getVarValues(8);
+            java.text.DecimalFormat fixDigits = new java.text.DecimalFormat("0.000000");
+            
+             //the following three lines are used for writing KML files
+//            java.io.File outLocation = new java.io.File("C:/Users/tayalew/Documents/Tibebu_Assignments/Radar_Hydrology/GIS/KML");
+//            hydroScalingAPI.util.geomorphology.objects.Basin myCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x,y,matDirs,metaModif);
+//            hydroScalingAPI.io.MetaNetToKML exporter=new hydroScalingAPI.io.MetaNetToKML(metaModif,outLocation,myCuenca,matDirs,myCuenca.toString());
+//        System.exit(0);
+        
+//            String outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Radar_Hydrology/ASYNCH_Files/IowaRiver_"+x+"_"+y+".rvr";
+//            outputMetaFile="C:/Users/tayalew/Documents/CuencasDataBases/Goodwin_Creek_MS_database/ASYNCH_Files/GoodwinCreek_"+x+"_"+y+".rvr";
+////            String outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Reservoir_Study/Soap_Creek/SoapCreek_"+x+"_"+y+".rvr";
+////            String outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Scaling_Study/Clear_Creek/ClearCreek_"+x+"_"+y+".rvr";
+//            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+//            metaBuffer.write("\n");
+//            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+//                metaBuffer.write(""+(i+2)+"\n");
+//                metaBuffer.write(""+mylinksAnalysis.connectionsArray[i].length);                
+//                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++) {
+//                    metaBuffer.write(" "+mylinksAnalysis.connectionsArray[i][j]);
+//                }                
+//                metaBuffer.write("\n");
+//                metaBuffer.write("\n");                
+//            }
+//            metaBuffer.write("\n");
+//            metaBuffer.close();
+//            
+////            outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Reservoir_Study/Soap_Creek/SoapCreek_"+x+"_"+y+".prm";
+////            outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Scaling_Study/Clear_Creek/ClearCreek_"+x+"_"+y+".prm";
+//            String outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Radar_Hydrology/ASYNCH_Files/IowaRiver_"+x+"_"+y+".prm";
+//            outputMetaFile="C:/Users/tayalew/Documents/CuencasDataBases/Goodwin_Creek_MS_database/ASYNCH_Files/GoodwinCreek_"+x+"_"+y+".prm";
+//            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+//            metaBuffer.write("\n");
+            
+//            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+//                metaBuffer.write((i)+"\n");
+//                metaBuffer.write(upAreas[0][i]+" "+lenghts[0][i]+" "+areas[0][i]+" "+1.0+" "+0.01+" "+1.0+"\n");
+//                metaBuffer.write(fixDigits.format(upAreas[0][i])+" "+fixDigits.format(lenghts[0][i])+" "+fixDigits.format(areas[0][i])+"\n");
+//                metaBuffer.write("\n");
+//            }
+//            metaBuffer.write("\n");
+
+//            metaBuffer.close();
+//            
+//            String outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Radar_Hydrology/ASYNCH_Files/IowaRiver_"+x+"_"+y+".complete";
+////            outputMetaFile="C:/Users/tayalew/Documents/CuencasDataBases/Goodwin_Creek_MS_database/ASYNCH_Files/GoodwinCreek_"+x+"_"+y+".complete";
+//////            outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Reservoir_Study/Soap_Creek/SoapCreek_"+x+"_"+y+".complete";
+//////            outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Scaling_Study/Clear_Creek/ClearCreek_"+x+"_"+y+".complete";
+//            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));////            
+//            float[][] hortonOrders=mylinksAnalysis.getVarValues(4);//
+//            metaBuffer.write(""+mylinksAnalysis.completeStreamLinksArray.length+"\n");
+//            metaBuffer.write("\n");            
+//            for (int i=0;i<mylinksAnalysis.completeStreamLinksArray.length;i++) {
+//                metaBuffer.write(mylinksAnalysis.completeStreamLinksArray[i]+" "+hortonOrders[0][mylinksAnalysis.completeStreamLinksArray[i]]+"\n");
+//                metaBuffer.write(mylinksAnalysis.completeStreamLinksArray[i]+"\n");
+//            }
+//            metaBuffer.write("\n");
+//            metaBuffer.close();
+////           
+//           String outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Radar_Hydrology/ASYNCH_Files/IowaRiver_"+x+"_"+y+".dist";
+////            outputMetaFile="C:/Users/tayalew/Documents/CuencasDataBases/Goodwin_Creek_MS_database/ASYNCH_Files/GoodwinCreek_"+x+"_"+y+".dist";
+//////            outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Reservoir_Study/Soap_Creek/SoapCreek_"+x+"_"+y+".dist";
+//////            outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Scaling_Study2/Cedar_River/CedarRiver_"+x+"_"+y+".dist";
+//            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+//                metaBuffer.write((i)+" "+longestDist[0][i]+" "+lenghts[0][i]+" "+topoDistToOut[0][i]+" "+distToOut[0][i]+" "+upAreas[0][i]+"\n");
+//                metaBuffer.write("\n");
+//            }
+//            metaBuffer.write("\n");
+//            metaBuffer.close();
+            
+            String outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Radar_Hydrology/ASYNCH_Files/IowaRiver_"+x+"_"+y+".linksInfoCsv";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            metaBuffer.write("LinkID,hortonOrder,topoDistToOut,distToOut,upAreas,linkLength,linkArea"+ "\n");
+            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+                metaBuffer.write((i)+","+hortonOrder[0][i]+","+topoDistToOut[0][i]+","+distToOut[0][i]+","+upAreas[0][i]+","+lenghts[0][i]+","+areas[0][i]+"\n");
+//                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+      
+            
+            
+            //write lat long of links
+//            String outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Radar_Hydrology/IowaRiver_Links"+x+"_"+y+".latlong";
+//            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile)); 
+//            int numCols = mylinksAnalysis.localMetaRaster.getNumCols();
+//            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) 
+//            {            
+//                int loctID  = mylinksAnalysis.contactsArray[i];                
+//                int yy= loctID/numCols;
+//                int xx= loctID%numCols;
+//                double longitude = xx*mylinksAnalysis.localMetaRaster.getResLon()/3600.+mylinksAnalysis.localMetaRaster.getMinLon();
+//                double latitude =  yy*mylinksAnalysis.localMetaRaster.getResLat()/3600.+mylinksAnalysis.localMetaRaster.getMinLat();
+//                metaBuffer.write(i+","+longitude+","+latitude+","+distToOut[0][i]);
+//                metaBuffer.write("\n");
+//            }
+//            metaBuffer.write("\n");
+//            metaBuffer.close();  
+         
+            
+//            int partitionCount = 200*200;
+//            double xMin = mylinksAnalysis.localMetaRaster.getMinLon();
+//            double xMax = mylinksAnalysis.localMetaRaster.getMaxLon();
+//            double yMin = mylinksAnalysis.localMetaRaster.getMinLat();
+//            double yMax = mylinksAnalysis.localMetaRaster.getMaxLat();
+//            hydroScalingAPI.examples.Tools_by_Tibebu.partitionManager pm = new hydroScalingAPI.examples.Tools_by_Tibebu.partitionManager();
+//            pm.setParams(xMin, xMax, yMin, yMax, partitionCount);
+//            System.out.println(xMin+" "+xMax+" "+yMin+" "+yMax);
+//            System.exit(0);
+//            String outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Scaling_Study2/Cedar_River/CedarRiver_"+x+"_"+y+"_"+partitionCount+"_partitions.csv";
+//            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//            
+//            int numCols = mylinksAnalysis.localMetaRaster.getNumCols();
+//            System.out.println("numCols= "+numCols);
+////            metaBuffer.write("linkID"+","+"RainNoRain"+","+"longitude"+","+"latitude"+"\n");
+//            metaBuffer.write("linkID"+","+"longitude"+","+"latitude"+","+"partitionID"+"\n");
+//            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+//            
+//                int loctID  = mylinksAnalysis.contactsArray[i];
+////                System.out.println("loctID= "+loctID+"  "+"I= "+i);
+//                
+//                int yy= loctID/numCols;
+//                int xx= loctID%numCols;
+//
+//                double longitude = xx*mylinksAnalysis.localMetaRaster.getResLon()/3600.+mylinksAnalysis.localMetaRaster.getMinLon();
+//                double latitude =  yy*mylinksAnalysis.localMetaRaster.getResLat()/3600.+mylinksAnalysis.localMetaRaster.getMinLat();
+//                
+//                
+//               
+////                double testYMin = mylinksAnalysis.localMetaRaster.getMinLat()+0.5*(mylinksAnalysis.localMetaRaster.getMaxLat()-mylinksAnalysis.localMetaRaster.getMinLat());
+////                double testXMin = mylinksAnalysis.localMetaRaster.getMinLon()+0.5*(mylinksAnalysis.localMetaRaster.getMaxLon()-mylinksAnalysis.localMetaRaster.getMinLon());
+////                metaBuffer.write(i+","+longitude+","+latitude+","+distToOut[0][i]);
+//                metaBuffer.write(i+","+longitude+","+latitude+","+pm.getPartitionID(longitude, latitude));
+//                metaBuffer.write("\n");
+////                if(distToOut[0][i]<70){
+////                    metaBuffer.write(i+1+","+1+","+longitude+","+latitude);
+////                    metaBuffer.write("\n");}
+////                else if(distToOut[0][i]<140){
+////                    metaBuffer.write(i+1+","+2+","+longitude+","+latitude);
+////                    metaBuffer.write("\n");}
+////                else if(distToOut[0][i]<210){
+////                    metaBuffer.write(i+1+","+3+","+longitude+","+latitude);
+////                    metaBuffer.write("\n");}
+////                else if(distToOut[0][i]<280){
+////                    metaBuffer.write(i+1+","+4+","+longitude+","+latitude);
+////                    metaBuffer.write("\n");}
+////                else if(distToOut[0][i]<350){
+////                    metaBuffer.write(i+1+","+5+","+longitude+","+latitude);
+////                    metaBuffer.write("\n");}
+////                else
+////                {
+////                   metaBuffer.write(i+1+","+6+","+longitude+","+latitude);
+////                   metaBuffer.write("\n"); 
+////                }
+//            }
+//            metaBuffer.write("\n");
+//            metaBuffer.close();  
+            
+            
+
+
+
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+        
+        
+    /**
+     * Tests for the class
+     * @param args the command line arguments
+     */
+    public static void main13_Tibebu(String args[]) {
+
+        //        int x=23576; int y=2957; // Iowa River at Oakville using Iowa DEM (Ricardo)
+        int x=23426; int y=2735; // Iowa River at Oakville using Iowa DEM (Tibebu)
+//        x=55; y=114;
+//        int x=906; int y=88; // Boone River
+//        int x=2308; int y=199; // Old Mans Creek
+//        int x=1570; int y=127; // Clear Creek
+//        int x=7875; int y=1361; // Cedar River
+//        x=2681; y=4153;//CID order 6 A=240
+//        x=4882; y=3731; //CID order 8 A=2279
+//        x=2100; y=4535; // CID order 5 A =64
+//        int x=2480; int y=552; // Soap Creek
+        
+//        int flag=1;
+//        int x= 7875; int y= 1361 ;// Basin Code 05464500 Cedar River at Cedar Rapids, IA
+//        if(flag==2) {
+//            x=2734;y=1069;
+//        }
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try{
+
+            
+            java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/IowaRiver_Database2/Rasters/Topography/fullIowaDem/fullIowaDem.metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile); 
+            metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/IowaRiver_Database2/Rasters/Topography/fullIowaDem/fullIowaDem.dir"));
+            
+
+
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();////
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            
+            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);  
+            
+            
+            System.out.println(mylinksAnalysis.nextLinkArray.length);   
+            int xOulet,yOulet;
+            hydroScalingAPI.util.geomorphology.objects.HillSlope myHillActual;
+            int demNumCols=metaModif.getNumCols();
+
+            String outputMetaFile="C:/Users/tayalew/Documents/Tibebu_Assignments/Radar_Hydrology/ASYNCH_Files/IowaRiver_"+x+"_"+y+".linkIDxy";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            
+            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++){
+                if (mylinksAnalysis.magnitudeArray[i] < mylinksAnalysis.basinMagnitude){
+
+                    xOulet=mylinksAnalysis.contactsArray[i]%demNumCols;
+                    yOulet=mylinksAnalysis.contactsArray[i]/demNumCols;
+
+                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
+                    int[][] xyHillSlope=myHillActual.getXYHillSlope();
+                    for (int j=0;j<xyHillSlope[0].length;j++)
+                    {
+                    
+                     
+                    int yy= xyHillSlope[1][j];
+                    int xx= xyHillSlope[0][j];
+
+                    double longitude = xx*mylinksAnalysis.localMetaRaster.getResLon()/3600.+mylinksAnalysis.localMetaRaster.getMinLon();
+                    double latitude =  yy*mylinksAnalysis.localMetaRaster.getResLat()/3600.+mylinksAnalysis.localMetaRaster.getMinLat();
+                        
+                      metaBuffer.write(i+","+longitude+","+latitude+"\n") ;
+
+                    }
+                }
+                else 
+                {
+                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(x,y,matDirs,magnitudes,metaModif);
+                    int[][] xyHillSlope=myHillActual.getXYHillSlope();
+                    for (int j=0;j<xyHillSlope[0].length;j++)
+                    {
+                    
+                     
+                    int yy= xyHillSlope[1][j];
+                    int xx= xyHillSlope[0][j];
+
+                    double longitude = xx*mylinksAnalysis.localMetaRaster.getResLon()/3600.+mylinksAnalysis.localMetaRaster.getMinLon();
+                    double latitude =  yy*mylinksAnalysis.localMetaRaster.getResLat()/3600.+mylinksAnalysis.localMetaRaster.getMinLat();
+                        
+                     metaBuffer.write(i+","+longitude+","+latitude+"\n") ;
+
+                    }
+                }
+            }
+            metaBuffer.close();
+
+            
+            
+
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }    
+    
+    
 
 
 }

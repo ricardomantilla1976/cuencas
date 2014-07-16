@@ -33,7 +33,7 @@ package hydroScalingAPI.examples.artifitialFields;
 public class createRandomPrecipitationMap {
     
     /** Creates a new instance of createInfiltrationMap */
-    public createRandomPrecipitationMap(java.io.File baseMetaDEM, java.io.File outputDir) throws java.io.IOException{
+    public createRandomPrecipitationMap(float mean, float stDeviation,java.io.File baseMetaDEM, java.io.File outputDir) throws java.io.IOException{
         
         hydroScalingAPI.io.MetaRaster metaData=new hydroScalingAPI.io.MetaRaster(baseMetaDEM);
         java.io.File originalFile=metaData.getLocationMeta();
@@ -41,10 +41,23 @@ public class createRandomPrecipitationMap {
             float[][] newMatrix=new float[metaData.getNumRows()][metaData.getNumCols()];
             
             for(int i=0;i<newMatrix.length;i++){
-                for(int j=0;j<newMatrix[0].length;j++){
+                for(int j=0;j<newMatrix[0].length-1;j+=2){
+                    
+                    //Here we implement the Polar-Marsaglia method of Gausian random number generation
+                    float V1 = (float)(2.*Math.random()-1);
+                    float V2 = (float)(2.*Math.random()-1);
+                    while (V1*V1+V2*V2>1)
+                    {
+                      V1 = (float)(2.*Math.random()-1);
+                      V2 = (float)(2.*Math.random()-1); 
+                    }
+                    float C = (float)Math.sqrt(-2*Math.log(V1*V1+V2*V2)/(V1*V1+V2*V2));
+                    float X1 = C*V1; //~N(0,1)
+                    float X2 = C*V2;//~N(0,1)
+                    // Here we transform the N(0,1) to N(mean, stDeviation) and populate our rainfall matrix
+                    newMatrix[i][j]=mean+stDeviation*X1;
+                    newMatrix[i][j+1]=mean+stDeviation*X2;
                 
-                    newMatrix[i][j]=(float)Math.random();
-                }
             }
             
             String thisOutputDir=outputDir.getPath()+java.io.File.separator+"eventFake";
@@ -52,7 +65,7 @@ public class createRandomPrecipitationMap {
             new java.io.File(thisOutputDir).mkdirs();
             createMetaFile(new java.io.File(thisOutputDir),"precipRandom",metaData);
 
-            java.io.File saveFile=new java.io.File(thisOutputDir+java.io.File.separator+"precipRandom.000000.01.June.2008.vhc");
+            java.io.File saveFile=new java.io.File(thisOutputDir+java.io.File.separator+"precipRandom.060000.01.July.1971.vhc");
             java.io.DataOutputStream writer = new java.io.DataOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(saveFile)));
 
             for (int yc=0;yc<metaData.getNumRows();yc++) {
@@ -62,6 +75,7 @@ public class createRandomPrecipitationMap {
             }
             writer.close();
             
+    }
     }
     
     public void createMetaFile(java.io.File directory, String newMetaName, hydroScalingAPI.io.MetaRaster originalMeta) {
@@ -96,7 +110,7 @@ public class createRandomPrecipitationMap {
               writer.println("0");
               writer.println(""); 
               writer.println("[Temporal Resolution]");
-              writer.println("60-minutes"); //This is the duration of the storm
+              writer.println("15-minutes"); //This is the duration of the storm
               writer.println(""); 
               writer.println("[Units]");
               writer.println("mm/h");
@@ -115,8 +129,8 @@ public class createRandomPrecipitationMap {
      */
     public static void main(String[] args) {
         try{
-            new createRandomPrecipitationMap(new java.io.File("/location/of/dem.metaDEM"),
-                                            new java.io.File("/location/of/output/rain/"));
+            new createRandomPrecipitationMap(100.f,2.f,new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM"),
+                                            new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Rasters/Hydrology/Rainfall"));
         } catch(java.io.IOException ioe){
             System.err.println(ioe);
         }

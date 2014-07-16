@@ -49,7 +49,7 @@ public class LocateBestDamLocations {
         
         
         //Array of stream orders to analyze and Dam and Lake parameters
-        int[] ordersToConsider={4,5};
+        int[] ordersToConsider={3,4};
         double maxAreaAllowed=1e5;
         float damElevation=5;
         
@@ -101,7 +101,7 @@ public class LocateBestDamLocations {
 
                 }
                 
-                hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(jaN, iaN ,damElevation,fullDirMatrix,dem,metaDatos);
+                  hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(jaN, iaN ,damElevation,fullDirMatrix,dem,metaDatos);
                     
                 double[] resCharac=new double[8];
                     

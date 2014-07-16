@@ -25,15 +25,15 @@ public class Storage_to_Discharge {
         // TODO code application logic here
        
 
-        String storageFile =    "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_storages_Order_3_and_4_H5_D_Closed.csv";
-        String dischargeFile =  "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_discharges_Order_3_and_4_H5_D_Closed.csv";
+        String storageFile =    "C:/CuencasDataBases/ClearCreek_Database/Results/Check/NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_0.0-Routing_CV_params_0.3_-0.1_1.0_storages_Order_noReservoir.csv";
+        String dischargeFile =  "C:/CuencasDataBases/ClearCreek_Database/Results/Check/NED_00159011_1570_127-UniformEvent_INT_100.0_DUR_15.0-IR_0.0-Routing_CV_params_0.3_-0.1_1.0_discharges_Order_noReservoir.csv";
         
-//        String storageFile =    "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_778_368-UniformEvent_INT_10000.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_storages.csv";
-//        String dischargeFile =    "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_778_368-UniformEvent_INT_10000.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_discharge.csv";
+//        String storageFile =    "C:/CuencasDataBases/ClearCreek_Database/Results/NED_00159011_778_368-UniformEvent_INT_10000.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_storages.csv";
+//        String dischargeFile =    "C:/CuencasDataBases/ClearCreek_Database/Results/NED_00159011_778_368-UniformEvent_INT_10000.0_DUR_15.0-IR_30.0-Routing_CV_params_0.3_-0.1_0.6_discharge.csv";
         
         //GK
-//        String storageFile =    "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_778_368-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_GK_params_0.3_-0.1_0.6_storages.csv";
-//        String dischargeFile =    "C:\\CuencasDataBases\\ClearCreek_Database\\Results\\NED_00159011_778_368-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_GK_params_0.3_-0.1_0.6_discharge.csv";
+//        String storageFile =    "C:/CuencasDataBases/ClearCreek_Database/Results/NED_00159011_778_368-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_GK_params_0.3_-0.1_0.6_storages.csv";
+//        String dischargeFile =    "C:/CuencasDataBases/ClearCreek_Database/Results/NED_00159011_778_368-UniformEvent_INT_100.0_DUR_15.0-IR_30.0-Routing_GK_params_0.3_-0.1_0.6_discharge.csv";
         ArrayList<Double> linkLength = new ArrayList();
         
         double velocity = 0.6;

@@ -165,7 +165,9 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
 //        System.out.println(linksStructure.getResSimID(1559, 132)-1);
 //        System.out.println(linksStructure.getResSimID(1562, 131)-1);
 //        System.out.println(linksStructure.getResSimID(1570, 127)-1);
-         
+//        System.out.println(linksStructure.getResSimID(1559, 132)-1);
+        
+//        System.out.println(linksStructure.getResSimID(7875, 1361)-1); //cedar
 //        System.out.println(linksStructure.getResSimID(1169, 249)-1);
 //        System.out.println(linksStructure.getResSimID(1170, 246)-1);
 //        System.out.println(linksStructure.getResSimID(1171, 242)-1);
@@ -179,6 +181,12 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
 //        System.out.println(linksStructure.getResSimID(1417, 102)-1);
 //        System.out.println("x="+linksStructure.contactsArray[564]%metaDatos.getNumCols()+" y="+linksStructure.contactsArray[564]/metaDatos.getNumCols());
 //        System.out.println("x="+linksStructure.contactsArray[163]%metaDatos.getNumCols()+" y="+linksStructure.contactsArray[163]/metaDatos.getNumCols());
+        
+//        System.out.println(linksStructure.getResSimID(1570, 127)-1);//clear creek , to show attenuation
+//        System.out.println(linksStructure.getResSimID(1508, 167)-1);
+//        System.out.println(linksStructure.getResSimID(1442, 201)-1);
+//        System.out.println(linksStructure.getResSimID(1300, 217)-1);
+//        
 //        System.exit(0);
         /*
             Escribo en un theFile lo siguiente:
@@ -230,6 +238,8 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
       
         newfile.close();
         bufferout.close();
+        
+        System.exit(0);
         
         if(infiltMetaRaster == null)
             theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+lam1+"_"+lam2+"_"+v_o+"_storages_Order_"+resOrder+".csv");//theFile=new java.io.File(Directory+demName+"_"+x+"_"+y++"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+widthCoeff+"_"+widthExponent+"_"+widthStdDev+"_"+chezyCoeff+"_"+chezyExponent+".dat");
@@ -309,7 +319,7 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         System.out.println("Number of Links on this simulation: "+(initialCondition.length/2.0));
         System.out.println("Inicia simulacion RKF");
         
-        hydroScalingAPI.util.ordDiffEqSolver.RKF rainRunoffRaining=new hydroScalingAPI.util.ordDiffEqSolver.RKF(thisBasinEqSys,1e-3,10/60.);
+        hydroScalingAPI.util.ordDiffEqSolver.RKF_S rainRunoffRaining=new hydroScalingAPI.util.ordDiffEqSolver.RKF_S(thisBasinEqSys,1e-3,10/60.);
         
         int numPeriods = 1;
         
@@ -328,7 +338,7 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         if(stormFile == null){
             for (int k=0;k<numPeriods;k++) {
                 System.out.println("Period"+(k)+" out of "+numPeriods);
-                System.out.println("Time"+","+"Outlet Discharge"+","+"Reservoir"+","+"ReservoirUP1"+","+"ReservoirUP2"+","+"ReservoirDown"+","+"DownUp4"+","+"DownUp2"); //Tibebu
+//                System.out.println("Time"+","+"Outlet Discharge"+","+"Reservoir"+","+"ReservoirUP1"+","+"ReservoirUP2"+","+"ReservoirDown"+","+"DownUp4"+","+"DownUp2"); //Tibebu
                 rainRunoffRaining.jumpsRunToAsciiFile(storm.stormInitialTimeInMinutes()+k*rainDuration,storm.stormInitialTimeInMinutes()+(k+1)*rainDuration,rainDuration,initialCondition,newfile,linksStructure,thisNetworkGeom);
                 //rainRunoffRaining.jumpsRunToAsciiFile(storm.stormInitialTimeInMinutes()+k*rainDuration,storm.stormInitialTimeInMinutes()+(k+1)*rainDuration,10,initialCondition,newfile,linksStructure,thisNetworkGeom);
                 initialCondition=rainRunoffRaining.finalCond;
@@ -429,6 +439,12 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
     public static void main(String args[]) {
                         
         try{
+            int [] noReservoir = new int[] {};
+            int [] order_4and5 = new int[] {98, 498, 658, 714, 828, 899, 1235, 1568, 1619, 1765, 2091, 2142, 2215, 3071, 2564, 2708, 2754, 5066, 2788, 2804, 2952, 3174, 3221, 3606, 3768, 3889, 3932, 4220, 4325, 4821, 4816, 4877, 4942, 4982, 5840, 5291, 5378, 5447, 5721, 6175, 6328};
+            int [] best_loc_25Res = new int[] {5501,5504,5517,5556,5562,5570,5581,5587,5595,5599,5606,5619,5629,5663,5670,5677,5716,5725,5735,5742,5755,5763,5803,5840,5889};
+            int [] best_loc_151Res_O3_4 = new int[] {4752,4755,4768,4771,4774,4783,4788,4789,4795,4798,4802,4808,4815,4819,4826,4828,4831,4833,4841,4844,4847,4851,4852,4856,4861,4866,4868,4870,4872,4877,4882,4883,4888,4895,4899,4912,4921,4935,4940,4952,4957,4970,4975,4980,4982,4986,4990,4994,4997,5004,5007,5010,5017,5020,5025,5030,5034,5038,5049,5066,5071,5072,5078,5086,5087,5093,5098,5101,5107,5110,5113,5116,5117,5121,5124,5127,5137,5144,5148,5154,5158,5166,5172,5176,5180,5182,5190,5193,5197,5202,5206,5210,5220,5224,5237,5246,5253,5259,5263,5275,5279,5292,5296,5319,5336,5355,5366,5369,5373,5391,5397,5404,5407,5414,5419,5427,5431,5437,5444,5446,5456,5466,5468,5478,5486,5491,5501,5504,5517,5556,5562,5570,5581,5587,5595,5599,5606,5619,5629,5663,5670,5677,5716,5725,5735,5742,5755,5763,5803,5840,5889};
+            int [] resLoc_test = new int[] {2526};
+        
             int [] resLoc_ord_3 = new int [] {37,87,90,73,163,212,144,295,300,325,340,362,370,395,418,435,566,571,584,590,599,475,622,637,558,752,953,1399,1026,1185,1169,1214,1267,1276,1296,1358,1363,1386,1409,1447,1459,1523,1510,1528,1533,1561,1479,1598,1638,1658,1795,2052,1896,1918,1933,1941,1972,1994,2034,2066,2133,2183,2272,2287,2292,2297,2330,2359,2381,2555,2647,2663,2670,3297,2913,2930,3055,3014,3070,3034,3080,3094,3188,3243,3257,3429,3373,3463,3656,3689,3706,3710,3834,4206,3908,3944,3955,3967,3969,3982,3988,4231,3600,4015,4184,4374,4335,4381,4401,4413,4580,4597,4622,4842,4688,4648,4720,4773,4800,4820,4957,4969,4995,5039,5065,4809,5128,5173,5200,5221,5304,5336,5390,5451,5474,5504,5556,5617,5633,5642,5733,5746,5839,5894,6054,5974,5989,6068,6078,6124,6192,6239,6279,6337,6354};
             int [] resLoc_ord_3_and_4 = new int [] {37,87,90,73,163,212,144,295,300,325,340,362,370,395,418,435,566,571,584,590,599,475,622,637,558,752,953,1399,1026,1185,1169,1214,1267,1276,1296,1358,1363,1386,1409,1447,1459,1523,1510,1528,1533,1561,1479,1598,1638,1658,1795,2052,1896,1918,1933,1941,1972,1994,2034,2066,2133,2183,2272,2287,2292,2297,2330,2359,2381,2555,2647,2663,2670,3297,2913,2930,3055,3014,3070,3034,3080,3094,3188,3243,3257,3429,3373,3463,3656,3689,3706,3710,3834,4206,3908,3944,3955,3967,3969,3982,3988,4231,3600,4015,4184,4374,4335,4381,4401,4413,4580,4597,4622,4842,4688,4648,4720,4773,4800,4820,4957,4969,4995,5039,5065,4809,5128,5173,5200,5221,5304,5336,5390,5451,5474,5504,5556,5617,5633,5642,5733,5746,5839,5894,6054,5974,5989,6068,6078,6124,6192,6239,6279,6337,6354,98,498,658,714,1235,1568,1619,1765,2091,2142,2215,3071,2564,2708,5066,2788,2804,3221,3606,3889,3932,4220,4325,4821,4942,4982,5840,5291,5378,5447,5721,6175,6328};
             int [] resLoc_ord_5 = new int [] {828,899,2754,2952,3174,3768,4816,4877};
@@ -471,7 +487,7 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
 //            {98,498,658,714,1235,1568,1619,1765,2091,2142,2215,3071,2564,2708,5066,2788,2804,3221,3606,3889,3932,4220,4325,4821,4942,4982,5840,5291,5378,5447,5721,6175,6328};
             
             
-            subMain5(args,resLoc_ord_3);   //Case Clear Creek June 3 to 7
+            subMain5(args, noReservoir);   //Case Clear Creek June 3 to 7
 
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
@@ -487,9 +503,19 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
     
     public static void subMain5(String args[],int[]resLoc) throws java.io.IOException, VisADException {
         
-        java.io.File theFile=new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM");
-        hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-        metaModif.setLocationBinaryFile(new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.dir"));
+//        java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM");
+//        hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//        metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.dir"));
+        
+//        java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/CedarRiver_Database/Rasters/Topography/CedarRiver.metaDEM");
+//            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+//            metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/CedarRiver_Database/Rasters/Topography/CedarRiver.dir"));
+
+            java.io.File theFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/IowaRiver_Database2/Rasters/Topography/fullIowaDem/fullIowaDem.metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile); 
+            metaModif.setLocationBinaryFile(new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/IowaRiver_Database2/Rasters/Topography/fullIowaDem/fullIowaDem.dir"));
+        
+             int x=23426; int y=2735; // Iowa River at Oakville using Iowa DEM (Tibebu)
         
         metaModif.setFormat("Byte");
         byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
@@ -508,17 +534,26 @@ public class SimulationToAsciiFileTibebu extends java.lang.Object implements Run
         
         routingParams.put("lambda1",0.3f);
         routingParams.put("lambda2",-0.1f);
-        routingParams.put("v_o", 0.6f);
+        routingParams.put("v_o", 1.0f);
  
         routingParams.put("v_h", 0.01f);
 
         
         //Routing type: 2 is constant velocity v=vo, 5 variable v=vo q^l1 A^l2
         
-//        new SimulationToAsciiFileTibebu(778, 368, matDirs, magnitudes, metaModif, 10000.0f, 15.0f, 30.0f, 2, new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Results"), routingParams).executeSimulation();
-        new SimulationToAsciiFileTibebu("3",resLoc,1570,127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 2, new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Results"), routingParams).executeSimulation();
-        //new SimulationToAsciiFileTibebu(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("C:/CuencasDataBases/ClearCreek_Database/Results"), routingParams).executeSimulation();
+//        new SimulationToAsciiFileTibebu("test",resLoc,771, 374, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 2, new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/ClearCreek_Database/Results"), routingParams).executeSimulation();
+//        new SimulationToAsciiFileTibebu("outlet",resLoc,1570,127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 0.0f, 2, new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/ClearCreek_Database/Results/Check"), routingParams).executeSimulation();
+//       new SimulationToAsciiFileTibebu("cedar",resLoc,7875,1361, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 0.0f, 2, new java.io.File("C://Users/tayalew/Documents/CuencasDataBases/CedarRiver_Database/Rasters/Topography/KML"), routingParams).executeSimulation();
+        new SimulationToAsciiFileTibebu("Iowa",resLoc,x,y, matDirs, magnitudes, metaModif, 0.0f, 0.0f, 0.0f, 5, new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/IowaRiver_Database2/Rasters/Topography"), routingParams).executeSimulation();
+       
+//        new SimulationToAsciiFileTibebu(1570, 127, matDirs, magnitudes, metaModif, 100.0f, 15.0f, 30.0f, 5, new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/ClearCreek_Database/Results"), routingParams).executeSimulation();
 
+//        java.io.File stormFile=new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/ClearCreek_Database/Rasters/Hydrology/Rainfall/eventFake/precipRandom.metaVHC");
+//        new SimulationToAsciiFileTibebu("3_D_closed_var_RF",resLoc,1570,127, matDirs, magnitudes, metaModif, stormFile, 30.0f, 2, new java.io.File("C:/Users/tayalew/Documents/CuencasDataBases/ClearCreek_Database/Results"), routingParams).executeSimulation();
+
+   //        new SimulationToAsciiFile("3",resLoc,1570,127, matDirs, magnitudes, metaModif, stormFile, 15, 5, new java.io.File("/Users/ricardo/simulationResults/GoodwinCreek/"), routingParams).executeSimulation();
+
+        
         System.exit(0);       
         
     }

@@ -893,8 +893,8 @@ public class DamInundation extends Object{
             
             //This is the path to the desired DEM
             
-            //java.io.File theFile=new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/Resolutions/demcc_10.metaDEM");
-            java.io.File theFile=new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM");
+            java.io.File theFile=new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/Resolutions/demcc_5.metaDEM");
+//            java.io.File theFile=new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM");
             
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
             
@@ -945,8 +945,8 @@ public class DamInundation extends Object{
             
             //This is the path to the desired DEM
             
-            //java.io.File theFile=new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/Resolutions/demcc_10.metaDEM");
-            java.io.File theFile=new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM");
+            java.io.File theFile=new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/Resolutions/demcc_5.metaDEM");
+//            java.io.File theFile=new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM");
             
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
             
@@ -967,22 +967,85 @@ public class DamInundation extends Object{
             //***********************************************
             //***********************************************
             
-            //hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(2856, 846 , 9,matDirs,dem,metaModif);
-            hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(908, 292 ,9,matDirs,dem,metaModif);
+//            double [][] ricardoFarm = new double[][]{ {-91.699,	41.733,	1209,	330,	0000,	000.000,	000.000}};//30m DEM
+            double [][] ricardoFarm = new double[][]{ {-91.699,	41.733,	7747,	1937,	0000,	000.000,	000.000}};//5m DEM
+            double [][] reservoirsData = new double[][]
+                {
+                    {-91.64485931396484,	41.66958236694336,	1405,	103,	5501,	59281.27961084259,	85945.97621049781},
+                    {-91.72513580322266,	41.68124771118164,	1116,	145,	5506,	84264.77884380076,	161380.8626804209},
+                    {-91.7370834350586,	41.68486022949219,	1073,	158,	5517,	103537.14351697615,	211396.75114765318},
+                    {-91.95930480957031,	41.6854133605957,	273,	160,	5558,	85685.10980296714,	129180.53020736316},
+                    {-91.59429931640625,	41.69263458251953,	1587,	186,	5565,	272724.2354574659,	709454.0722755186},
+                    {-91.91097259521484,	41.697635650634766,	447,	204,	5571,	72818.38596923299,	99965.73910469614},
+                    {-91.72819519042969,	41.697914123535156,	1105,	205,	5578,	253431.86983420159,	547263.5816911625},
+                    {-91.61819458007812,	41.699581146240234,	1501,	211,	5584,	30696.910147850707,	52116.86430874766},
+                    {-91.93096923828125,	41.70402526855469,	375,	227,	5590,	124925.6618620705,	191259.94371180475},
+                    {-91.77791595458984,	41.70458221435547,	926,	229,	5597,	42830.44813156004,	75664.13852191468},
+                    {-91.88597106933594,	41.705413818359375,	537,	232,	5602,	68528.1396974163,	114933.80224961537},
+                    {-91.6504135131836,	41.707637786865234,	1385,	240,	5603,	122769.58704140919,	270422.19657647866},
+                    {-91.95124816894531,	41.70846939086914,	302,	243,	5607,	36403.69758190325,	39242.38940146746},
+                    {-91.7562484741211,	41.710693359375,	1004,	251,	5612,	102785.4801188223,	170664.66859870285},
+                    {-91.71125030517578,	41.711524963378906,	1166,	254,	5613,	256947.20228348346,	444077.3952171655},
+                    {-91.6209716796875,	41.7118034362793,	1491,	255,	5624,	121332.41943533333,	196910.6293585931},
+                    {-91.66207885742188,	41.71208190917969,	1343,	256,	5630,	61381.33904595083,	100657.95963001334},
+                    {-91.99763488769531,	41.71791458129883,	135,	277,	5655,	137027.0335643621,	281129.8898766087},
+                    {-91.96458435058594,	41.72346878051758,	254,	297,	5659,	112751.26141748614,	127129.85898502014},
+                    {-91.68763732910156,	41.726802825927734,	1251,	309,	5669,	179818.96065493338,	318898.53387157235},
+                    {-91.88568878173828,	41.727359771728516,	538,	311,	5674,	68502.60490929127,	135586.811246588},
+                    {-91.71041107177734,	41.7287483215332,	1169,	316,	5685,	44953.66797807914,	76889.62303240798},
+                    {-91.65013885498047,	41.72957992553711,	1386,	319,	5715,	762781.166292064,	1353538.8428410469},
+                    {-91.89347076416016,	41.73596954345703,	510,	342,	5716,	59219.62846228652,	104175.55028829667},
+                    {-91.76013946533203,	41.73735809326172,	990,	347,	5729,	155531.99012869722,	288027.30352877814},
+                    {-91.78985595703125,	41.73763656616211,	883,	348,	5739,	34245.831523642504,	55364.340076354434},
+                    {-91.89680480957031,	41.738468170166016,	498,	351,	5740,	170510.98622907195,	305375.7228982836},
+                    {-91.95429992675781,	41.740970611572266,	291,	360,	5743,	100590.59058469617,	169045.75770415473},
+                    {-91.97958374023438,	41.74208068847656,	200,	364,	5756,	134834.00257612136,	219760.97608977047},
+                    {-91.8187484741211,	41.74291229248047,	779,	367,	5773,	211875.02541045623,	357307.508019486},
+                    {-91.8731918334961,	41.746803283691406,	583,	381,	5809,	103435.17018796528,	152749.60936204987},
+                    {-91.85235595703125,	41.75513458251953,	658,	411,	5848,	79172.40758366574,	122695.79044035454},
+                    {-91.96652221679688,	41.761802673339844,	247,	435,	5890,	99847.41474519833,	190117.85935904965},
+                    {-91.72319030761719,	41.686248779296875,	1123,	163,	5960,	242776.05766689478,	395063.57674514427},
+                    {-91.90374755859375,	41.68680191040039,	473,	165,	5997,	675472.3551626642,	1099545.2224403708},
+                    {-91.71041107177734,	41.710693359375,	1169,	251,	5998,	373998.34341532935,	721637.3438849947},
+                    {-91.68985748291016,	41.71458053588867,	1243,	265,	6014,	267637.97672212217,	405588.4601965111},
+                    {-91.9598617553711,	41.71763610839844,	271,	276,	6058,	570243.4537181602,	922023.9448750173},
+                    {-91.80097198486328,	41.72541427612305,	843,	304,	6069,	330381.66436623695,	648754.4327523742},
+                    {-91.8973617553711,	41.73624801635742,	496,	343,	6075,	170518.6580745533,	283234.18232532265},
+                    {-91.95429992675781,	41.73652648925781,	291,	344,	6109,	452329.5287453768,	797718.9871210791},
+                    {-91.71041107177734,	41.71041488647461,	1169,	250,	6112,	1017788.8778328524,	2013274.8538038046},
+                    {-91.90374755859375,	41.72819137573242,	473,	314,	6267,	311098.6399522585,	201116.0783090103},
+
+               };
             
-            //Printing area and volume of the lake
-            
-            System.out.println(theDam.getLakeArea());
-            System.out.println(theDam.getLakeVolume());
-            System.out.println();
-            
+            for (int k=0; k<ricardoFarm.length; k++)
+            {
+                System.out.println("Area[m^2]"+"    "+"Volume[m^3]"+"    "+"Elevation");
+                float h = 0.5f;
+                for (int j=0; j<20; j++)
+                {
+                    hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation((int)reservoirsData[k][2], (int)reservoirsData[k][3] , h,matDirs,dem,metaModif);
+    //                hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(908, 292 ,h,matDirs,dem,metaModif);
+
+                    //Printing area and volume of the lake
+                    System.out.println(theDam.getLakeArea()+"    "+theDam.getLakeVolume()+"  "+h);
+    //                System.out.println(theDam.getLakeArea());
+    //                System.out.println(theDam.getLakeVolume());
+    //                System.out.println();
+                    h=h+0.5f;
+                }
+                System.out.println();
+                
+            }
             //Prininting the x,y's of inundated area
             
-            int[][] points=theDam.getXYBasin();
-            
-            for (int i = 0; i < points[0].length; i++) {
-                System.out.println(points[0][i]+";"+points[1][i]+";"+dem[points[1][i]][points[0][i]]);
-            }
+            //hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(2856, 846 , 9,matDirs,dem,metaModif);
+//                hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(908, 292 ,9,matDirs,dem,metaModif);
+//            int[][] points=theDam.getXYBasin();
+//            
+//            for (int i = 0; i < points[0].length; i++) {
+//                System.out.println(points[0][i]+";"+points[1][i]+";"+dem[points[1][i]][points[0][i]]);
+//            }
+         
            
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
