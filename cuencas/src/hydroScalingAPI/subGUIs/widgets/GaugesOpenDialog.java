@@ -63,8 +63,8 @@ public class GaugesOpenDialog extends javax.swing.JDialog {
         
         processCategoryAndRegionQuery();
         
-        Object[] selValues=mainFrame.getActiveGauges();
-        for (int i=0;i<selValues.length;i++) finalSelectionVector.add(selValues[i]);
+        java.util.List selValues=mainFrame.getActiveGauges();
+        for (int i=0;i<selValues.size();i++) finalSelectionVector.add(selValues.get(i));
         jListFinalSelection.setListData(finalSelectionVector);
         
     }
@@ -180,10 +180,10 @@ public class GaugesOpenDialog extends javax.swing.JDialog {
      */
     public hydroScalingAPI.io.MetaGauge[] getSelectedGauges(){
          
-         Object[] matchedValues=jListFinalSelection.getSelectedValues();
-         hydroScalingAPI.io.MetaGauge[] foundGauges=new hydroScalingAPI.io.MetaGauge[matchedValues.length];
+         java.util.List matchedValues=jListFinalSelection.getSelectedValuesList();
+         hydroScalingAPI.io.MetaGauge[] foundGauges=new hydroScalingAPI.io.MetaGauge[matchedValues.size()];
 
-         for (int i=0;i<matchedValues.length;i++) foundGauges[i]=(hydroScalingAPI.io.MetaGauge)matchedValues[i];
+         for (int i=0;i<matchedValues.size();i++) foundGauges[i]=(hydroScalingAPI.io.MetaGauge)matchedValues.get(i);
 
          java.util.Arrays.sort(foundGauges);
          return foundGauges;
@@ -629,7 +629,7 @@ public class GaugesOpenDialog extends javax.swing.JDialog {
 
     private void getSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getSelectedActionPerformed
         jListFinalSelection.setSelectionInterval(0,jListFinalSelection.getModel().getSize()-1);
-        if(jListFinalSelection.getSelectedValues().length==0){
+        if(jListFinalSelection.getSelectedValuesList().size()==0){
             Object[] options = { "OK" };
             javax.swing.JOptionPane.showOptionDialog(mainFrame, "At least one gauge must be selected", "Error", javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.ERROR_MESSAGE,null, options, options[0]);
             return;
@@ -665,24 +665,24 @@ public class GaugesOpenDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_removeAllActionPerformed
 
     private void removeSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeSelectedActionPerformed
-        Object[] selValues=jListFinalSelection.getSelectedValues();
-        for (int i=0;i<selValues.length;i++) {
-            finalSelectionVector.remove(selValues[i]);
+        java.util.List selValues=jListFinalSelection.getSelectedValuesList();
+        for (int i=0;i<selValues.size();i++) {
+            finalSelectionVector.remove(selValues.get(i));
         }
         jListFinalSelection.setListData(finalSelectionVector);
     }//GEN-LAST:event_removeSelectedActionPerformed
 
     private void addSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSelectedActionPerformed
         jListFinalSelection.removeAll();
-        Object[] selValues=jListSearchResult.getSelectedValues();
-        for (int i=0;i<selValues.length;i++) if(!finalSelectionVector.contains(selValues[i])) finalSelectionVector.add(selValues[i]);
+        java.util.List selValues=jListSearchResult.getSelectedValuesList();
+        for (int i=0;i<selValues.size();i++) if(!finalSelectionVector.contains(selValues.get(i))) finalSelectionVector.add(selValues.get(i));
         jListFinalSelection.setListData(finalSelectionVector);
     }//GEN-LAST:event_addSelectedActionPerformed
 
     private void addAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAllActionPerformed
         jListSearchResult.setSelectionInterval(0,jListSearchResult.getModel().getSize()-1);
-        Object[] selValues=jListSearchResult.getSelectedValues();
-        for (int i=0;i<selValues.length;i++) finalSelectionVector.add(selValues[i]);
+        java.util.List selValues=jListSearchResult.getSelectedValuesList();
+        for (int i=0;i<selValues.size();i++) finalSelectionVector.add(selValues.get(i));
         jListFinalSelection.setListData(finalSelectionVector);
     }//GEN-LAST:event_addAllActionPerformed
 

@@ -469,9 +469,9 @@ public class HydroOpenDialog extends javax.swing.JDialog {
   
   private void addSelectedActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSelectedActionPerformed
       
-      Object[] itemsSelec=ChronoFilesList_2.getSelectedValues();
-      if(itemsSelec.length > 0){
-          for (int i=0;i<itemsSelec.length;i++) if (!movingChronFilesVector.contains(itemsSelec[i])) movingChronFilesVector.add(itemsSelec[i]);
+      java.util.List itemsSelec=ChronoFilesList_2.getSelectedValuesList();
+      if(itemsSelec.size() > 0){
+          for (int i=0;i<itemsSelec.size();i++) if (!movingChronFilesVector.contains(itemsSelec.get(i))) movingChronFilesVector.add(itemsSelec.get(i));
           ChronoFilesList_3.setListData(movingChronFilesVector);
       }
   }//GEN-LAST:event_addSelectedActionPerformed

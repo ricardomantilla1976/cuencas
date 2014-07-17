@@ -100,7 +100,7 @@ public class MultipleXYplotter extends ApplicationFrame {
         final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 ////        renderer.setSeriesLinesVisible(0, false);
 //        renderer.setSeriesShapesVisible(0, false);
-       renderer.setStroke(new BasicStroke(1.f));
+       renderer.setBaseStroke(new BasicStroke(1.f));
 //        renderer.setSeriesShapesVisible(1, false);
         plot.setRenderer(renderer);
 

@@ -63,8 +63,8 @@ public class LocationsOpenDialog extends javax.swing.JDialog {
         
         processCategoryAndRegionQuery();
         
-        Object[] selValues=mainFrame.getActiveLocations();
-        for (int i=0;i<selValues.length;i++) finalSelectionVector.add(selValues[i]);
+        java.util.List selValues=mainFrame.getActiveLocations();
+        for (int i=0;i<selValues.size();i++) finalSelectionVector.add(selValues.get(i));
         jListFinalSelection.setListData(finalSelectionVector);
     }
     
@@ -174,10 +174,10 @@ public class LocationsOpenDialog extends javax.swing.JDialog {
      */
     public hydroScalingAPI.io.MetaLocation[] getSelectedLocations(){
          
-         Object[] matchedValues=jListFinalSelection.getSelectedValues();
-         hydroScalingAPI.io.MetaLocation[] foundLocations=new hydroScalingAPI.io.MetaLocation[matchedValues.length];
+         java.util.List matchedValues=jListFinalSelection.getSelectedValuesList();
+         hydroScalingAPI.io.MetaLocation[] foundLocations=new hydroScalingAPI.io.MetaLocation[matchedValues.size()];
 
-         for (int i=0;i<matchedValues.length;i++) foundLocations[i]=(hydroScalingAPI.io.MetaLocation)matchedValues[i];
+         for (int i=0;i<matchedValues.size();i++) foundLocations[i]=(hydroScalingAPI.io.MetaLocation)matchedValues.get(i);
 
          java.util.Arrays.sort(foundLocations);
          return foundLocations;
@@ -603,7 +603,7 @@ public class LocationsOpenDialog extends javax.swing.JDialog {
 
     private void getSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getSelectedActionPerformed
         jListFinalSelection.setSelectionInterval(0,jListFinalSelection.getModel().getSize()-1);
-        if(jListFinalSelection.getSelectedValues().length==0){
+        if(jListFinalSelection.getSelectedValuesList().size()==0){
             Object[] options = { "OK" };
             javax.swing.JOptionPane.showOptionDialog(mainFrame, "At least one location must be selected", "Error", javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.ERROR_MESSAGE,null, options, options[0]);
             return;
@@ -639,24 +639,24 @@ public class LocationsOpenDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_removeAllActionPerformed
 
     private void removeSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeSelectedActionPerformed
-        Object[] selValues=jListFinalSelection.getSelectedValues();
-        for (int i=0;i<selValues.length;i++) {
-            finalSelectionVector.remove(selValues[i]);
+        java.util.List selValues=jListFinalSelection.getSelectedValuesList();
+        for (int i=0;i<selValues.size();i++) {
+            finalSelectionVector.remove(selValues.get(i));
         }
         jListFinalSelection.setListData(finalSelectionVector);
     }//GEN-LAST:event_removeSelectedActionPerformed
 
     private void addSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSelectedActionPerformed
         jListFinalSelection.removeAll();
-        Object[] selValues=jListSearchResult.getSelectedValues();
-        for (int i=0;i<selValues.length;i++) if(!finalSelectionVector.contains(selValues[i])) finalSelectionVector.add(selValues[i]);
+        java.util.List selValues=jListSearchResult.getSelectedValuesList();
+        for (int i=0;i<selValues.size();i++) finalSelectionVector.add(selValues.get(i));
         jListFinalSelection.setListData(finalSelectionVector);
     }//GEN-LAST:event_addSelectedActionPerformed
 
     private void addAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAllActionPerformed
         jListSearchResult.setSelectionInterval(0,jListSearchResult.getModel().getSize()-1);
-        Object[] selValues=jListSearchResult.getSelectedValues();
-        for (int i=0;i<selValues.length;i++) finalSelectionVector.add(selValues[i]);
+        java.util.List selValues=jListSearchResult.getSelectedValuesList();
+        for (int i=0;i<selValues.size();i++) finalSelectionVector.add(selValues.get(i));
         jListFinalSelection.setListData(finalSelectionVector);
     }//GEN-LAST:event_addAllActionPerformed
 

@@ -56,7 +56,7 @@ public class LocationsViewer extends javax.swing.JDialog {
      * @param locations A set of Objects that can be casted into {@link hydroScalingAPI.io.MetaLocation}s
      * @param parent The main GIS interface
      */
-    public LocationsViewer(hydroScalingAPI.mainGUI.ParentGUI parent,Object[] locations) {
+    public LocationsViewer(hydroScalingAPI.mainGUI.ParentGUI parent,java.util.List locations) {
         this(parent,null,locations,null);
     }
     
@@ -69,7 +69,7 @@ public class LocationsViewer extends javax.swing.JDialog {
         this(parent,null,null,metaLocations);
     }
     
-    private LocationsViewer(hydroScalingAPI.mainGUI.ParentGUI parent,hydroScalingAPI.io.MetaLocation oneLocation,Object[] locations,hydroScalingAPI.io.MetaLocation[] metaLocations) {
+    private LocationsViewer(hydroScalingAPI.mainGUI.ParentGUI parent,hydroScalingAPI.io.MetaLocation oneLocation,java.util.List locations,hydroScalingAPI.io.MetaLocation[] metaLocations) {
         super(parent, true);
         mainFrame=parent;
         
@@ -79,8 +79,8 @@ public class LocationsViewer extends javax.swing.JDialog {
         }
         
         if (locations != null){
-            metaLocations=new hydroScalingAPI.io.MetaLocation[locations.length];
-            for (int i=0;i<locations.length;i++) metaLocations[i]=(hydroScalingAPI.io.MetaLocation) locations[i];
+            metaLocations=new hydroScalingAPI.io.MetaLocation[locations.size()];
+            for (int i=0;i<locations.size();i++) metaLocations[i]=(hydroScalingAPI.io.MetaLocation) locations.get(i);
         }
         
         initComponents();

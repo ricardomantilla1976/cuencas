@@ -341,9 +341,9 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
      * raster maps
      * @return An Object[] Array.  Each object can be casted into an {@link hydroScalingAPI.io.MetaGauge}
      */
-    public Object[] getActiveGauges(){
+    public java.util.List getActiveGauges(){
         activeGaugesContainer.setSelectionInterval(0,activeGaugesContainer.getModel().getSize()-1);
-        Object[] actGauges=activeGaugesContainer.getSelectedValues();
+        java.util.List actGauges=activeGaugesContainer.getSelectedValuesList();
         activeGaugesContainer.removeSelectionInterval(0,activeGaugesContainer.getModel().getSize()-1);
         return actGauges;
     }
@@ -354,9 +354,9 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
      * @return An Object[] Array.  Each object can be casted into an {@link
      * hydroScalingAPI.io.MetaLocation}
      */
-    public Object[] getActiveLocations(){
+    public java.util.List getActiveLocations(){
         activeLocationsContainer.setSelectionInterval(0,activeLocationsContainer.getModel().getSize()-1);
-        Object[] actLocs=activeLocationsContainer.getSelectedValues();
+        java.util.List actLocs=activeLocationsContainer.getSelectedValuesList();
         activeLocationsContainer.removeSelectionInterval(0,activeLocationsContainer.getModel().getSize()-1);
         return actLocs;
     }
@@ -1411,9 +1411,9 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
     }//GEN-LAST:event_dbNameMouseReleased
 
     private void launchTSAnalyzerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_launchTSAnalyzerActionPerformed
-        Object[] toView=activeGaugesContainer.getSelectedValues();
-        if(toView.length == 0) return;
-        hydroScalingAPI.io.MetaGauge gaugeInfo=(hydroScalingAPI.io.MetaGauge)toView[0];
+        java.util.List toView=activeGaugesContainer.getSelectedValuesList();
+        if(toView.size() == 0) return;
+        hydroScalingAPI.io.MetaGauge gaugeInfo=(hydroScalingAPI.io.MetaGauge)toView.get(0);
         hydroScalingAPI.modules.analysis_TS.widgets.TimeSeriesViewer gauView=new hydroScalingAPI.modules.analysis_TS.widgets.TimeSeriesViewer(this,gaugeInfo);
         gauView.setVisible(true);
     }//GEN-LAST:event_launchTSAnalyzerActionPerformed
@@ -1786,11 +1786,11 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         
         if(theEditor.wroteNewLocation()){
             String[] locInfo=theEditor.writtenOrModifiedLocation();
-            Object[] currentSelectedLocations=getActiveLocations();
+            java.util.List currentSelectedLocations=getActiveLocations();
             hydroScalingAPI.io.MetaLocation newLocation = localLocationsManager.getLocation(locInfo[0],locInfo[1]);
             java.util.Vector theNewVector=new java.util.Vector();
-            for(int i=0;i<currentSelectedLocations.length;i++){
-                theNewVector.add(currentSelectedLocations[i]);
+            for(int i=0;i<currentSelectedLocations.size();i++){
+                theNewVector.add(currentSelectedLocations.get(i));
             }
             theNewVector.add(newLocation);
             activeLocationsContainer.setListData(theNewVector);
@@ -1803,9 +1803,9 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
     }//GEN-LAST:event_addGaugeActionPerformed
     
     private void editLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editLocationActionPerformed
-        Object[] toView=activeLocationsContainer.getSelectedValues();
-        if (toView.length > 0) {
-            new hydroScalingAPI.subGUIs.widgets.LocationsEditor(this,toView[0]).setVisible(true);
+        java.util.List toView=activeLocationsContainer.getSelectedValuesList();
+        if (toView.size() > 0) {
+            new hydroScalingAPI.subGUIs.widgets.LocationsEditor(this,toView.get(0)).setVisible(true);
         }
     }//GEN-LAST:event_editLocationActionPerformed
     
@@ -1862,8 +1862,8 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
     }//GEN-LAST:event_networkExtractionActionPerformed
     
     private void launchLocationViewerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_launchLocationViewerActionPerformed
-        Object[] toView=activeLocationsContainer.getSelectedValues();
-        if (toView.length > 0) new hydroScalingAPI.subGUIs.widgets.LocationsViewer(this,toView).setVisible(true);
+        java.util.List toView=activeLocationsContainer.getSelectedValuesList();
+        if (toView.size() > 0) new hydroScalingAPI.subGUIs.widgets.LocationsViewer(this,toView).setVisible(true);
     }//GEN-LAST:event_launchLocationViewerActionPerformed
     
     private void locationsToDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_locationsToDisplayActionPerformed
@@ -2386,11 +2386,11 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
     public void addNewLocationInteractively(hydroScalingAPI.subGUIs.widgets.LocationsEditor theEditor){
         if(theEditor.wroteNewLocation()){
             String[] locInfo=theEditor.writtenOrModifiedLocation();
-            Object[] currentSelectedLocations=getActiveLocations();
+            java.util.List currentSelectedLocations=getActiveLocations();
             hydroScalingAPI.io.MetaLocation newLocation = localLocationsManager.getLocation(locInfo[0],locInfo[1]);
             java.util.Vector theNewVector=new java.util.Vector();
-            for(int i=0;i<currentSelectedLocations.length;i++){
-                theNewVector.add(currentSelectedLocations[i]);
+            for(int i=0;i<currentSelectedLocations.size();i++){
+                theNewVector.add(currentSelectedLocations.get(i));
             }
             theNewVector.add(newLocation);
             activeLocationsContainer.setListData(theNewVector);

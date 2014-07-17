@@ -792,11 +792,11 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
     }
     
     private void plotGauges(final boolean withNames){
-        Object[] actGauges=mainFrame.getActiveGauges();
+        java.util.List actGauges=mainFrame.getActiveGauges();
         
-        for (int i=0;i<actGauges.length;i++){
+        for (int i=0;i<actGauges.size();i++){
             
-            final hydroScalingAPI.io.MetaGauge theGauge=(hydroScalingAPI.io.MetaGauge) actGauges[i];
+            final hydroScalingAPI.io.MetaGauge theGauge=(hydroScalingAPI.io.MetaGauge) actGauges.get(i);
             Runnable addPoint = new Runnable() {
                 public void run() {
                     try {
@@ -833,11 +833,11 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
     }
     
     private void plotLocations(final boolean withNames){
-        Object[] actLocations=mainFrame.getActiveLocations();
+        java.util.List actLocations=mainFrame.getActiveLocations();
         
-        for (int i=0;i<actLocations.length;i++){
+        for (int i=0;i<actLocations.size();i++){
             
-            final hydroScalingAPI.io.MetaLocation theLocation=(hydroScalingAPI.io.MetaLocation) actLocations[i];
+            final hydroScalingAPI.io.MetaLocation theLocation=(hydroScalingAPI.io.MetaLocation) actLocations.get(i);
             Runnable addPoint = new Runnable() {
                 public void run() {
                     try {

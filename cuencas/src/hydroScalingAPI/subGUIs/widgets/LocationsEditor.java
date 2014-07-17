@@ -410,8 +410,8 @@ public class LocationsEditor extends javax.swing.JDialog {
     }//GEN-END:initComponents
 
     private void removeImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeImageActionPerformed
-        Object[] toRemove=imagesAndDescriptionsList.getSelectedValues();
-        for (int i=0;i<toRemove.length;i++) filesDescripVector.remove(toRemove[i]);
+        java.util.List toRemove=imagesAndDescriptionsList.getSelectedValuesList();
+        for (int i=0;i<toRemove.size();i++) filesDescripVector.remove(toRemove.get(i));
         imagesAndDescriptionsList.setListData(filesDescripVector);
     }//GEN-LAST:event_removeImageActionPerformed
     
@@ -457,7 +457,7 @@ public class LocationsEditor extends javax.swing.JDialog {
                             latitudeField.getText(),
                             longitudeField.getText(),
                             altitudeField.getText(),
-                            imagesAndDescriptionsList.getSelectedValues(),
+                            imagesAndDescriptionsList.getSelectedValuesList(),
                             infoTextArea.getText()};
         
         try{
