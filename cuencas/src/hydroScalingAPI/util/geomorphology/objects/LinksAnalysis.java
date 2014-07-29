@@ -2541,7 +2541,7 @@ System.out.println("X  " +x  + "   Y  " +  y);
                 metaBuffer.write(" " + HydCond[0][i] + " " + finalSlope + " " + Manning[0][i]);
                 metaBuffer.write(" " + Area_Relief_Param[1][i] + " " + Area_Relief_Param[2][i] + " " + Area_Relief_Param[3][i]);
                 float vrf = 1f;
-                if (flag >= 2) {
+                if (flag >= 2 & flag<=6) {
                      int X = mylinksAnalysis.contactsArray[i] % metaModif.getNumCols();
                         int Y = mylinksAnalysis.contactsArray[i] / metaModif.getNumCols();
                         double Long = metaModif.getMinLon() + X * metaModif.getResLat() / 3600.;
@@ -2624,7 +2624,7 @@ System.out.println("X  " +x  + "   Y  " +  y);
                 metaBuffer.write("," + HydCond[0][i] + "," + Slope[0][i] + "," + SlopeLand1[0][i] + "," + SlopeLand2[0][i] + "," + Manning[0][i]);
                 metaBuffer.write("," + Area_Relief_Param[1][i] + "," + Area_Relief_Param[2][i] + "," + Area_Relief_Param[3][i]);
                 float vrf = 1f;
-                  if (flag >= 2) {
+                  if (flag >= 2 & flag<=6) {
                      int X = mylinksAnalysis.contactsArray[i] % metaModif.getNumCols();
                         int Y = mylinksAnalysis.contactsArray[i] / metaModif.getNumCols();
                         double Long = metaModif.getMinLon() + X * metaModif.getResLat() / 3600.;

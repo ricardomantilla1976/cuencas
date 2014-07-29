@@ -89,7 +89,7 @@ public class Gen_MatrixPintada {
 
         System.out.println("    --> Stats of the File:  Max = " + rainStats.maxValue + " Min = " + rainStats.minValue + " Mean = " + rainStats.meanValue);
 
-        /*removed for flood frequency
+        //removed for flood frequency
          for (int i = 1; i < matDirBox.length - 1; i++) {
          for (int j = 1; j < matDirBox[0].length - 1; j++) {
          matHorLin[i][j] = (int) HorLin[i + myCuenca.getMinY() - 1][j + myCuenca.getMinX() - 1];
@@ -102,7 +102,7 @@ public class Gen_MatrixPintada {
          matDEM[i][j] = DEM[i + myCuenca.getMinY() - 1][j + myCuenca.getMinX() - 1];
          }
          }
-         */
+         
         /**
          * **** OJO QUE ACA PUEDE HABER UN ERROR (POR LA CUESTION DE LA
          * COBERTURA DEL MAPA SOBRE LA CUENCA)****************
@@ -128,16 +128,16 @@ public class Gen_MatrixPintada {
             myHillActual = new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet, yOulet, matDir, magnitudes, metaDatos);
             for (int j = 0; j < myHillActual.getXYHillSlope()[0].length; j++) {
                 //matrizPintada[myHillActual.getXYHillSlope()[1][j]-myCuenca.getMinY()+1][myHillActual.getXYHillSlope()[0][j]-myCuenca.getMinX()+1]=linksStructure.contactsArray[i];
-                matrizPintada[myHillActual.getXYHillSlope()[1][j] - myCuenca.getMinY() + 1][myHillActual.getXYHillSlope()[0][j] - myCuenca.getMinX() + 1] = 1;
+                matrizPintada[myHillActual.getXYHillSlope()[1][j] - myCuenca.getMinY() + 1][myHillActual.getXYHillSlope()[0][j] - myCuenca.getMinX() + 1] = i+1;
             }
 
         }
 
-        //System.out.println("linksStructure.contactsArray.length: " + linksStructure.contactsArray.length + "  linksStructure.tailsArray.length = " + linksStructure.tailsArray.length);
-        //System.out.println("matDEM.length()" + matDEM.length + "matDEM.length()" + matDEM[0].length);
-        //System.out.println("matDEM.length()" + DEM.length + "matDEM.length()" + DEM[0].length);
-        //System.out.println("atDirBox.length-1" + matDirBox.length + "mmatDirBox[0].length-1" + matDirBox[0].length);
-/*removed for flood frequency
+        System.out.println("linksStructure.contactsArray.length: " + linksStructure.contactsArray.length + "  linksStructure.tailsArray.length = " + linksStructure.tailsArray.length);
+        System.out.println("matDEM.length()" + matDEM.length + "matDEM.length()" + matDEM[0].length);
+        System.out.println("matDEM.length()" + DEM.length + "matDEM.length()" + DEM[0].length);
+        System.out.println("matDirBox.length-1" + matDirBox.length + "mmatDirBox[0].length-1" + matDirBox[0].length);
+//removed for flood frequency
          for (int i = 0; i < matDEMInBasin.length; i++) {
          for (int j = 0; j < matDEMInBasin[0].length; j++) {
          if (matrizPintada[i][j] > 0) {
@@ -150,10 +150,10 @@ public class Gen_MatrixPintada {
          matDEMInBasin[i][j] = -9.9;
          }
          //System.out.println(matrizPintada[i][j] + "  DEM " + matDEMInBasin[i][j]);
-         //DEM[i][j]=matrizPintada[i][j];
+         DEM[i][j]=matrizPintada[i][j];
          }
          }
-         */
+         
 
 
         hydroScalingAPI.util.statistics.Stats rainStats2 = new hydroScalingAPI.util.statistics.Stats(matDEMInBasin, -9.9);
@@ -170,9 +170,9 @@ public class Gen_MatrixPintada {
 
 
         newfileASC(OutputFileM, myCuenca, matrizPintada, metaDatos);
-        //newfileASC(OutputFileL, myCuenca, matHorLinCode, metaDatos);
-        //newfileASC(OutputFileLN, myCuenca, matLNLinCode, metaDatos);
-        //newfileASCDouble(CorrDEM, myCuenca, matDEMInBasin, metaDatos);
+        newfileASC(OutputFileL, myCuenca, matHorLinCode, metaDatos);
+        newfileASC(OutputFileLN, myCuenca, matLNLinCode, metaDatos);
+        newfileASCDouble(CorrDEM, myCuenca, matDEMInBasin, metaDatos);
         /*     for (int j=0;j<matrizPintada.length;j++) for (int k=0;k<matrizPintada[0].length;k++){
          if (matrizPintada[j][k] > 0){
          minLonBasin= metaDatos.getMinLon()+myCuenca.getMinX()*metaDatos.getResLon()/3600.0;

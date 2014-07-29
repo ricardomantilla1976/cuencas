@@ -601,20 +601,21 @@ public class SCSManager {
             java.io.File directorio = LandUse.getParentFile();
             String baseNameLC = directorio + "/" + (LandUse.getName().substring(0, LandUse.getName().lastIndexOf("."))) + ".vhc";
             directorio = SoilData.getParentFile();
-
+           System.out.println("/n/nLand USE based on NLCD: "  + LandUse.getName());
             String baseNameSOIL = directorio + "/" + (SoilData.getName().substring(0, SoilData.getName().lastIndexOf("."))) + ".vhc";
-
+           System.out.println("hydrological group (1 to 4),converted from GUSRGO : "  + SoilData.getName());
             directorio = SoilHydData.getParentFile();
             String baseNameSOILHyd = directorio + "/" + (SoilHydData.getName().substring(0, SoilHydData.getName().lastIndexOf("."))) + ".vhc";
-
+            System.out.println("hydraulic conductivity (mm/h), converted from GUSRGO : "  + SoilHydData.getName());
             directorio = Swa150Data.getParentFile();
             String baseNameSwa150 = directorio + "/" + (Swa150Data.getName().substring(0, Swa150Data.getName().lastIndexOf("."))) + ".vhc";
-
+            System.out.println("soil water avaliability, converted from GUSRGO : "  + Swa150Data.getName());
             directorio = DemData.getParentFile();
             String baseNameDEM = directorio + "/" + (DemData.getName().substring(0, DemData.getName().lastIndexOf("."))) + ".dem";
             String baseNameGradient = directorio + "/" + (DemData.getName().substring(0, DemData.getName().lastIndexOf("."))) + ".slope";
-            System.out.println("directorio   " + directorio);
-            System.out.println("baseNameDEM   " + baseNameDEM);
+           
+            //System.out.println("directorio   " + directorio);
+            //System.out.println("baseNameDEM   " + baseNameDEM);
 
 
             int[][] matDirBox = new int[myCuenca.getMaxY() - myCuenca.getMinY() + 3][myCuenca.getMaxX() - myCuenca.getMinX() + 3];
@@ -1438,8 +1439,13 @@ public class SCSManager {
 
     public double Hyd_Conductivity(double soil, double hydCond) {
         double PixelHydCond = -9.9;
+        
         if (hydCond > 0) {
-            PixelHydCond = hydCond * 0.0036;
+            //OLD PixelHydCond = hydCond * 0.0036;
+            // Ksat asc or vhc map have to be mm/h
+            // here I change from mm/h to m/h
+            // for the ASYNCH the data has to be in m/h too, so this provides the right unit
+             PixelHydCond = hydCond * 0.001; // convert from mm/h to m/h
         } else {
             if (soil > 0) {
                 if (soil == 5 || soil == 6) {
