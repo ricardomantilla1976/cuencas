@@ -1136,7 +1136,7 @@ public class NetworkExtractionModule implements Runnable {
             metaRaster1.setLocationBinaryFile(new java.io.File(Arguments[1]));
             hydroScalingAPI.io.DataRaster datosRaster = new hydroScalingAPI.io.DataRaster(metaRaster1);
             if(Arguments.length == 2){
-                //new NetworkExtractionModule(metaRaster1, datosRaster);
+                new NetworkExtractionModule(metaRaster1, datosRaster);
             }
             if(Arguments.length > 2){
                 System.out.println("Entered the right routine");
