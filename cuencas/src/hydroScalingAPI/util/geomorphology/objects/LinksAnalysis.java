@@ -4528,7 +4528,10 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
         
         int caseSelected=0;
         
-        String[] fileNameDem=new String[] {"dem_5m",
+        String MyOutputDirectory="/Users/ricardo/temp/";
+        
+        String[] fileNameDem=new String[] {"ralston_5m",
+                                           "dem_5m",
                                            "chequest5m",
                                            "soap5m",
                                            "walnut_creek_5m",
@@ -4538,7 +4541,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                                            "ames_dem_10",
                                            "burneddem5cc.asc",
         };
-        String[] filePathToMetaDem=new String[] {"/CuencasDataBases/Ralston Creek/Rasters/Topography/5m_dem/",
+        String[] filePathToMetaDem=new String[] {"/CuencasDataBases/Ralston_Creek/Rasters/Topography/5m/",
+                                                 "/CuencasDataBases/Ralston Creek/Rasters/Topography/5m_dem/",
                                                  "/CuencasDataBases/SoapChequest/Rasters/Topography/5m/",
                                                  "/CuencasDataBases/SoapChequest/Rasters/Topography/5m/",
                                                  "/CuencasDataBases/Walnut_Creek_IA/Rasters/Topography/",
@@ -4549,7 +4553,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                                                  "/CuencasDataBases/ClearCreek_Database/Rasters/Topography/burned/",
         };
     
-        int[][] coordinatesOutlet=new int[][] {{56, 178},
+        int[][] coordinatesOutlet=new int[][] {{76, 188},
+                                               {56, 178},
                                                {9986, 570},
                                                {11666, 2303},
                                                {1883, 57},
@@ -4559,7 +4564,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                                                {7055, 1242},
                                                {10989, 440},
         };
-        String[] filePathToMask=new String[] {"/CuencasDataBases/Ralston Creek/Rasters/Hydrology/",
+        String[] filePathToMask=new String[] {"/CuencasDataBases/Ralston_Creek/Rasters/Hydrology/",
+                                              "/CuencasDataBases/Ralston Creek/Rasters/Hydrology/",
                                               "/CuencasDataBases/SoapChequest/Rasters/Hydrology/",
                                               "/CuencasDataBases/SoapChequest/Rasters/Hydrology/",
                                               "/CuencasDataBases/Walnut_Creek_IA/Rasters/Hydrology",
@@ -4570,6 +4576,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                                               "/CuencasDataBases/ClearCreek_Database/Rasters/Hydrology/",
         };
         String[] descriptor=new String[] {"Ralson Creek (near Iowa City), IA",
+                                          "Ralson Creek (near Iowa City), IA",
                                           "Chequest Creek, IA",
                                           "Soap Creek, IA",
                                           "Walnut Creek (near Vandalia), IA",
@@ -4606,7 +4613,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             
             System.out.println(mylinksAnalysis.nextLinkArray.length);
 
-            String outputMetaFile="/Users/ricardo/temp/ChiHD-Model/NextLink_"+fileNameDem[caseSelected]+"_Chi.txt";
+            String outputMetaFile=MyOutputDirectory+"/NextLink_"+fileNameDem[caseSelected]+"_Chi.txt";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
@@ -4615,7 +4622,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             
             metaBuffer.close();
             
-            outputMetaFile="/Users/ricardo/temp/ChiHD-Model/UpLink_"+fileNameDem[caseSelected]+"_Chi.txt";
+            outputMetaFile=MyOutputDirectory+"/UpLink_"+fileNameDem[caseSelected]+"_Chi.txt";
             metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write("Number of Links\n");
@@ -4630,7 +4637,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             metaBuffer.close();
             
-            outputMetaFile="/Users/ricardo/temp/ChiHD-Model/LinkInfo_"+fileNameDem[caseSelected]+"_Chi.txt";
+            outputMetaFile=MyOutputDirectory+"/LinkInfo_"+fileNameDem[caseSelected]+"_Chi.txt";
             metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
@@ -4647,7 +4654,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             
             metaBuffer.close();
             
-            outputMetaFile="/Users/ricardo/temp/ChiHD-Model/LookUpTable_"+fileNameDem[caseSelected]+"_Chi.txt";
+            outputMetaFile=MyOutputDirectory+"/LookUpTable_"+fileNameDem[caseSelected]+"_Chi.txt";
             metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             
@@ -4714,6 +4721,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             rasterBuffer.close();
             
+            hydroScalingAPI.tools.FileManipulation.CopyFile(new java.io.File(filePathToMetaDem[caseSelected]+fileNameDem[caseSelected]+".metaDEM"), new java.io.File(filePathToMask[caseSelected]+"/"+fileNameDem[caseSelected]+"_BasinWatershedsFull_Level1.metaVHC"));
 
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
