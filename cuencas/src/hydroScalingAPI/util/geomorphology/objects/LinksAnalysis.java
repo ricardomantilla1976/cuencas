@@ -4530,7 +4530,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
         
         String MyOutputDirectory="/Users/ricardo/temp/";
         
-        String[] fileNameDem=new String[] {"ralston_5m",
+        String[] fileNameDem=new String[] {"turkeyburnll",
+                                           "ralston_5m",
                                            "dem_5m",
                                            "chequest5m",
                                            "soap5m",
@@ -4541,7 +4542,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                                            "ames_dem_10",
                                            "burneddem5cc.asc",
         };
-        String[] filePathToMetaDem=new String[] {"/CuencasDataBases/Ralston_Creek/Rasters/Topography/5m/",
+        String[] filePathToMetaDem=new String[] {"/CuencasDataBases/TurkeyRiver_DB/Rasters/Topography/",
+                                                 "/CuencasDataBases/Ralston_Creek/Rasters/Topography/5m/",
                                                  "/CuencasDataBases/Ralston Creek/Rasters/Topography/5m_dem/",
                                                  "/CuencasDataBases/SoapChequest/Rasters/Topography/5m/",
                                                  "/CuencasDataBases/SoapChequest/Rasters/Topography/5m/",
@@ -4553,7 +4555,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                                                  "/CuencasDataBases/ClearCreek_Database/Rasters/Topography/burned/",
         };
     
-        int[][] coordinatesOutlet=new int[][] {{76, 188},
+        int[][] coordinatesOutlet=new int[][] {{28104, 2815},
+                                               {76, 188},
                                                {56, 178},
                                                {9986, 570},
                                                {11666, 2303},
@@ -4564,7 +4567,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                                                {7055, 1242},
                                                {10989, 440},
         };
-        String[] filePathToMask=new String[] {"/CuencasDataBases/Ralston_Creek/Rasters/Hydrology/",
+        String[] filePathToMask=new String[] {"/CuencasDataBases/TurkeyRiver_DB/Rasters/Hydrology/",
+                                              "/CuencasDataBases/Ralston Creek/Rasters/Hydrology/",
                                               "/CuencasDataBases/Ralston Creek/Rasters/Hydrology/",
                                               "/CuencasDataBases/SoapChequest/Rasters/Hydrology/",
                                               "/CuencasDataBases/SoapChequest/Rasters/Hydrology/",
@@ -4575,7 +4579,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                                               "/CuencasDataBases/SquawCreek/Rasters/Hydrology/",
                                               "/CuencasDataBases/ClearCreek_Database/Rasters/Hydrology/",
         };
-        String[] descriptor=new String[] {"Ralson Creek (near Iowa City), IA",
+        String[] descriptor=new String[] {"Turkey River (near Guttenberg), IA",
+                                          "Ralson Creek (near Iowa City), IA",
                                           "Ralson Creek (near Iowa City), IA",
                                           "Chequest Creek, IA",
                                           "Soap Creek, IA",

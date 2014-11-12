@@ -295,7 +295,7 @@ public class FloatBilToCRas {
 
         for (int i=0;i<mosaicNRows;i++){
             for (int j=0;j<mosaicNCols;j++){
-                rasterBuffer.writeFloat(mosaicMatrix[mosaicNRows-i-1][j]);
+                rasterBuffer.writeFloat(mosaicMatrix[i][j]);
             }
         }
 
@@ -330,12 +330,12 @@ public class FloatBilToCRas {
      */
     public static void main(String[] args) {
         try{
-            java.io.File[] dirs=new java.io.File[]{ new java.io.File("/Users/ricardo/Downloads/files/n40w106/"),
-                                                    new java.io.File("/Users/ricardo/Downloads/files/n41w106/"),
+            java.io.File[] dirs=new java.io.File[]{ new java.io.File("/Users/ricardo/Downloads/n40w106/"),
+                                                    new java.io.File("/Users/ricardo/Downloads/n41w106/"),
                                                     };
             
             new hydroScalingAPI.io.FloatBilToCRas(dirs,
-                                             new java.io.File("/Users/ricardo/Downloads/files/"),0);
+                                             new java.io.File("/Users/ricardo/Desktop/HYD53_119/Rasters/Topography/DEM/"),0);
         }catch(java.io.IOException ioe){
             System.err.println("error");
             ioe.printStackTrace();
