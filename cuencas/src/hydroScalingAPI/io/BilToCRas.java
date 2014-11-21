@@ -96,12 +96,15 @@ public class BilToCRas {
             for (int i=0;i<nRows;i++){
                 for (int j=0;j<nCols;j++){
                     //This is to swap to Little Endian
-                    int low = dataBuffer.readByte() & 0xff;
-                    int high = dataBuffer.readByte() & 0xff;
-                    data[i][j] = (short)(high << 8 | low); 
+                    int low = dataBuffer.readByte();
+                    int high = dataBuffer.readByte();
+                    //data[i][j] = (short)(high << 8 | low); 
+                    data[i][j] = 256*low + ((high>0)?high:high+256);
+                    if (data[i][j]==256) data[i][j]=-9999;
                 }
             }
         } 
+
         if (nBytes == 8){
             for (int i=0;i<nRows;i++){
                 for (int j=0;j<nCols;j++){
@@ -210,8 +213,8 @@ public class BilToCRas {
      */
     public static void main(String[] args) {
         try{
-            new hydroScalingAPI.io.BilToCRas(new java.io.File("/CuencasDataBases/Beatty Wash/NED_70848261/"),
-                                             new java.io.File("/Users/ricardo/temp/"),0);
+            new hydroScalingAPI.io.BilToCRas(new java.io.File("/Users/ricardo/Downloads/N12W086/"),
+                                             new java.io.File("/CuencasDataBases/Nicaragua/Rasters/Topography/3arcsec/"),0);
         }catch(java.io.IOException ioe){
             System.err.println("error");
             ioe.printStackTrace();
