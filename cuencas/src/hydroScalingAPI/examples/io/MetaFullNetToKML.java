@@ -119,8 +119,8 @@ public class MetaFullNetToKML {
 //            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcsec/res";
 //            String uniqueIdentifier="Iowa100mDEM";
 
-            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem";
-            String uniqueIdentifier="Iowa30mDEM";
+//            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem";
+//            String uniqueIdentifier="Iowa30mDEM";
 
 //            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/CedarRiver";
 //            int x=7875, y= 1361;
@@ -153,6 +153,12 @@ public class MetaFullNetToKML {
 //            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/DryCreek/NED_79047246";
 //            int x=866, y= 480 ;
 //            String uniqueIdentifier="DryCreekIA";
+            
+            String fileName="/CuencasDataBases/Nicaragua/Rasters/Topography/nicaragua/section_1414_3151_2105_2523_W100N40";
+            String uniqueIdentifier="Nicaragua";
+
+//            String fileName="/CuencasDataBases/Nicaragua/Rasters/Topography/3arcsec/N12W086";
+//            String uniqueIdentifier="LasLagunasBoaco";
             
             java.io.File theFile=new java.io.File(fileName+".metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);

@@ -34,7 +34,7 @@ package hydroScalingAPI.modules.rainfallRunoffModel.objects;
  * {@link hydroScalingAPI.util.ordDiffEqSolver.RKF}
  * @author Ricardo Mantilla 
  */
-public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffEqSolver.BasicFunction {
+public class NetworkEquations_HillDelay_ForTutorial implements hydroScalingAPI.util.ordDiffEqSolver.BasicFunction {
     private hydroScalingAPI.util.geomorphology.objects.LinksAnalysis linksConectionStruct;
     private hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo basinHillSlopesInfo;
     private hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo linksHydraulicInfo;
@@ -64,7 +64,7 @@ public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffE
      * <p>4: Spatially variable Manning coefficient</p>
      * <p>5: Velocity based on parametrization v=Ck*q^lambda1*A^lambda2</p>
      */
-    public NetworkEquations_HillDelay(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis links, hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo hillinf, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo linkIn, int rt){
+    public NetworkEquations_HillDelay_ForTutorial(hydroScalingAPI.util.geomorphology.objects.LinksAnalysis links, hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo hillinf, hydroScalingAPI.modules.rainfallRunoffModel.objects.LinksInfo linkIn, int rt){
         linksConectionStruct=links;
         basinHillSlopesInfo=hillinf;
         linksHydraulicInfo=linkIn;
