@@ -4526,7 +4526,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
      */
     public static void main12(String args[]) {
         
-        int caseSelected=0;
+        int caseSelected=1;
         
         String MyOutputDirectory="/Users/ricardo/temp/";
         
@@ -4674,8 +4674,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             metaBuffer.write("Link-ID,Longitude,Latitude"+"\n");
             for (int i=0;i<mylinksAnalysis.tailsArray.length;i++) {
                 
-                double myLat=(mylinksAnalysis.tailsArray[i]%nCol)*resLat/3600.0f+minLat;
-                double myLon=(mylinksAnalysis.tailsArray[i]/nCol)*resLon/3600.0f+minLon;
+                double myLat=(mylinksAnalysis.tailsArray[i]/nCol)*resLat/3600.0f+minLat;
+                double myLon=(mylinksAnalysis.tailsArray[i]%nCol)*resLon/3600.0f+minLon;
                         
                 metaBuffer.write(""+(i+1)+","+myLon+","+myLat+"\n");
             }
