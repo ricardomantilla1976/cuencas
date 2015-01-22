@@ -69,9 +69,9 @@ public class NetworkExtractionOptimizer implements Runnable {
     
     public void optimize(){
 
-        //boolean dummyVar=false;
-        if(Proc.taskDIR && xChunks.length*yChunks.length > 1){
-        //if(dummyVar){
+        boolean dummyVar=false;
+        //if(Proc.taskDIR && xChunks.length*yChunks.length > 1){
+        if(dummyVar){
             
             int numProcessors=8;
         
