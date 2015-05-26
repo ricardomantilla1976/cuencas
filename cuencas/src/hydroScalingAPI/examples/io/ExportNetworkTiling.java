@@ -34,7 +34,7 @@ public class ExportNetworkTiling {
         java.io.BufferedOutputStream    bufferout;
         String                          retorno="\n";
 
-        String fileAscSalida="/Users/ricardo/temp/NED_86024003.maskHillslopes.asc";
+        String fileAscSalida="/Users/ricardo/temp/more/NED_86024003.maskHillslopes.asc";
 
         outputDir = new java.io.FileOutputStream(fileAscSalida);
         bufferout=new java.io.BufferedOutputStream(outputDir);
