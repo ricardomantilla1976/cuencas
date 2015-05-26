@@ -4526,7 +4526,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
      */
     public static void main12(String args[]) {
         
-        int caseSelected=1;
+        int caseSelected=10;
         
         String MyOutputDirectory="/Users/ricardo/temp/";
         

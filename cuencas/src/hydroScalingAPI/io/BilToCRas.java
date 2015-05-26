@@ -213,8 +213,8 @@ public class BilToCRas {
      */
     public static void main(String[] args) {
         try{
-            new hydroScalingAPI.io.BilToCRas(new java.io.File("/Users/ricardo/Downloads/N12W086/"),
-                                             new java.io.File("/CuencasDataBases/Nicaragua/Rasters/Topography/3arcsec/"),0);
+            new hydroScalingAPI.io.BilToCRas(new java.io.File("/Users/ricardo/Downloads/gt30w100n40_dem/"),
+                                             new java.io.File("/CuencasDataBases/IPHEX_Database/Rasters/Topography"),0);
         }catch(java.io.IOException ioe){
             System.err.println("error");
             ioe.printStackTrace();
