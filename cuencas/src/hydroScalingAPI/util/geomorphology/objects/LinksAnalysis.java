@@ -948,7 +948,8 @@ public class LinksAnalysis extends java.lang.Object {
         //main_MODLU(args); //link-ids
         //main10(args);  // Writing connectivity for Equation (Evaluation by Walter)
         //main11(args);  // Writing connectivity for Scott's code directly (2 files .rvr and .prm)
-        main12(args);  // Writing connectivity for Chi's code (Multiple basins)
+        //main12(args);  // Writing connectivity for Chi's code (Multiple basins)
+        main12_walter(args);  // Writing connectivity for Chi's code (Multiple basins)
         //mainScott_Type50(args);
         //IowaAllLinks(args);
         //mainScott_Type31Geral(args);
@@ -4431,7 +4432,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
     
     public static void main11(String args[]) {
 
-        int x=1570; int y=127;
+        int x=47; int y=89;
 
         java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
         java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
@@ -4439,9 +4440,9 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
         try{
 
-            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.metaDEM");
+            java.io.File theFile=new java.io.File("/CuencasDataBases/Ralston_Creek/Rasters/Topography/dry_creek/section_3333_2730_2852_2395_n44w117.metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.dir"));
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Ralston_Creek/Rasters/Topography/dry_creek/section_3333_2730_2852_2395_n44w117.dir"));
 
             metaModif.setFormat("Byte");
             byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
@@ -4455,11 +4456,21 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
             
+            double[][] wfs=mylinksAnalysis.getWidthFunctions( new int[]{mylinksAnalysis.getOutletID()},0);
+            for (int i = 0; i < wfs.length; i++) {
+                for (int j = 0; j < wfs[i].length; j++) {
+                    System.out.print(wfs[i][j]+",");
+                }
+                System.out.println();
+            }
+            
+            System.exit(0);
+            
             float[][] upAreas=mylinksAnalysis.getVarValues(2);
             float[][] areas=mylinksAnalysis.getVarValues(0);
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
 
-            String outputMetaFile="/Users/ricardo/temp/ClearCreek_"+x+"_"+y+".rvr";
+            String outputMetaFile="/Users/ricardo/temp/DryCreek_"+x+"_"+y+".rvr";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
@@ -4479,7 +4490,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             metaBuffer.close();
             
-            outputMetaFile="/Users/ricardo/temp/ClearCreek_"+x+"_"+y+".prm";
+            outputMetaFile="/Users/ricardo/temp/DryCreek_"+x+"_"+y+".prm";
             metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
@@ -4494,7 +4505,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             metaBuffer.close();
             
-            outputMetaFile="/Users/ricardo/temp/ClearCreek_"+x+"_"+y+".complete";
+            outputMetaFile="/Users/ricardo/temp/DryCreek_"+x+"_"+y+".complete";
             metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
             
             float[][] hortonOrders=mylinksAnalysis.getVarValues(4);
@@ -4503,7 +4514,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             metaBuffer.write("\n");
             
             for (int i=0;i<mylinksAnalysis.completeStreamLinksArray.length;i++) {
-                metaBuffer.write(mylinksAnalysis.completeStreamLinksArray[i]+" "+hortonOrders[0][mylinksAnalysis.completeStreamLinksArray[i]]+"\n");
+                metaBuffer.write(mylinksAnalysis.completeStreamLinksArray[i]+" "+(int)hortonOrders[0][mylinksAnalysis.completeStreamLinksArray[i]]+"\n");
             }
             metaBuffer.write("\n");
 
@@ -4728,6 +4739,142 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             
             hydroScalingAPI.tools.FileManipulation.CopyFile(new java.io.File(filePathToMetaDem[caseSelected]+fileNameDem[caseSelected]+".metaDEM"), new java.io.File(filePathToMask[caseSelected]+"/"+fileNameDem[caseSelected]+"_BasinWatershedsFull_Level1.metaVHC"));
 
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+    
+        /**
+     * Tests for the class
+     * @param args the command line arguments
+     */
+    public static void main12_walter(String args[]) {
+        
+        int caseSelected=4;
+        
+        String MyOutputDirectory="/Users/ricardo/temp/";
+        
+        String[] fileNameDem=new String[] {"section_820_3868_2953_2908_mosaic_n41w094",
+                                           "section_4457_2813_3485_2392_clearcreek",
+                                           "section_4711_2656_784_1487_clearcreek",
+                                           "section_6073_2143_3334_3472_mosaic_n43w092",
+                                           "section_6495_4753_3883_3191_mosaic_n41w093",
+        };
+        String[] filePathToMetaDem=new String[] {"/CuencasDataBases/charitonDB/Rasters/Topography/DEM/",
+                                                 "/CuencasDataBases/clearDB/Rasters/Topography/DEM/",
+                                                 "/CuencasDataBases/englishDB/Rasters/Topography/DEM/",
+                                                 "/CuencasDataBases/volgaDB/Rasters/Topography/DEM/",
+                                                 "/CuencasDataBases/whitebreastDB/Rasters/Topography/DEM/",
+        };
+    
+        int[][] coordinatesOutlet=new int[][] {{1850, 526},
+                                               {919, 185},
+                                               {3832, 210},
+                                               {2566, 583},
+                                               {2458, 1362},
+        };
+        
+        String[] descriptor=new String[] {"06903400 (Chariton River near Chariton, IA)",
+                                          "05454220 (Clear Creek near Oxford, IA)",
+                                          "05455500 (English River at Kalona, IA)",
+                                          "05412400 (Volga River at Littleport, IA)",
+                                          "05487980 (White Breast Creek near Dallas, IA)",
+        };
+        
+        int x=coordinatesOutlet[caseSelected][0], y= coordinatesOutlet[caseSelected][1];
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try{
+
+            java.io.File theFile=new java.io.File(filePathToMetaDem[caseSelected]+fileNameDem[caseSelected]+".metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File(filePathToMetaDem[caseSelected]+fileNameDem[caseSelected]+".dir"));
+
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
+
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
+            
+            System.out.println(mylinksAnalysis.nextLinkArray.length);
+
+            String outputMetaFile=MyOutputDirectory+"/NextLink_"+fileNameDem[caseSelected]+"_Chi.txt";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
+
+            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+(mylinksAnalysis.nextLinkArray[i]+1)+"\n");
+            
+            metaBuffer.close();
+            
+            outputMetaFile=MyOutputDirectory+"/UpLink_"+fileNameDem[caseSelected]+"_Chi.txt";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write("Number of Links\n");
+            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+            metaBuffer.write("Link-ID Num-connected-links List-of-connected-links"+"\n");
+            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+                metaBuffer.write(""+(i+1)+" "+mylinksAnalysis.connectionsArray[i].length);
+                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
+                    metaBuffer.write(" "+(mylinksAnalysis.connectionsArray[i][j]+1));
+                metaBuffer.write("\n");
+            }
+
+            metaBuffer.close();
+            
+            outputMetaFile=MyOutputDirectory+"/LinkInfo_"+fileNameDem[caseSelected]+"_Chi.txt";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
+            
+            metaBuffer.write("Link ID,Link lenght [km], Slope [*], upstreamArea [km^2], hillslopeArea [km^2]\n");
+            
+            float[][] lenghts=mylinksAnalysis.getVarValues(1);
+            float[][] drop=mylinksAnalysis.getVarValues(3);
+            
+            float[][] upAreas=mylinksAnalysis.getVarValues(2);
+            float[][] hillAreas=mylinksAnalysis.getVarValues(0);
+
+            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+lenghts[0][i]+","+drop[0][i]/lenghts[0][i]/1000.0+","+upAreas[0][i]+","+hillAreas[0][i]+"\n");
+            
+            metaBuffer.close();
+            
+            outputMetaFile=MyOutputDirectory+"/LookUpTable_"+fileNameDem[caseSelected]+"_Chi.txt";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            
+            double resLon=metaModif.getResLon();
+            double resLat=metaModif.getResLat();
+            double minLon=metaModif.getMinLon();
+            double minLat=metaModif.getMinLat();
+            int nCol=metaModif.getNumCols();
+            int nRow=metaModif.getNumRows();
+            
+            metaBuffer.write(descriptor[caseSelected]+"\n");
+            metaBuffer.write("Link-ID,Longitude,Latitude"+"\n");
+            for (int i=0;i<mylinksAnalysis.tailsArray.length;i++) {
+                
+                double myLat=(mylinksAnalysis.tailsArray[i]/nCol)*resLat/3600.0f+minLat;
+                double myLon=(mylinksAnalysis.tailsArray[i]%nCol)*resLon/3600.0f+minLon;
+                        
+                metaBuffer.write(""+(i+1)+","+myLon+","+myLat+"\n");
+            }
+
+            metaBuffer.close();
+            
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
             System.exit(0);
