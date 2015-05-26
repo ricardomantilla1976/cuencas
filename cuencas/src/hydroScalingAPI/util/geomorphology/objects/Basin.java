@@ -783,11 +783,18 @@ public class Basin extends Object{
      */
     public static void main0 (String args[]) {
         
+        int xx=1062;
+        int yy=276;
+        
+        if(args.length > 0){
+            xx=new Integer(args[0]);
+            yy=new Integer(args[1]);
+        }
         
         try{
-            java.io.File theFile=new java.io.File("/CuencasDataBases/Walnut_Gulch_AZ_database/Rasters/Topography/1_ArcSec_USGS/walnutGulchUpdated.metaDEM");
+            java.io.File theFile=new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Walnut_Gulch_AZ_database/Rasters/Topography/1_ArcSec_USGS/walnutGulchUpdated.dir"));
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/ClearCreek_Database/Rasters/Topography/ClearCreek/NED_00159011.dir"));
             
             String formatoOriginal=metaModif.getFormat();
             metaModif.setFormat("Byte");
@@ -796,9 +803,10 @@ public class Basin extends Object{
             java.util.Calendar iniTime=java.util.Calendar.getInstance();
             java.util.TimeZone tz = java.util.TimeZone.getTimeZone("UTC");
             iniTime.setTimeZone(tz);
-            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(194,281,matDirs,metaModif);
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(xx,yy,matDirs,metaModif);
             
-            System.out.println(laCuenca.getDivideShapeFactor()[0]);
+            System.out.println(java.util.Arrays.toString(laCuenca.getLonLatBasinDivide()[0]));
+            System.out.println(java.util.Arrays.toString(laCuenca.getLonLatBasinDivide()[1]));
             System.exit(0);
             
             
