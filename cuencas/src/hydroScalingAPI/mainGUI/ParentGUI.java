@@ -557,6 +557,13 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         jMenu1 = new javax.swing.JMenu();
         tRIBS_input = new javax.swing.JMenuItem();
         tRIBS_output = new javax.swing.JMenuItem();
+        jSeparator13 = new javax.swing.JPopupMenu.Separator();
+        swmm_coupling = new javax.swing.JMenu();
+        swmm_raindata_importer = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jSeparator14 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem6 = new javax.swing.JMenuItem();
         window = new javax.swing.JMenu();
         arrange = new javax.swing.JMenuItem();
         jSeparator9 = new javax.swing.JSeparator();
@@ -617,7 +624,6 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         metaFileViewer.setFont(new java.awt.Font("Serif", 0, 11)); // NOI18N
         metaFileViewer.setLineWrap(true);
         metaFileViewer.setWrapStyleWord(true);
-        metaFileViewer.setDisabledTextColor(java.awt.Color.white);
         jScrollPane4.setViewportView(metaFileViewer);
 
         rastersTab.add(jScrollPane4);
@@ -1319,6 +1325,49 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         jMenu1.add(tRIBS_output);
 
         modules.add(jMenu1);
+        modules.add(jSeparator13);
+
+        swmm_coupling.setText("SWMM coupling");
+        swmm_coupling.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+
+        swmm_raindata_importer.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        swmm_raindata_importer.setText("Rain data importer");
+        swmm_raindata_importer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                swmm_raindata_importerActionPerformed(evt);
+            }
+        });
+        swmm_coupling.add(swmm_raindata_importer);
+
+        jMenuItem4.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        jMenuItem4.setText("SWMM Input File Sketch Generator");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        swmm_coupling.add(jMenuItem4);
+
+        jMenuItem5.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        jMenuItem5.setText("SWMM Input File Node Filler");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        swmm_coupling.add(jMenuItem5);
+        swmm_coupling.add(jSeparator14);
+
+        jMenuItem6.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        jMenuItem6.setText("SubBasin DEM Viewer");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        swmm_coupling.add(jMenuItem6);
+
+        modules.add(swmm_coupling);
 
         jMenuBar1.add(modules);
 
@@ -2057,6 +2106,70 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
             System.err.println(ioe);
         }
     }//GEN-LAST:event_importDemFromFloatBIL_USGSActionPerformed
+
+    private void swmm_raindata_importerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_swmm_raindata_importerActionPerformed
+        hydroScalingAPI.modules.rainDataImporter.widgets.ImportCSVRainfallToStormEventDialog csvImpDialog;
+        java.io.File lastOpenedDataBaseFile;
+        Object lastOpenedDataBase;
+        
+        lastOpenedDataBase = localInfoManager.recentDataBases.firstElement();
+        
+        if(lastOpenedDataBase instanceof java.io.File){
+            lastOpenedDataBaseFile = (java.io.File)lastOpenedDataBase;
+        } else {
+            lastOpenedDataBaseFile = null;
+        }
+        
+        csvImpDialog = new hydroScalingAPI.modules.rainDataImporter.widgets.ImportCSVRainfallToStormEventDialog(this, true);
+        
+        csvImpDialog.setVisible(true);
+    }//GEN-LAST:event_swmm_raindata_importerActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        hydroScalingAPI.modules.swmmCoupling.widgets.SwmmFileSketcherDialog swmmCoupWindow;
+        java.io.File lastOpenedDataBaseFile;
+        Object lastOpenedDataBase;
+        
+        lastOpenedDataBase = localInfoManager.recentDataBases.firstElement();
+        
+        if(lastOpenedDataBase instanceof java.io.File){
+            lastOpenedDataBaseFile = (java.io.File)lastOpenedDataBase;
+        } else {
+            lastOpenedDataBaseFile = null;
+        }
+        
+        swmmCoupWindow = new hydroScalingAPI.modules.swmmCoupling.widgets.SwmmFileSketcherDialog(this, true, lastOpenedDataBaseFile);
+        
+        //subGUIs_container.add(swmmCoupWindow, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        
+        swmmCoupWindow.setVisible(true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        hydroScalingAPI.modules.swmmCoupling.widgets.FlowDataImporterDialog inflowImporter;
+        
+        inflowImporter = new hydroScalingAPI.modules.swmmCoupling.widgets.FlowDataImporterDialog(this, true);
+        
+        inflowImporter.setVisible(true);
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        hydroScalingAPI.modules.swmmCoupling.subGUIs.widgets.DemViewer2D_subBasin theViewer;
+        hydroScalingAPI.io.MetaRaster masterRaster;
+
+        if (localInfoManager.metaFileActive == null){
+            javax.swing.JOptionPane.showMessageDialog(this, "Must select a DEM in left tab, Raster > Topography Database.");
+        }
+        
+        try {
+            masterRaster = new hydroScalingAPI.io.MetaRaster(localInfoManager.metaFileActive);
+            this.openSubBasinDEM(masterRaster);
+        } catch (RemoteException exp) {
+            System.err.println("RemoteException: " + exp.getMessage());
+        } catch (IOException exp) {
+            System.err.println("IOException: " + exp.getMessage());
+        }
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
     
     /**
      * Creates a new instance of the class
@@ -2132,6 +2245,9 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
     private javax.swing.JMenu jMenuImport;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenu jMenuRecentDB;
     private javax.swing.JMenu jMenuRecentFiles;
     private javax.swing.JPanel jPanel1;
@@ -2158,6 +2274,8 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
     private javax.swing.JSeparator jSeparator10;
     private javax.swing.JSeparator jSeparator11;
     private javax.swing.JSeparator jSeparator12;
+    private javax.swing.JPopupMenu.Separator jSeparator13;
+    private javax.swing.JPopupMenu.Separator jSeparator14;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
@@ -2207,6 +2325,8 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
     private javax.swing.JPanel sites;
     private javax.swing.JSplitPane splitPane;
     private javax.swing.JDesktopPane subGUIs_container;
+    private javax.swing.JMenu swmm_coupling;
+    private javax.swing.JMenuItem swmm_raindata_importer;
     private javax.swing.JMenuItem tRIBS_input;
     private javax.swing.JMenuItem tRIBS_output;
     private javax.swing.JMenu tools;
@@ -2462,4 +2582,112 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         registerWindow(windowIdentifier,rv);
     }
     
+    /**
+     *  <br />
+     * Auxiliary method for SWMM-Coupling functionality
+     * @param selectedMetaRaster 
+     */
+    public void openSubBasinDEM(hydroScalingAPI.io.MetaRaster selectedMetaRaster) {
+        hydroScalingAPI.io.MetaRaster subDemMetaDEM, metaDEM;
+        java.io.File binaryFile, selectedFile;
+        java.util.Hashtable tempHashTable;
+        String binaryFilePath;
+        hydroScalingAPI.subGUIs.widgets.DemOpenDialog openDem;
+
+        // open binary DEM file
+        selectedFile = selectedMetaRaster.getLocationMeta();
+        binaryFilePath = selectedFile.getAbsolutePath();
+        binaryFilePath = binaryFilePath.replace(".metaDEM", ".dem");
+        binaryFile = new java.io.File(binaryFilePath);
+
+        try {
+            openDem = new hydroScalingAPI.subGUIs.widgets.DemOpenDialog(this, selectedMetaRaster);
+
+            // create meta binary dem
+            subDemMetaDEM = new hydroScalingAPI.io.MetaRaster(selectedFile);
+            subDemMetaDEM.setLocationBinaryFile(binaryFile);
+
+            addToRecentFiles(selectedFile);
+
+            tempHashTable = this.getRelatedMaps(binaryFilePath);
+
+            hydroScalingAPI.modules.swmmCoupling.subGUIs.widgets.DemViewer2D_subBasin thisDemViewer = 
+                    new hydroScalingAPI.modules.swmmCoupling.subGUIs.widgets.DemViewer2D_subBasin(this,
+                                                                                                  subDemMetaDEM,
+                                                                                                  tempHashTable);
+            subGUIs_container.add(thisDemViewer, javax.swing.JLayeredPane.DEFAULT_LAYER);
+            try {
+                thisDemViewer.setSelected(true);
+            } catch (java.beans.PropertyVetoException PVE) {
+                System.err.println(PVE);
+            }
+
+            thisDemViewer.setBounds(25 * (openWindows.size() - 1), 25 * (openWindows.size() - 1), thisDemViewer.getWidth() + 5, thisDemViewer.getHeight() + 5);
+        } catch (java.io.IOException ioe) {
+            System.err.println("Failed building DemViewer2D");
+            System.err.println(ioe);
+        } catch (visad.VisADException vie) {
+            System.err.println("Failed building DemViewer2D");
+            System.err.println(vie);
+        }
+    }
+    
+    /**
+     * <br />
+     * Auxiliary method for SWMM-Coupling functionality
+     * @param datasetName_arg
+     * @return 
+     */
+    public java.util.Hashtable getRelatedMaps(String datasetName_arg) {
+        java.util.Hashtable nameToFile = new java.util.Hashtable();
+        hydroScalingAPI.mainGUI.objects.GUI_InfoManager infoManager;
+        java.io.File demDir;
+        String fileName, fileDirPath, filePath;
+
+        final String[] extension = {".dem",
+            ".corrDEM",
+            ".dir",
+            ".areas",
+            ".horton",
+            ".lcp",
+            ".ltc",
+            ".gdo",
+            ".tdo",
+            ".mcd",
+            ".tcd",
+            ".magn",
+            ".slope",
+            ".dtopo",
+            ".redRas"};
+
+        final String[] derivedName = {" Digital Elevation Model",
+            " Fixed Elevation Model",
+            " Drainage Directions",
+            " Accumulated Area",
+            " Horton Numbers",
+            " Longest Channel Length",
+            " Total Channels Length",
+            " Geometric Distance to Border",
+            " Topologic Distance to Border",
+            " Maximum Channel Drop",
+            " Total Channels Drop",
+            " Magnitude",
+            " Gradient Value",
+            " Topologic Diameter",
+            " Raster Drainage Network"};
+
+        infoManager = this.getInfoManager();
+        demDir = infoManager.dataBaseRastersDemPath;
+        fileDirPath = demDir.getAbsolutePath();
+
+        for (int i = 0; i < derivedName.length; i++) {
+            fileName = datasetName_arg + extension[i];
+            filePath = fileDirPath + java.io.File.separator + fileName;
+            nameToFile.put(i, filePath);
+            //nameToFile.put((String)elemDeriv.get(i),
+            //               demPath+"/"+demName+extension[i]);
+        }
+
+        return nameToFile;
+    }
 }
