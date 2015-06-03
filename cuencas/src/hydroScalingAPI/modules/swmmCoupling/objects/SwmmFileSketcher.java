@@ -120,15 +120,22 @@ public class SwmmFileSketcher {
         this.addedBasins.add(newHash);
     }
     
-    public boolean importPolygon(File kmlFile_arg, String polygonId_arg) throws IOException{
+    /**
+     * Read a KML file and writes a new .poly file into proper folder at current databasee
+     * @param kmlFile_arg KML file with valid polygon
+     * @param polygonId_arg Placemark inner 'name' tage content
+     * @return File pointer for newly generated .poly file. NULL otherwise
+     * @throws IOException 
+     */
+    public File importPolygon(File kmlFile_arg, String polygonId_arg) throws IOException{
         String outputPolyFilePath;
         File outputPolyFileFile;
         MetaPolygon newPol;
         MetaRaster mRaster;
         
         // basic check
-        if((kmlFile_arg == null) || (!kmlFile_arg.exists())) return (false);
-        if(polygonId_arg == null) return (false);
+        if((kmlFile_arg == null) || (!kmlFile_arg.exists())) return (null);
+        if(polygonId_arg == null) return (null);
         
         // new polygon
         newPol = new MetaPolygon();
@@ -147,14 +154,14 @@ public class SwmmFileSketcher {
         if (!MetaPolygonTools.readKmlFile(newPol, kmlFile_arg, 
                                           polygonId_arg, mRaster)){
             System.err.println("Nao foi possivel ler o arquivo");
-            return (false);
+            return (null);
         }
         
         // write content to file
         newPol.writePolygon(outputPolyFileFile);
         
         // everything was ok, return TRUE
-        return(true);
+        return(outputPolyFileFile);
     }
     
     public boolean generateInpFile() throws IOException{
@@ -307,6 +314,21 @@ public class SwmmFileSketcher {
                 }
             }
             return (newFile);
+        }
+    }
+    
+    public void delDemFile(){
+        String metaDemFilePath, newFilePath;
+        File newFile;
+        
+        if (this.metaDemFile == null) return;
+        
+        metaDemFilePath = this.metaDemFile.getAbsolutePath();
+        newFilePath = metaDemFilePath.replace(".metaDEM", ".subLog");
+        
+        newFile = new File(newFilePath);
+        if(newFile.exists()){
+            newFile.delete();
         }
     }
     
@@ -502,6 +524,10 @@ public class SwmmFileSketcher {
         return (topoSolv);
     }
     
+    /**
+     * Identify inflow points from outside into inside urban polygon
+     * @throws IOException 
+     */
     public void remakeSubLogFile() throws IOException{
         MetaRaster metaDirRaster, metaDemRaster;
         SubBasinsLogManager subBasinsManager;
@@ -554,38 +580,45 @@ public class SwmmFileSketcher {
         for(curInletID = 0; curInletID < subBasinVec2.length; curInletID++){
             SubBasin tmpSubBas;
             tmpSubBas = subBasinVec2[curInletID];
-            if (subBasinsManager.addOrUpdateSubBasin(
-                    subBasinVec2[curInletID].getHashedData(metaDemRaster))){
-                System.out.println("_SUCCESS add ["+subBasinVec2[curInletID].getX()+", "+subBasinVec2[curInletID].getY()+"] inlet as subbasin ("+curInletID+") .");
-            } else {
-                System.out.println("__FAILED add ["+subBasinVec2[curInletID].getX()+", "+subBasinVec2[curInletID].getY()+"] inlet as subbasin ("+curInletID+").");
-            }
+            subBasinsManager.addOrUpdateSubBasin(
+                    subBasinVec2[curInletID].getHashedData(metaDemRaster));
         }
+    }
+    
+    public void considerInletSequence(LocalListBasin allBasins[]) throws IOException{
+        MetaRaster metaDirRaster, metaDemRaster;
+        SubBasinsLogManager subBasinsManager;
+        File binDirFile, binDemFile;
+        SubBasin currentSubBasin;
+        byte[][] dirMatrix;
+        int count;
         
-
+        binDemFile = this.getDemFile();
+        binDirFile = this.getDirFile();
         
-        /*
-        
-        // correct
-        final int xBiggerBasin = 671;
-        final int yBiggerBasin = 629;
-        SubBasin masterBiggerBasin;
-        masterBiggerBasin = new SubBasin(xBiggerBasin, yBiggerBasin,
-                                         dirMatrix, metaDemRaster);
-        if (!polygonUrban.identifyBorderPointsMixed(masterBiggerBasin, 
-                                                    metaDirRaster, 
-                                                    dirMatrix)){
-            System.out.println("FAIL identifying border points.");
+        // 1.2
+        try{
+            metaDemRaster = new MetaRaster(this.metaDemFile);
+        } catch (IOException exp) {
+            System.err.println("IOException: " + exp);
+            return;
         }
+        metaDirRaster = MetaPolygonUrban.getMetaRasterDirections(binDirFile,
+                                                                 this.metaDemFile);
+        dirMatrix = MetaPolygonUrban.getDirectionMatrix(metaDirRaster);
         
-        // create other subbasins with outlet in polygonInlets
-        subBasinVec = polygonUrban.getAllTributarySubBasins(metaDemRaster, 
-                                                            dirMatrix, 
-                                                            metaNetwork);
+        // load sub basins manager
+        this.delDemFile();
+        this.suBaLogFile = this.getSuBFile(true);
+        subBasinsManager = new SubBasinsLogManager(this.suBaLogFile);
         
-        */
-        
-        System.out.print("");
+        for(count = 0; count < allBasins.length; count++){
+            currentSubBasin = new SubBasin(allBasins[count].getxOutlet(), 
+                                           allBasins[count].getyOutlet(),
+                                           dirMatrix,
+                                           metaDirRaster);
+            subBasinsManager.addNewSubBasin(currentSubBasin.getHashedData(metaDemRaster));
+        }
     }
     
     private static void runCuencasForSubBasins(SubBasin[] allSubBasin_arg,
@@ -776,6 +809,7 @@ public class SwmmFileSketcher {
         for(count = 0; count < allGeneratedFiles.length; count++){
             xyBasin = MetaPolygonUrban.getOutputCuencasFileBasin(allGeneratedFiles[count]);
             if (xyBasin != null){
+                System.out.println("Reading rain matrix from " + allGeneratedFiles[count].getAbsolutePath());
                 resultMatrix = cuencasCsvFileReader.readRainData(allGeneratedFiles[count]);
                 return (resultMatrix);
             }

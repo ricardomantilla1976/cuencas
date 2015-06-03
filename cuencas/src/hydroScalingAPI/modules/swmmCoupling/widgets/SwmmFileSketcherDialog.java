@@ -4,12 +4,14 @@
  */
 package hydroScalingAPI.modules.swmmCoupling.widgets;
 
+import hydroScalingAPI.modules.swmmCoupling.objects.LocalListBasin;
 import hydroScalingAPI.modules.swmmCoupling.io.SubBasinsLogManager;
 import hydroScalingAPI.modules.swmmCoupling.objects.SwmmFileSketcher;
 import java.awt.Component;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -801,9 +803,43 @@ public class SwmmFileSketcherDialog extends javax.swing.JDialog {
             return;
         }
         
+        // bc - DEM
+        tmpSelectedObject = this.demSelect.getSelectedItem();
+        if (tmpSelectedObject instanceof LocalComboFile){
+            LocalComboFile tmpSelectedComboFile;
+            tmpSelectedComboFile = (LocalComboFile)tmpSelectedObject;
+            swmmCouplingEng.setMetaDemFile(tmpSelectedComboFile.getListedFile());
+        } else {
+            JOptionPane.showMessageDialog(this, "Must define base DEM.");
+            return;
+        }
+        
         // bc - polygons
         if (this.polyKmlRadio.isSelected()){
-            JOptionPane.showMessageDialog(this, "Import of KML polygon file: not implemented yet.");
+            File kmlFile, polyFile;
+            boolean successImportingKML;
+            
+            kmlFile = new java.io.File(this.polyKmlFileText.getText());
+            polyFile = null;
+            try{
+                polyFile = swmmCouplingEng.importPolygon(kmlFile, 
+                                                         this.polyKmlIdText.getText());
+                if(polyFile == null){
+                    successImportingKML = false;
+                } else {
+                    successImportingKML = true;
+                };
+            } catch (IOException exp) {
+                JOptionPane.showMessageDialog(this, "IOException: " + exp.getMessage());
+                successImportingKML = false;
+            }
+            if (!successImportingKML){
+                JOptionPane.showMessageDialog(this, "Failed importing KML polygon file.");
+                return;
+            }
+            
+            swmmCouplingEng.setPolygonFile(polyFile);
+            
         } else if (this.polyPolRadio.isSelected()) {
             tmpSelectedObject = this.polyVhcSelect.getSelectedItem();
             if (tmpSelectedObject instanceof LocalComboFile){
@@ -819,17 +855,6 @@ public class SwmmFileSketcherDialog extends javax.swing.JDialog {
             return;
         }
         
-        // bc - DEM
-        tmpSelectedObject = this.demSelect.getSelectedItem();
-        if (tmpSelectedObject instanceof LocalComboFile){
-            LocalComboFile tmpSelectedComboFile;
-            tmpSelectedComboFile = (LocalComboFile)tmpSelectedObject;
-            swmmCouplingEng.setMetaDemFile(tmpSelectedComboFile.getListedFile());
-        } else {
-            JOptionPane.showMessageDialog(this, "Must define base DEM.");
-            return;
-        }
-        
         // bc - subbasin log check
         if ( this.logDefRadio.isSelected() ) {
             // generate log file
@@ -840,9 +865,35 @@ public class SwmmFileSketcherDialog extends javax.swing.JDialog {
             }
             
         } else if (this.logKepRadio.isSelected()) {
-            // dont do anything   
+            // simply dont need to do anything
         } else if (this.logNoneRadio.isSelected()) {
-            // also dont do anything
+            
+            // 1 - obtain MetaRaster and Flow Direction
+            LocalListBasin allBasins[];
+            DefaultListModel defListModel;
+            LocalListBasin addedBasin;
+            ListModel tempLModel;
+            int xBasin, yBasin;
+            int count;
+        
+            tempLModel = this.AddedBasinsList.getModel();
+            if (!(tempLModel instanceof DefaultListModel)){
+                JOptionPane.showMessageDialog(this, "No model set for SubBasins list.");
+                return;
+            }
+        
+            defListModel = (DefaultListModel)tempLModel;
+            allBasins = new LocalListBasin[defListModel.getSize()];
+            for(count = 0; count < defListModel.getSize(); count++){
+                allBasins[count] = (LocalListBasin)defListModel.get(count);
+            }
+            
+            try{
+                swmmCouplingEng.considerInletSequence(allBasins);
+            } catch (IOException exp) {
+                JOptionPane.showMessageDialog(this, exp.getMessage());
+                return;
+            }
         }
         
         // add added basins

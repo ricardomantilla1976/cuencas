@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package hydroScalingAPI.modules.swmmCoupling.widgets;
+package hydroScalingAPI.modules.swmmCoupling.objects;
 
 
 /**

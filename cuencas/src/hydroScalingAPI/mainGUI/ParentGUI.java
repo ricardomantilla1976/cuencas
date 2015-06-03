@@ -2563,11 +2563,13 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
      * @param internalFrameEvent The Internal frame that was closed
      */
     public void internalFrameClosed(javax.swing.event.InternalFrameEvent internalFrameEvent) {
-        String stringId=((hydroScalingAPI.subGUIs.widgets.RasterViewer)internalFrameEvent.getInternalFrame()).getIdentifier();
-        openWindows.remove(stringId);
-        window.remove(((javax.swing.JMenuItem)openWindowsMenusVector.get(stringId)));
-        openWindowsMenusVector.remove(stringId);
-        openWindowsIdentifiers.remove(stringId);
+        if (internalFrameEvent.getInternalFrame() instanceof hydroScalingAPI.subGUIs.widgets.RasterViewer){
+            String stringId=((hydroScalingAPI.subGUIs.widgets.RasterViewer)internalFrameEvent.getInternalFrame()).getIdentifier();
+            openWindows.remove(stringId);
+            window.remove(((javax.swing.JMenuItem)openWindowsMenusVector.get(stringId)));
+            openWindowsMenusVector.remove(stringId);
+            openWindowsIdentifiers.remove(stringId);
+        }
     }
     
     /**
@@ -2575,11 +2577,13 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
      * @param internalFrameEvent The internal frame that was opened
      */
     public void internalFrameOpened(javax.swing.event.InternalFrameEvent internalFrameEvent) {
-        hydroScalingAPI.subGUIs.widgets.RasterViewer rv=(hydroScalingAPI.subGUIs.widgets.RasterViewer)internalFrameEvent.getInternalFrame();
-        String windowIdentifier=rv.getTitle();
-        rv.setIdentifier(windowIdentifier+Math.random());
+        if(internalFrameEvent.getInternalFrame() instanceof hydroScalingAPI.subGUIs.widgets.RasterViewer){
+            hydroScalingAPI.subGUIs.widgets.RasterViewer rv=(hydroScalingAPI.subGUIs.widgets.RasterViewer)internalFrameEvent.getInternalFrame();
+            String windowIdentifier=rv.getTitle();
+            rv.setIdentifier(windowIdentifier+Math.random());
         
-        registerWindow(windowIdentifier,rv);
+            registerWindow(windowIdentifier,rv);
+        }
     }
     
     /**

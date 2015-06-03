@@ -135,10 +135,10 @@ public class MetaPolygonUrban extends MetaPolygon  {
     }
     
     /**
-     * 
-     * @param mRaster_arg
-     * @param directionMatrix_arg
-     * @param mNetwork_arg
+     * Identifies all tributary rivers for this urban polygon
+     * @param mRaster_arg MetaRaster related to urban polygon
+     * @param directionMatrix_arg Direction matrix of first argument urban polygon
+     * @param mNetwork_arg MetaNetwork of first argument MetaRaster
      * @return Vector with all tributary SubBasin if it was possible to define then. NULL otherwise
      */
     public SubBasin[] getAllTributarySubBasins(MetaRaster mRaster_arg,
@@ -1835,10 +1835,7 @@ public class MetaPolygonUrban extends MetaPolygon  {
                     // print date line if not same date
                     if ((lastDate.trim().equalsIgnoreCase(dateStr.trim())) && 
                             lastTime.trim().equalsIgnoreCase(hourStr.trim())){
-                        System.out.println("No escrive pues " + lastDate + " = " + dateStr);
                         continue;
-                    } else {
-                        System.out.println("Escrive pues " + lastDate + " = " + dateStr);
                     }
                     dataWriter_arg.println("inletInflow_" + currentAnylet.getID() + "    " + dateStr + " " +  hourStr + "    " + flowSerie[count][1]);
                     lastDate = dateStr;

@@ -47,8 +47,7 @@ public class OutletInlexMixer {
         OutletInlexMixer.mix(allConnections, 
                              inputSwmmFile, 
                              inputCuencasDir,
-                             outputSwmmFile,
-                             false);
+                             outputSwmmFile);
     }
     
     /**
@@ -62,8 +61,7 @@ public class OutletInlexMixer {
     public static boolean mix(List<OutletInflowConnection> allConnections_arg,
                               File inputSWMM_arg, 
                               File inputCUENCASdir_arg, 
-                              File outputSWMM_arg,
-                              boolean runNotFoundBasins_arg){
+                              File outputSWMM_arg){
         Iterator<OutletInflowConnection> allConnectionsIt;
         OutletInflowConnection curConnection;
         double[][] curResultMatrix;

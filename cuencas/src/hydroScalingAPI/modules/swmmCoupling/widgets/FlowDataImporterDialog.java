@@ -98,8 +98,10 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
         jLabel3.setText("New .inp file:");
 
         RunSimuNotFoundCheck.setText("Run simulation for basins not found");
+        RunSimuNotFoundCheck.setEnabled(false);
 
         NotFoundBasinsButton.setText("Parameters");
+        NotFoundBasinsButton.setEnabled(false);
         NotFoundBasinsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 NotFoundBasinsButtonActionPerformed(evt);
@@ -418,15 +420,14 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
         OutletInlexMixer.mix(allConnections, 
                              swmmInputFile, 
                              cuencasOutputDir, 
-                             swmmOutputFile,
-                             willRunNotFound);
+                             swmmOutputFile);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void NotFoundBasinsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NotFoundBasinsButtonActionPerformed
         FlowDataImporterParamsDialog paramsDialog;
         paramsDialog = new FlowDataImporterParamsDialog(this, 
                                                         true, 
-                                                        this.tempChannelVel,
+                                                        this.tempInfilInt,
                                                         this.tempHillVel,
                                                         this.tempChannelVel);
         paramsDialog.setVisible(true);
