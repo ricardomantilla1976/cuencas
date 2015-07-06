@@ -878,8 +878,8 @@ public class DamInundation extends Object{
      * @param args The command line arguments
      */
     public static void main (String args[]) {
-        //main0(args);  // basic example of usage
-        main1(args);  // Code modified by Tibebu to find storage - elevation curve
+        main0(args);  // basic example of usage
+        //main1(args);  // Code modified by Tibebu to find storage - elevation curve
     }
     
     /**
@@ -910,21 +910,27 @@ public class DamInundation extends Object{
             //parameters are x, y and dam height in the corresponding DEM
             
             //hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(2856, 846 , 9,matDirs,dem,metaModif);
-            hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(908, 292 ,9,matDirs,dem,metaModif);
             
-            //Printing area and volume of the lake
-            
-            System.out.println(theDam.getLakeArea());
-            System.out.println(theDam.getLakeVolume());
-            System.out.println();
+            for (int i = 1; i <= 10; i++) {
+                hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(7365, 1536 ,i,matDirs,dem,metaModif);
+
+                //Printing area and volume of the lake
+
+                System.out.println(i+","+theDam.getLakeArea()+","+theDam.getLakeVolume());
+                
+                if (i == 10) {
+                    int[][] points=theDam.getXYBasin();
+
+                    for (int ii = 0; ii < points[0].length; ii++) {
+                        System.out.println(points[0][ii]+";"+points[1][ii]+";"+dem[points[1][ii]][points[0][ii]]);
+                    }
+                }
+                
+            }
             
             //Prininting the x,y's of inundated area
             
-            int[][] points=theDam.getXYBasin();
-            
-            for (int i = 0; i < points[0].length; i++) {
-                System.out.println(points[0][i]+";"+points[1][i]+";"+dem[points[1][i]][points[0][i]]);
-            }
+//            
            
         } catch (java.io.IOException IOE){
             System.out.print(IOE);

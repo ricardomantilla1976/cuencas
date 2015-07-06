@@ -4537,7 +4537,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
      */
     public static void main12(String args[]) {
         
-        int caseSelected=10;
+        int caseSelected=0;
         
         String MyOutputDirectory="/Users/ricardo/temp/";
         
@@ -4638,6 +4638,23 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             
             metaBuffer.close();
             
+            outputMetaFile=MyOutputDirectory+"/CompleteLinks_"+fileNameDem[caseSelected]+"_Chi.txt";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            
+            float[][] hortonOrders=mylinksAnalysis.getVarValues(4);
+
+            metaBuffer.write(""+mylinksAnalysis.completeStreamLinksArray.length+"\n");
+            metaBuffer.write("\n");
+            
+            for (int i=0;i<mylinksAnalysis.completeStreamLinksArray.length;i++) {
+                metaBuffer.write(mylinksAnalysis.completeStreamLinksArray[i]+" "+hortonOrders[0][mylinksAnalysis.completeStreamLinksArray[i]]+"\n");
+            }
+            metaBuffer.write("\n");
+            
+            metaBuffer.close();
+            
+            System.exit(0);
+
             outputMetaFile=MyOutputDirectory+"/UpLink_"+fileNameDem[caseSelected]+"_Chi.txt";
             metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
