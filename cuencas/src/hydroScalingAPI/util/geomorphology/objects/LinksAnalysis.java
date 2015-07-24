@@ -948,8 +948,8 @@ public class LinksAnalysis extends java.lang.Object {
         //main_MODLU(args); //link-ids
         //main10(args);  // Writing connectivity for Equation (Evaluation by Walter)
         //main11(args);  // Writing connectivity for Scott's code directly (2 files .rvr and .prm)
-        //main12(args);  // Writing connectivity for Chi's code (Multiple basins)
-        main12_walter(args);  // Writing connectivity for Chi's code (Multiple basins)
+        main12(args);  // Writing connectivity for Chi's code (Multiple basins)
+        //main12_walter(args);  // Writing connectivity for Chi's code (Multiple basins)
         //mainScott_Type50(args);
         //IowaAllLinks(args);
         //mainScott_Type31Geral(args);
@@ -4629,65 +4629,88 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             
             System.out.println(mylinksAnalysis.nextLinkArray.length);
 
-            String outputMetaFile=MyOutputDirectory+"/NextLink_"+fileNameDem[caseSelected]+"_Chi.txt";
+//            String outputMetaFile=MyOutputDirectory+"/NextLink_"+fileNameDem[caseSelected]+"_Chi.txt";
+//            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//
+//            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
+//
+//            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+(mylinksAnalysis.nextLinkArray[i]+1)+"\n");
+//            
+//            metaBuffer.close();
+//            
+//            outputMetaFile=MyOutputDirectory+"/UpLink_"+fileNameDem[caseSelected]+"_Chi.txt";
+//            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//
+//            metaBuffer.write("Number of Links\n");
+//            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+//            metaBuffer.write("Link-ID Num-connected-links List-of-connected-links"+"\n");
+//            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+//                metaBuffer.write(""+(i+1)+" "+mylinksAnalysis.connectionsArray[i].length);
+//                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
+//                    metaBuffer.write(" "+(mylinksAnalysis.connectionsArray[i][j]+1));
+//                metaBuffer.write("\n");
+//            }
+//
+//            metaBuffer.close();
+            
+            
+            String outputMetaFile=MyOutputDirectory+"/"+fileNameDem[caseSelected]+"_"+x+"_"+y+".rvr";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
-            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
-
-            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+(mylinksAnalysis.nextLinkArray[i]+1)+"\n");
-            
-            metaBuffer.close();
-            
-            outputMetaFile=MyOutputDirectory+"/CompleteLinks_"+fileNameDem[caseSelected]+"_Chi.txt";
-            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
-            
-            float[][] hortonOrders=mylinksAnalysis.getVarValues(4);
-
-            metaBuffer.write(""+mylinksAnalysis.completeStreamLinksArray.length+"\n");
-            metaBuffer.write("\n");
-            
-            for (int i=0;i<mylinksAnalysis.completeStreamLinksArray.length;i++) {
-                metaBuffer.write(mylinksAnalysis.completeStreamLinksArray[i]+" "+hortonOrders[0][mylinksAnalysis.completeStreamLinksArray[i]]+"\n");
-            }
-            metaBuffer.write("\n");
-            
-            metaBuffer.close();
-            
-            System.exit(0);
-
-            outputMetaFile=MyOutputDirectory+"/UpLink_"+fileNameDem[caseSelected]+"_Chi.txt";
-            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
-
-            metaBuffer.write("Number of Links\n");
             metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
-            metaBuffer.write("Link-ID Num-connected-links List-of-connected-links"+"\n");
+            metaBuffer.write("\n");
             for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
-                metaBuffer.write(""+(i+1)+" "+mylinksAnalysis.connectionsArray[i].length);
+                metaBuffer.write(""+(i+1)+"\n");
+                metaBuffer.write(""+mylinksAnalysis.connectionsArray[i].length);
+                
                 for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
                     metaBuffer.write(" "+(mylinksAnalysis.connectionsArray[i][j]+1));
+                
                 metaBuffer.write("\n");
+                metaBuffer.write("\n");
+                
             }
+            metaBuffer.write("\n");
 
             metaBuffer.close();
             
-            outputMetaFile=MyOutputDirectory+"/LinkInfo_"+fileNameDem[caseSelected]+"_Chi.txt";
-            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
-
-            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
-            
-            metaBuffer.write("Link ID,Link lenght [km], Slope [*], upstreamArea [km^2], hillslopeArea [km^2]\n");
-            
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
-            float[][] drop=mylinksAnalysis.getVarValues(3);
-            
             float[][] upAreas=mylinksAnalysis.getVarValues(2);
             float[][] hillAreas=mylinksAnalysis.getVarValues(0);
 
-            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+lenghts[0][i]+","+drop[0][i]/lenghts[0][i]/1000.0+","+upAreas[0][i]+","+hillAreas[0][i]+"\n");
+            outputMetaFile=MyOutputDirectory+"/"+fileNameDem[caseSelected]+"_"+x+"_"+y+".prm";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+            metaBuffer.write("\n");
             
+            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+                metaBuffer.write((i+1)+"\n");
+                metaBuffer.write(upAreas[0][i]+" "+lenghts[0][i]+" "+hillAreas[0][i]+"\n");
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+
             metaBuffer.close();
             
-            outputMetaFile=MyOutputDirectory+"/LookUpTable_"+fileNameDem[caseSelected]+"_Chi.txt";
+//            outputMetaFile=MyOutputDirectory+"/"+fileNameDem[caseSelected]+"_"+x+"_"+y+".complete";
+//            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//            
+//            float[][] hortonOrders=mylinksAnalysis.getVarValues(4);
+//
+//            metaBuffer.write(""+mylinksAnalysis.completeStreamLinksArray.length+"\n");
+//            metaBuffer.write("\n");
+//            
+//            for (int i=0;i<mylinksAnalysis.completeStreamLinksArray.length;i++) {
+//                metaBuffer.write(mylinksAnalysis.completeStreamLinksArray[i]+" "+(int)hortonOrders[0][mylinksAnalysis.completeStreamLinksArray[i]]+"\n");
+//            }
+//            metaBuffer.write("\n");
+//
+//            metaBuffer.close();
+
+            float[][] hortonOrders=mylinksAnalysis.getVarValues(4);
+            
+            outputMetaFile=MyOutputDirectory+"/"+fileNameDem[caseSelected]+"_"+x+"_"+y+".lookup";//MyOutputDirectory+"/LookUpTable_"+fileNameDem[caseSelected]+"_Chi.txt";
             metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             
@@ -4699,13 +4722,13 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             int nRow=metaModif.getNumRows();
             
             metaBuffer.write(descriptor[caseSelected]+"\n");
-            metaBuffer.write("Link-ID,Longitude,Latitude"+"\n");
-            for (int i=0;i<mylinksAnalysis.tailsArray.length;i++) {
+            metaBuffer.write("Link-ID,Longitude,Latitude,HortonOrder"+"\n");
+            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++) {
                 
-                double myLat=(mylinksAnalysis.tailsArray[i]/nCol)*resLat/3600.0f+minLat;
-                double myLon=(mylinksAnalysis.tailsArray[i]%nCol)*resLon/3600.0f+minLon;
+                double myLat=(mylinksAnalysis.contactsArray[i]/nCol)*resLat/3600.0f+minLat;
+                double myLon=(mylinksAnalysis.contactsArray[i]%nCol)*resLon/3600.0f+minLon;
                         
-                metaBuffer.write(""+(i+1)+","+myLon+","+myLat+"\n");
+                metaBuffer.write(""+(i+1)+","+myLon+","+myLat+","+hortonOrders[0][i]+"\n");
             }
 
             metaBuffer.close();
@@ -4717,11 +4740,11 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             int demNumCols=metaModif.getNumCols();
 
-            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++){
+            for (int i=0;i<mylinksAnalysis.headsArray.length;i++){
                 if (mylinksAnalysis.magnitudeArray[i] < mylinksAnalysis.basinMagnitude){
 
-                    xOulet=mylinksAnalysis.contactsArray[i]%demNumCols;
-                    yOulet=mylinksAnalysis.contactsArray[i]/demNumCols;
+                    xOulet=mylinksAnalysis.headsArray[i]%demNumCols;
+                    yOulet=mylinksAnalysis.headsArray[i]/demNumCols;
 
                     myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
                     int[][] xyHillSlope=myHillActual.getXYHillSlope();

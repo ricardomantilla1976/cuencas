@@ -523,6 +523,82 @@ public class MetaNetwork {
         }
 
     }
+    
+    /**
+     * Prints to the standard ouput the sequence of i,j indexes that make up the
+     * stream.  Only those streams contained in the basin as determined by the basin
+     * mask are printed
+     * @param orderRequested The order of the streams to be printed
+     * @param basinMask The byte array that will serve as filter
+     */
+    public void getLinkLineStringXYs(int orderRequested, byte[][] basinMask, java.io.OutputStreamWriter newfile) throws java.io.IOException{
+        
+        String ret="\n";
+        
+        double demMinLon=metaData.getMinLon();
+        double demMinLat=metaData.getMinLat();
+        double demResLon=metaData.getResLon();
+        double demResLat=metaData.getResLat();
+        int demNumCols=metaData.getNumCols();
+        
+        java.util.Vector allStreams=new java.util.Vector();
+        java.util.Vector linkIDsVector=new java.util.Vector();
+        for (int i=0;i<streamRecord.length;i++){
+            if(streamRecord[i][3] == orderRequested) {
+                int iniLink=streamRecord[i][4]/8;
+                int numLink=streamRecord[i][5];
+                
+                int iniPoint=linkRecord[iniLink][4]/4;
+                int numPoint=linkRecord[iniLink][5];
+                
+                if(basinMask[pointRecord[iniPoint]/demNumCols][pointRecord[iniPoint]%demNumCols] == 1){
+                    for (int j=0;j<numLink;j++){
+                        java.util.Vector oneStream=new java.util.Vector();
+                    
+                        iniPoint=linkRecord[iniLink+j][4]/4;
+                        numPoint=linkRecord[iniLink+j][5];
+                        for (int k=0;k<numPoint;k++){
+
+                            float lon=(float)((pointRecord[iniPoint+k]%demNumCols)*demResLon/3600.+demMinLon+0.5*demResLon/3600.);
+                            float lat=(float)((pointRecord[iniPoint+k]/demNumCols)*demResLat/3600.+demMinLat+0.5*demResLat/3600.);
+
+                            if(basinMask[pointRecord[iniPoint+k]/demNumCols][pointRecord[iniPoint+k]%demNumCols] == 1)
+                                oneStream.add(new float[] {lon,lat});
+                        }
+                        linkIDsVector.add(iniPoint);
+                        allStreams.add(oneStream);
+                    }
+                    
+                }
+            }
+        }
+        
+        int totalNumS=allStreams.size();
+        for (int i=0;i<totalNumS;i++){
+            newfile.write("    <Placemark>"+ret);
+            //newfile.write("        <name>Stream "+(int)(orderRequested*1e6+i+1)+"</name>"+ret);
+            int linkID=((Integer)linkIDsVector.get(i)).intValue()+1;
+            newfile.write("        <name>"+(int)(linkID)+"</name>"+ret);
+            newfile.write("        <styleUrl>#linestyleO"+orderRequested+"</styleUrl>"+ret);
+            newfile.write("        <visibility>"+(orderRequested>0?1:0)+"</visibility>"+ret);
+            String listOfStreams="";
+            java.util.Vector oneStream=(java.util.Vector)allStreams.get(i);
+            float[][] riverPath=new float[2][oneStream.size()];
+            newfile.write("        <LineString>"+ret);
+//            newfile.write("            <extrude>1</extrude>"+ret);
+//            newfile.write("            <tessellate>1</tessellate>"+ret);
+            newfile.write("            <coordinates>"+ret);
+            for (int j=0;j<riverPath[0].length;j++){
+                float[] riverNode=(float[])oneStream.get(j);
+                listOfStreams+=(Math.round(riverNode[0]*1e5)/1e5+","+Math.round(riverNode[1]*1e5)/1e5+" ");
+            }
+            newfile.write("                "+listOfStreams+ret);
+            newfile.write("            </coordinates>"+ret);
+            newfile.write("        </LineString>"+ret);
+            newfile.write("    </Placemark>"+ret);
+        }
+
+    }
 
     /**
      * Prints to the standard ouput the sequence of i,j indexes that make up the
