@@ -943,8 +943,8 @@ public class LinksAnalysis extends java.lang.Object {
         //main_MODLU(args); //link-ids
         //main10(args);  // Writing connectivity for Equation (Evaluation by Walter)
         //main11(args);  // Writing connectivity for Scott's code directly (2 files .rvr and .prm)
-        main12(args);         // Writing connectivity for Chi's code (Multiple basins)
-        main12_walter(args);  // Writing connectivity for Chi's code (Multiple basins)
+        main12(args);  // Writing connectivity for Chi's code (Multiple basins)
+        //main12_walter(args);  // Writing connectivity for Chi's code (Multiple basins)
         //mainScott_Type50(args);
         //IowaAllLinks(args);
         //mainScott_Type31Geral(args);
@@ -4693,7 +4693,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
      */
     public static void main12(String args[]) {
         
-        //int caseSelected=10;
+        int caseSelected=0;
         
         String MyOutputDirectory="C:\\D\\asynch\\3_cuencasOutput\\linkAnalysis\\";
         String myFileNameDem = "extract_fill1_burnedwgs";
@@ -4828,7 +4828,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             float[][] hillAreas=mylinksAnalysis.getVarValues(0);
 
             for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+lenghts[0][i]+","+drop[0][i]/lenghts[0][i]/1000.0+","+upAreas[0][i]+","+hillAreas[0][i]+"\n");
-            
+
             metaBuffer.close();
             
             outputMetaFile=MyOutputDirectory+"/LookUpTable_"+myFileNameDem+"_Chi.txt";
@@ -4861,11 +4861,11 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             int demNumCols=metaModif.getNumCols();
 
-            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++){
+            for (int i=0;i<mylinksAnalysis.headsArray.length;i++){
                 if (mylinksAnalysis.magnitudeArray[i] < mylinksAnalysis.basinMagnitude){
 
-                    xOulet=mylinksAnalysis.contactsArray[i]%demNumCols;
-                    yOulet=mylinksAnalysis.contactsArray[i]/demNumCols;
+                    xOulet=mylinksAnalysis.headsArray[i]%demNumCols;
+                    yOulet=mylinksAnalysis.headsArray[i]/demNumCols;
 
                     myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
                     int[][] xyHillSlope=myHillActual.getXYHillSlope();
