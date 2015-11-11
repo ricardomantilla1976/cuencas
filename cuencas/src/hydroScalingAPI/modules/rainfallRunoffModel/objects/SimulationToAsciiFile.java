@@ -238,7 +238,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         }
         
         hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay thisBasinEqSys=new hydroScalingAPI.modules.rainfallRunoffModel.objects.NetworkEquations_HillDelay(linksStructure,thisHillsInfo,thisNetworkGeom,routingType);
-        double[] initialCondition=new double[linksStructure.contactsArray.length*2];
+        double[] initialCondition=new double[linksStructure.contactsArray.length*3];
         
         float[][] areasHillArray=thisHillsInfo.getAreasArray();
         float[][] linkLengths=linksStructure.getVarValues(1);   // [1][n]
@@ -252,6 +252,7 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
             initialCondition[i+linksStructure.contactsArray.length]=0;
             //System.out.println{"Sum of initial " + ic_sum};
             //ic_sum = ic_sum + initialCondition[i] ;
+            initialCondition[i+2*linksStructure.contactsArray.length]=0;
         }
         //System.out.println("Sum of initial q = " + ic_sum);
         

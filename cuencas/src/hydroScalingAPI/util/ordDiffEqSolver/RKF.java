@@ -722,7 +722,7 @@ public class RKF extends java.lang.Object {
         outputStream.write("\n");
         outputStream.write(currentTime + ",");
         for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
-            if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1) {
+            if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0) {
                 outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
             }
         }
@@ -802,7 +802,7 @@ public class RKF extends java.lang.Object {
             outputStream.write("\n");
             outputStream.write(currentTime + ",");
             for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
-                if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1) {
+                if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0) {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
                 }
             }
@@ -835,7 +835,7 @@ public class RKF extends java.lang.Object {
             outputStream.write("\n");
             outputStream.write(currentTime + ",");
             for (int i = 0; i < linksStructure.completeStreamLinksArray.length; i++) {
-                if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 1) {
+                if (thisNetworkGeom.linkOrder(linksStructure.completeStreamLinksArray[i]) > 0) {
                     outputStream.write(IC[linksStructure.completeStreamLinksArray[i]] + ",");
                 }
             }
