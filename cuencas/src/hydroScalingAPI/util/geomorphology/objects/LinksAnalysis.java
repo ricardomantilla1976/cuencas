@@ -4757,11 +4757,11 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             int demNumCols=metaModif.getNumCols();
 
-            for (int i=0;i<mylinksAnalysis.headsArray.length;i++){
+            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++){
                 if (mylinksAnalysis.magnitudeArray[i] < mylinksAnalysis.basinMagnitude){
 
-                    xOulet=mylinksAnalysis.headsArray[i]%demNumCols;
-                    yOulet=mylinksAnalysis.headsArray[i]/demNumCols;
+                    xOulet=mylinksAnalysis.contactsArray[i]%demNumCols;
+                    yOulet=mylinksAnalysis.contactsArray[i]/demNumCols;
 
                     myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
                     int[][] xyHillSlope=myHillActual.getXYHillSlope();

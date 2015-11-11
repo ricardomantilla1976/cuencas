@@ -911,7 +911,7 @@ public class DamInundation extends Object{
             
             //hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(2856, 846 , 9,matDirs,dem,metaModif);
             
-            for (int i = 1; i <= 10; i++) {
+            for (int i = 10; i <= 10; i++) {
                 hydroScalingAPI.util.geomorphology.objects.DamInundation theDam=new hydroScalingAPI.util.geomorphology.objects.DamInundation(7365, 1536 ,i,matDirs,dem,metaModif);
 
                 //Printing area and volume of the lake
@@ -924,6 +924,13 @@ public class DamInundation extends Object{
                     for (int ii = 0; ii < points[0].length; ii++) {
                         System.out.println(points[0][ii]+";"+points[1][ii]+";"+dem[points[1][ii]][points[0][ii]]);
                     }
+                    
+                    float[][] dividePoints=theDam.getLonLatBasinDivide();
+                    for (int ii = 0; ii < dividePoints[0].length; ii++) {
+                        System.out.println(dividePoints[0][ii]+";"+dividePoints[1][ii]);
+                    }
+                    
+                    System.exit(0);
                 }
                 
             }

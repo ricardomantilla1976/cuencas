@@ -31,7 +31,7 @@ package hydroScalingAPI.examples.io;
  */
 public class MetaNetToKML_Links {
     
-    public MetaNetToKML_Links(hydroScalingAPI.io.MetaRaster metaModif, java.io.File outputDirectory,hydroScalingAPI.util.geomorphology.objects.Basin myCuenca,byte [][] matDir,String uniqueIdentifier) throws java.io.IOException{
+    public MetaNetToKML_Links(hydroScalingAPI.io.MetaRaster metaModif, java.io.File outputDirectory,hydroScalingAPI.util.geomorphology.objects.Basin myCuenca,byte [][] matDir, int[][] magnitudes,String uniqueIdentifier) throws java.io.IOException{
         
         
         float xO=myCuenca.getLonLatBasin()[0][0];
@@ -57,7 +57,36 @@ public class MetaNetToKML_Links {
 
         metaPolyToWrite.writeKmlPolygon(fileSalida,uniqueIdentifier);
 
-        byte[][] basMask=myCuenca.getBasinMask();
+        int[][] basLinkIds=new int[metaModif.getNumRows()][metaModif.getNumCols()];
+
+        int xOulet,yOulet;
+        hydroScalingAPI.util.geomorphology.objects.HillSlope myHillActual;
+
+        int demNumCols=metaModif.getNumCols();
+
+        for (int i=0;i<linksStructure.contactsArray.length;i++){
+            if (linksStructure.magnitudeArray[i] < linksStructure.basinMagnitude){
+
+                xOulet=linksStructure.contactsArray[i]%demNumCols;
+                yOulet=linksStructure.contactsArray[i]/demNumCols;
+
+                myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDir,magnitudes,metaModif);
+                int[][] xyHillSlope=myHillActual.getXYHillSlope();
+                for (int j=0;j<xyHillSlope[0].length;j++){
+                    basLinkIds[xyHillSlope[1][j]][xyHillSlope[0][j]]=i+1;
+
+                }
+            } else {
+                int x=myCuenca.getXYBasin()[0][0];
+                int y=myCuenca.getXYBasin()[1][0];
+                
+                myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(x,y,matDir,magnitudes,metaModif);
+                int[][] xyHillSlope=myHillActual.getXYHillSlope();
+                for (int j=0;j<xyHillSlope[0].length;j++){
+                    basLinkIds[xyHillSlope[1][j]][xyHillSlope[0][j]]=i+1;
+                }
+            }
+        }
 
         fileSalida=new java.io.File(outputDirectory+"/RiverNetworkHighRes_"+uniqueIdentifier+".kml");
         
@@ -93,7 +122,7 @@ public class MetaNetToKML_Links {
             newfile.write("    <name>Order "+i+" Streams</name>"+ret);
             newfile.write("    <visibility>1</visibility>"+ret);
             newfile.write("    <open>0</open>"+ret);
-            netStructure.getLinkLineStringXYs(i,basMask,newfile);
+            netStructure.getLinkLineStringXYs(i,basLinkIds,newfile);
             newfile.write("  </Folder>"+ret);
         }
 
@@ -171,9 +200,13 @@ public class MetaNetToKML_Links {
         
         try{
 
-            String fileName="/CuencasDataBases/TurkeyRiver_DB/Rasters/Topography/turkeyburnll";
-            int x=28104  , y= 2815;
-            String uniqueIdentifier="TurkeyRiverAtMississippi5m";
+            String fileName="/CuencasDataBases/IPHEX_Database/Rasters/Topography/PeeDeeBurned_90m";
+            int x=3422 , y= 814;
+            String uniqueIdentifier="PeeDee";
+
+//            String fileName="/CuencasDataBases/TurkeyRiver_DB/Rasters/Topography/turkeyburnll";
+//            int x=28104  , y= 2815;
+//            String uniqueIdentifier="TurkeyRiverAtMississippi5m";
 
 //            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/TurkeyRiverAtElkader/NED_53652717";
 //            int x=4498  , y= 432;
@@ -226,14 +259,18 @@ public class MetaNetToKML_Links {
             
             java.io.File theFile=new java.io.File(fileName+".metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            
             metaModif.setLocationBinaryFile(new java.io.File(fileName+".dir"));
-        
             metaModif.setFormat("Byte");
             byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
             
+            metaModif.setLocationBinaryFile(new java.io.File(fileName+".magn"));
+            metaModif.setFormat("Integer");
+            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+            
             hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
             
-            MetaNetToKML_Links exporter=new MetaNetToKML_Links(metaModif,new java.io.File("/Users/ricardo/temp/"),laCuenca,matDirs,uniqueIdentifier);
+            MetaNetToKML_Links exporter=new MetaNetToKML_Links(metaModif,new java.io.File("/Users/ricardo/temp/"),laCuenca,matDirs,magnitudes,uniqueIdentifier);
             
         } catch (Exception IOE){
             System.out.print(IOE);
@@ -243,52 +280,6 @@ public class MetaNetToKML_Links {
         
         System.exit(0);
         
-    }
-
-    /**
-     * Tests for the class
-     * @param args the command line arguments
-     */
-    public static void main1(String[] args) {
-
-        try{
-
-            String[] basins=new hydroScalingAPI.io.BasinsLogReader(new java.io.File("/Users/ricardo/workFiles/myWorkingStuff/AdvisorThesis/Eric/res.log")).getPresetBasins();
-
-            String fileName="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/4_arcSec/res";
-            
-            
-            for (int i = 0; i < basins.length; i++) {
-                String[] basLabel = basins[i].split(";");
-
-                int x=Integer.parseInt(basLabel[0].split(",")[0].split("x:")[1].trim());
-                int y=Integer.parseInt(basLabel[0].split(",")[1].split("y:")[1].trim());
-                
-                String uniqueIdentifier=basLabel[1];
-
-                System.out.println(x+" "+y+" "+uniqueIdentifier);
-
-
-                java.io.File theFile=new java.io.File(fileName+".metaDEM");
-                hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-                metaModif.setLocationBinaryFile(new java.io.File(fileName+".dir"));
-
-                metaModif.setFormat("Byte");
-                byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
-
-                hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
-
-                MetaNetToKML_Links exporter=new MetaNetToKML_Links(metaModif,new java.io.File("/Users/ricardo/temp/cities/"),laCuenca,matDirs,uniqueIdentifier);
-
-            }
-        } catch (Exception IOE){
-            System.out.print(IOE);
-            IOE.printStackTrace();
-            System.exit(0);
-        }
-
-        System.exit(0);
-
     }
 
 }
