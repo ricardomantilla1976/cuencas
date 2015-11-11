@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package hydroScalingAPI.subGUIs.widgets;
 
+import java.io.File;
+
 /**
  * A GUI to access
  * @author Ricardo Mantilla
@@ -75,6 +77,7 @@ public class NetworkTools extends javax.swing.JDialog {
         BasinDivideToPoly = new javax.swing.JButton();
         BasinPolyToKML = new javax.swing.JButton();
         TribsInput = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setTitle("Available Network Tools");
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -82,9 +85,9 @@ public class NetworkTools extends javax.swing.JDialog {
                 closeDialog(evt);
             }
         });
-        getContentPane().setLayout(new java.awt.GridLayout(6, 0));
+        getContentPane().setLayout(new java.awt.GridLayout(7, 0));
 
-        GeomrphAnalysis.setFont(new java.awt.Font("Dialog", 0, 10));
+        GeomrphAnalysis.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         GeomrphAnalysis.setText("Geomorphology Analysis");
         GeomrphAnalysis.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -93,7 +96,7 @@ public class NetworkTools extends javax.swing.JDialog {
         });
         getContentPane().add(GeomrphAnalysis);
 
-        RunoffModel.setFont(new java.awt.Font("Dialog", 0, 10));
+        RunoffModel.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         RunoffModel.setText("Rainfall - Runoff Model");
         RunoffModel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,7 +105,7 @@ public class NetworkTools extends javax.swing.JDialog {
         });
         getContentPane().add(RunoffModel);
 
-        BasinMask.setFont(new java.awt.Font("Dialog", 0, 10));
+        BasinMask.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         BasinMask.setText("Create Basin Mask File");
         BasinMask.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -138,6 +141,15 @@ public class NetworkTools extends javax.swing.JDialog {
             }
         });
         getContentPane().add(TribsInput);
+
+        jButton1.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        jButton1.setText("Export Asynch input files");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -306,6 +318,21 @@ public class NetworkTools extends javax.swing.JDialog {
             System.err.println(IOE);
         }
     }//GEN-LAST:event_BasinPolyToKMLActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String metaDemFolder, metaDemFileName, maskFolder;
+        
+        // get file name and remove .metaDEM prefix
+        metaDemFileName = this.metaDatos.getLocationMeta().getName();
+        metaDemFileName = metaDemFileName.replace(".metaDEM", "");
+        
+        metaDemFolder = this.metaDatos.getLocationMeta().getParent() + File.separator;
+        
+        maskFolder = metaDemFolder.replace("Rasters"+File.separator+"Topography", "Rasters"+File.separator+"Hydrology");
+        
+        new hydroScalingAPI.util.geomorphology.widgets.AsynchExporter(mainFrame, xOut, yOut, metaDemFolder, metaDemFileName, maskFolder).setVisible(true);
+        closeDialog(null);
+    }//GEN-LAST:event_jButton1ActionPerformed
     
     /**
      * Tests for the class
@@ -339,6 +366,7 @@ public class NetworkTools extends javax.swing.JDialog {
     private javax.swing.JButton GeomrphAnalysis;
     private javax.swing.JButton RunoffModel;
     private javax.swing.JButton TribsInput;
+    private javax.swing.JButton jButton1;
     // End of variables declaration//GEN-END:variables
     
 }

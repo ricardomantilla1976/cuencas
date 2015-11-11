@@ -577,10 +577,12 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
 
         jMenuItem2.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         jMenuItem2.setText("Copy");
+        jMenuItem2.setEnabled(false);
         mapToolsPopup.add(jMenuItem2);
 
         jMenuItem3.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         jMenuItem3.setText("Delete");
+        jMenuItem3.setEnabled(false);
         mapToolsPopup.add(jMenuItem3);
         mapToolsPopup.add(jSeparator5);
 
@@ -1253,11 +1255,13 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         colors.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         colors.setMnemonic('c');
         colors.setText("System Colors ...");
+        colors.setEnabled(false);
         options.add(colors);
 
         preferences.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         preferences.setMnemonic('p');
         preferences.setText("System Preferences ...");
+        preferences.setEnabled(false);
         options.add(preferences);
 
         jMenuBar1.add(options);
@@ -1279,29 +1283,34 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         networkAnalysis.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         networkAnalysis.setMnemonic('a');
         networkAnalysis.setText("Network Analysis");
+        networkAnalysis.setEnabled(false);
         modules.add(networkAnalysis);
         modules.add(jSeparator6);
 
         waterBalance.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         waterBalance.setMnemonic('b');
         waterBalance.setText("Water Balance");
+        waterBalance.setEnabled(false);
         modules.add(waterBalance);
         modules.add(jSeparator7);
 
         ts_analysis.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         ts_analysis.setMnemonic('t');
         ts_analysis.setText("Time Series Analysis");
+        ts_analysis.setEnabled(false);
         modules.add(ts_analysis);
         modules.add(jSeparator8);
 
         rain_simulator.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         rain_simulator.setMnemonic('r');
         rain_simulator.setText("Rain Simulator");
+        rain_simulator.setEnabled(false);
         modules.add(rain_simulator);
 
         rainfall_runoff_simulator.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         rainfall_runoff_simulator.setMnemonic('o');
         rainfall_runoff_simulator.setText("Rainfall Runoff Simulator");
+        rainfall_runoff_simulator.setEnabled(false);
         modules.add(rainfall_runoff_simulator);
         modules.add(jSeparator12);
 
@@ -1378,6 +1387,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         arrange.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         arrange.setMnemonic('a');
         arrange.setText("Arrange all ...");
+        arrange.setEnabled(false);
         window.add(arrange);
         window.add(jSeparator9);
 
@@ -1390,11 +1400,13 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         contents.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         contents.setMnemonic('c');
         contents.setText("Contents ...");
+        contents.setEnabled(false);
         help.add(contents);
 
         index.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         index.setMnemonic('i');
         index.setText("Index");
+        index.setEnabled(false);
         help.add(index);
         help.add(jSeparator10);
 
@@ -1412,6 +1424,7 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         about.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         about.setMnemonic('a');
         about.setText("About");
+        about.setEnabled(false);
         help.add(about);
 
         jMenuBar1.add(help);

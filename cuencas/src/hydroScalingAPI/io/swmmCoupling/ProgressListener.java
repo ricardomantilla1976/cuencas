@@ -1,7 +1,7 @@
 package hydroScalingAPI.io.swmmCoupling;
 
 /**
- * Mandatory interface for being able to insert a progress bar into CUENCAS GUI
+ * Mandatory interface for being able to insert a progress bar into CUENCAS GUI - SWMM coupling
  * @author A. D. L. Zanchetta
  */
 public interface ProgressListener {

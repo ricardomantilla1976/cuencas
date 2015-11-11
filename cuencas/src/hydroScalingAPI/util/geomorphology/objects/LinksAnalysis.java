@@ -4605,15 +4605,32 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
         
         int x=coordinatesOutlet[caseSelected][0], y= coordinatesOutlet[caseSelected][1];
 
+        main12Args(x,y,filePathToMetaDem[caseSelected],fileNameDem[caseSelected], filePathToMask[caseSelected], descriptor[caseSelected], MyOutputDirectory);
+        
+        System.exit(0);
+    }
+    
+    /**
+     * 
+     * @param x
+     * @param y
+     * @param filePathToMetaDem
+     * @param fileNameDem File name without .metaDEM (e.g. for "abc.metaDEM", add "abc"
+     * @param filePathToMask
+     * @param descriptor
+     * @param MyOutputDirectory
+     */
+    public static void main12Args(int x, int y, String filePathToMetaDem, String fileNameDem, String filePathToMask, String descriptor, String MyOutputDirectory){
+
         java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
         java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
         dpoint2.applyPattern("0.00000000");
 
         try{
 
-            java.io.File theFile=new java.io.File(filePathToMetaDem[caseSelected]+fileNameDem[caseSelected]+".metaDEM");
+            java.io.File theFile=new java.io.File(filePathToMetaDem+fileNameDem+".metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File(filePathToMetaDem[caseSelected]+fileNameDem[caseSelected]+".dir"));
+            metaModif.setLocationBinaryFile(new java.io.File(filePathToMetaDem+fileNameDem+".dir"));
 
             metaModif.setFormat("Byte");
             byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
@@ -4654,7 +4671,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 //            metaBuffer.close();
             
             
-            String outputMetaFile=MyOutputDirectory+"/"+fileNameDem[caseSelected]+"_"+x+"_"+y+".rvr";
+            String outputMetaFile=MyOutputDirectory+"/"+fileNameDem+"_"+x+"_"+y+".rvr";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
@@ -4678,7 +4695,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             float[][] upAreas=mylinksAnalysis.getVarValues(2);
             float[][] hillAreas=mylinksAnalysis.getVarValues(0);
 
-            outputMetaFile=MyOutputDirectory+"/"+fileNameDem[caseSelected]+"_"+x+"_"+y+".prm";
+            outputMetaFile=MyOutputDirectory+"/"+fileNameDem+"_"+x+"_"+y+".prm";
             metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
@@ -4710,7 +4727,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             float[][] hortonOrders=mylinksAnalysis.getVarValues(4);
             
-            outputMetaFile=MyOutputDirectory+"/"+fileNameDem[caseSelected]+"_"+x+"_"+y+".lookup";//MyOutputDirectory+"/LookUpTable_"+fileNameDem[caseSelected]+"_Chi.txt";
+            outputMetaFile=MyOutputDirectory+"/"+fileNameDem+"_"+x+"_"+y+".lookup";//MyOutputDirectory+"/LookUpTable_"+fileNameDem[caseSelected]+"_Chi.txt";
             metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             
@@ -4721,7 +4738,7 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             int nCol=metaModif.getNumCols();
             int nRow=metaModif.getNumRows();
             
-            metaBuffer.write(descriptor[caseSelected]+"\n");
+            metaBuffer.write(descriptor+"\n");
             metaBuffer.write("Link-ID,Longitude,Latitude,HortonOrder"+"\n");
             for (int i=0;i<mylinksAnalysis.contactsArray.length;i++) {
                 
@@ -4761,13 +4778,12 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
                 }
             }
 
-            String fileBinSalida=filePathToMask[caseSelected]+"/"+fileNameDem[caseSelected]+"_BasinWatershedsFull_Level1.vhc";
+            String fileBinSalida=filePathToMask+"/"+fileNameDem+"_BasinWatershedsFull_Level1.vhc";
             java.io.File outputBinaryFile=new java.io.File(fileBinSalida);
             java.io.DataOutputStream rasterBuffer = new java.io.DataOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(outputBinaryFile)));
 
             int nRows=matrizPintada.length;
             int nCols=matrizPintada[0].length;
-
 
             for (int i=0;i<nRows;i++){
                 for (int j=0;j<nCols;j++){
@@ -4777,14 +4793,12 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             rasterBuffer.close();
             
-            hydroScalingAPI.tools.FileManipulation.CopyFile(new java.io.File(filePathToMetaDem[caseSelected]+fileNameDem[caseSelected]+".metaDEM"), new java.io.File(filePathToMask[caseSelected]+"/"+fileNameDem[caseSelected]+"_BasinWatershedsFull_Level1.metaVHC"));
+            hydroScalingAPI.tools.FileManipulation.CopyFile(new java.io.File(filePathToMetaDem+fileNameDem+".metaDEM"), new java.io.File(filePathToMask+"/"+fileNameDem+"_BasinWatershedsFull_Level1.metaVHC"));
 
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
-            System.exit(0);
+            
         }
-
-        System.exit(0);
 
     }
     
