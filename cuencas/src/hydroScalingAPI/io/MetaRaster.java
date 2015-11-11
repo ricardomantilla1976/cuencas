@@ -602,7 +602,7 @@ public class MetaRaster{
     
     /**
      * Writes the information in the MetaRaster to the specified path
-     * @param newMetaLocation The path where the metafile must be writen
+     * @param newMetaLocation The path where the metafile must be written
      * @throws java.io.IOException Captures errors while writing the information
      */
     public void writeMetaRaster(java.io.File newMetaLocation) throws java.io.IOException{

@@ -531,7 +531,7 @@ public class MetaNetwork {
      * @param orderRequested The order of the streams to be printed
      * @param basinMask The byte array that will serve as filter
      */
-    public void getLinkLineStringXYs(int orderRequested, byte[][] basinMask, java.io.OutputStreamWriter newfile) throws java.io.IOException{
+    public void getLinkLineStringXYs(int orderRequested, int[][] basinLinkIDs, java.io.OutputStreamWriter newfile) throws java.io.IOException{
         
         String ret="\n";
         
@@ -551,22 +551,30 @@ public class MetaNetwork {
                 int iniPoint=linkRecord[iniLink][4]/4;
                 int numPoint=linkRecord[iniLink][5];
                 
-                if(basinMask[pointRecord[iniPoint]/demNumCols][pointRecord[iniPoint]%demNumCols] == 1){
+                if(basinLinkIDs[pointRecord[iniPoint]/demNumCols][pointRecord[iniPoint]%demNumCols] > 1){
                     for (int j=0;j<numLink;j++){
                         java.util.Vector oneStream=new java.util.Vector();
                     
                         iniPoint=linkRecord[iniLink+j][4]/4;
                         numPoint=linkRecord[iniLink+j][5];
+                        
+                        boolean wentIn=false;
+                        
                         for (int k=0;k<numPoint;k++){
 
                             float lon=(float)((pointRecord[iniPoint+k]%demNumCols)*demResLon/3600.+demMinLon+0.5*demResLon/3600.);
                             float lat=(float)((pointRecord[iniPoint+k]/demNumCols)*demResLat/3600.+demMinLat+0.5*demResLat/3600.);
 
-                            if(basinMask[pointRecord[iniPoint+k]/demNumCols][pointRecord[iniPoint+k]%demNumCols] == 1)
+                            if(basinLinkIDs[pointRecord[iniPoint+k]/demNumCols][pointRecord[iniPoint+k]%demNumCols] > 1){
+                                wentIn=true;
                                 oneStream.add(new float[] {lon,lat});
+                            }
+                                
                         }
-                        linkIDsVector.add(iniPoint);
-                        allStreams.add(oneStream);
+                        if(wentIn){
+                            linkIDsVector.add(basinLinkIDs[pointRecord[iniPoint]/demNumCols][pointRecord[iniPoint]%demNumCols]);
+                            allStreams.add(oneStream);
+                        }
                     }
                     
                 }
@@ -577,7 +585,7 @@ public class MetaNetwork {
         for (int i=0;i<totalNumS;i++){
             newfile.write("    <Placemark>"+ret);
             //newfile.write("        <name>Stream "+(int)(orderRequested*1e6+i+1)+"</name>"+ret);
-            int linkID=((Integer)linkIDsVector.get(i)).intValue()+1;
+            int linkID=((Integer)linkIDsVector.get(i)).intValue();
             newfile.write("        <name>"+(int)(linkID)+"</name>"+ret);
             newfile.write("        <styleUrl>#linestyleO"+orderRequested+"</styleUrl>"+ret);
             newfile.write("        <visibility>"+(orderRequested>0?1:0)+"</visibility>"+ret);
