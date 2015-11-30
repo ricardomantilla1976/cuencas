@@ -241,7 +241,7 @@ public class NetworkEquations_HillDelay implements hydroScalingAPI.util.ordDiffE
             //the surface
             output[i+linksConectionStruct.connectionsArray.length]=1/60.*(effPrecip-qs);
             //the subsurface
-            //output[i+2*linksConectionStruct.connectionsArray.length]=1/60.*(basinHillSlopesInfo.precipitation(i,time)-effPrecip-qsub);
+            output[i+2*linksConectionStruct.connectionsArray.length]=1/60.*(basinHillSlopesInfo.precipitation(i,time)-effPrecip-qsub);
         }
         
         //if (Math.random() > 0.99) if (maxInt>0) System.out.println("      --> The Max precipitation intensity is: "+maxInt);
