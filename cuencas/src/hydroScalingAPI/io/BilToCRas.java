@@ -63,7 +63,9 @@ public class BilToCRas {
         
         int nCols,nRows,nBytes;
         
-        headerBuffer.readLine();
+        String test=headerBuffer.readLine().substring(9).trim();
+        boolean byteorder=(test.equalsIgnoreCase("m"));
+        System.out.println(test+" "+byteorder);
         headerBuffer.readLine();
 
         nRows=Integer.parseInt(String.valueOf(headerBuffer.readLine().substring(5).trim()));
@@ -96,8 +98,16 @@ public class BilToCRas {
             for (int i=0;i<nRows;i++){
                 for (int j=0;j<nCols;j++){
                     //This is to swap to Little Endian
-                    int low = dataBuffer.readByte();
-                    int high = dataBuffer.readByte();
+                    int high = 0;
+                    int low = 0;
+                    if (byteorder) {
+                        low = dataBuffer.readByte();
+                        high = dataBuffer.readByte();
+                    } else{
+                        high = dataBuffer.readByte();
+                        low = dataBuffer.readByte();
+                    }
+
                     //data[i][j] = (short)(high << 8 | low); 
                     data[i][j] = 256*low + ((high>0)?high:high+256);
                     if (data[i][j]==256) data[i][j]=-9999;
@@ -213,8 +223,8 @@ public class BilToCRas {
      */
     public static void main(String[] args) {
         try{
-            new hydroScalingAPI.io.BilToCRas(new java.io.File("/Users/ricardo/Downloads/gt30w100n40_dem/"),
-                                             new java.io.File("/CuencasDataBases/IPHEX_Database/Rasters/Topography"),0);
+            new hydroScalingAPI.io.BilToCRas(new java.io.File("/Users/ricardo/Downloads/s07_e027_1arc_v3_bil/"),
+                                             new java.io.File("/CuencasDataBases/cuencasmaine/Rasters/Topography/DEM"),0);
         }catch(java.io.IOException ioe){
             System.err.println("error");
             ioe.printStackTrace();

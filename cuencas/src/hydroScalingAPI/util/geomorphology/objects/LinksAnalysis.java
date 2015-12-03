@@ -4793,8 +4793,9 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             rasterBuffer.close();
             
-            hydroScalingAPI.tools.FileManipulation.CopyFile(new java.io.File(filePathToMetaDem+fileNameDem+".metaDEM"), new java.io.File(filePathToMask+"/"+fileNameDem+"_BasinWatershedsFull_Level1.metaVHC"));
-
+            metaModif.setFormat("Integer");
+            metaModif.writeMetaRaster(new java.io.File(filePathToMask+"/"+fileNameDem+"_BasinWatershedsFull_Level1.metaVHC"));
+            
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
             
