@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -173,6 +174,13 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
 
         initComponents();
         setSize(650, 600);
+        
+        // add listeners to buttons
+        editLog.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editbasinLogs(evt);
+            }
+        });
 
         updateRelatedMaps();
         addInternalFrameListener(mainFrame);
@@ -214,22 +222,16 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
                 return;
             }
             basinsViewerPopUp.add(editLog);
-            editLog.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    editbasinLogs(evt);
-                }
-
-            });
 
             deleteLog = new javax.swing.JMenuItem();
             deleteLog.setFont(new java.awt.Font("Dialog", 0, 10));
-            deleteLog.setText("Delete Log");
+            deleteLog.setText("Delete Selected Watersheds");
             basinsViewerPopUp.add(deleteLog);
 
             deleteLog.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     try {
-                        deletePreselectedBasin(basinsToDelete, evt);
+                        deletePreselectedBasin(basinsToDelete, evt, true);
                     } catch (IOException ex) {
                         Logger.getLogger(RasterViewer.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -244,13 +246,10 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     clearLogs(evt);
                 }
-
             });
             String[] basinsPreSelected = localBasinsLog.getPresetBasins();
             for (int i = 0; i < basinsPreSelected.length; i++) {
-
                 addPreselectedBasinCheckBox(basinsPreSelected[i], false);
-
             }
 
         } else {
@@ -270,12 +269,11 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
 
     private void clearLogs(ActionEvent evt) {
         int dialogButton = JOptionPane.YES_NO_OPTION;
-        int dialogResult = JOptionPane.showConfirmDialog(this, "Do want to clear Basin Logs?", "Delete Basins", dialogButton);
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to clear the Basin Log?", "Clear Basin Log", dialogButton);
         if (dialogResult == 0) {
-
             ArrayList<String> basinLogList = new ArrayList<String>(Arrays.asList(localBasinsLog.getPresetBasins()));
             try {
-                deletePreselectedBasin(basinLogList, evt);
+                deletePreselectedBasin(basinLogList, evt, false);
             } catch (IOException ex) {
                 Logger.getLogger(RasterViewer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -283,15 +281,18 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
     }
 
     public void updateBasinGUI() {
-        basinsViewerPopUp.removeAll();
+        this.basinsViewerPopUp.removeAll();
+        Iterator<String> basins_it = this.basinsToDelete.iterator();
+        while(basins_it.hasNext()){
+            this.removeBasinFromDisplay(basins_it.next());
+        }
+        this.basinsToDelete.clear();
         updateBasinsPopupMenu();
     }
 
     //Aniket
     private void editbasinLogs(ActionEvent evt) {
-
         initializeTextEditor();
-
     }
 
     private void initializeTextEditor() {
@@ -319,18 +320,15 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
 
         loadFile(logFile);
        
-        
-       frame.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-       frame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent event) {
-            System.out.println("Window Closed");
-            updateBasinGUI();
-            frame.dispose();
-            
-            
-        }
-    });
+        frame.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                System.out.println("Window Closed");
+                updateBasinGUI();
+                frame.dispose();
+            }
+        });
         frame.pack();
         frame.setModalityType(Dialog.ModalityType.TOOLKIT_MODAL);
         frame.setVisible(true);
@@ -398,7 +396,6 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
                 if (showBasinI.isSelected()) {
                     if (divideBasinTable.containsKey(showOrderW.getText()) && outletBasicTable.containsKey(showOrderW.getText())) {
                         removeBasinFromDisplay(showOrderW.getText());
-
                     }
 
                     showBasinPreSelectedActionPerformed(evt);
@@ -438,9 +435,17 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
     }
 
     //Aniket
-    private void deletePreselectedBasin(ArrayList<String> basinLabel, java.awt.event.ActionEvent evt) throws IOException {
+    private void deletePreselectedBasin(ArrayList<String> basinLabel, java.awt.event.ActionEvent evt, boolean should_ask) throws IOException {
         int dialogButton = JOptionPane.YES_NO_OPTION;
-        int dialogResult = JOptionPane.showConfirmDialog(this, "Do want to Delete basin?", "Delete Basins", dialogButton);
+        int dialogResult;
+        
+        // open dialog box if necessary
+        if (should_ask){
+            dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete selected basins?", "Delete Basins", dialogButton);
+        } else {
+            dialogResult = 0;
+        }
+        
         if (dialogResult == 0) {
 
             java.io.File originalFile = metaData.getLocationBinaryFile();
@@ -484,13 +489,10 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
         showBasinI.setText(basinLabel);
         showBasinI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-
                 showBasinPreSelectedActionPerformed(evt);
             }
         });
-
         basinsViewerPopUp.add(showBasinI);
-
     }
 
     private void showBasinPreSelectedActionPerformed(java.awt.event.ActionEvent evt) {
@@ -555,9 +557,7 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
             });
 
             addToNetworkPupUp(showOrderW);
-
         }
-
     }
 
     private void showAllOrdersActionPerformed(java.awt.event.ActionEvent evt) {
