@@ -430,11 +430,11 @@ public class MapEditor extends javax.swing.JDialog implements DisplayListener {
                         }
                     }
                 }
-                plotOnMap(MatX, MatY);
-                plotLineOnMap(MatX - 5, MatY - 5, MatX + 5, MatY - 5);
-                plotLineOnMap(MatX - 5, MatY - 5, MatX - 5, MatY + 5);
-                plotLineOnMap(MatX + 5, MatY + 5, MatX + 5, MatY - 5);
-                plotLineOnMap(MatX + 5, MatY + 5, MatX - 5, MatY + 5);
+                //plotOnMap(MatX, MatY);
+                //plotLineOnMap(MatX - 5, MatY - 5, MatX + 5, MatY - 5);
+                //plotLineOnMap(MatX - 5, MatY - 5, MatX - 5, MatY + 5);
+                //plotLineOnMap(MatX + 5, MatY + 5, MatX + 5, MatY - 5);
+                //plotLineOnMap(MatX + 5, MatY + 5, MatX - 5, MatY + 5);
             }
 
         } catch (Exception e) {
