@@ -4642,8 +4642,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
             hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
 
-            LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
-            
+            //LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(metaModif, matDirs);
             System.out.println(mylinksAnalysis.nextLinkArray.length);
 
 //            String outputMetaFile=MyOutputDirectory+"/NextLink_"+fileNameDem[caseSelected]+"_Chi.txt";

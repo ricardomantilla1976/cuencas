@@ -236,6 +236,8 @@ public class FloatBilToCRas {
             rasterBuffer.close();
         }
         
+        if(inputDirectory.length == 1) return;
+        
         String minMinLonStr=hydroScalingAPI.tools.DegreesToDMS.getprettyString(minMinLon,1);
         String minMinLatStr=hydroScalingAPI.tools.DegreesToDMS.getprettyString(minMinLat,0);
         
@@ -330,12 +332,11 @@ public class FloatBilToCRas {
      */
     public static void main(String[] args) {
         try{
-            java.io.File[] dirs=new java.io.File[]{ new java.io.File("/Users/ricardo/Downloads/n40w106/"),
-                                                    new java.io.File("/Users/ricardo/Downloads/n41w106/"),
+            java.io.File[] dirs=new java.io.File[]{ new java.io.File("/Users/ricardo/Downloads/n10_w074_3arc_v2_bil/"),
                                                     };
             
             new hydroScalingAPI.io.FloatBilToCRas(dirs,
-                                             new java.io.File("/Users/ricardo/Desktop/HYD53_119/Rasters/Topography/DEM/"),0);
+                                             new java.io.File("/CuencasDataBases/SierraNevadaSantaMarta/Rasters/Topography/"),0);
         }catch(java.io.IOException ioe){
             System.err.println("error");
             ioe.printStackTrace();

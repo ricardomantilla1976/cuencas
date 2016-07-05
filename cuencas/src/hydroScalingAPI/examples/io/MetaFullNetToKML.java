@@ -157,10 +157,13 @@ public class MetaFullNetToKML {
 //            String fileName="/CuencasDataBases/Nicaragua/Rasters/Topography/nicaragua/section_1414_3151_2105_2523_W100N40";
 //            String uniqueIdentifier="Nicaragua";
 
-            String fileName="/CuencasDataBases/IPHEX_Database/Rasters/Topography/section_2855_4617_1633_5732_gt30w100n40_dem";
-            String uniqueIdentifier="IPHEX_dem";
+//            String fileName="/CuencasDataBases/IPHEX_Database/Rasters/Topography/section_2855_4617_1633_5732_gt30w100n40_dem";
+//            String uniqueIdentifier="IPHEX_dem";
 
             
+            String fileName="/CuencasDataBases/SierraNevadaSantaMarta/Rasters/Topography/mosaic_n11_w075_3arc_v2_bil";
+            String uniqueIdentifier="SierraNevadaDeSantaMarta";
+
 //            String fileName="/CuencasDataBases/Nicaragua/Rasters/Topography/3arcsec/N12W086";
 //            String uniqueIdentifier="LasLagunasBoaco";
             
