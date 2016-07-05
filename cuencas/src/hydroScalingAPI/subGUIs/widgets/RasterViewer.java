@@ -1637,6 +1637,7 @@ public abstract class RasterViewer extends javax.swing.JInternalFrame {
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton1.setText("LP");
         jButton1.setToolTipText("Locate Point");
+        jButton1.setEnabled(false);
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

@@ -481,6 +481,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        infiltrationModel = new javax.swing.ButtonGroup();
         panelOpciones = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -515,12 +516,15 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         jLabel6 = new javax.swing.JLabel();
         rainIntensity = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        infiltrationIntensity = new javax.swing.JTextField();
-        jLabel17 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         rainDuration = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
+        jRadioRunoffCoefficient = new javax.swing.JRadioButton();
+        runoffCoefficient = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        jRadioInfiltrationIntensity = new javax.swing.JRadioButton();
+        infiltrationIntensity = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         flowVelocity = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
@@ -644,7 +648,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         jPanel14.setLayout(new java.awt.GridLayout(2, 1));
 
         jPanel15.setBorder(javax.swing.BorderFactory.createTitledBorder("Simulation Parameters"));
-        jPanel15.setLayout(new java.awt.GridLayout(7, 3));
+        jPanel15.setLayout(new java.awt.GridLayout(8, 3));
 
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         jLabel6.setText("Rainfall Intensity");
@@ -657,19 +661,8 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         jLabel7.setText(" mm / h");
         jPanel15.add(jLabel7);
 
-        jLabel16.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        jLabel16.setText("Infiltration Intensity");
-        jPanel15.add(jLabel16);
-
-        infiltrationIntensity.setText("5");
-        jPanel15.add(infiltrationIntensity);
-
-        jLabel17.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
-        jLabel17.setText(" mm / h");
-        jPanel15.add(jLabel17);
-
         jLabel8.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        jLabel8.setText("Runoff Duration");
+        jLabel8.setText("Rainfall Duration");
         jPanel15.add(jLabel8);
 
         rainDuration.setText("60");
@@ -679,11 +672,47 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         jLabel9.setText(" minutes");
         jPanel15.add(jLabel9);
 
+        infiltrationModel.add(jRadioRunoffCoefficient);
+        jRadioRunoffCoefficient.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        jRadioRunoffCoefficient.setSelected(true);
+        jRadioRunoffCoefficient.setText("Runoff Coefficient");
+        jRadioRunoffCoefficient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioRunoffCoefficientActionPerformed(evt);
+            }
+        });
+        jPanel15.add(jRadioRunoffCoefficient);
+
+        runoffCoefficient.setText("50");
+        jPanel15.add(runoffCoefficient);
+
+        jLabel20.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        jLabel20.setText("%");
+        jPanel15.add(jLabel20);
+
+        infiltrationModel.add(jRadioInfiltrationIntensity);
+        jRadioInfiltrationIntensity.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        jRadioInfiltrationIntensity.setText("Infiltration Intensity");
+        jRadioInfiltrationIntensity.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioInfiltrationIntensityActionPerformed(evt);
+            }
+        });
+        jPanel15.add(jRadioInfiltrationIntensity);
+
+        infiltrationIntensity.setText("5");
+        infiltrationIntensity.setEnabled(false);
+        jPanel15.add(infiltrationIntensity);
+
+        jLabel17.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        jLabel17.setText(" mm / h");
+        jPanel15.add(jLabel17);
+
         jLabel10.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         jLabel10.setText("Channel Flow Velocity (vo)");
         jPanel15.add(jLabel10);
 
-        flowVelocity.setText("0.5");
+        flowVelocity.setText("0.3");
         jPanel15.add(flowVelocity);
 
         jLabel11.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
@@ -694,7 +723,7 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         jLabel12.setText("Q exponent (Lambda 1)");
         jPanel15.add(jLabel12);
 
-        lambda1.setText("0.3");
+        lambda1.setText("0.2");
         jPanel15.add(lambda1);
 
         jLabel13.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
@@ -794,22 +823,26 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
         
         rainButton.setEnabled(false);
         
-        float rainIntensityValue=10.0f;
-        float infiltrationIntensityValue=0.0f;
-        float rainDurationValue=1.0f;
-        float flowVel=0.5f;
-        float exp_lambda1=0.3f;
+        float rainIntensityValue=20.0f;
+        float rainDurationValue=60.0f;
+        float infiltrationIntensityValue=10.0f;
+        float flowVel=0.3f;
+        float exp_lambda1=0.2f;
         float exp_lambda2=-0.1f;
         float hillVel=0.05f;
+        float runoffCoeff=1.0f;
 
         try{
             rainIntensityValue=new Float(rainIntensity.getText()).floatValue();
-            infiltrationIntensityValue=new Float(infiltrationIntensity.getText()).floatValue();
             rainDurationValue=new Float(rainDuration.getText()).floatValue();
+            infiltrationIntensityValue=new Float(infiltrationIntensity.getText()).floatValue();
+            if(jRadioRunoffCoefficient.isSelected()) infiltrationIntensityValue=0.0f;
             flowVel=new Float(flowVelocity.getText()).floatValue();
             exp_lambda1=new Float(lambda1.getText()).floatValue();
             exp_lambda2=new Float(lambda2.getText()).floatValue();
             hillVel=new Float(hillVelocity.getText()).floatValue();
+            runoffCoeff=new Float(runoffCoefficient.getText()).floatValue()/100.0f;
+            if(jRadioInfiltrationIntensity.isSelected()) runoffCoeff=1.0f;
         } catch(NumberFormatException nfe){
             System.err.println(nfe);
             return;
@@ -835,7 +868,9 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
             routingParams.put("v_o",flowVel);
 
             routingParams.put("v_h",hillVel);
-
+            
+            routingParams.put("runoffCoefficient",runoffCoeff);
+            
             Thread t1 = new Thread(new hydroScalingAPI.modules.rainfallRunoffModel.objects.SimulationToAsciiFile(xOulet,yOulet,matDir,magnitudes,metaDatos,locFile,infiltrationIntensityValue,5,selectedFile,routingParams));
             t1.start();
         } catch(java.io.IOException ioe){
@@ -861,22 +896,26 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
 
         simButton.setEnabled(false);
         
-        float rainIntensityValue=10.0f;
-        float infiltrationIntensityValue=0.0f;
-        float rainDurationValue=1.0f;
-        float flowVel=0.5f;
-        float exp_lambda1=0.3f;
+        float rainIntensityValue=20.0f;
+        float rainDurationValue=60.0f;
+        float infiltrationIntensityValue=10.0f;
+        float flowVel=0.3f;
+        float exp_lambda1=0.2f;
         float exp_lambda2=-0.1f;
         float hillVel=0.05f;
+        float runoffCoeff=1.0f;
 
         try{
             rainIntensityValue=new Float(rainIntensity.getText()).floatValue();
-            infiltrationIntensityValue=new Float(infiltrationIntensity.getText()).floatValue();
             rainDurationValue=new Float(rainDuration.getText()).floatValue();
+            infiltrationIntensityValue=new Float(infiltrationIntensity.getText()).floatValue();
+            if(jRadioRunoffCoefficient.isSelected()) infiltrationIntensityValue=0.0f;
             flowVel=new Float(flowVelocity.getText()).floatValue();
             exp_lambda1=new Float(lambda1.getText()).floatValue();
             exp_lambda2=new Float(lambda2.getText()).floatValue();
             hillVel=new Float(hillVelocity.getText()).floatValue();
+            runoffCoeff=new Float(runoffCoefficient.getText()).floatValue()/100.0f;
+            if(jRadioInfiltrationIntensity.isSelected()) runoffCoeff=1.0f;
         } catch(NumberFormatException nfe){
             System.err.println(nfe);
             return;
@@ -902,6 +941,8 @@ public class Rainfall_Runoff_Model extends javax.swing.JDialog implements Displa
             routingParams.put("v_o",flowVel);
 
             routingParams.put("v_h",hillVel);
+            
+            routingParams.put("runoffCoefficient",runoffCoeff);
         
             Thread t1 = new Thread(new hydroScalingAPI.modules.rainfallRunoffModel.objects.SimulationToAsciiFile(xOulet,yOulet,matDir,magnitudes,metaDatos,rainIntensityValue,rainDurationValue,infiltrationIntensityValue,5,selectedFile,routingParams));
             t1.start();
@@ -1056,6 +1097,16 @@ private void sim3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         
 }//GEN-LAST:event_sim3ButtonActionPerformed
 
+    private void jRadioInfiltrationIntensityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioInfiltrationIntensityActionPerformed
+        infiltrationIntensity.setEnabled(jRadioInfiltrationIntensity.isSelected());
+        runoffCoefficient.setEnabled(!jRadioInfiltrationIntensity.isSelected());
+    }//GEN-LAST:event_jRadioInfiltrationIntensityActionPerformed
+
+    private void jRadioRunoffCoefficientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioRunoffCoefficientActionPerformed
+        runoffCoefficient.setEnabled(jRadioRunoffCoefficient.isSelected());
+        infiltrationIntensity.setEnabled(!jRadioRunoffCoefficient.isSelected());
+    }//GEN-LAST:event_jRadioRunoffCoefficientActionPerformed
+
     /**
      * Tests for the module
      * @param args the command line arguments
@@ -1119,6 +1170,7 @@ private void sim3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JTextField hillVelocity;
     private javax.swing.JTextField infilRate;
     private javax.swing.JTextField infiltrationIntensity;
+    private javax.swing.ButtonGroup infiltrationModel;
     private javax.swing.JComboBox iniDateList;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -1128,11 +1180,11 @@ private void sim3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1158,6 +1210,8 @@ private void sim3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JRadioButton jRadioInfiltrationIntensity;
+    private javax.swing.JRadioButton jRadioRunoffCoefficient;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTextField jTextField1;
@@ -1169,6 +1223,7 @@ private void sim3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton rainButton;
     private javax.swing.JTextField rainDuration;
     private javax.swing.JTextField rainIntensity;
+    private javax.swing.JTextField runoffCoefficient;
     private javax.swing.JButton sim3Button;
     private javax.swing.JButton simButton;
     private javax.swing.JComboBox stormFilesList;
