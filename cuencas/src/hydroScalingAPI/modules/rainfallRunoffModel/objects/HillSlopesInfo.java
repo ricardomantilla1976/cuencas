@@ -39,6 +39,7 @@ public class HillSlopesInfo extends java.lang.Object {
     private float[][] areasArray, infilRateArray, SoArray, TsArray, TeArray;
     private float[][] VolRes, GreenRoof;
     private float vh;
+    private float globalRunoffCoefficient;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.StormManager thisStormEvent;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.EVPTManager thisEVPTEvent;
     hydroScalingAPI.modules.rainfallRunoffModel.objects.PotEVPTManager thisPotEVPTEvent;
@@ -332,6 +333,14 @@ public class HillSlopesInfo extends java.lang.Object {
 
     public void setSCSManager(hydroScalingAPI.modules.rainfallRunoffModel.objects.SCSManager SCSData) {
         thisSCSData = SCSData;
+    }
+    
+    public void setRunoffCoefficient(float rc){
+        globalRunoffCoefficient=rc;
+    }
+    
+    public float getRunoffCoefficient(){
+        return globalRunoffCoefficient;
     }
     /* PF ADDITION - START ... */
     /* Working units are m, hr, .... */

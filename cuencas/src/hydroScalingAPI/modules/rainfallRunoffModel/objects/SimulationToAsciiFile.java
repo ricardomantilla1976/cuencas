@@ -103,7 +103,9 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         float lam2=((Float)routingParams.get("lambda2")).floatValue();
 
         float v_o=((Float)routingParams.get("v_o")).floatValue();
-
+        
+        float runoffCoeff=((Float)routingParams.get("runoffCoefficient")).floatValue();
+        
         thisNetworkGeom.setVqParams(v_o,0.0f,lam1,lam2);
         
         hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo thisHillsInfo=new hydroScalingAPI.modules.rainfallRunoffModel.objects.HillSlopesInfo(linksStructure);
@@ -131,6 +133,8 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         thisHillsInfo.setInfManager(infilMan);
 
         thisHillsInfo.setHillslopeVh(((Float)routingParams.get("v_h")).floatValue());
+        
+        thisHillsInfo.setRunoffCoefficient(runoffCoeff);
         
             /*
                 Escribo en un theFile lo siguiente:
@@ -183,9 +187,9 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         bufferout.close();
         
         if(infiltMetaRaster == null)
-            theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+lam1+"_"+lam2+"_"+v_o+".csv");//theFile=new java.io.File(Directory+demName+"_"+x+"_"+y++"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+widthCoeff+"_"+widthExponent+"_"+widthStdDev+"_"+chezyCoeff+"_"+chezyExponent+".dat");
+            theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+"-"+storm.stormName()+"-RC_"+runoffCoeff+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+lam1+"_"+lam2+"_"+v_o+".csv");//theFile=new java.io.File(Directory+demName+"_"+x+"_"+y++"-"+storm.stormName()+"-IR_"+infiltRate+"-Routing_"+routingString+"_params_"+widthCoeff+"_"+widthExponent+"_"+widthStdDev+"_"+chezyCoeff+"_"+chezyExponent+".dat");
         else
-            theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+"-"+storm.stormName()+"-IR_"+infiltMetaRaster.getLocationMeta().getName().substring(0,infiltMetaRaster.getLocationMeta().getName().lastIndexOf(".metaVHC"))+"-Routing_"+routingString+"_params_"+lam1+"_"+lam2+".csv");
+            theFile=new java.io.File(outputDirectory.getAbsolutePath()+"/"+demName+"_"+x+"_"+y+"-"+storm.stormName()+"-RC_"+runoffCoeff+"-IR_"+"-IR_"+infiltMetaRaster.getLocationMeta().getName().substring(0,infiltMetaRaster.getLocationMeta().getName().lastIndexOf(".metaVHC"))+"-Routing_"+routingString+"_params_"+lam1+"_"+lam2+".csv");
         System.out.println(theFile);
 
         salida = new java.io.FileOutputStream(theFile);
@@ -347,10 +351,11 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         try{
             
             //subMain0(args);   //To Run as a external program from shell
-            subMain1(args);   //The test case for TestDem
+            //subMain1(args);   //The test case for TestDem
             //subMain2(args);   //Case for Walnut Gulch
             //subMain3(args);     //Case Upper Rio Puerco
             //subMain4(args);     //Case Whitewater
+            subMain5(args);     //Case Ralston
             
         } catch (java.io.IOException IOE){
             System.out.print(IOE);
@@ -584,6 +589,44 @@ public class SimulationToAsciiFile extends java.lang.Object implements Runnable{
         java.io.File stormFile;
         stormFile=new java.io.File("/hidrosigDataBases/Whitewater_database/Rasters/Hydrology/storms/simulated_events/uniform_030_120.metaVHC");
         new SimulationToAsciiFile(1063,496,matDirs,magnitudes,metaModif,stormFile,0.0f,2,new java.io.File("/home/ricardo/simulationResults/walnutGulch/"),routingParams).executeSimulation();
+    }
+    
+     public static void subMain5(String args[]) throws java.io.IOException, VisADException {
+        
+        java.io.File theFile=new java.io.File("/CuencasDataBases/Ralston_Creek/Rasters/Topography/5m/ralston_5m.metaDEM");
+        hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+        metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Ralston_Creek/Rasters/Topography/5m/ralston_5m.dir"));
+        
+        String formatoOriginal=metaModif.getFormat();
+        metaModif.setFormat("Byte");
+        byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+        
+        metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+        metaModif.setFormat("Integer");
+        int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+        
+        //new SimulationToAsciiFile(194,281,matDirs,magnitudes,metaModif,  5,60,3.0f,2,new java.io.File("/home/ricardo/simulationResults/walnutGulch/")).executeSimulation();
+        
+        //new SimulationToAsciiFilePradeep(1063,496,matDirs,magnitudes,metaModif,  25,120,0.0f,5,new java.io.File("E:/Documents and Settings/pmandapa/My Documents/Research/Cuencas/GKRouting/ScChannelVelocityGK")).executeSimulation();
+        //new SimulationToAsciiFilePradeep(1063,496,matDirs,magnitudes,metaModif,  25,5,0.0f,2,new java.io.File("E:/Documents and Settings/pmandapa/My Documents/Research/Cuencas/CVRouting/Sc1IntensityOrDuration")).executeSimulation();
+        
+        //new SimulationToAsciiFilePradeep(1063,496,matDirs,magnitudes,metaModif,  stormFile,0.0f,2,new java.io.File("E:/Documents and Settings/pmandapa/My Documents/Research/Cuencas/CVRouting/ScGaussNoise")).executeSimulation();
+        java.util.Hashtable routingParams=new java.util.Hashtable();
+        routingParams.put("widthCoeff",1.0f);
+        routingParams.put("widthExponent",0.4f);
+        routingParams.put("widthStdDev",0.0f);
+        
+        routingParams.put("chezyCoeff",14.2f);
+        routingParams.put("chezyExponent",-1/3.0f);
+        
+        routingParams.put("lambda1",0.2f);
+        routingParams.put("lambda2",-0.1f);
+        routingParams.put("v_o",0.3f);
+        routingParams.put("v_h",0.05f);
+        
+        routingParams.put("runoffCoefficient",0.5f);
+        
+        new SimulationToAsciiFile(767, 655,matDirs,magnitudes,metaModif,20,60,0.0f,5,new java.io.File("/Users/ricardo/temp/"),routingParams).executeSimulation();
     }
     
 }
