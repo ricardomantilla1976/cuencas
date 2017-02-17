@@ -449,10 +449,10 @@ public class RsnStructure {
         for(int i=0;i<rsnTreeDecoding.length;i++) newfile.write(rsnTreeDecoding[i]+"\n");
         if(randomGeometry){
             newfile.write("Random Geometry\n");
-            newfile.write("Link Area [km^2]");
+            newfile.write("Link Area [km^2]\n");
             for(int i=0;i<rsnTreeDecoding.length-1;i++) newfile.write(linkAreas[0][i]+",");
             newfile.write(linkAreas[0][rsnTreeDecoding.length-1]+"\n");
-            newfile.write("Link Length [km]");
+            newfile.write("Link Length [km]\n");
             for(int i=0;i<rsnTreeDecoding.length-1;i++) newfile.write(linkLengths[0][i]+",");
             newfile.write(linkLengths[0][rsnTreeDecoding.length-1]+"\n");
         }
@@ -470,7 +470,8 @@ public class RsnStructure {
         //main2(args); //Test Dd vs A relationship for RSNs
         //main3(args); //Read Info from Embeded trees
         //main4(args); //Non-self-similar trees
-        main5(args); //Networks for Scott's code
+        //main5(args); //Networks for Scott's code
+        main6(args); //Networks for ASYNCH code - paper variable velocity
     }
     
     private static void main0(String[] args) {
@@ -510,7 +511,14 @@ public class RsnStructure {
     private static void main1(String[] args) {
         hydroScalingAPI.util.probability.DiscreteDistribution myUD_I=new hydroScalingAPI.util.probability.GeneralGeometricDistribution(0.59062127,0.25756657, 0);
         hydroScalingAPI.util.probability.DiscreteDistribution myUD_E=new hydroScalingAPI.util.probability.GeneralGeometricDistribution(0.57253316,0.19803630, 1);
-        RsnStructure myRsnStruc=new RsnStructure(15 ,myUD_I,myUD_E);
+        
+        float Elae=0.1f;
+        float SDlae=0.2f;
+
+        hydroScalingAPI.util.probability.ContinuousDistribution myLinkAreaDistro_E=new hydroScalingAPI.util.probability.LogGaussianDistribution(Elae,SDlae);
+        hydroScalingAPI.util.probability.ContinuousDistribution myLinkAreaDistro_I=new hydroScalingAPI.util.probability.LogGaussianDistribution(0.01f+0.88f*Elae,0.04f+0.85f*SDlae);
+
+        RsnStructure myRsnStruc=new RsnStructure(5 ,myUD_I,myUD_E,myLinkAreaDistro_I,myLinkAreaDistro_E);
         
         java.io.File theFile=new java.io.File("/Users/ricardo/temp/testRSNdecode.rsn");
         
@@ -524,13 +532,17 @@ public class RsnStructure {
         
         float[][] orders=myResults.getHortonOrders();
         int[][] connSt=myResults.getConnectionStructure();
+        
+        float[][] hillareas=myResults.getLinkAreas();
+        float[][] linklengths=myResults.getLinkLengths();
+        
         for (int i=0;i<connSt.length;i++){
             System.out.print("["+i+","+orders[0][i]);
             if (connSt[i].length == 0) System.out.print(",0,0");
             for (int j=0;j<connSt[i].length;j++){
                 System.out.print(","+connSt[i][j]);
             }
-            System.out.println("],$");
+            System.out.println("],$"+";"+hillareas[0][i]+"-"+linklengths[0][i]);
         }
         
         System.exit(0);
@@ -709,5 +721,86 @@ public class RsnStructure {
         }
         
     }
+    
+    
+    private static void main6(String[] args) throws java.io.IOException{
+        String outDir="/Users/ricardo/simulationResults/geometricRSNs/forASYNCH/";
+        
+        int iniExperiment=1;
+        int finExperiments=1;
+        
+        java.text.NumberFormat labelFormat = java.text.NumberFormat.getNumberInstance();
+        labelFormat.setGroupingUsed(false);
+        labelFormat.setMinimumFractionDigits(2);
+        
+        for(double p_i=0.36;p_i<0.50;p_i+=0.02){
+            for(double p_e=0.45;p_e<0.55;p_e+=0.02){
+                for(int sofi=5;sofi<=5;sofi++){
+                    java.io.File fileNameBase=new java.io.File(outDir+"p_i"+labelFormat.format(p_i)+"p_e"+labelFormat.format(p_e)+"/ord_"+sofi);
+                    fileNameBase.mkdirs();
+                    
+                    for(int experiment=iniExperiment;experiment<=finExperiments;experiment++){
+
+                        hydroScalingAPI.util.probability.DiscreteDistribution myUD_I=new hydroScalingAPI.util.probability.GeometricDistribution(p_i,0);
+                        hydroScalingAPI.util.probability.DiscreteDistribution myUD_E=new hydroScalingAPI.util.probability.GeometricDistribution(p_e,1);
+                        
+//                        float Elae=0.1f;
+//                        float SDlae=0.2f;
+//                        
+//                        hydroScalingAPI.util.probability.ContinuousDistribution myLinkAreaDistro_E=new hydroScalingAPI.util.probability.LogGaussianDistribution(Elae,SDlae);
+//                        hydroScalingAPI.util.probability.ContinuousDistribution myLinkAreaDistro_I=new hydroScalingAPI.util.probability.LogGaussianDistribution(0.01f+0.88f*Elae,0.04f+0.85f*SDlae);
+//
+//                        hydroScalingAPI.util.randomSelfSimilarNetworks.RsnStructure myRSN=new hydroScalingAPI.util.randomSelfSimilarNetworks.RsnStructure(sofi-1,myUD_I,myUD_E,myLinkAreaDistro_E,myLinkAreaDistro_I);
+
+                        hydroScalingAPI.util.randomSelfSimilarNetworks.RsnStructure myRSN=new hydroScalingAPI.util.randomSelfSimilarNetworks.RsnStructure(sofi-1,myUD_I,myUD_E);
+                        
+                        float[][] upAreas=myRSN.getUpAreas();
+                        float[][] areas=myRSN.getLinkAreas();
+                        float[][] lenghts=myRSN.getLinkLengths();
+
+                        String outputMetaFile=fileNameBase.getPath()+"/rsn_order"+sofi+"_"+(float)p_e+"_"+(float)p_i+"_"+experiment+".rvr";
+                        java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                        metaBuffer.write(""+myRSN.connStruc.length+"\n");
+                        metaBuffer.write("\n");
+                        for (int i=0;i<myRSN.connStruc.length;i++) {
+                            metaBuffer.write(""+i+"\n");
+                            metaBuffer.write(""+myRSN.connStruc[i].length);
+
+                            for (int j=0;j<myRSN.connStruc[i].length;j++)
+                                metaBuffer.write(" "+myRSN.connStruc[i][j]);
+
+                            metaBuffer.write("\n");
+                            metaBuffer.write("\n");
+
+                        }
+                        metaBuffer.write("\n");
+
+                        metaBuffer.close();
+
+                        outputMetaFile=fileNameBase.getPath()+"/rsn_order"+sofi+"_"+(float)p_e+"_"+(float)p_i+"_"+experiment+".prm";
+                        metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+                        metaBuffer.write(""+myRSN.connStruc.length+"\n");
+                        metaBuffer.write("\n");
+
+                        for (int i=0;i<myRSN.connStruc.length;i++) {
+                            metaBuffer.write(i+"\n");
+                            metaBuffer.write(upAreas[0][i]+" "+lenghts[0][i]+" "+areas[0][i]+"\n");
+                            metaBuffer.write("\n");
+                        }
+                        metaBuffer.write("\n");
+
+                        metaBuffer.close();
+                        
+                        
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    
     
 }

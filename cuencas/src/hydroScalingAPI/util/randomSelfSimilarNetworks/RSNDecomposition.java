@@ -489,12 +489,12 @@ public class RSNDecomposition {
         //args=new String[] {"kentuckyRiver  845 2596  kentuckyRiver"};
         //args=new String[] {"kentuckyRiver  845 2595  kentuckyRiver"};
 
-        args=new String[] {"WalnutGulch_AZ  82 260  walnutGulchUpdated"};
+        args=new String[] {"Whitewaters_KS  1064 496  Whitewaters"};
         
-        //subMain1(args); //writes generators and geoemtric properties to files.  This algortithm is called
+        subMain1(args); //writes generators and geoemtric properties to files.  This algortithm is called
                         //by runAllBasinsRSN.sh
         
-        subMain2(args); //Test for Extended Horton Laws
+        //subMain2(args); //Test for Extended Horton Laws
         
         //subMain3(args); //Basin Shape invariance as a function of generator type
 
@@ -630,7 +630,7 @@ public class RSNDecomposition {
             RSNDecomposition myRsnGen=new RSNDecomposition(mylinksAnalysis);
             long finTime=System.currentTimeMillis();
             
-            myRsnGen.printGeneratorsToFile("/Users/ricardo/workFiles/ecologyWork/DD/output_rsns/"+metaModif.getLocationMeta().getName()+"_x_"+laCuenca.getXYBasin()[0][0]+"_y_"+laCuenca.getXYBasin()[1][0]+".rsnGens.txt");
+            myRsnGen.printGeneratorsToFile("/Users/ricardo/Google Drive/workFiles/ecologyWork/DD/output_rsns/"+metaModif.getLocationMeta().getName()+"_x_"+laCuenca.getXYBasin()[0][0]+"_y_"+laCuenca.getXYBasin()[1][0]+".rsnGens.txt");
             
             System.out.println((finTime-iniTime)/1000./60.);
             
@@ -638,7 +638,7 @@ public class RSNDecomposition {
             
             hydroScalingAPI.util.geomorphology.objects.HortonAnalysis myBasinResults=new hydroScalingAPI.util.geomorphology.objects.HortonAnalysis(laCuenca, metaModif, matDirs);
             
-            String outFileName="/Users/ricardo/workFiles/ecologyWork/DD/output_rsns/"+metaModif.getLocationMeta().getName()+"_x_"+laCuenca.getXYBasin()[0][0]+"_y_"+laCuenca.getXYBasin()[1][0]+".hortonProps.txt";
+            String outFileName="/Users/ricardo/Google Drive/workFiles/ecologyWork/DD/output_rsns/"+metaModif.getLocationMeta().getName()+"_x_"+laCuenca.getXYBasin()[0][0]+"_y_"+laCuenca.getXYBasin()[1][0]+".hortonProps.txt";
             
             java.io.File outFile=new java.io.File(outFileName);
         

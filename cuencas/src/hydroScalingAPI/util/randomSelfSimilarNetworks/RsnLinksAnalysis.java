@@ -486,4 +486,10 @@ public class RsnLinksAnalysis extends hydroScalingAPI.util.geomorphology.objects
         System.out.println();
     }
     
+    public static void main2(String[] args) {
+        
+        
+        
+    }
+    
 }
