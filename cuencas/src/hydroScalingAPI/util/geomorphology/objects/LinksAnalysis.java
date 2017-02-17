@@ -938,7 +938,7 @@ public class LinksAnalysis extends java.lang.Object {
         //main6(args);  // Writing Link-IDs and connectivity for a DEM and map of hillslopes
         //main6_1(args);  // Writing connectivity for a DEM and map of hillslopes
         //main7(args);  //Writing connectivity for Clear Creek to share with The Mathematicians
-        //main7_Brandon(args);  //Writing Info for Brandon (student) project
+        main7_Brandon(args);  //Writing Info for Brandon (student) project
         //main8_1(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_2(args);  //Wrting connectivity and Full model parameters for The Mathematicians
         //main8_3(args);  //Wrting connectivity and Full model parameters for The Mathematicians
@@ -948,7 +948,8 @@ public class LinksAnalysis extends java.lang.Object {
         //main_MODLU(args); //link-ids
         //main10(args);  // Writing connectivity for Equation (Evaluation by Walter)
         //main11(args);  // Writing connectivity for Scott's code directly (2 files .rvr and .prm)
-        main12(args);  // Writing connectivity for Chi's code (Multiple basins)
+        //main12(args);  // Writing connectivity for Chi's code (Multiple basins)
+        //main_Iowa30m(args);  // Writing connectivity for Chi's code (Multiple basins)
         //main12_walter(args);  // Writing connectivity for Chi's code (Multiple basins)
         //mainScott_Type50(args);
         //IowaAllLinks(args);
@@ -3508,7 +3509,8 @@ System.out.println("X  " +x  + "   Y  " +  y);
      */
     public static void main7_Brandon(String args[]) {
 
-        int x=1570; int y=127;
+        //int x=1570; int y=127;
+        int x=19853; int y=6724;
 
         java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
         java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
@@ -3516,9 +3518,13 @@ System.out.println("X  " +x  + "   Y  " +  y);
 
         try{
 
-            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.metaDEM");
+            //java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.metaDEM");
+            //hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            //metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.dir"));
+
+            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem.metaDEM");
             hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/ClearCreek/NED_00159011.dir"));
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem.dir"));
 
             metaModif.setFormat("Byte");
             byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
@@ -3537,7 +3543,7 @@ System.out.println("X  " +x  + "   Y  " +  y);
             float[][] lenghts=mylinksAnalysis.getVarValues(1);
             float[][] dToOut=mylinksAnalysis.getVarValues(8);
 
-            String outputMetaFile="/Users/ricardo/temp/Brandon_ClearCreek.txt";
+            String outputMetaFile="/Users/ricardo/temp/Brandon_MidSizeBasin.txt";
             java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
 
             metaBuffer.write("Number of Links\n");
@@ -5176,6 +5182,67 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 //            metaBuffer.close();  
             
             
+
+
+
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            System.exit(0);
+        }
+
+        System.exit(0);
+
+    }
+    public static void main_Iowa30m(String args[]) {
+        
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try{
+
+
+            
+            java.io.File theFile=new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem.metaDEM");
+            
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile); 
+            metaModif.setLocationBinaryFile(new java.io.File("/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/fullIowaDem.dir"));
+            
+
+
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();////
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            
+//            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(metaModif, matDirs);            
+            float[][] upAreas=mylinksAnalysis.getVarValues(2);
+            float[][] hortonOrder=mylinksAnalysis.getVarValues(4);
+            float[][] areas=mylinksAnalysis.getVarValues(0);
+            float[][] lenghts=mylinksAnalysis.getVarValues(1);
+//            float[][] longestDist=mylinksAnalysis.getVarValues(11);
+            float[][] distToOut=mylinksAnalysis.getVarValues(7);
+            float[][] topoDistToOut=mylinksAnalysis.getVarValues(8);
+            java.text.DecimalFormat fixDigits = new java.text.DecimalFormat("0.000000");
+            
+          
+////        
+            
+            String outputMetaFile="/CuencasDataBases/Iowa_Rivers_DB/Rasters/Topography/1_arcSec/HucTiledIowa/Iowa30m.linksInfoCsv";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            metaBuffer.write("LinkID,hortonOrder,topoDistToOut,distToOut,upAreas,linkLength,linkArea"+ "\n");
+            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+                metaBuffer.write((i)+","+hortonOrder[0][i]+","+topoDistToOut[0][i]+","+distToOut[0][i]+","+upAreas[0][i]+","+lenghts[0][i]+","+areas[0][i]+"\n");
+//                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+      
+            
+            
+           
 
 
 
