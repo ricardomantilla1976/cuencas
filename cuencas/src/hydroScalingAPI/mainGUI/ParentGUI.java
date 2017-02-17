@@ -1628,18 +1628,20 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
     private void importHydroFromBIL_USGSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importHydroFromBIL_USGSActionPerformed
         javax.swing.JFileChooser fcI=new javax.swing.JFileChooser();
         fcI.setFileSelectionMode(fcI.DIRECTORIES_ONLY);
-        fcI.setDialogTitle("BIL Directory Structure");
+        fcI.setMultiSelectionEnabled(true);
+        fcI.setDialogTitle("Select Folder(s) containing Bil Formatted Files");
         int result=fcI.showDialog(this,"Select");
-        java.io.File dirInput = fcI.getSelectedFile();
+        java.io.File[] dirInput = fcI.getSelectedFiles();
         if (result == javax.swing.JFileChooser.CANCEL_OPTION) return;
         
-        javax.swing.JFileChooser fcO=new javax.swing.JFileChooser(localInfoManager.dataBaseRastersHydPath);
+        javax.swing.JFileChooser fcO=new javax.swing.JFileChooser(localInfoManager.dataBaseRastersDemPath);
         fcO.setFileSelectionMode(fcO.DIRECTORIES_ONLY);
         fcO.setDialogTitle("Output Directory");
         result = fcO.showDialog(this,"Select");
         
-        java.io.File dirOutput = fcO.getSelectedFile();
         if (result == javax.swing.JFileChooser.CANCEL_OPTION) return;
+        
+        java.io.File dirOutput = fcO.getSelectedFile();
         
         try{
             new hydroScalingAPI.io.BilToCRas(dirInput,dirOutput,1);
@@ -1820,9 +1822,10 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
     private void importDemFromBIL_USGSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importDemFromBIL_USGSActionPerformed
         javax.swing.JFileChooser fcI=new javax.swing.JFileChooser();
         fcI.setFileSelectionMode(fcI.DIRECTORIES_ONLY);
-        fcI.setDialogTitle("BIL Directory Structure");
+        fcI.setMultiSelectionEnabled(true);
+        fcI.setDialogTitle("Select Folder(s) containing GridFloat Files");
         int result=fcI.showDialog(this,"Select");
-        java.io.File dirInput = fcI.getSelectedFile();
+        java.io.File[] dirInput = fcI.getSelectedFiles();
         if (result == javax.swing.JFileChooser.CANCEL_OPTION) return;
         
         javax.swing.JFileChooser fcO=new javax.swing.JFileChooser(localInfoManager.dataBaseRastersDemPath);
@@ -1830,8 +1833,9 @@ public class ParentGUI extends javax.swing.JFrame implements javax.swing.event.I
         fcO.setDialogTitle("Output Directory");
         result = fcO.showDialog(this,"Select");
         
-        java.io.File dirOutput = fcO.getSelectedFile();
         if (result == javax.swing.JFileChooser.CANCEL_OPTION) return;
+        
+        java.io.File dirOutput = fcO.getSelectedFile();
         
         try{
             new hydroScalingAPI.io.BilToCRas(dirInput,dirOutput,0);

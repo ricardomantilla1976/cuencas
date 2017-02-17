@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package hydroScalingAPI.subGUIs.widgets;
 
+import visad.DisplayImpl;
+
 /**
  * The extension of the {@link hydroScalingAPI.subGUIs.widgets.RasterViewer} for
  * for 2-dimensional visualization of DEMs and derived fields
@@ -46,8 +48,9 @@ public class DemViewer2D extends hydroScalingAPI.subGUIs.widgets.RasterViewer im
      * @throws java.io.IOException Captures I/O Execptions
      */
     public DemViewer2D(hydroScalingAPI.mainGUI.ParentGUI parent, hydroScalingAPI.io.MetaRaster md, java.util.Hashtable relMaps) throws java.rmi.RemoteException, visad.VisADException, java.io.IOException{
+      
         super(parent,md,relMaps);
-        
+         System.out.println("Inside Dem View 2D");
         setTitle(metaData.toString());
         localField=metaData.getField();
         
@@ -80,6 +83,7 @@ public class DemViewer2D extends hydroScalingAPI.subGUIs.widgets.RasterViewer im
 
         boolean isProcessed=new java.io.File(pathToNetwork).exists();
         if (isProcessed && metaData.getLocationMeta().getName().lastIndexOf(".metaDEM") != -1){
+            System.out.println("Before Calling Raster View");
             demToolsEnable(true);
             java.io.File originalFile=metaData.getLocationBinaryFile();
             String originalFormat=metaData.getFormat();
@@ -91,7 +95,7 @@ public class DemViewer2D extends hydroScalingAPI.subGUIs.widgets.RasterViewer im
             
             metaData.setLocationBinaryFile(originalFile);
             metaData.setFormat(originalFormat);
-            
+             System.out.println("After Calling Raster View");
         } else {
             demToolsEnable(false);
         }
@@ -107,11 +111,12 @@ public class DemViewer2D extends hydroScalingAPI.subGUIs.widgets.RasterViewer im
         tcontrol.setFont(font);
         
         display.enableEvent(visad.DisplayEvent.MOUSE_MOVED);
-        display.addDisplayListener(this);
+       display.addDisplayListener(this);
         
         hydroScalingAPI.tools.VisadTools.addWheelFunctionality(display);
         
-        this.getContentPane().add("Center",display.getComponent());
+       this.getContentPane().add("Center",display.getComponent());
+       
         
         hydroScalingAPI.subGUIs.widgets.RasterPalettesManager availablePalettes=new hydroScalingAPI.subGUIs.widgets.RasterPalettesManager(colorScaleMap);
                     
@@ -186,7 +191,6 @@ public class DemViewer2D extends hydroScalingAPI.subGUIs.widgets.RasterViewer im
 
                     float resultX= longitudeMap.inverseScaleValues(new float[] {(float)ray.position[0]})[0];
                     float resultY= latitudeMap.inverseScaleValues(new float[] {(float)ray.position[1]})[0];
-
                     hydroScalingAPI.subGUIs.widgets.LocationsEditor theEditor=new hydroScalingAPI.subGUIs.widgets.LocationsEditor(mainFrame);
                     theEditor.setLatLong(resultY,resultX);
                     theEditor.setVisible(true);
@@ -216,6 +220,7 @@ public class DemViewer2D extends hydroScalingAPI.subGUIs.widgets.RasterViewer im
                 System.err.println(e);
             }
         }
+      
 
         try {
             if (id == DispEvt.MOUSE_MOVED) {
@@ -246,7 +251,8 @@ public class DemViewer2D extends hydroScalingAPI.subGUIs.widgets.RasterViewer im
         }
         
     }
-    
+
+   
     
     
 }

@@ -6,10 +6,13 @@
 
 package hydroScalingAPI.modules.swmmCoupling.widgets;
 
+import hydroScalingAPI.modules.swmmCoupling.io.OutletInflowConnectionCsvImporter;
 import hydroScalingAPI.modules.swmmCoupling.objects.OutletInflowConnection;
 import hydroScalingAPI.modules.swmmCoupling.objects.OutletInlexMixer;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -58,8 +61,9 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
         jRadioButton2 = new javax.swing.JRadioButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         connectionsList = new javax.swing.JList();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        setConnectionAddOne = new javax.swing.JButton();
+        setConnectionDelOne = new javax.swing.JButton();
+        setConnectionAddFile = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -124,7 +128,7 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(NotFoundBasinsButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(InputCuencasDirText, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                        .addComponent(InputCuencasDirText)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(InputCuencasDirButton))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -132,7 +136,7 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(inputInpFileButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(OutputInpFileText, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                        .addComponent(OutputInpFileText)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(OutputInpFileButton))))
         );
@@ -191,17 +195,24 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
 
         jScrollPane1.setViewportView(connectionsList);
 
-        jButton3.setText("Add");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        setConnectionAddOne.setText("Add connection");
+        setConnectionAddOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                setConnectionAddOneActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Del");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        setConnectionDelOne.setText("Delele connection");
+        setConnectionDelOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                setConnectionDelOneActionPerformed(evt);
+            }
+        });
+
+        setConnectionAddFile.setText("Add from file");
+        setConnectionAddFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setConnectionAddFileActionPerformed(evt);
             }
         });
 
@@ -214,13 +225,14 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jRadioButton2)
-                        .addContainerGap(190, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(setConnectionAddFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(setConnectionDelOne, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(setConnectionAddOne, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,9 +241,11 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton3)
+                        .addComponent(setConnectionAddOne)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)
+                        .addComponent(setConnectionAddFile)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(setConnectionDelOne)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
@@ -307,16 +321,16 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void setConnectionAddOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setConnectionAddOneActionPerformed
         AddOutletInflowConnectionDialog addDialog;
         
         addDialog = new AddOutletInflowConnectionDialog(this, true);
         
         addDialog.setVisible(true);
         
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_setConnectionAddOneActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void setConnectionDelOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setConnectionDelOneActionPerformed
         int selectedIndex;
         ListModel tempListModel;
         DefaultListModel defListModel;
@@ -333,7 +347,7 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
         if (selectedIndex > -1){
             defListModel.removeElementAt(selectedIndex);
         }
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_setConnectionDelOneActionPerformed
 
     private void inputInpFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputInpFileButtonActionPerformed
         File selectedFile;
@@ -433,6 +447,35 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
         paramsDialog.setVisible(true);
     }//GEN-LAST:event_NotFoundBasinsButtonActionPerformed
 
+    private void setConnectionAddFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setConnectionAddFileActionPerformed
+        ArrayList<OutletInflowConnection> all_connections_from_file;
+        Iterator<OutletInflowConnection> all_connections_from_file_it;
+        OutletInflowConnection cur_connection;
+        File selectedFile;
+        JFileChooser fc;
+        int result;
+        
+        fc = new JFileChooser("/");
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fc.setDialogTitle("SWMM connection .csv file");
+        result = fc.showDialog(this, "Select");
+        selectedFile = fc.getSelectedFile();
+        
+        // TODO - read file line by line
+        try{
+            all_connections_from_file = OutletInflowConnectionCsvImporter.readCsvFile(selectedFile);
+        
+            all_connections_from_file_it = all_connections_from_file.iterator();
+            System.out.println("Opening " + all_connections_from_file.size() + " connections.");
+            while(all_connections_from_file_it.hasNext()){
+                cur_connection = all_connections_from_file_it.next();
+                this.addConnection(cur_connection);
+            }
+        } catch (IOException exp) {
+            System.out.println("Exception: " + exp.getMessage());
+        }
+    }//GEN-LAST:event_setConnectionAddFileActionPerformed
+
     public boolean addConnection(OutletInflowConnection outInflConn_arg){
         DefaultListModel defListModel;
         ListModel tempLModel;
@@ -475,8 +518,6 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
     private javax.swing.JTextField inputInpFileText;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -487,5 +528,8 @@ public class FlowDataImporterDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton setConnectionAddFile;
+    private javax.swing.JButton setConnectionAddOne;
+    private javax.swing.JButton setConnectionDelOne;
     // End of variables declaration//GEN-END:variables
 }

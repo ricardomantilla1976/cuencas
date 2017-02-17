@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 package hydroScalingAPI.io;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * This Class reads the set of files with extensions *.point, *.link and *.stream
@@ -115,6 +116,7 @@ public class MetaNetwork {
         
     }
     
+   
     /**
      * Returns the largest order present in the DEM river network
      * @return An integer with the largest order present in the DEM river network
@@ -196,7 +198,7 @@ public class MetaNetwork {
                         
                         float lon=(float)((pointRecord[iniPoint+k]%demNumCols)*demResLon/3600.+demMinLon+0.5*demResLon/3600.);
                         float lat=(float)((pointRecord[iniPoint+k]/demNumCols)*demResLat/3600.+demMinLat+0.5*demResLat/3600.);
-                        
+                       
                         oneStream.add(new float[] {lon,lat});
                     }
                 }
@@ -242,20 +244,23 @@ public class MetaNetwork {
         
         java.util.Vector allStreams=new java.util.Vector();
         for (int i=0;i<streamRecord.length;i++){
+            // Looping for Streams 
             if(streamRecord[i][3] == orderRequested) {
+                // Getting initial values for link
                 int iniLink=streamRecord[i][4]/8;
                 int numLink=streamRecord[i][5];
-                
+                // Getting initial values for points for that initial link
                 int iniPoint=linkRecord[iniLink][4]/4;
                 int numPoint=linkRecord[iniLink][5];
-                
+                //Checking if this is in the mask or not 
                 if(basinMask[pointRecord[iniPoint]/demNumCols][pointRecord[iniPoint]%demNumCols] == 1){
                     java.util.Vector oneStream=new java.util.Vector();
                     for (int j=0;j<numLink;j++){
+                        // looping for each link . 
                         iniPoint=linkRecord[iniLink+j][4]/4;
                         numPoint=linkRecord[iniLink+j][5];
                         for (int k=0;k<numPoint;k++){
-
+                            // Looping for each point within link 
                             float lon=(float)((pointRecord[iniPoint+k]%demNumCols)*demResLon/3600.+demMinLon+0.5*demResLon/3600.);
                             float lat=(float)((pointRecord[iniPoint+k]/demNumCols)*demResLat/3600.+demMinLat+0.5*demResLat/3600.);
 
@@ -283,6 +288,127 @@ public class MetaNetwork {
         return new visad.UnionSet(domain,griddedStreams);
     }
     
+    public visad.UnionSet getMaskedUnionSet(int orderRequested, byte[][] basinMask) throws visad.VisADException{
+      
+        visad.RealTupleType domain=new visad.RealTupleType(visad.RealType.Longitude,visad.RealType.Latitude);
+        
+        double demMinLon=metaData.getMinLon();
+        double demMinLat=metaData.getMinLat();
+        double demResLon=metaData.getResLon();
+        double demResLat=metaData.getResLat();
+        int demNumCols=metaData.getNumCols();
+        
+        java.util.Vector allStreams=new java.util.Vector();
+        for (int i=0;i<streamRecord.length;i++){
+            // Looping for Streams 
+            if(streamRecord[i][3] == orderRequested) {
+                // Getting initial values for link
+                int iniLink=streamRecord[i][4]/8;
+                int numLink=streamRecord[i][5];
+                // Getting initial values for points for that initial link
+                int iniPoint=linkRecord[iniLink][4]/4;
+                int numPoint=linkRecord[iniLink][5];
+                //Checking if this is in the mask or not 
+        // if(basinMask[pointRecord[iniPoint]/demNumCols][pointRecord[iniPoint]%demNumCols] == 1 ){
+                    java.util.Vector oneStream=new java.util.Vector();
+                    for (int j=0;j<numLink;j++){
+                          boolean pointFound = false ; 
+                        // looping for each link . 
+                        iniPoint=linkRecord[iniLink+j][4]/4;
+                        numPoint=linkRecord[iniLink+j][5];
+                        for (int k=0;k<numPoint;k++){
+                            // Looping for each point within link 
+                            float lon=(float)((pointRecord[iniPoint+k]%demNumCols)*demResLon/3600.+demMinLon+0.5*demResLon/3600.);
+                            float lat=(float)((pointRecord[iniPoint+k]/demNumCols)*demResLat/3600.+demMinLat+0.5*demResLat/3600.);
+                              //  System.out.println("Value of Lat and Long " + lon + " " +  lat);
+                            if(basinMask[pointRecord[iniPoint+k]/demNumCols][pointRecord[iniPoint+k]%demNumCols] == 1)
+                               pointFound = true;
+                            break;
+                               
+                        }
+                        if(pointFound)
+                            {
+                          for (int k=0;k<numPoint;k++){
+                            // Looping for each point within link 
+                            float lon=(float)((pointRecord[iniPoint+k]%demNumCols)*demResLon/3600.+demMinLon+0.5*demResLon/3600.);
+                            float lat=(float)((pointRecord[iniPoint+k]/demNumCols)*demResLat/3600.+demMinLat+0.5*demResLat/3600.);
+                              //  System.out.println("Value of Lat and Long " + lon + " " +  lat);
+                           
+                                 oneStream.add(new float[] {lon,lat});
+                            }
+                               
+                        }
+                         
+                    }
+                    if(oneStream != null && oneStream.size() > 0)
+                    allStreams.add(oneStream);
+              // }
+            }
+        }
+        
+        visad.Gridded2DSet[] griddedStreams=new visad.Gridded2DSet[allStreams.size()];
+        for (int i=0;i<griddedStreams.length;i++){
+            java.util.Vector oneStream=(java.util.Vector)allStreams.get(i);
+            float[][] riverPath=new float[2][oneStream.size()];
+            for (int j=0;j<riverPath[0].length;j++){
+                float[] riverNode=(float[])oneStream.get(j);
+                riverPath[0][j]=riverNode[0];
+                riverPath[1][j]=riverNode[1];
+            }
+            griddedStreams[i]=new visad.Gridded2DSet(domain,riverPath,riverPath[0].length);
+        }
+        
+        return new visad.UnionSet(domain,griddedStreams);
+    }
+    
+    public int[][] getLinkedMasked() throws visad.VisADException{
+      
+      int[][] linkedBasinMask = new int[metaData.getNumRows()][metaData.getNumCols()];
+      for(int m = 0 ;  m < metaData.getNumRows() ; m++)
+      {
+            for(int n = 0 ;  n < metaData.getNumCols() ; n++)
+      {
+          linkedBasinMask[m][n] = -1;
+      }
+      }
+       
+        double demMinLon=metaData.getMinLon();
+        double demMinLat=metaData.getMinLat();
+        double demResLon=metaData.getResLon();
+        double demResLat=metaData.getResLat();
+        int demNumCols=metaData.getNumCols();
+        
+      
+        for (int i=0;i<streamRecord.length;i++){
+            //if(streamRecord[i][3] == orderRequested) {
+                int iniLink=streamRecord[i][4]/8;
+                int numLink=streamRecord[i][5];
+              
+                for (int j=0;j<numLink;j++){
+                    int iniPoint=linkRecord[iniLink+j][4]/4;
+                    int numPoint=linkRecord[iniLink+j][5];
+                    for (int k=0;k<numPoint;k++){
+                        
+                        float lon=(float)((pointRecord[iniPoint+k]%demNumCols)*demResLon/3600.+demMinLon+0.5*demResLon/3600.);
+                        float lat=(float)((pointRecord[iniPoint+k]/demNumCols)*demResLat/3600.+demMinLat+0.5*demResLat/3600.);
+                     //  System.out.println("Value of Lat and Long " + lon + " " +  lat);
+                     
+                      
+                          int MatX = (int) ((lon - metaData.getMinLon()) / (float) metaData.getResLon() * 3600.0f);
+                           int MatY = (int) ((lat - metaData.getMinLat()) / (float) metaData.getResLat() * 3600.0f);
+                       //  System.out.println(" Value of Mat x and Mat y Inside MEtanetwoek " + MatX + " Y : " +MatY  + "Value :" + j);
+                           linkedBasinMask[MatY][MatX] = i;
+                      
+                          
+                    }
+                }
+             
+           
+        }
+        
+        return linkedBasinMask;
+    } 
+   
     /**
      * Prints to the standard ouput the sequence of i,j indexes that make up the
      * stream.

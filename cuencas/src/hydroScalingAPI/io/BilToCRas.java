@@ -26,7 +26,8 @@ package hydroScalingAPI.io;
  */
 public class BilToCRas {
     
-    private java.io.File headerInputFile,geoInputFile,dataInputFile;
+    private java.io.File headerInputFile[],geoInputFile[],dataInputFile[];
+    private hydroScalingAPI.util.fileUtilities.DotFilter myFiltro;
     
     /**
      * The elements to be included in the MetaFile
@@ -53,79 +54,220 @@ public class BilToCRas {
      * @param type 0 for DEM or 1 for VHC
      * @throws java.io.IOException Captures problems while reading or writing the file
      */
-    public BilToCRas(java.io.File inputDirectory, java.io.File outputDirectory,int type) throws java.io.IOException {
+    public BilToCRas(java.io.File inputDirectory[], java.io.File outputDirectory,int type) throws java.io.IOException {
         
-        if(!checkDirectoryContents(inputDirectory)) return;
+        headerInputFile=new java.io.File[inputDirectory.length];
+        geoInputFile=new java.io.File[inputDirectory.length];
+        dataInputFile=new java.io.File[inputDirectory.length];
         
-        java.io.BufferedReader headerBuffer = new java.io.BufferedReader(new java.io.FileReader(headerInputFile));
-        java.io.BufferedReader geoBuffer = new java.io.BufferedReader(new java.io.FileReader(geoInputFile));
-        java.io.DataInputStream dataBuffer = new java.io.DataInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(dataInputFile)));
-        
-        int nCols,nRows,nBytes;
-        
-        headerBuffer.readLine();
-        headerBuffer.readLine();
-
-        nRows=Integer.parseInt(String.valueOf(headerBuffer.readLine().substring(5).trim()));
-        nCols=Integer.parseInt(String.valueOf(headerBuffer.readLine().substring(5).trim()));
-        headerBuffer.readLine();
-        
-        nBytes=Integer.parseInt(String.valueOf(headerBuffer.readLine().substring(5).trim()));
-        
-        headerBuffer.close();
-
-        double minLat,minLon,latRes,lonRes;
-        String minLatStr,minLonStr;
-
-        latRes=Math.abs(Float.parseFloat(String.valueOf(geoBuffer.readLine().trim()))*3600.0f);
-        geoBuffer.readLine();
-        geoBuffer.readLine();
-        lonRes=Math.abs(Float.parseFloat(String.valueOf(geoBuffer.readLine().trim()))*3600.0f);
-        
-        minLon=Double.parseDouble(String.valueOf(geoBuffer.readLine().trim()))+lonRes/3600.;
-        minLat=Double.parseDouble(String.valueOf(geoBuffer.readLine().trim()))-nRows*latRes/3600.0;
-        
-        minLonStr=hydroScalingAPI.tools.DegreesToDMS.getprettyString(minLon,1);
-        minLatStr=hydroScalingAPI.tools.DegreesToDMS.getprettyString(minLat,0);
-        
-        geoBuffer.close();
-        
-        float[][] data=new float[nRows][nCols];
-        
-        if (nBytes == 16){
-            for (int i=0;i<nRows;i++){
-                for (int j=0;j<nCols;j++){
-                    //This is to swap to Little Endian
-                    int low = dataBuffer.readByte();
-                    int high = dataBuffer.readByte();
-                    //data[i][j] = (short)(high << 8 | low); 
-                    data[i][j] = 256*low + ((high>0)?high:high+256);
-                    if (data[i][j]==256) data[i][j]=-9999;
-                }
-            }
-        } 
-
-        if (nBytes == 8){
-            for (int i=0;i<nRows;i++){
-                for (int j=0;j<nCols;j++){
-                    data[i][j] = (float)dataBuffer.readUnsignedByte(); 
-                }
-            }
+        if(!checkDirectoryContents(inputDirectory)) {
+            System.out.println(">> One or more of your directories contents are incomplete or incompatible");
+            return;
         }
         
-        dataBuffer.close();
-        geoBuffer.close();
-        headerBuffer.close();
+        double minMinLat=90,minMinLon=180,maxMaxLat=-90,maxMaxLon=-180, matRes=0;
         
-        String fileBinSalida=outputDirectory.getPath()+"/"+inputDirectory.getName()+"."+extensionPairs[type][0];
-        String fileAscSalida=outputDirectory.getPath()+"/"+inputDirectory.getName()+"."+extensionPairs[type][1];
+        for(int ff=0;ff<inputDirectory.length;ff++){
+            
+            java.io.BufferedReader headerBuffer = new java.io.BufferedReader(new java.io.FileReader(headerInputFile[ff]));
+            java.io.BufferedReader geoBuffer = new java.io.BufferedReader(new java.io.FileReader(geoInputFile[ff]));
+            
+            int nCols,nRows;
+            double minLat,minLon,latRes,lonRes;
+
+            String test=headerBuffer.readLine().substring(9).trim();
+            boolean byteorder=(test.equalsIgnoreCase("m"));
+            headerBuffer.readLine();
+
+            nRows=Integer.parseInt(String.valueOf(headerBuffer.readLine().substring(5).trim()));
+            nCols=Integer.parseInt(String.valueOf(headerBuffer.readLine().substring(5).trim()));
+            headerBuffer.readLine();
+
+            headerBuffer.close();
+
+            latRes=Math.abs(Float.parseFloat(String.valueOf(geoBuffer.readLine().trim()))*3600.0f);
+            geoBuffer.readLine();
+            geoBuffer.readLine();
+            lonRes=Math.abs(Float.parseFloat(String.valueOf(geoBuffer.readLine().trim()))*3600.0f);
+
+            minLon=Double.parseDouble(String.valueOf(geoBuffer.readLine().trim()))+lonRes/3600.;
+            minLat=Double.parseDouble(String.valueOf(geoBuffer.readLine().trim()))-nRows*latRes/3600.0;
+            
+            matRes=lonRes/3600.;
+
+            geoBuffer.close();
+            
+            minMinLat=Math.min(minLat,minMinLat);
+            minMinLon=Math.min(minLon,minMinLon);
+            maxMaxLat=Math.max(minLat+nRows*latRes/3600.,maxMaxLat);
+            maxMaxLon=Math.max(minLon+nCols*lonRes/3600.,maxMaxLon);
+ 
+        }
         
+        int mosaicNRows=(int)((maxMaxLat-minMinLat)/matRes)+2;
+        int mosaicNCols=(int)((maxMaxLon-minMinLon)/matRes)+2;
+        
+        float[][] mosaicMatrix=new float[mosaicNRows][mosaicNCols];
+        
+        int nCols,nRows,nBytes=1;
+        double minLat,minLon,latRes,lonRes;
+        String minLatStr,minLonStr,noData="-9999",byteOrderString;
+    
+        for(int ff=0;ff<inputDirectory.length;ff++){
+            
+            java.io.BufferedReader headerBuffer = new java.io.BufferedReader(new java.io.FileReader(headerInputFile[ff]));
+            java.io.BufferedReader geoBuffer = new java.io.BufferedReader(new java.io.FileReader(geoInputFile[ff]));
+            java.io.DataInputStream dataBuffer = new java.io.DataInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(dataInputFile[ff])));
+
+            String test=headerBuffer.readLine().substring(9).trim();
+            boolean byteorder=(test.equalsIgnoreCase("m"));
+            headerBuffer.readLine();
+
+            nRows=Integer.parseInt(String.valueOf(headerBuffer.readLine().substring(5).trim()));
+            nCols=Integer.parseInt(String.valueOf(headerBuffer.readLine().substring(5).trim()));
+            headerBuffer.readLine();
+
+            nBytes=Integer.parseInt(String.valueOf(headerBuffer.readLine().substring(5).trim()));
+
+            headerBuffer.close();
+
+            latRes=Math.abs(Float.parseFloat(String.valueOf(geoBuffer.readLine().trim()))*3600.0f);
+            geoBuffer.readLine();
+            geoBuffer.readLine();
+            lonRes=Math.abs(Float.parseFloat(String.valueOf(geoBuffer.readLine().trim()))*3600.0f);
+
+            minLon=Double.parseDouble(String.valueOf(geoBuffer.readLine().trim()))+lonRes/3600.;
+            minLat=Double.parseDouble(String.valueOf(geoBuffer.readLine().trim()))-nRows*latRes/3600.0;
+
+            minLonStr=hydroScalingAPI.tools.DegreesToDMS.getprettyString(minLon,1);
+            minLatStr=hydroScalingAPI.tools.DegreesToDMS.getprettyString(minLat,0);
+
+            geoBuffer.close();
+
+            float[][] data=new float[nRows][nCols];
+
+            int iOffset=(int)((minLat-minMinLat)/(latRes/3600.));
+            int jOffset=(int)((minLon-minMinLon)/(lonRes/3600.));
+            
+            if (nBytes == 16){
+                for (int i=0;i<nRows;i++){
+                    for (int j=0;j<nCols;j++){
+                        //This is to swap to Little Endian
+                        int high = 0;
+                        int low = 0;
+                        if (byteorder) {
+                            low = dataBuffer.readByte();
+                            high = dataBuffer.readByte();
+                        } else{
+                            high = dataBuffer.readByte();
+                            low = dataBuffer.readByte();
+                        }
+
+                        //data[i][j] = (short)(high << 8 | low); 
+                        data[i][j] = 256*low + ((high>0)?high:high+256);
+                        if (data[i][j]==256) data[i][j]=-9999;
+                        
+                        if (data[i][j]==-32767) data[i][j]=-9999;
+                        
+                        mosaicMatrix[nRows-1-i+iOffset][j+jOffset]=data[i][j];
+                        
+                    }
+                }
+            } 
+
+            if (nBytes == 8){
+                for (int i=0;i<nRows;i++){
+                    for (int j=0;j<nCols;j++){
+                        data[i][j] = (float)dataBuffer.readUnsignedByte(); 
+                        
+                        mosaicMatrix[nRows-1-i+iOffset][j+jOffset]=data[i][j];
+                        
+                    }
+                }
+            }
+
+            dataBuffer.close();
+            geoBuffer.close();
+            headerBuffer.close();
+
+            String fileBinSalida=outputDirectory.getPath()+"/"+inputDirectory[ff].getName()+"."+extensionPairs[type][0];
+            String fileAscSalida=outputDirectory.getPath()+"/"+inputDirectory[ff].getName()+"."+extensionPairs[type][1];
+
+            java.io.File outputMetaFile=new java.io.File(fileAscSalida);
+            java.io.File outputBinaryFile=new java.io.File(fileBinSalida);
+
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+            java.io.DataOutputStream rasterBuffer = new java.io.DataOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(outputBinaryFile)));
+
+            metaBuffer.write(parameters[0]+"\n");
+            if(type == 0)
+                metaBuffer.write("DEM from The National Map Seamless Data Distribution System"+"\n"); 
+            else
+                metaBuffer.write("Data from The National Map Seamless Data Distribution System"+"\n"); 
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[1]+"\n");
+            metaBuffer.write(minLatStr+"\n");
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[2]+"\n");
+            metaBuffer.write(minLonStr+"\n");
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[3]+"\n");
+            metaBuffer.write(lonRes+"\n");
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[4]+"\n");
+            metaBuffer.write(latRes+"\n");
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[5]+"\n");
+            metaBuffer.write(nCols+"\n");
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[6]+"\n");
+            metaBuffer.write(nRows+"\n");
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[7]+"\n");
+            metaBuffer.write("float"+"\n");
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[8]+"\n");
+            metaBuffer.write("-9999"+"\n");
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[9]+"\n");
+            metaBuffer.write("fix"+"\n");
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[10]+"\n");
+            metaBuffer.write("m"+"\n");
+            metaBuffer.write("\n");
+            metaBuffer.write(parameters[11]+"\n");
+            if(type == 0)
+                metaBuffer.write("This DEM comes from the USGS DEMs database."+"\n");
+            else
+                metaBuffer.write("This Data comes from the USGS DEMs database."+"\n"); 
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+
+            for (int i=0;i<nRows;i++){
+                for (int j=0;j<nCols;j++){
+                    rasterBuffer.writeFloat(data[nRows-i-1][j]);
+                }
+            }
+
+            rasterBuffer.close();
+        
+        }
+        
+        if(inputDirectory.length == 1) return;
+        
+        String minMinLonStr=hydroScalingAPI.tools.DegreesToDMS.getprettyString(minMinLon,1);
+        String minMinLatStr=hydroScalingAPI.tools.DegreesToDMS.getprettyString(minMinLat,0);
+        
+        String fileBinSalida=outputDirectory.getPath()+"/mosaic_"+inputDirectory[0].getName()+"."+extensionPairs[type][0];
+        String fileAscSalida=outputDirectory.getPath()+"/mosaic_"+inputDirectory[0].getName()+"."+extensionPairs[type][1];
+
         java.io.File outputMetaFile=new java.io.File(fileAscSalida);
         java.io.File outputBinaryFile=new java.io.File(fileBinSalida);
-        
+
         java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
         java.io.DataOutputStream rasterBuffer = new java.io.DataOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(outputBinaryFile)));
-        
+
         metaBuffer.write(parameters[0]+"\n");
         if(type == 0)
             metaBuffer.write("DEM from The National Map Seamless Data Distribution System"+"\n"); 
@@ -133,28 +275,28 @@ public class BilToCRas {
             metaBuffer.write("Data from The National Map Seamless Data Distribution System"+"\n"); 
         metaBuffer.write("\n");
         metaBuffer.write(parameters[1]+"\n");
-        metaBuffer.write(minLatStr+"\n");
+        metaBuffer.write(minMinLatStr+"\n");
         metaBuffer.write("\n");
         metaBuffer.write(parameters[2]+"\n");
-        metaBuffer.write(minLonStr+"\n");
+        metaBuffer.write(minMinLonStr+"\n");
         metaBuffer.write("\n");
         metaBuffer.write(parameters[3]+"\n");
-        metaBuffer.write(lonRes+"\n");
+        metaBuffer.write(matRes*3600.0f+"\n");
         metaBuffer.write("\n");
         metaBuffer.write(parameters[4]+"\n");
-        metaBuffer.write(latRes+"\n");
+        metaBuffer.write(matRes*3600.0f+"\n");
         metaBuffer.write("\n");
         metaBuffer.write(parameters[5]+"\n");
-        metaBuffer.write(nCols+"\n");
+        metaBuffer.write(mosaicNCols+"\n");
         metaBuffer.write("\n");
         metaBuffer.write(parameters[6]+"\n");
-        metaBuffer.write(nRows+"\n");
+        metaBuffer.write(mosaicNRows+"\n");
         metaBuffer.write("\n");
         metaBuffer.write(parameters[7]+"\n");
         metaBuffer.write("float"+"\n");
         metaBuffer.write("\n");
         metaBuffer.write(parameters[8]+"\n");
-        metaBuffer.write("-9999"+"\n");
+        metaBuffer.write(noData+"\n");
         metaBuffer.write("\n");
         metaBuffer.write(parameters[9]+"\n");
         metaBuffer.write("fix"+"\n");
@@ -168,42 +310,46 @@ public class BilToCRas {
         else
             metaBuffer.write("This Data comes from the USGS DEMs database."+"\n"); 
         metaBuffer.write("\n");
-        
+
         metaBuffer.close();
-        
-        for (int i=0;i<nRows;i++){
-            for (int j=0;j<nCols;j++){
-                rasterBuffer.writeFloat(data[nRows-i-1][j]);
+
+        for (int i=0;i<mosaicNRows;i++){
+            for (int j=0;j<mosaicNCols;j++){
+                rasterBuffer.writeFloat(mosaicMatrix[i][j]);
             }
         }
-        
+
         rasterBuffer.close();
         
     }
     
-    private boolean checkDirectoryContents(java.io.File inputDirectory){
+    private boolean checkDirectoryContents(java.io.File[] inputDirectory){
         
-        hydroScalingAPI.util.fileUtilities.DotFilter myFiltro;
+        boolean checkDirsContents=true;
         
-        myFiltro=new hydroScalingAPI.util.fileUtilities.DotFilter("hdr");
-        java.io.File[] hdrQueSi=inputDirectory.listFiles(myFiltro);
+        for(int i=0;i<inputDirectory.length;i++){
         
-        myFiltro=new hydroScalingAPI.util.fileUtilities.DotFilter("blw");
-        java.io.File[] blwQueSi=inputDirectory.listFiles(myFiltro);
+            myFiltro=new hydroScalingAPI.util.fileUtilities.DotFilter("hdr");
+            java.io.File[] hdrQueSi=inputDirectory[i].listFiles(myFiltro);
 
-        myFiltro=new hydroScalingAPI.util.fileUtilities.DotFilter("bil");
-        java.io.File[] bilQueSi=inputDirectory.listFiles(myFiltro);
-        
-        if(hdrQueSi.length > 0 && blwQueSi.length > 0 && bilQueSi.length > 0){
-        
-            headerInputFile=hdrQueSi[0];
-            geoInputFile=blwQueSi[0];
-            dataInputFile=bilQueSi[0];
-            
-            return true;
-        
+            myFiltro=new hydroScalingAPI.util.fileUtilities.DotFilter("blw");
+            java.io.File[] blwQueSi=inputDirectory[i].listFiles(myFiltro);
+
+            myFiltro=new hydroScalingAPI.util.fileUtilities.DotFilter("bil");
+            java.io.File[] bilQueSi=inputDirectory[i].listFiles(myFiltro);
+
+            if(hdrQueSi.length > 0 && blwQueSi.length > 0 && bilQueSi.length > 0){
+                
+                headerInputFile[i]=hdrQueSi[0];
+                geoInputFile[i]=blwQueSi[0];
+                dataInputFile[i]=bilQueSi[0];
+                
+                checkDirsContents&=(hdrQueSi.length > 0 && blwQueSi.length > 0 && bilQueSi.length > 0);
+            }
+
         }
-        return false;
+        
+        return checkDirsContents;
         
     }
     
@@ -213,8 +359,15 @@ public class BilToCRas {
      */
     public static void main(String[] args) {
         try{
-            new hydroScalingAPI.io.BilToCRas(new java.io.File("/Users/ricardo/Downloads/gt30w100n40_dem/"),
-                                             new java.io.File("/CuencasDataBases/IPHEX_Database/Rasters/Topography"),0);
+            java.io.File[] dirs=new java.io.File[]{ new java.io.File("/Users/ricardo/Downloads/n11_w075_3arc_v2_bil/"),
+                                                    new java.io.File("/Users/ricardo/Downloads/n11_w074_3arc_v2_bil/"),
+                                                    new java.io.File("/Users/ricardo/Downloads/n11_w073_3arc_v2_bil/"),
+                                                    new java.io.File("/Users/ricardo/Downloads/n10_w073_3arc_v2_bil/"),
+                                                    new java.io.File("/Users/ricardo/Downloads/n10_w075_3arc_v2_bil/"),
+                                                    new java.io.File("/Users/ricardo/Downloads/n10_w074_3arc_v2_bil/"),
+                                                    };
+            new hydroScalingAPI.io.BilToCRas(dirs,
+                                             new java.io.File("/CuencasDataBases/SierraNevadaSantaMarta/Rasters/Topography/"),0);
         }catch(java.io.IOException ioe){
             System.err.println("error");
             ioe.printStackTrace();

@@ -7,6 +7,9 @@ package hydroScalingAPI.util.geomorphology.widgets;
 
 import hydroScalingAPI.util.geomorphology.objects.LinksAnalysis;
 import java.io.File;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -72,6 +75,7 @@ public class AsynchExporter extends javax.swing.JDialog {
         fileMaskFolder = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         descriptorText = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         cancel = new javax.swing.JButton();
         run = new javax.swing.JButton();
@@ -94,24 +98,24 @@ public class AsynchExporter extends javax.swing.JDialog {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(outputDirectoryText, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                .addComponent(outputDirectoryText, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fileOutputFolder)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(outputDirectoryText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fileOutputFolder))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -132,21 +136,35 @@ public class AsynchExporter extends javax.swing.JDialog {
 
         fileMetaDEMfolder.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         fileMetaDEMfolder.setText("File...");
-        fileMetaDEMfolder.setEnabled(false);
+        fileMetaDEMfolder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fileMetaDEMfolderActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Meta DEM file name:");
 
         fileMetaDEMfile.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         fileMetaDEMfile.setText("File...");
-        fileMetaDEMfile.setEnabled(false);
+        fileMetaDEMfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fileMetaDEMfileActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Mask folder:");
 
         fileMaskFolder.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         fileMaskFolder.setText("File...");
-        fileMaskFolder.setEnabled(false);
+        fileMaskFolder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fileMaskFolderActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Descriptor:");
+
+        jLabel10.setText(".metaDEM");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -164,7 +182,9 @@ public class AsynchExporter extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(metaDEMfileText)
+                        .addComponent(metaDEMfileText, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fileMetaDEMfile))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -174,18 +194,18 @@ public class AsynchExporter extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fileMaskFolder))
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(descriptorText))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xText, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(xText, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(yText, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 83, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(descriptorText)))
+                        .addComponent(yText, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -206,7 +226,8 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(metaDEMfileText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fileMetaDEMfile))
+                    .addComponent(fileMetaDEMfile)
+                    .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -216,7 +237,7 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(descriptorText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
@@ -228,7 +249,7 @@ public class AsynchExporter extends javax.swing.JDialog {
             }
         });
 
-        run.setText("Run");
+        run.setText("Create files");
         run.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runActionPerformed(evt);
@@ -240,7 +261,7 @@ public class AsynchExporter extends javax.swing.JDialog {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(258, Short.MAX_VALUE)
+                .addContainerGap(237, Short.MAX_VALUE)
                 .addComponent(run)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cancel)
@@ -267,9 +288,20 @@ public class AsynchExporter extends javax.swing.JDialog {
 
     private void runActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runActionPerformed
         int x, y;
+        float outletDischarge;
+        String outletDichargeTxt;
         
         x = Integer.parseInt(this.xText.getText());
         y = Integer.parseInt(this.yText.getText());
+        
+        /*
+        outletDichargeTxt = this.outletDischargeText.getText().trim();
+        if (outletDichargeTxt.equalsIgnoreCase("")){
+            outletDischarge = -1;
+        } else {
+            outletDischarge = Float.parseFloat(outletDichargeTxt);
+        }
+        */
         
         LinksAnalysis.main12Args(x, y, this.metaDEMfolderText.getText(), this.metaDEMfileText.getText(), this.maskFolderText.getText(), this.descriptorText.getText(), this.outputDirectoryText.getText());
     }//GEN-LAST:event_runActionPerformed
@@ -280,14 +312,45 @@ public class AsynchExporter extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelActionPerformed
 
     private void fileOutputFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileOutputFolderActionPerformed
-            javax.swing.JFileChooser fc=new javax.swing.JFileChooser();
-            fc.setFileSelectionMode(fc.DIRECTORIES_ONLY);
-            fc.setDialogTitle("Directory Selection");
-            fc.showOpenDialog(this);
+        javax.swing.JFileChooser fc=new javax.swing.JFileChooser();
+        fc.setFileSelectionMode(fc.DIRECTORIES_ONLY);
+        fc.setDialogTitle("Directory Selection");
+        fc.showOpenDialog(this);
 
-            if (fc.getSelectedFile() == null) return;
-            this.outputDirectoryText.setText(fc.getSelectedFile().getPath() + File.separator);
+        if (fc.getSelectedFile() == null) return;
+        this.outputDirectoryText.setText(fc.getSelectedFile().getPath() + File.separator);
     }//GEN-LAST:event_fileOutputFolderActionPerformed
+
+    private void fileMaskFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMaskFolderActionPerformed
+        javax.swing.JFileChooser fc=new javax.swing.JFileChooser();
+        fc.setFileSelectionMode(fc.DIRECTORIES_ONLY);
+        fc.setDialogTitle("Directory Selection");
+        fc.showOpenDialog(this);
+
+        if (fc.getSelectedFile() == null) return;
+        this.maskFolderText.setText(fc.getSelectedFile().getPath() + File.separator);
+    }//GEN-LAST:event_fileMaskFolderActionPerformed
+
+    private void fileMetaDEMfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMetaDEMfileActionPerformed
+        javax.swing.JFileChooser fc=new javax.swing.JFileChooser();
+        FileFilter fileFilter = new FileNameExtensionFilter("metaVHC file","metaVHC");
+        fc.addChoosableFileFilter(fileFilter);
+        fc.setDialogTitle("metaDEM file selection");
+        fc.showOpenDialog(this);
+
+        if (fc.getSelectedFile() == null) return;
+        this.metaDEMfileText.setText(fc.getSelectedFile().getName().replace(".metaDEM", ""));
+    }//GEN-LAST:event_fileMetaDEMfileActionPerformed
+
+    private void fileMetaDEMfolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMetaDEMfolderActionPerformed
+        javax.swing.JFileChooser fc=new javax.swing.JFileChooser();
+        fc.setFileSelectionMode(fc.DIRECTORIES_ONLY);
+        fc.setDialogTitle("Directory Selection");
+        fc.showOpenDialog(this);
+
+        if (fc.getSelectedFile() == null) return;
+        this.metaDEMfolderText.setText(fc.getSelectedFile().getPath() + File.separator);
+    }//GEN-LAST:event_fileMetaDEMfolderActionPerformed
 
     /**
      * @param args the command line arguments
@@ -339,6 +402,7 @@ public class AsynchExporter extends javax.swing.JDialog {
     private javax.swing.JButton fileMetaDEMfolder;
     private javax.swing.JButton fileOutputFolder;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
