@@ -6,10 +6,17 @@
 package hydroScalingAPI.util.geomorphology.widgets;
 
 import hydroScalingAPI.util.geomorphology.objects.LinksAnalysis;
+import hydroScalingAPI.util.geomorphology.objects.Basin;
+import hydroScalingAPI.io.MetaRaster;
+import hydroScalingAPI.io.DataRaster;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 /**
  *
@@ -55,11 +62,12 @@ public class AsynchExporter extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
-        outputDirectoryText = new javax.swing.JTextField();
-        fileOutputFolder = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        buttonGroup_initcond = new javax.swing.ButtonGroup();
+        buttonGroup_unifrainfall = new javax.swing.ButtonGroup();
+        buttonGroup_globalfile = new javax.swing.ButtonGroup();
+        buttonGroup_hydrograph = new javax.swing.ButtonGroup();
+        buttonGroup_snapshot = new javax.swing.ButtonGroup();
+        jPanel_inputgeneral = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         xText = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -76,56 +84,85 @@ public class AsynchExporter extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
         descriptorText = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
+        jPanel_initcond = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+        jLabel9 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        jTextField8 = new javax.swing.JTextField();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jPanel_unirain = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        jRadioButton3 = new javax.swing.JRadioButton();
+        jLabel14 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jRadioButton7 = new javax.swing.JRadioButton();
+        jLabel25 = new javax.swing.JLabel();
+        jTextField9 = new javax.swing.JTextField();
+        jLabel26 = new javax.swing.JLabel();
+        jTextField10 = new javax.swing.JTextField();
+        jLabel27 = new javax.swing.JLabel();
+        jPanel_globalfile = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        jRadioButton4 = new javax.swing.JRadioButton();
+        jLabel16 = new javax.swing.JLabel();
+        jTextField4 = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        jTextField5 = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jTextField6 = new javax.swing.JTextField();
+        jTextField7 = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        jRadioButton5 = new javax.swing.JRadioButton();
+        jLabel21 = new javax.swing.JLabel();
+        jRadioButton6 = new javax.swing.JRadioButton();
+        jRadioButton8 = new javax.swing.JRadioButton();
+        jLabel28 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        jTextField11 = new javax.swing.JTextField();
+        jTextField12 = new javax.swing.JTextField();
+        jLabel30 = new javax.swing.JLabel();
+        jLabel31 = new javax.swing.JLabel();
+        jTextField13 = new javax.swing.JTextField();
+        jLabel32 = new javax.swing.JLabel();
+        jTextField14 = new javax.swing.JTextField();
+        jTextField15 = new javax.swing.JTextField();
+        jLabel33 = new javax.swing.JLabel();
+        jTextField16 = new javax.swing.JTextField();
+        jLabel34 = new javax.swing.JLabel();
+        jRadioButton9 = new javax.swing.JRadioButton();
+        jRadioButton10 = new javax.swing.JRadioButton();
+        jRadioButton11 = new javax.swing.JRadioButton();
+        jRadioButton12 = new javax.swing.JRadioButton();
+        jPanel_output = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        outputDirectoryText = new javax.swing.JTextField();
+        fileOutputFolder = new javax.swing.JButton();
+        jPanel_footer = new javax.swing.JPanel();
         cancel = new javax.swing.JButton();
         run = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Output"));
-
-        jLabel7.setText("Directory:");
-
-        fileOutputFolder.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
-        fileOutputFolder.setText("File...");
-        fileOutputFolder.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileOutputFolderActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(outputDirectoryText, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fileOutputFolder)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(outputDirectoryText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fileOutputFolder))
-                .addContainerGap())
-        );
-
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Input"));
+        jPanel_inputgeneral.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Input - General", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
+        jPanel_inputgeneral.setMaximumSize(new java.awt.Dimension(32767, 20000));
+        jPanel_inputgeneral.setPreferredSize(new java.awt.Dimension(452, 80));
 
         jLabel1.setText("Outlet X:");
 
+        xText.setEditable(false);
+
         jLabel2.setText("Outlet Y:");
 
+        yText.setEditable(false);
         yText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 yTextActionPerformed(evt);
@@ -133,6 +170,8 @@ public class AsynchExporter extends javax.swing.JDialog {
         });
 
         jLabel3.setText("Meta DEM file folder:");
+
+        metaDEMfolderText.setEditable(false);
 
         fileMetaDEMfolder.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         fileMetaDEMfolder.setText("File...");
@@ -144,6 +183,8 @@ public class AsynchExporter extends javax.swing.JDialog {
 
         jLabel4.setText("Meta DEM file name:");
 
+        metaDEMfileText.setEditable(false);
+
         fileMetaDEMfile.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         fileMetaDEMfile.setText("File...");
         fileMetaDEMfile.addActionListener(new java.awt.event.ActionListener() {
@@ -153,6 +194,8 @@ public class AsynchExporter extends javax.swing.JDialog {
         });
 
         jLabel5.setText("Mask folder:");
+
+        maskFolderText.setEditable(false);
 
         fileMaskFolder.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         fileMaskFolder.setText("File...");
@@ -166,81 +209,534 @@ public class AsynchExporter extends javax.swing.JDialog {
 
         jLabel10.setText(".metaDEM");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel_inputgeneralLayout = new javax.swing.GroupLayout(jPanel_inputgeneral);
+        jPanel_inputgeneral.setLayout(jPanel_inputgeneralLayout);
+        jPanel_inputgeneralLayout.setHorizontalGroup(
+            jPanel_inputgeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_inputgeneralLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel_inputgeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_inputgeneralLayout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(metaDEMfolderText)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fileMetaDEMfolder))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanel_inputgeneralLayout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(metaDEMfileText, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                        .addComponent(metaDEMfileText, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fileMetaDEMfile))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanel_inputgeneralLayout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(maskFolderText)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fileMaskFolder))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanel_inputgeneralLayout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(descriptorText))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanel_inputgeneralLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(xText, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(yText, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(yText, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        jPanel_inputgeneralLayout.setVerticalGroup(
+            jPanel_inputgeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_inputgeneralLayout.createSequentialGroup()
+                .addGroup(jPanel_inputgeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(xText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(yText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel_inputgeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(metaDEMfolderText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fileMetaDEMfolder))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel_inputgeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(metaDEMfileText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fileMetaDEMfile)
                     .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel_inputgeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(maskFolderText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fileMaskFolder))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel_inputgeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(descriptorText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 4, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel_inputgeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 450, 160));
+
+        jPanel_initcond.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Initial Condition - Optional", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
+
+        jLabel8.setText("Hillslope-link model:");
+
+        buttonGroup_initcond.add(jRadioButton1);
+        jRadioButton1.setSelected(true);
+        jRadioButton1.setText("None (no init. cond.)");
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton1ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup_initcond.add(jRadioButton2);
+        jRadioButton2.setText("Asynch 254 (Top Layer)");
+
+        jLabel9.setText("Outlet discharge:");
+
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField1.setText("10");
+        jTextField1.setEnabled(false);
+
+        jLabel11.setText("m3/s");
+
+        jLabel12.setText("Top Layer Equiv. Water Column:");
+
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField2.setText("0.2");
+        jTextField2.setEnabled(false);
+
+        jLabel22.setText("m");
+
+        jTextField8.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField8.setText("0.000002042");
+        jTextField8.setEnabled(false);
+
+        jLabel23.setText("1 / min");
+
+        jLabel24.setText("K3:");
+
+        javax.swing.GroupLayout jPanel_initcondLayout = new javax.swing.GroupLayout(jPanel_initcond);
+        jPanel_initcond.setLayout(jPanel_initcondLayout);
+        jPanel_initcondLayout.setHorizontalGroup(
+            jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_initcondLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_initcondLayout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel22)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel24)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel23))
+                    .addGroup(jPanel_initcondLayout.createSequentialGroup()
+                        .addGroup(jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel_initcondLayout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jRadioButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jRadioButton2))
+                            .addGroup(jPanel_initcondLayout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel11)))
+                        .addGap(0, 60, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel_initcondLayout.setVerticalGroup(
+            jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_initcondLayout.createSequentialGroup()
+                .addGroup(jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jRadioButton1)
+                    .addComponent(jRadioButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel22)
+                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel23)
+                    .addComponent(jLabel24))
+                .addGap(0, 6, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel_initcond, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 450, 100));
+
+        jPanel_unirain.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Uniform Rainfall - Optional", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
+
+        jLabel13.setText("Rainfall file:");
+
+        buttonGroup_unifrainfall.add(jRadioButton3);
+        jRadioButton3.setSelected(true);
+        jRadioButton3.setText("Do not create");
+
+        jLabel14.setText("Rainfall intensity:");
+
+        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField3.setText("2.12");
+        jTextField3.setEnabled(false);
+
+        buttonGroup_unifrainfall.add(jRadioButton7);
+        jRadioButton7.setText("Create uniform rainfall file");
+
+        jLabel25.setText("mm/hour, from ");
+
+        jTextField9.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField9.setText("0");
+        jTextField9.setEnabled(false);
+
+        jLabel26.setText("(min) to");
+
+        jTextField10.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField10.setText("1440");
+        jTextField10.setEnabled(false);
+
+        jLabel27.setText("(min)");
+
+        javax.swing.GroupLayout jPanel_unirainLayout = new javax.swing.GroupLayout(jPanel_unirain);
+        jPanel_unirain.setLayout(jPanel_unirainLayout);
+        jPanel_unirainLayout.setHorizontalGroup(
+            jPanel_unirainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_unirainLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_unirainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_unirainLayout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton7))
+                    .addGroup(jPanel_unirainLayout.createSequentialGroup()
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel25)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel26)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel27)))
+                .addContainerGap(74, Short.MAX_VALUE))
+        );
+        jPanel_unirainLayout.setVerticalGroup(
+            jPanel_unirainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_unirainLayout.createSequentialGroup()
+                .addGroup(jPanel_unirainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(jRadioButton3)
+                    .addComponent(jRadioButton7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel_unirainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel25)
+                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel26)
+                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel27))
+                .addGap(0, 2, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel_unirain, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 450, 70));
+
+        jPanel_globalfile.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Global File - Optional", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
+
+        jLabel15.setText("Global file:");
+
+        buttonGroup_globalfile.add(jRadioButton4);
+        jRadioButton4.setSelected(true);
+        jRadioButton4.setText("Do not create");
+
+        jLabel16.setText("Simulation from:");
+
+        jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField4.setText("01");
+        jTextField4.setEnabled(false);
+
+        jLabel17.setText("to:");
+
+        jTextField5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField5.setText("01");
+        jTextField5.setEnabled(false);
+
+        jLabel18.setText("/");
+
+        jLabel19.setText("/");
+
+        jTextField6.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField6.setText("21");
+        jTextField6.setEnabled(false);
+
+        jTextField7.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField7.setText("22");
+        jTextField7.setEnabled(false);
+
+        jLabel20.setText("Hydrograph:");
+
+        buttonGroup_hydrograph.add(jRadioButton5);
+        jRadioButton5.setSelected(true);
+        jRadioButton5.setText("Only outlet");
+        jRadioButton5.setEnabled(false);
+
+        jLabel21.setText("Snapshot:");
+
+        buttonGroup_snapshot.add(jRadioButton6);
+        jRadioButton6.setText(".rec");
+        jRadioButton6.setEnabled(false);
+
+        buttonGroup_globalfile.add(jRadioButton8);
+        jRadioButton8.setText("Create");
+
+        jLabel28.setText("/");
+
+        jLabel29.setText("/");
+
+        jTextField11.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField11.setText("2018");
+        jTextField11.setEnabled(false);
+
+        jTextField12.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField12.setText("2018");
+        jTextField12.setEnabled(false);
+
+        jLabel30.setText("at");
+
+        jLabel31.setText("at");
+
+        jTextField13.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField13.setText("24");
+        jTextField13.setEnabled(false);
+
+        jLabel32.setText(":");
+
+        jTextField14.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField14.setText("30");
+        jTextField14.setEnabled(false);
+
+        jTextField15.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField15.setText("24");
+        jTextField15.setEnabled(false);
+
+        jLabel33.setText(":");
+
+        jTextField16.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField16.setText("30");
+        jTextField16.setEnabled(false);
+
+        jLabel34.setText("(MM/DD/YYYY, hh:mm)");
+
+        buttonGroup_hydrograph.add(jRadioButton9);
+        jRadioButton9.setText("All links");
+        jRadioButton9.setEnabled(false);
+
+        buttonGroup_hydrograph.add(jRadioButton10);
+        jRadioButton10.setText("No hydrograph");
+        jRadioButton10.setEnabled(false);
+
+        buttonGroup_snapshot.add(jRadioButton11);
+        jRadioButton11.setText(".h5 file");
+        jRadioButton11.setEnabled(false);
+
+        buttonGroup_snapshot.add(jRadioButton12);
+        jRadioButton12.setSelected(true);
+        jRadioButton12.setText("No snapshot");
+        jRadioButton12.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel_globalfileLayout = new javax.swing.GroupLayout(jPanel_globalfile);
+        jPanel_globalfile.setLayout(jPanel_globalfileLayout);
+        jPanel_globalfileLayout.setHorizontalGroup(
+            jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                        .addComponent(jLabel15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton8))
+                    .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                        .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel16))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel28)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                                .addComponent(jLabel19)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel29)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField12)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                                .addComponent(jLabel30)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                                .addComponent(jLabel31)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField15)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                                .addComponent(jLabel32)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                                .addComponent(jLabel33)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField16)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel34))
+                    .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                        .addComponent(jLabel20)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton10))
+                    .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                        .addComponent(jLabel21)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButton6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton12)))
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+        jPanel_globalfileLayout.setVerticalGroup(
+            jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(jRadioButton4)
+                    .addComponent(jRadioButton8))
+                .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel16)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel18)
+                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel28)
+                            .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel30)
+                            .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel32)
+                            .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel17)
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel19)
+                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel29)
+                            .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel31)
+                            .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel33)
+                            .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel_globalfileLayout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(jLabel34)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(jRadioButton5)
+                    .addComponent(jRadioButton9)
+                    .addComponent(jRadioButton10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(jRadioButton6)
+                    .addComponent(jRadioButton11)
+                    .addComponent(jRadioButton12))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel_globalfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 450, 140));
+
+        jPanel_output.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Output", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
+
+        jLabel7.setText("Directory:");
+
+        fileOutputFolder.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        fileOutputFolder.setText("File...");
+        fileOutputFolder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fileOutputFolderActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel_outputLayout = new javax.swing.GroupLayout(jPanel_output);
+        jPanel_output.setLayout(jPanel_outputLayout);
+        jPanel_outputLayout.setHorizontalGroup(
+            jPanel_outputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_outputLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(outputDirectoryText, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fileOutputFolder)
+                .addContainerGap())
+        );
+        jPanel_outputLayout.setVerticalGroup(
+            jPanel_outputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_outputLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanel_outputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(outputDirectoryText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fileOutputFolder))
                 .addGap(0, 0, 0))
         );
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
+        getContentPane().add(jPanel_output, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 470, 450, 50));
 
         cancel.setText("Cancel");
         cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -256,28 +752,27 @@ public class AsynchExporter extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(237, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel_footerLayout = new javax.swing.GroupLayout(jPanel_footer);
+        jPanel_footer.setLayout(jPanel_footerLayout);
+        jPanel_footerLayout.setHorizontalGroup(
+            jPanel_footerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_footerLayout.createSequentialGroup()
+                .addContainerGap(282, Short.MAX_VALUE)
                 .addComponent(run)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cancel)
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancel)
-                    .addComponent(run))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        jPanel_footerLayout.setVerticalGroup(
+            jPanel_footerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_footerLayout.createSequentialGroup()
+                .addGroup(jPanel_footerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(run)
+                    .addComponent(cancel))
+                .addGap(0, 7, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel3, java.awt.BorderLayout.PAGE_END);
+        getContentPane().add(jPanel_footer, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 520, 450, 30));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -291,17 +786,80 @@ public class AsynchExporter extends javax.swing.JDialog {
         float outletDischarge;
         String outletDichargeTxt;
         
+        // read form
         x = Integer.parseInt(this.xText.getText());
         y = Integer.parseInt(this.yText.getText());
         
-        /*
-        outletDichargeTxt = this.outletDischargeText.getText().trim();
-        if (outletDichargeTxt.equalsIgnoreCase("")){
-            outletDischarge = -1;
-        } else {
-            outletDischarge = Float.parseFloat(outletDichargeTxt);
+        // pre load DEM
+        MetaRaster metaModif;
+        LinksAnalysis mylinksAnalysis;
+        String file_path = this.metaDEMfolderText.getText();
+        String file_name = this.metaDEMfileText.getText();
+        try{
+            java.io.File theFile;
+            theFile = new java.io.File(file_path + file_name + ".metaDEM");
+            metaModif = new MetaRaster(theFile);
+            theFile = new java.io.File(file_path + file_name + ".dir");
+            metaModif.setLocationBinaryFile(theFile);
+            metaModif.setFormat("Byte");
+            byte [][] matDirs = new DataRaster(metaModif).getByte();
+            theFile = new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn");
+            metaModif.setLocationBinaryFile(theFile);
+            metaModif.setFormat("Integer");
+            Basin laCuenca = new Basin(x, y, matDirs, metaModif);
+            mylinksAnalysis = new LinksAnalysis(metaModif, matDirs);
+        } catch(Exception e){
+            System.out.println("Exception at 1: " + e.getMessage());
+            return;
         }
-        */
+        
+        // write .rvr file
+        try{
+            String outputMetaFile = this.outputDirectoryText.getText();
+            outputMetaFile += File.separator + file_name + "_" + x + "_" + y + ".rvr";
+            BufferedWriter metaBuffer = new BufferedWriter(new FileWriter(outputMetaFile));
+            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+            metaBuffer.write("\n");
+            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+                metaBuffer.write(""+(i+1)+"\n");
+                metaBuffer.write(""+mylinksAnalysis.connectionsArray[i].length);
+                
+                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
+                    metaBuffer.write(" "+(mylinksAnalysis.connectionsArray[i][j]+1));
+                
+                metaBuffer.write("\n");
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+        } catch(Exception e){
+            System.out.println("Exception at 2: " + e.getMessage());
+            return;
+        }
+        
+        // write .prm file
+        try{
+            float[][] lenghts = mylinksAnalysis.getVarValues(1);
+            float[][] upAreas = mylinksAnalysis.getVarValues(2);
+            float[][] hillAreas = mylinksAnalysis.getVarValues(0);
+            
+            String outputMetaFile = this.outputDirectoryText.getText();
+            outputMetaFile += File.separator + file_name + "_" + x + "_" + y + ".prm";
+            BufferedWriter metaBuffer = new BufferedWriter(new FileWriter(outputMetaFile));
+            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
+            metaBuffer.write("\n");
+            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+                metaBuffer.write((i+1)+"\n");
+                metaBuffer.write(upAreas[0][i]+" "+lenghts[0][i]+" "+hillAreas[0][i]+"\n");
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+            metaBuffer.close();
+            
+        } catch(IOException e) {
+            System.out.println("Exception at 3: " + e.getMessage());
+            return;
+        }
         
         LinksAnalysis.main12Args(x, y, this.metaDEMfolderText.getText(), this.metaDEMfileText.getText(), this.maskFolderText.getText(), this.descriptorText.getText(), this.outputDirectoryText.getText());
     }//GEN-LAST:event_runActionPerformed
@@ -310,16 +868,6 @@ public class AsynchExporter extends javax.swing.JDialog {
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_cancelActionPerformed
-
-    private void fileOutputFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileOutputFolderActionPerformed
-        javax.swing.JFileChooser fc=new javax.swing.JFileChooser();
-        fc.setFileSelectionMode(fc.DIRECTORIES_ONLY);
-        fc.setDialogTitle("Directory Selection");
-        fc.showOpenDialog(this);
-
-        if (fc.getSelectedFile() == null) return;
-        this.outputDirectoryText.setText(fc.getSelectedFile().getPath() + File.separator);
-    }//GEN-LAST:event_fileOutputFolderActionPerformed
 
     private void fileMaskFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMaskFolderActionPerformed
         javax.swing.JFileChooser fc=new javax.swing.JFileChooser();
@@ -351,6 +899,20 @@ public class AsynchExporter extends javax.swing.JDialog {
         if (fc.getSelectedFile() == null) return;
         this.metaDEMfolderText.setText(fc.getSelectedFile().getPath() + File.separator);
     }//GEN-LAST:event_fileMetaDEMfolderActionPerformed
+
+    private void fileOutputFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileOutputFolderActionPerformed
+        javax.swing.JFileChooser fc=new javax.swing.JFileChooser();
+        fc.setFileSelectionMode(fc.DIRECTORIES_ONLY);
+        fc.setDialogTitle("Directory Selection");
+        fc.showOpenDialog(this);
+
+        if (fc.getSelectedFile() == null) return;
+        this.outputDirectoryText.setText(fc.getSelectedFile().getPath() + File.separator);
+    }//GEN-LAST:event_fileOutputFolderActionPerformed
+
+    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -395,6 +957,11 @@ public class AsynchExporter extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup_globalfile;
+    private javax.swing.ButtonGroup buttonGroup_hydrograph;
+    private javax.swing.ButtonGroup buttonGroup_initcond;
+    private javax.swing.ButtonGroup buttonGroup_snapshot;
+    private javax.swing.ButtonGroup buttonGroup_unifrainfall;
     private javax.swing.JButton cancel;
     private javax.swing.JTextField descriptorText;
     private javax.swing.JButton fileMaskFolder;
@@ -403,15 +970,72 @@ public class AsynchExporter extends javax.swing.JDialog {
     private javax.swing.JButton fileOutputFolder;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel_footer;
+    private javax.swing.JPanel jPanel_globalfile;
+    private javax.swing.JPanel jPanel_initcond;
+    private javax.swing.JPanel jPanel_inputgeneral;
+    private javax.swing.JPanel jPanel_output;
+    private javax.swing.JPanel jPanel_unirain;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton10;
+    private javax.swing.JRadioButton jRadioButton11;
+    private javax.swing.JRadioButton jRadioButton12;
+    private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JRadioButton jRadioButton3;
+    private javax.swing.JRadioButton jRadioButton4;
+    private javax.swing.JRadioButton jRadioButton5;
+    private javax.swing.JRadioButton jRadioButton6;
+    private javax.swing.JRadioButton jRadioButton7;
+    private javax.swing.JRadioButton jRadioButton8;
+    private javax.swing.JRadioButton jRadioButton9;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField10;
+    private javax.swing.JTextField jTextField11;
+    private javax.swing.JTextField jTextField12;
+    private javax.swing.JTextField jTextField13;
+    private javax.swing.JTextField jTextField14;
+    private javax.swing.JTextField jTextField15;
+    private javax.swing.JTextField jTextField16;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField jTextField8;
+    private javax.swing.JTextField jTextField9;
     private javax.swing.JTextField maskFolderText;
     private javax.swing.JTextField metaDEMfileText;
     private javax.swing.JTextField metaDEMfolderText;

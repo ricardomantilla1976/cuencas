@@ -4616,6 +4616,8 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
         System.exit(0);
     }
     
+    
+    
     /**
      * 
      * @param x
@@ -4809,7 +4811,205 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
 
     }
     
-        /**
+    /**
+     * 
+     * @param x
+     * @param y
+     * @param filePathToMetaDem
+     * @param fileNameDem
+     * @param filePathToMask
+     * @param descriptor
+     * @param MyOutputDirectory 
+     */
+    public static void createAsynchFiles(int x, int y, 
+            String filePathToMetaDem, 
+            String fileNameDem, 
+            String filePathToMask, 
+            String descriptor, 
+            String MyOutputDirectory){
+
+        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
+        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
+        dpoint2.applyPattern("0.00000000");
+
+        try{
+
+            java.io.File theFile=new java.io.File(filePathToMetaDem+fileNameDem+".metaDEM");
+            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
+            metaModif.setLocationBinaryFile(new java.io.File(filePathToMetaDem+fileNameDem+".dir"));
+
+            metaModif.setFormat("Byte");
+            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
+
+
+            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
+            metaModif.setFormat("Integer");
+            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
+
+            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
+
+            //LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
+            LinksAnalysis mylinksAnalysis=new LinksAnalysis(metaModif, matDirs);
+            System.out.println(mylinksAnalysis.nextLinkArray.length);
+
+//            String outputMetaFile=MyOutputDirectory+"/NextLink_"+fileNameDem[caseSelected]+"_Chi.txt";
+//            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//
+//            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
+//
+//            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+(mylinksAnalysis.nextLinkArray[i]+1)+"\n");
+//            
+//            metaBuffer.close();
+//            
+//            outputMetaFile=MyOutputDirectory+"/UpLink_"+fileNameDem[caseSelected]+"_Chi.txt";
+//            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//
+//            metaBuffer.write("Number of Links\n");
+//            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+//            metaBuffer.write("Link-ID Num-connected-links List-of-connected-links"+"\n");
+//            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+//                metaBuffer.write(""+(i+1)+" "+mylinksAnalysis.connectionsArray[i].length);
+//                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
+//                    metaBuffer.write(" "+(mylinksAnalysis.connectionsArray[i][j]+1));
+//                metaBuffer.write("\n");
+//            }
+//
+//            metaBuffer.close();
+            
+            
+            String outputMetaFile=MyOutputDirectory+"/"+fileNameDem+"_"+x+"_"+y+".rvr";
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+            metaBuffer.write("\n");
+            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+                metaBuffer.write(""+(i+1)+"\n");
+                metaBuffer.write(""+mylinksAnalysis.connectionsArray[i].length);
+                
+                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
+                    metaBuffer.write(" "+(mylinksAnalysis.connectionsArray[i][j]+1));
+                
+                metaBuffer.write("\n");
+                metaBuffer.write("\n");
+                
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+            
+            float[][] lenghts=mylinksAnalysis.getVarValues(1);
+            float[][] upAreas=mylinksAnalysis.getVarValues(2);
+            float[][] hillAreas=mylinksAnalysis.getVarValues(0);
+
+            outputMetaFile=MyOutputDirectory+"/"+fileNameDem+"_"+x+"_"+y+".prm";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+            metaBuffer.write("\n");
+            
+            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+                metaBuffer.write((i+1)+"\n");
+                metaBuffer.write(upAreas[0][i]+" "+lenghts[0][i]+" "+hillAreas[0][i]+"\n");
+                metaBuffer.write("\n");
+            }
+            metaBuffer.write("\n");
+
+            metaBuffer.close();
+            
+//            outputMetaFile=MyOutputDirectory+"/"+fileNameDem[caseSelected]+"_"+x+"_"+y+".complete";
+//            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+//            
+//            float[][] hortonOrders=mylinksAnalysis.getVarValues(4);
+//
+//            metaBuffer.write(""+mylinksAnalysis.completeStreamLinksArray.length+"\n");
+//            metaBuffer.write("\n");
+//            
+//            for (int i=0;i<mylinksAnalysis.completeStreamLinksArray.length;i++) {
+//                metaBuffer.write(mylinksAnalysis.completeStreamLinksArray[i]+" "+(int)hortonOrders[0][mylinksAnalysis.completeStreamLinksArray[i]]+"\n");
+//            }
+//            metaBuffer.write("\n");
+//
+//            metaBuffer.close();
+
+            float[][] hortonOrders=mylinksAnalysis.getVarValues(4);
+            
+            outputMetaFile=MyOutputDirectory+"/"+fileNameDem+"_"+x+"_"+y+".lookup";//MyOutputDirectory+"/LookUpTable_"+fileNameDem[caseSelected]+"_Chi.txt";
+            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
+
+            
+            double resLon=metaModif.getResLon();
+            double resLat=metaModif.getResLat();
+            double minLon=metaModif.getMinLon();
+            double minLat=metaModif.getMinLat();
+            int nCol=metaModif.getNumCols();
+            int nRow=metaModif.getNumRows();
+            
+            metaBuffer.write(descriptor+"\n");
+            metaBuffer.write("Link-ID,Longitude,Latitude,HortonOrder"+"\n");
+            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++) {
+                
+                double myLat=(mylinksAnalysis.contactsArray[i]/nCol)*resLat/3600.0f+minLat;
+                double myLon=(mylinksAnalysis.contactsArray[i]%nCol)*resLon/3600.0f+minLon;
+                        
+                metaBuffer.write(""+(i+1)+","+myLon+","+myLat+","+hortonOrders[0][i]+"\n");
+            }
+
+            metaBuffer.close();
+            
+            int[][] matrizPintada=new int[metaModif.getNumRows()][metaModif.getNumCols()];
+
+            int xOulet,yOulet;
+            hydroScalingAPI.util.geomorphology.objects.HillSlope myHillActual;
+
+            int demNumCols=metaModif.getNumCols();
+
+            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++){
+                if (mylinksAnalysis.magnitudeArray[i] < mylinksAnalysis.basinMagnitude){
+
+                    xOulet=mylinksAnalysis.contactsArray[i]%demNumCols;
+                    yOulet=mylinksAnalysis.contactsArray[i]/demNumCols;
+
+                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
+                    int[][] xyHillSlope=myHillActual.getXYHillSlope();
+                    for (int j=0;j<xyHillSlope[0].length;j++){
+                        matrizPintada[xyHillSlope[1][j]][xyHillSlope[0][j]]=i+1;
+
+                    }
+                } else {
+                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(x,y,matDirs,magnitudes,metaModif);
+                    int[][] xyHillSlope=myHillActual.getXYHillSlope();
+                    for (int j=0;j<xyHillSlope[0].length;j++){
+                        matrizPintada[xyHillSlope[1][j]][xyHillSlope[0][j]]=i+1;
+                    }
+                }
+            }
+
+            String fileBinSalida=filePathToMask+"/"+fileNameDem+"_BasinWatershedsFull_Level1.vhc";
+            java.io.File outputBinaryFile=new java.io.File(fileBinSalida);
+            java.io.DataOutputStream rasterBuffer = new java.io.DataOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(outputBinaryFile)));
+
+            int nRows=matrizPintada.length;
+            int nCols=matrizPintada[0].length;
+
+            for (int i=0;i<nRows;i++){
+                for (int j=0;j<nCols;j++){
+                    rasterBuffer.writeInt(matrizPintada[i][j]);
+                }
+            }
+
+            rasterBuffer.close();
+            
+            metaModif.setFormat("Integer");
+            metaModif.writeMetaRaster(new java.io.File(filePathToMask+"/"+fileNameDem+"_BasinWatershedsFull_Level1.metaVHC"));
+            
+        } catch (java.io.IOException IOE){
+            System.out.print(IOE);
+            
+        }
+
+    }
+    
+    /**
      * Tests for the class
      * @param args the command line arguments
      */
