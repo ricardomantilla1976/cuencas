@@ -86,61 +86,61 @@ public class AsynchExporter extends javax.swing.JDialog {
         jLabel10 = new javax.swing.JLabel();
         jPanel_initcond = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        hlmNoneRadio = new javax.swing.JRadioButton();
+        hlm254Radio = new javax.swing.JRadioButton();
         jLabel9 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        outletDischargeText = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        topLayerEqWaterColumnText = new javax.swing.JTextField();
         jLabel22 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
+        k3Text = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         jPanel_unirain = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        rainfallFileNoneRadio = new javax.swing.JRadioButton();
         jLabel14 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jRadioButton7 = new javax.swing.JRadioButton();
+        rainfallIntensityText = new javax.swing.JTextField();
+        rainfallFileCreateRadio = new javax.swing.JRadioButton();
         jLabel25 = new javax.swing.JLabel();
-        jTextField9 = new javax.swing.JTextField();
+        rainfallMinText = new javax.swing.JTextField();
         jLabel26 = new javax.swing.JLabel();
-        jTextField10 = new javax.swing.JTextField();
+        rainfallMaxText = new javax.swing.JTextField();
         jLabel27 = new javax.swing.JLabel();
         jPanel_globalfile = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
-        jRadioButton4 = new javax.swing.JRadioButton();
+        globalFileNoneRadio = new javax.swing.JRadioButton();
         jLabel16 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        simulationFromMonText = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        simulationToMonText = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
-        jTextField7 = new javax.swing.JTextField();
+        simulationFromDayText = new javax.swing.JTextField();
+        simulationToDayText = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
-        jRadioButton5 = new javax.swing.JRadioButton();
+        hydrographOutletRadio = new javax.swing.JRadioButton();
         jLabel21 = new javax.swing.JLabel();
-        jRadioButton6 = new javax.swing.JRadioButton();
-        jRadioButton8 = new javax.swing.JRadioButton();
+        snapshotRecRadio = new javax.swing.JRadioButton();
+        globalFileCreateRadio = new javax.swing.JRadioButton();
         jLabel28 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
-        jTextField11 = new javax.swing.JTextField();
-        jTextField12 = new javax.swing.JTextField();
+        simulationFromYearText = new javax.swing.JTextField();
+        simulationToYearText = new javax.swing.JTextField();
         jLabel30 = new javax.swing.JLabel();
         jLabel31 = new javax.swing.JLabel();
-        jTextField13 = new javax.swing.JTextField();
+        simulationFromHourText = new javax.swing.JTextField();
         jLabel32 = new javax.swing.JLabel();
-        jTextField14 = new javax.swing.JTextField();
-        jTextField15 = new javax.swing.JTextField();
+        simulationFromMinText = new javax.swing.JTextField();
+        simulationToHourText = new javax.swing.JTextField();
         jLabel33 = new javax.swing.JLabel();
-        jTextField16 = new javax.swing.JTextField();
+        simulationToMinText = new javax.swing.JTextField();
         jLabel34 = new javax.swing.JLabel();
-        jRadioButton9 = new javax.swing.JRadioButton();
-        jRadioButton10 = new javax.swing.JRadioButton();
-        jRadioButton11 = new javax.swing.JRadioButton();
-        jRadioButton12 = new javax.swing.JRadioButton();
+        hydrographAllLinksRadio = new javax.swing.JRadioButton();
+        hydrographNoneRadio = new javax.swing.JRadioButton();
+        snapshotH5Radio = new javax.swing.JRadioButton();
+        snapshotNoneRadio = new javax.swing.JRadioButton();
         jPanel_output = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         outputDirectoryText = new javax.swing.JTextField();
@@ -148,6 +148,7 @@ public class AsynchExporter extends javax.swing.JDialog {
         jPanel_footer = new javax.swing.JPanel();
         cancel = new javax.swing.JButton();
         run = new javax.swing.JButton();
+        statusText = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -225,7 +226,7 @@ public class AsynchExporter extends javax.swing.JDialog {
                     .addGroup(jPanel_inputgeneralLayout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(metaDEMfileText, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(metaDEMfileText, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -278,46 +279,65 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGroup(jPanel_inputgeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(descriptorText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 4, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_inputgeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 450, 160));
+        getContentPane().add(jPanel_inputgeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 600, 160));
 
         jPanel_initcond.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Initial Condition - Optional", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
         jLabel8.setText("Hillslope-link model:");
 
-        buttonGroup_initcond.add(jRadioButton1);
-        jRadioButton1.setSelected(true);
-        jRadioButton1.setText("None (no init. cond.)");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup_initcond.add(hlmNoneRadio);
+        hlmNoneRadio.setSelected(true);
+        hlmNoneRadio.setText("None (no init. cond.)");
+        hlmNoneRadio.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                hlmNoneRadioStateChanged(evt);
+            }
+        });
+        hlmNoneRadio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                hlmNoneRadioActionPerformed(evt);
             }
         });
 
-        buttonGroup_initcond.add(jRadioButton2);
-        jRadioButton2.setText("Asynch 254 (Top Layer)");
+        buttonGroup_initcond.add(hlm254Radio);
+        hlm254Radio.setText("Asynch 254 (Top Layer)");
+        hlm254Radio.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                hlm254RadioStateChanged(evt);
+            }
+        });
+        hlm254Radio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hlm254RadioActionPerformed(evt);
+            }
+        });
 
         jLabel9.setText("Outlet discharge:");
+        jLabel9.setIconTextGap(0);
 
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextField1.setText("10");
-        jTextField1.setEnabled(false);
+        outletDischargeText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        outletDischargeText.setText("10");
+        outletDischargeText.setCaretPosition(0);
+        outletDischargeText.setEnabled(false);
 
         jLabel11.setText("m3/s");
 
         jLabel12.setText("Top Layer Equiv. Water Column:");
+        jLabel12.setIconTextGap(0);
 
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextField2.setText("0.2");
-        jTextField2.setEnabled(false);
+        topLayerEqWaterColumnText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        topLayerEqWaterColumnText.setText("0.2");
+        topLayerEqWaterColumnText.setEnabled(false);
 
         jLabel22.setText("m");
+        jLabel22.setIconTextGap(0);
 
-        jTextField8.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextField8.setText("0.000002042");
-        jTextField8.setEnabled(false);
+        k3Text.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        k3Text.setText("0.000002042");
+        k3Text.setEnabled(false);
 
         jLabel23.setText("1 / min");
 
@@ -331,32 +351,32 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_initcondLayout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel22)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel24)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel23))
-                    .addGroup(jPanel_initcondLayout.createSequentialGroup()
                         .addGroup(jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel_initcondLayout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jRadioButton1)
+                                .addComponent(hlmNoneRadio)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jRadioButton2))
+                                .addComponent(hlm254Radio))
                             .addGroup(jPanel_initcondLayout.createSequentialGroup()
                                 .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(6, 6, 6)
+                                .addComponent(outletDischargeText, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(4, 4, 4)
                                 .addComponent(jLabel11)))
-                        .addGap(0, 60, Short.MAX_VALUE)))
+                        .addGap(0, 59, Short.MAX_VALUE))
+                    .addGroup(jPanel_initcondLayout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addGap(6, 6, 6)
+                        .addComponent(topLayerEqWaterColumnText, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel22)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel24)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(k3Text, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel23)))
                 .addContainerGap())
         );
         jPanel_initcondLayout.setVerticalGroup(
@@ -364,54 +384,64 @@ public class AsynchExporter extends javax.swing.JDialog {
             .addGroup(jPanel_initcondLayout.createSequentialGroup()
                 .addGroup(jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2))
+                    .addComponent(hlmNoneRadio)
+                    .addComponent(hlm254Radio))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(outletDischargeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel_initcondLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(topLayerEqWaterColumnText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel22)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(k3Text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel23)
                     .addComponent(jLabel24))
-                .addGap(0, 6, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_initcond, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 450, 100));
+        getContentPane().add(jPanel_initcond, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 600, 100));
 
         jPanel_unirain.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Uniform Rainfall - Optional", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
         jLabel13.setText("Rainfall file:");
 
-        buttonGroup_unifrainfall.add(jRadioButton3);
-        jRadioButton3.setSelected(true);
-        jRadioButton3.setText("Do not create");
+        buttonGroup_unifrainfall.add(rainfallFileNoneRadio);
+        rainfallFileNoneRadio.setSelected(true);
+        rainfallFileNoneRadio.setText("Do not create");
+        rainfallFileNoneRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rainfallFileNoneRadioActionPerformed(evt);
+            }
+        });
 
         jLabel14.setText("Rainfall intensity:");
 
-        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField3.setText("2.12");
-        jTextField3.setEnabled(false);
+        rainfallIntensityText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        rainfallIntensityText.setText("2.12");
+        rainfallIntensityText.setEnabled(false);
 
-        buttonGroup_unifrainfall.add(jRadioButton7);
-        jRadioButton7.setText("Create uniform rainfall file");
+        buttonGroup_unifrainfall.add(rainfallFileCreateRadio);
+        rainfallFileCreateRadio.setText("Create uniform rainfall file");
+        rainfallFileCreateRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rainfallFileCreateRadioActionPerformed(evt);
+            }
+        });
 
         jLabel25.setText("mm/hour, from ");
 
-        jTextField9.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField9.setText("0");
-        jTextField9.setEnabled(false);
+        rainfallMinText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        rainfallMinText.setText("0");
+        rainfallMinText.setEnabled(false);
 
         jLabel26.setText("(min) to");
 
-        jTextField10.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField10.setText("1440");
-        jTextField10.setEnabled(false);
+        rainfallMaxText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        rainfallMaxText.setText("1440");
+        rainfallMaxText.setEnabled(false);
 
         jLabel27.setText("(min)");
 
@@ -424,22 +454,22 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGroup(jPanel_unirainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_unirainLayout.createSequentialGroup()
                         .addComponent(jLabel13)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton7))
+                        .addComponent(rainfallFileNoneRadio)
+                        .addGap(6, 6, 6)
+                        .addComponent(rainfallFileCreateRadio))
                     .addGroup(jPanel_unirainLayout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(rainfallIntensityText, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel25)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(rainfallMinText, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel26)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(rainfallMaxText, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel27)))
                 .addContainerGap(74, Short.MAX_VALUE))
@@ -449,124 +479,134 @@ public class AsynchExporter extends javax.swing.JDialog {
             .addGroup(jPanel_unirainLayout.createSequentialGroup()
                 .addGroup(jPanel_unirainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jRadioButton7))
+                    .addComponent(rainfallFileNoneRadio)
+                    .addComponent(rainfallFileCreateRadio))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel_unirainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rainfallIntensityText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel25)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rainfallMinText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel26)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rainfallMaxText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel27))
-                .addGap(0, 2, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_unirain, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 450, 70));
+        getContentPane().add(jPanel_unirain, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 600, 70));
 
         jPanel_globalfile.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Global File - Optional", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
         jLabel15.setText("Global file:");
 
-        buttonGroup_globalfile.add(jRadioButton4);
-        jRadioButton4.setSelected(true);
-        jRadioButton4.setText("Do not create");
+        buttonGroup_globalfile.add(globalFileNoneRadio);
+        globalFileNoneRadio.setSelected(true);
+        globalFileNoneRadio.setText("Do not create");
+        globalFileNoneRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                globalFileNoneRadioActionPerformed(evt);
+            }
+        });
 
         jLabel16.setText("Simulation from:");
 
-        jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField4.setText("01");
-        jTextField4.setEnabled(false);
+        simulationFromMonText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        simulationFromMonText.setText("01");
+        simulationFromMonText.setEnabled(false);
 
         jLabel17.setText("to:");
 
-        jTextField5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField5.setText("01");
-        jTextField5.setEnabled(false);
+        simulationToMonText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        simulationToMonText.setText("01");
+        simulationToMonText.setEnabled(false);
 
         jLabel18.setText("/");
 
         jLabel19.setText("/");
 
-        jTextField6.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField6.setText("21");
-        jTextField6.setEnabled(false);
+        simulationFromDayText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        simulationFromDayText.setText("21");
+        simulationFromDayText.setEnabled(false);
 
-        jTextField7.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField7.setText("22");
-        jTextField7.setEnabled(false);
+        simulationToDayText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        simulationToDayText.setText("22");
+        simulationToDayText.setEnabled(false);
 
         jLabel20.setText("Hydrograph:");
 
-        buttonGroup_hydrograph.add(jRadioButton5);
-        jRadioButton5.setSelected(true);
-        jRadioButton5.setText("Only outlet");
-        jRadioButton5.setEnabled(false);
+        buttonGroup_hydrograph.add(hydrographOutletRadio);
+        hydrographOutletRadio.setSelected(true);
+        hydrographOutletRadio.setText("Only outlet");
+        hydrographOutletRadio.setEnabled(false);
 
         jLabel21.setText("Snapshot:");
 
-        buttonGroup_snapshot.add(jRadioButton6);
-        jRadioButton6.setText(".rec");
-        jRadioButton6.setEnabled(false);
+        buttonGroup_snapshot.add(snapshotRecRadio);
+        snapshotRecRadio.setText(".rec");
+        snapshotRecRadio.setEnabled(false);
 
-        buttonGroup_globalfile.add(jRadioButton8);
-        jRadioButton8.setText("Create");
+        buttonGroup_globalfile.add(globalFileCreateRadio);
+        globalFileCreateRadio.setText("Create");
+        globalFileCreateRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                globalFileCreateRadioActionPerformed(evt);
+            }
+        });
 
         jLabel28.setText("/");
 
         jLabel29.setText("/");
 
-        jTextField11.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField11.setText("2018");
-        jTextField11.setEnabled(false);
+        simulationFromYearText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        simulationFromYearText.setText("2018");
+        simulationFromYearText.setEnabled(false);
 
-        jTextField12.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField12.setText("2018");
-        jTextField12.setEnabled(false);
+        simulationToYearText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        simulationToYearText.setText("2018");
+        simulationToYearText.setEnabled(false);
 
         jLabel30.setText("at");
 
         jLabel31.setText("at");
 
-        jTextField13.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField13.setText("24");
-        jTextField13.setEnabled(false);
+        simulationFromHourText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        simulationFromHourText.setText("24");
+        simulationFromHourText.setEnabled(false);
 
         jLabel32.setText(":");
 
-        jTextField14.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField14.setText("30");
-        jTextField14.setEnabled(false);
+        simulationFromMinText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        simulationFromMinText.setText("30");
+        simulationFromMinText.setEnabled(false);
 
-        jTextField15.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField15.setText("24");
-        jTextField15.setEnabled(false);
+        simulationToHourText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        simulationToHourText.setText("24");
+        simulationToHourText.setEnabled(false);
 
         jLabel33.setText(":");
 
-        jTextField16.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField16.setText("30");
-        jTextField16.setEnabled(false);
+        simulationToMinText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        simulationToMinText.setText("30");
+        simulationToMinText.setEnabled(false);
 
         jLabel34.setText("(MM/DD/YYYY, hh:mm)");
 
-        buttonGroup_hydrograph.add(jRadioButton9);
-        jRadioButton9.setText("All links");
-        jRadioButton9.setEnabled(false);
+        buttonGroup_hydrograph.add(hydrographAllLinksRadio);
+        hydrographAllLinksRadio.setText("All links");
+        hydrographAllLinksRadio.setEnabled(false);
 
-        buttonGroup_hydrograph.add(jRadioButton10);
-        jRadioButton10.setText("No hydrograph");
-        jRadioButton10.setEnabled(false);
+        buttonGroup_hydrograph.add(hydrographNoneRadio);
+        hydrographNoneRadio.setText("No hydrograph");
+        hydrographNoneRadio.setEnabled(false);
 
-        buttonGroup_snapshot.add(jRadioButton11);
-        jRadioButton11.setText(".h5 file");
-        jRadioButton11.setEnabled(false);
+        buttonGroup_snapshot.add(snapshotH5Radio);
+        snapshotH5Radio.setText(".h5 file");
+        snapshotH5Radio.setEnabled(false);
 
-        buttonGroup_snapshot.add(jRadioButton12);
-        jRadioButton12.setSelected(true);
-        jRadioButton12.setText("No snapshot");
-        jRadioButton12.setEnabled(false);
+        buttonGroup_snapshot.add(snapshotNoneRadio);
+        snapshotNoneRadio.setSelected(true);
+        snapshotNoneRadio.setText("No snapshot");
+        snapshotNoneRadio.setEnabled(false);
 
         javax.swing.GroupLayout jPanel_globalfileLayout = new javax.swing.GroupLayout(jPanel_globalfile);
         jPanel_globalfile.setLayout(jPanel_globalfileLayout);
@@ -578,127 +618,127 @@ public class AsynchExporter extends javax.swing.JDialog {
                     .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton4)
+                        .addComponent(globalFileNoneRadio)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton8))
+                        .addComponent(globalFileCreateRadio))
                     .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                         .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel17)
                             .addComponent(jLabel16))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(simulationFromMonText, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(simulationToMonText, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                                 .addComponent(jLabel18)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(simulationFromDayText, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel28)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(simulationFromYearText, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                                 .addComponent(jLabel19)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(simulationToDayText, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel29)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField12)))
+                                .addComponent(simulationToYearText)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                                 .addComponent(jLabel30)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(simulationFromHourText, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                                 .addComponent(jLabel31)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField15)))
+                                .addComponent(simulationToHourText)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                                 .addComponent(jLabel32)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(simulationFromMinText, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                                 .addComponent(jLabel33)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField16)))
+                                .addComponent(simulationToMinText)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel34))
                     .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                         .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton5)
+                        .addComponent(hydrographOutletRadio)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton9)
+                        .addComponent(hydrographAllLinksRadio)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton10))
+                        .addComponent(hydrographNoneRadio))
                     .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                         .addComponent(jLabel21)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton6)
+                        .addComponent(snapshotRecRadio)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton11)
+                        .addComponent(snapshotH5Radio)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton12)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                        .addComponent(snapshotNoneRadio)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel_globalfileLayout.setVerticalGroup(
             jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                 .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
-                    .addComponent(jRadioButton4)
-                    .addComponent(jRadioButton8))
+                    .addComponent(globalFileNoneRadio)
+                    .addComponent(globalFileCreateRadio))
                 .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel16)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(simulationFromMonText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel18)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(simulationFromDayText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel28)
-                            .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(simulationFromYearText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel30)
-                            .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(simulationFromHourText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel32)
-                            .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(simulationFromMinText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel17)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(simulationToMonText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel19)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(simulationToDayText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel29)
-                            .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(simulationToYearText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel31)
-                            .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(simulationToHourText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel33)
-                            .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(simulationToMinText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel_globalfileLayout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addComponent(jLabel34)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel20)
-                    .addComponent(jRadioButton5)
-                    .addComponent(jRadioButton9)
-                    .addComponent(jRadioButton10))
+                    .addComponent(hydrographOutletRadio)
+                    .addComponent(hydrographAllLinksRadio)
+                    .addComponent(hydrographNoneRadio))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel_globalfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
-                    .addComponent(jRadioButton6)
-                    .addComponent(jRadioButton11)
-                    .addComponent(jRadioButton12))
+                    .addComponent(snapshotRecRadio)
+                    .addComponent(snapshotH5Radio)
+                    .addComponent(snapshotNoneRadio))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_globalfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 450, 140));
+        getContentPane().add(jPanel_globalfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 600, 140));
 
         jPanel_output.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Output", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
@@ -720,7 +760,7 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(outputDirectoryText, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                .addComponent(outputDirectoryText, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fileOutputFolder)
                 .addContainerGap())
@@ -736,7 +776,7 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGap(0, 0, 0))
         );
 
-        getContentPane().add(jPanel_output, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 470, 450, 50));
+        getContentPane().add(jPanel_output, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 470, 600, 50));
 
         cancel.setText("Cancel");
         cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -757,7 +797,8 @@ public class AsynchExporter extends javax.swing.JDialog {
         jPanel_footerLayout.setHorizontalGroup(
             jPanel_footerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_footerLayout.createSequentialGroup()
-                .addContainerGap(282, Short.MAX_VALUE)
+                .addComponent(statusText)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 460, Short.MAX_VALUE)
                 .addComponent(run)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cancel)
@@ -768,11 +809,12 @@ public class AsynchExporter extends javax.swing.JDialog {
             .addGroup(jPanel_footerLayout.createSequentialGroup()
                 .addGroup(jPanel_footerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(run)
-                    .addComponent(cancel))
+                    .addComponent(cancel)
+                    .addComponent(statusText))
                 .addGap(0, 7, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_footer, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 520, 450, 30));
+        getContentPane().add(jPanel_footer, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 520, 600, 30));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -782,24 +824,27 @@ public class AsynchExporter extends javax.swing.JDialog {
     }//GEN-LAST:event_yTextActionPerformed
 
     private void runActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runActionPerformed
-        int x, y;
-        float outletDischarge;
-        String outletDichargeTxt;
+        int x, y, files_created;
+        
+        this.statusText.setText("Creating files.");
         
         // read form
         x = Integer.parseInt(this.xText.getText());
         y = Integer.parseInt(this.yText.getText());
+        files_created = 0;
         
         // pre load DEM
         MetaRaster metaModif;
         LinksAnalysis mylinksAnalysis;
-        String file_path = this.metaDEMfolderText.getText();
-        String file_name = this.metaDEMfileText.getText();
+        String demFilePath = this.metaDEMfolderText.getText();
+        String demFileName = this.metaDEMfileText.getText();
+        String fileBaseName = this.metaDEMfileText.getText() + "_" + x + "_" + y;
+        String outputFolderPath = this.outputDirectoryText.getText();
         try{
             java.io.File theFile;
-            theFile = new java.io.File(file_path + file_name + ".metaDEM");
+            theFile = new java.io.File(demFilePath + demFileName + ".metaDEM");
             metaModif = new MetaRaster(theFile);
-            theFile = new java.io.File(file_path + file_name + ".dir");
+            theFile = new java.io.File(demFilePath + demFileName + ".dir");
             metaModif.setLocationBinaryFile(theFile);
             metaModif.setFormat("Byte");
             byte [][] matDirs = new DataRaster(metaModif).getByte();
@@ -808,60 +853,110 @@ public class AsynchExporter extends javax.swing.JDialog {
             metaModif.setFormat("Integer");
             Basin laCuenca = new Basin(x, y, matDirs, metaModif);
             mylinksAnalysis = new LinksAnalysis(metaModif, matDirs);
+            
         } catch(Exception e){
             System.out.println("Exception at 1: " + e.getMessage());
             return;
         }
         
         // write .rvr file
-        try{
-            String outputMetaFile = this.outputDirectoryText.getText();
-            outputMetaFile += File.separator + file_name + "_" + x + "_" + y + ".rvr";
-            BufferedWriter metaBuffer = new BufferedWriter(new FileWriter(outputMetaFile));
-            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
-            metaBuffer.write("\n");
-            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
-                metaBuffer.write(""+(i+1)+"\n");
-                metaBuffer.write(""+mylinksAnalysis.connectionsArray[i].length);
-                
-                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
-                    metaBuffer.write(" "+(mylinksAnalysis.connectionsArray[i][j]+1));
-                
-                metaBuffer.write("\n");
-                metaBuffer.write("\n");
-            }
-            metaBuffer.write("\n");
-            metaBuffer.close();
-        } catch(Exception e){
-            System.out.println("Exception at 2: " + e.getMessage());
-            return;
+        if(mylinksAnalysis.createAsynchFileTopology(
+                fileBaseName, outputFolderPath)){
+            files_created += 1;
         }
         
         // write .prm file
-        try{
-            float[][] lenghts = mylinksAnalysis.getVarValues(1);
-            float[][] upAreas = mylinksAnalysis.getVarValues(2);
-            float[][] hillAreas = mylinksAnalysis.getVarValues(0);
-            
-            String outputMetaFile = this.outputDirectoryText.getText();
-            outputMetaFile += File.separator + file_name + "_" + x + "_" + y + ".prm";
-            BufferedWriter metaBuffer = new BufferedWriter(new FileWriter(outputMetaFile));
-            metaBuffer.write("" + mylinksAnalysis.connectionsArray.length + "\n");
-            metaBuffer.write("\n");
-            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
-                metaBuffer.write((i+1)+"\n");
-                metaBuffer.write(upAreas[0][i]+" "+lenghts[0][i]+" "+hillAreas[0][i]+"\n");
-                metaBuffer.write("\n");
-            }
-            metaBuffer.write("\n");
-            metaBuffer.close();
-            
-        } catch(IOException e) {
-            System.out.println("Exception at 3: " + e.getMessage());
-            return;
+        if(mylinksAnalysis.createAsynchFileParameters(
+                fileBaseName, outputFolderPath)){
+            files_created += 1;
         }
         
-        LinksAnalysis.main12Args(x, y, this.metaDEMfolderText.getText(), this.metaDEMfileText.getText(), this.maskFolderText.getText(), this.descriptorText.getText(), this.outputDirectoryText.getText());
+        // write init. cond.
+        if(this.hlm254Radio.isSelected()) {
+            System.out.println("Create init. cond.");
+            float outletDischarge = Float.parseFloat(this.outletDischargeText.getText());
+            float topLayerWatColumn = Float.parseFloat(this.topLayerEqWaterColumnText.getText());
+            float k3 = Float.parseFloat(this.k3Text.getText());
+            if(mylinksAnalysis.createAsynchFileInitCond254(outletDischarge, 
+                    topLayerWatColumn, k3, fileBaseName, outputFolderPath)){
+                files_created += 1;
+            }
+            
+        } else {
+            System.out.println("Do not create init. cond.");
+        }
+        
+        // write unif. rainfall
+        if(this.rainfallFileCreateRadio.isSelected()) {
+            float rainInt = Float.parseFloat(this.rainfallIntensityText.getText());
+            int rainTimeMin = Integer.parseInt(this.rainfallMinText.getText());
+            int rainTimeMax = Integer.parseInt(this.rainfallMaxText.getText());
+            
+            if(LinksAnalysis.createAsynchFileUnifPrecip(rainInt, rainTimeMin, 
+                    rainTimeMax, fileBaseName, outputFolderPath)){
+                files_created += 1;
+            }
+        } else {
+            System.out.println("Do not create unif. rainfall.");
+        }
+        
+        // write global file
+        if(this.globalFileCreateRadio.isSelected()){
+            System.out.println("Create global file.");
+            
+            // get dates
+            int iniMon = Integer.parseInt(this.simulationFromMonText.getText());
+            int iniDay = Integer.parseInt(this.simulationFromDayText.getText());
+            int iniYar = Integer.parseInt(this.simulationFromYearText.getText());
+            int iniHor = Integer.parseInt(this.simulationFromHourText.getText());
+            int iniMin = Integer.parseInt(this.simulationFromMinText.getText());
+            int endMon = Integer.parseInt(this.simulationToMonText.getText());
+            int endDay = Integer.parseInt(this.simulationToDayText.getText());
+            int endYar = Integer.parseInt(this.simulationToYearText.getText());
+            int endHor = Integer.parseInt(this.simulationToHourText.getText());
+            int endMin = Integer.parseInt(this.simulationToMinText.getText());
+            
+            short hydroFlag, snapFlag;
+            
+            // define hyro flag
+            if(this.hydrographOutletRadio.isSelected())
+                hydroFlag = 1;
+            else if(this.hydrographAllLinksRadio.isSelected())
+                hydroFlag = 2;
+            else
+                hydroFlag = 0;
+            
+            // define snap flag
+            if(this.snapshotRecRadio.isSelected())
+                snapFlag = 1;
+            else if (this.snapshotH5Radio.isSelected())
+                snapFlag = 3;
+            else
+                snapFlag = 0;
+            
+            boolean hasRainfall = this.rainfallFileCreateRadio.isSelected();
+            
+            // tries to create global file
+            if(mylinksAnalysis.createAsynchFileGlobal254(
+                    iniMon, iniDay, iniYar, iniHor, iniMin, 
+                    endMon, endDay, endYar, endHor, endMin,
+                    hydroFlag, snapFlag, hasRainfall, fileBaseName, 
+                    outputFolderPath)){
+                files_created += 1;
+            }
+            
+            // tries to create .sav global file
+            if(mylinksAnalysis.createAsynchFileSav(hydroFlag, fileBaseName, 
+                    outputFolderPath)){
+                files_created += 1;
+            }
+            
+        } else {
+            System.out.println("Do not create global file.");
+        }
+        
+        // 
+        this.statusText.setText("Done. Created " + files_created + " files.");
     }//GEN-LAST:event_runActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
@@ -910,9 +1005,87 @@ public class AsynchExporter extends javax.swing.JDialog {
         this.outputDirectoryText.setText(fc.getSelectedFile().getPath() + File.separator);
     }//GEN-LAST:event_fileOutputFolderActionPerformed
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
+    private void hlmNoneRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hlmNoneRadioActionPerformed
+        this.outletDischargeText.setEnabled(false);
+        this.outletDischargeText.setEditable(false);
+        this.topLayerEqWaterColumnText.setEnabled(false);
+        this.topLayerEqWaterColumnText.setEditable(false);
+        this.k3Text.setEnabled(false);
+        this.k3Text.setEditable(false);
+    }//GEN-LAST:event_hlmNoneRadioActionPerformed
+
+    private void hlm254RadioStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_hlm254RadioStateChanged
+        
+    }//GEN-LAST:event_hlm254RadioStateChanged
+
+    private void hlmNoneRadioStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_hlmNoneRadioStateChanged
+        
+    }//GEN-LAST:event_hlmNoneRadioStateChanged
+
+    private void hlm254RadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hlm254RadioActionPerformed
+        this.outletDischargeText.setEnabled(true);
+        this.outletDischargeText.setEditable(true);
+        this.topLayerEqWaterColumnText.setEnabled(true);
+        this.topLayerEqWaterColumnText.setEditable(true);
+        this.k3Text.setEnabled(true);
+        this.k3Text.setEditable(true);
+    }//GEN-LAST:event_hlm254RadioActionPerformed
+
+    private void rainfallFileCreateRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rainfallFileCreateRadioActionPerformed
+        this.rainfallIntensityText.setEnabled(true);
+        this.rainfallIntensityText.setEditable(true);
+        this.rainfallMinText.setEnabled(true);
+        this.rainfallMinText.setEditable(true);
+        this.rainfallMaxText.setEnabled(true);
+        this.rainfallMaxText.setEditable(true);
+    }//GEN-LAST:event_rainfallFileCreateRadioActionPerformed
+
+    private void rainfallFileNoneRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rainfallFileNoneRadioActionPerformed
+        this.rainfallIntensityText.setEnabled(false);
+        this.rainfallIntensityText.setEditable(false);
+        this.rainfallMinText.setEnabled(false);
+        this.rainfallMinText.setEditable(false);
+        this.rainfallMaxText.setEnabled(false);
+        this.rainfallMaxText.setEditable(false);
+    }//GEN-LAST:event_rainfallFileNoneRadioActionPerformed
+
+    private void globalFileCreateRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_globalFileCreateRadioActionPerformed
+        this.simulationFromDayText.setEnabled(true);
+        this.simulationFromMonText.setEnabled(true);
+        this.simulationFromYearText.setEnabled(true);
+        this.simulationFromHourText.setEnabled(true);
+        this.simulationFromMinText.setEnabled(true);
+        this.simulationToDayText.setEnabled(true);
+        this.simulationToMonText.setEnabled(true);
+        this.simulationToYearText.setEnabled(true);
+        this.simulationToHourText.setEnabled(true);
+        this.simulationToMinText.setEnabled(true);
+        this.hydrographNoneRadio.setEnabled(true);
+        this.hydrographOutletRadio.setEnabled(true);
+        this.hydrographAllLinksRadio.setEnabled(true);
+        this.snapshotNoneRadio.setEnabled(true);
+        this.snapshotH5Radio.setEnabled(true);
+        this.snapshotRecRadio.setEnabled(true);
+    }//GEN-LAST:event_globalFileCreateRadioActionPerformed
+
+    private void globalFileNoneRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_globalFileNoneRadioActionPerformed
+        this.simulationFromDayText.setEnabled(false);
+        this.simulationFromMonText.setEnabled(false);
+        this.simulationFromYearText.setEnabled(false);
+        this.simulationFromHourText.setEnabled(false);
+        this.simulationFromMinText.setEnabled(false);
+        this.simulationToDayText.setEnabled(false);
+        this.simulationToMonText.setEnabled(false);
+        this.simulationToYearText.setEnabled(false);
+        this.simulationToHourText.setEnabled(false);
+        this.simulationToMinText.setEnabled(false);
+        this.hydrographNoneRadio.setEnabled(false);
+        this.hydrographOutletRadio.setEnabled(false);
+        this.hydrographAllLinksRadio.setEnabled(false);
+        this.snapshotNoneRadio.setEnabled(false);
+        this.snapshotH5Radio.setEnabled(false);
+        this.snapshotRecRadio.setEnabled(false);
+    }//GEN-LAST:event_globalFileNoneRadioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -968,6 +1141,13 @@ public class AsynchExporter extends javax.swing.JDialog {
     private javax.swing.JButton fileMetaDEMfile;
     private javax.swing.JButton fileMetaDEMfolder;
     private javax.swing.JButton fileOutputFolder;
+    private javax.swing.JRadioButton globalFileCreateRadio;
+    private javax.swing.JRadioButton globalFileNoneRadio;
+    private javax.swing.JRadioButton hlm254Radio;
+    private javax.swing.JRadioButton hlmNoneRadio;
+    private javax.swing.JRadioButton hydrographAllLinksRadio;
+    private javax.swing.JRadioButton hydrographNoneRadio;
+    private javax.swing.JRadioButton hydrographOutletRadio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1008,39 +1188,33 @@ public class AsynchExporter extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel_inputgeneral;
     private javax.swing.JPanel jPanel_output;
     private javax.swing.JPanel jPanel_unirain;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton10;
-    private javax.swing.JRadioButton jRadioButton11;
-    private javax.swing.JRadioButton jRadioButton12;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JRadioButton jRadioButton5;
-    private javax.swing.JRadioButton jRadioButton6;
-    private javax.swing.JRadioButton jRadioButton7;
-    private javax.swing.JRadioButton jRadioButton8;
-    private javax.swing.JRadioButton jRadioButton9;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField10;
-    private javax.swing.JTextField jTextField11;
-    private javax.swing.JTextField jTextField12;
-    private javax.swing.JTextField jTextField13;
-    private javax.swing.JTextField jTextField14;
-    private javax.swing.JTextField jTextField15;
-    private javax.swing.JTextField jTextField16;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
-    private javax.swing.JTextField jTextField9;
+    private javax.swing.JTextField k3Text;
     private javax.swing.JTextField maskFolderText;
     private javax.swing.JTextField metaDEMfileText;
     private javax.swing.JTextField metaDEMfolderText;
+    private javax.swing.JTextField outletDischargeText;
     private javax.swing.JTextField outputDirectoryText;
+    private javax.swing.JRadioButton rainfallFileCreateRadio;
+    private javax.swing.JRadioButton rainfallFileNoneRadio;
+    private javax.swing.JTextField rainfallIntensityText;
+    private javax.swing.JTextField rainfallMaxText;
+    private javax.swing.JTextField rainfallMinText;
     private javax.swing.JButton run;
+    private javax.swing.JTextField simulationFromDayText;
+    private javax.swing.JTextField simulationFromHourText;
+    private javax.swing.JTextField simulationFromMinText;
+    private javax.swing.JTextField simulationFromMonText;
+    private javax.swing.JTextField simulationFromYearText;
+    private javax.swing.JTextField simulationToDayText;
+    private javax.swing.JTextField simulationToHourText;
+    private javax.swing.JTextField simulationToMinText;
+    private javax.swing.JTextField simulationToMonText;
+    private javax.swing.JTextField simulationToYearText;
+    private javax.swing.JRadioButton snapshotH5Radio;
+    private javax.swing.JRadioButton snapshotNoneRadio;
+    private javax.swing.JRadioButton snapshotRecRadio;
+    private javax.swing.JLabel statusText;
+    private javax.swing.JTextField topLayerEqWaterColumnText;
     private javax.swing.JTextField xText;
     private javax.swing.JTextField yText;
     // End of variables declaration//GEN-END:variables

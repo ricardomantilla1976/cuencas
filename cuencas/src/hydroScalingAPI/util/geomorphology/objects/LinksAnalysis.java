@@ -26,6 +26,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package hydroScalingAPI.util.geomorphology.objects;
 
+import java.io.File;
+import javafx.scene.shape.Path;
+
 /**
  * This class manages the topologic structure of the river network of a basin.  This
  * is the most important class in CUENCAS.  It is used by the Network Analysis module
@@ -4813,200 +4816,460 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
     
     /**
      * 
-     * @param x
-     * @param y
-     * @param filePathToMetaDem
-     * @param fileNameDem
-     * @param filePathToMask
-     * @param descriptor
-     * @param MyOutputDirectory 
+     * @param fileBaseName
+     * @param outputFolderPath
+     * @return 
      */
-    public static void createAsynchFiles(int x, int y, 
-            String filePathToMetaDem, 
-            String fileNameDem, 
-            String filePathToMask, 
-            String descriptor, 
-            String MyOutputDirectory){
-
-        java.text.NumberFormat number2 = java.text.NumberFormat.getNumberInstance();
-        java.text.DecimalFormat dpoint2 = (java.text.DecimalFormat)number2;
-        dpoint2.applyPattern("0.00000000");
-
+    public boolean createAsynchFileTopology(
+            String fileBaseName,
+            String outputFolderPath){
+        
+        // define output file name
+        String outputFilePath = outputFolderPath;
+        if(!outputFilePath.endsWith(File.separator))
+            outputFilePath += File.separator;
+        outputFilePath += fileBaseName + ".rvr";
+        
         try{
-
-            java.io.File theFile=new java.io.File(filePathToMetaDem+fileNameDem+".metaDEM");
-            hydroScalingAPI.io.MetaRaster metaModif=new hydroScalingAPI.io.MetaRaster(theFile);
-            metaModif.setLocationBinaryFile(new java.io.File(filePathToMetaDem+fileNameDem+".dir"));
-
-            metaModif.setFormat("Byte");
-            byte [][] matDirs=new hydroScalingAPI.io.DataRaster(metaModif).getByte();
-
-
-            metaModif.setLocationBinaryFile(new java.io.File(theFile.getPath().substring(0,theFile.getPath().lastIndexOf("."))+".magn"));
-            metaModif.setFormat("Integer");
-            int [][] magnitudes=new hydroScalingAPI.io.DataRaster(metaModif).getInt();
-
-            hydroScalingAPI.util.geomorphology.objects.Basin laCuenca=new hydroScalingAPI.util.geomorphology.objects.Basin(x, y,matDirs,metaModif);
-
-            //LinksAnalysis mylinksAnalysis=new LinksAnalysis(laCuenca, metaModif, matDirs);
-            LinksAnalysis mylinksAnalysis=new LinksAnalysis(metaModif, matDirs);
-            System.out.println(mylinksAnalysis.nextLinkArray.length);
-
-//            String outputMetaFile=MyOutputDirectory+"/NextLink_"+fileNameDem[caseSelected]+"_Chi.txt";
-//            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
-//
-//            metaBuffer.write(mylinksAnalysis.nextLinkArray.length+"\n");
-//
-//            for (int i=0;i<mylinksAnalysis.nextLinkArray.length;i++) metaBuffer.write((i+1)+","+(mylinksAnalysis.nextLinkArray[i]+1)+"\n");
-//            
-//            metaBuffer.close();
-//            
-//            outputMetaFile=MyOutputDirectory+"/UpLink_"+fileNameDem[caseSelected]+"_Chi.txt";
-//            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
-//
-//            metaBuffer.write("Number of Links\n");
-//            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
-//            metaBuffer.write("Link-ID Num-connected-links List-of-connected-links"+"\n");
-//            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
-//                metaBuffer.write(""+(i+1)+" "+mylinksAnalysis.connectionsArray[i].length);
-//                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
-//                    metaBuffer.write(" "+(mylinksAnalysis.connectionsArray[i][j]+1));
-//                metaBuffer.write("\n");
-//            }
-//
-//            metaBuffer.close();
-            
-            
-            String outputMetaFile=MyOutputDirectory+"/"+fileNameDem+"_"+x+"_"+y+".rvr";
-            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
-
-            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
+            java.io.FileWriter fw = new java.io.FileWriter(outputFilePath);
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(fw);
+            metaBuffer.write(""+this.connectionsArray.length+"\n");
             metaBuffer.write("\n");
-            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+            for (int i=0; i<this.connectionsArray.length; i++) {
                 metaBuffer.write(""+(i+1)+"\n");
-                metaBuffer.write(""+mylinksAnalysis.connectionsArray[i].length);
+                metaBuffer.write(""+this.connectionsArray[i].length);
                 
-                for (int j=0;j<mylinksAnalysis.connectionsArray[i].length;j++)
-                    metaBuffer.write(" "+(mylinksAnalysis.connectionsArray[i][j]+1));
+                for (int j=0; j<this.connectionsArray[i].length;j++)
+                    metaBuffer.write(" "+(this.connectionsArray[i][j]+1));
                 
                 metaBuffer.write("\n");
                 metaBuffer.write("\n");
-                
             }
             metaBuffer.write("\n");
-
             metaBuffer.close();
+            fw.close();
+            return(true);
+        } catch(Exception e){
+            System.out.println("Exception on .rvr: " + e.getMessage());
+            return(false);
+        }
+    }
+    
+    /**
+     * 
+     * @param fileBaseName
+     * @param outputFolderPath
+     * @return 
+     */
+    public boolean createAsynchFileParameters(
+            String fileBaseName, String outputFolderPath){
+        
+        // define output file name
+        String outputFilePath = outputFolderPath;
+        if(!outputFilePath.endsWith(File.separator))
+            outputFilePath += File.separator;
+        outputFilePath += fileBaseName + ".prm";
+        
+        // write .prm file
+        try{
+            float[][] lenghts = this.getVarValues(1);
+            float[][] upAreas = this.getVarValues(2);
+            float[][] hillAreas = this.getVarValues(0);
             
-            float[][] lenghts=mylinksAnalysis.getVarValues(1);
-            float[][] upAreas=mylinksAnalysis.getVarValues(2);
-            float[][] hillAreas=mylinksAnalysis.getVarValues(0);
-
-            outputMetaFile=MyOutputDirectory+"/"+fileNameDem+"_"+x+"_"+y+".prm";
-            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
-
-            metaBuffer.write(""+mylinksAnalysis.connectionsArray.length+"\n");
-            metaBuffer.write("\n");
+            java.io.FileWriter fw = new java.io.FileWriter(outputFilePath);
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(fw);
             
-            for (int i=0;i<mylinksAnalysis.connectionsArray.length;i++) {
+            metaBuffer.write("" + this.connectionsArray.length + "\n");
+            metaBuffer.write("\n\n");
+            for (int i=0; i<this.connectionsArray.length; i++) {
                 metaBuffer.write((i+1)+"\n");
                 metaBuffer.write(upAreas[0][i]+" "+lenghts[0][i]+" "+hillAreas[0][i]+"\n");
                 metaBuffer.write("\n");
             }
             metaBuffer.write("\n");
-
             metaBuffer.close();
+            fw.close();
+            return(true);
             
-//            outputMetaFile=MyOutputDirectory+"/"+fileNameDem[caseSelected]+"_"+x+"_"+y+".complete";
-//            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
-//            
-//            float[][] hortonOrders=mylinksAnalysis.getVarValues(4);
-//
-//            metaBuffer.write(""+mylinksAnalysis.completeStreamLinksArray.length+"\n");
-//            metaBuffer.write("\n");
-//            
-//            for (int i=0;i<mylinksAnalysis.completeStreamLinksArray.length;i++) {
-//                metaBuffer.write(mylinksAnalysis.completeStreamLinksArray[i]+" "+(int)hortonOrders[0][mylinksAnalysis.completeStreamLinksArray[i]]+"\n");
-//            }
-//            metaBuffer.write("\n");
-//
-//            metaBuffer.close();
-
-            float[][] hortonOrders=mylinksAnalysis.getVarValues(4);
-            
-            outputMetaFile=MyOutputDirectory+"/"+fileNameDem+"_"+x+"_"+y+".lookup";//MyOutputDirectory+"/LookUpTable_"+fileNameDem[caseSelected]+"_Chi.txt";
-            metaBuffer = new java.io.BufferedWriter(new java.io.FileWriter(outputMetaFile));
-
-            
-            double resLon=metaModif.getResLon();
-            double resLat=metaModif.getResLat();
-            double minLon=metaModif.getMinLon();
-            double minLat=metaModif.getMinLat();
-            int nCol=metaModif.getNumCols();
-            int nRow=metaModif.getNumRows();
-            
-            metaBuffer.write(descriptor+"\n");
-            metaBuffer.write("Link-ID,Longitude,Latitude,HortonOrder"+"\n");
-            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++) {
-                
-                double myLat=(mylinksAnalysis.contactsArray[i]/nCol)*resLat/3600.0f+minLat;
-                double myLon=(mylinksAnalysis.contactsArray[i]%nCol)*resLon/3600.0f+minLon;
-                        
-                metaBuffer.write(""+(i+1)+","+myLon+","+myLat+","+hortonOrders[0][i]+"\n");
-            }
-
-            metaBuffer.close();
-            
-            int[][] matrizPintada=new int[metaModif.getNumRows()][metaModif.getNumCols()];
-
-            int xOulet,yOulet;
-            hydroScalingAPI.util.geomorphology.objects.HillSlope myHillActual;
-
-            int demNumCols=metaModif.getNumCols();
-
-            for (int i=0;i<mylinksAnalysis.contactsArray.length;i++){
-                if (mylinksAnalysis.magnitudeArray[i] < mylinksAnalysis.basinMagnitude){
-
-                    xOulet=mylinksAnalysis.contactsArray[i]%demNumCols;
-                    yOulet=mylinksAnalysis.contactsArray[i]/demNumCols;
-
-                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(xOulet,yOulet,matDirs,magnitudes,metaModif);
-                    int[][] xyHillSlope=myHillActual.getXYHillSlope();
-                    for (int j=0;j<xyHillSlope[0].length;j++){
-                        matrizPintada[xyHillSlope[1][j]][xyHillSlope[0][j]]=i+1;
-
-                    }
-                } else {
-                    myHillActual=new hydroScalingAPI.util.geomorphology.objects.HillSlope(x,y,matDirs,magnitudes,metaModif);
-                    int[][] xyHillSlope=myHillActual.getXYHillSlope();
-                    for (int j=0;j<xyHillSlope[0].length;j++){
-                        matrizPintada[xyHillSlope[1][j]][xyHillSlope[0][j]]=i+1;
-                    }
-                }
-            }
-
-            String fileBinSalida=filePathToMask+"/"+fileNameDem+"_BasinWatershedsFull_Level1.vhc";
-            java.io.File outputBinaryFile=new java.io.File(fileBinSalida);
-            java.io.DataOutputStream rasterBuffer = new java.io.DataOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(outputBinaryFile)));
-
-            int nRows=matrizPintada.length;
-            int nCols=matrizPintada[0].length;
-
-            for (int i=0;i<nRows;i++){
-                for (int j=0;j<nCols;j++){
-                    rasterBuffer.writeInt(matrizPintada[i][j]);
-                }
-            }
-
-            rasterBuffer.close();
-            
-            metaModif.setFormat("Integer");
-            metaModif.writeMetaRaster(new java.io.File(filePathToMask+"/"+fileNameDem+"_BasinWatershedsFull_Level1.metaVHC"));
-            
-        } catch (java.io.IOException IOE){
-            System.out.print(IOE);
-            
+        } catch(Exception e) {
+            System.out.println("Exception on .prm: " + e.getMessage());
+            return(false);
         }
+    }
+    
+    public boolean createAsynchFileSav(
+            short hydrographFlag, String fileBaseName, String outputFolderPath){
+        
+        // define output file name
+        String outputFilePath = outputFolderPath;
+        if(!outputFilePath.endsWith(File.separator))
+            outputFilePath += File.separator;
+        outputFilePath += fileBaseName + ".sav";
+        
+        java.util.ArrayList<Integer> array_list = new java.util.ArrayList<Integer>();
+        int i;
+        
+        // 
+        if(hydrographFlag == 1){
+            float[][] upAreas;
+            float outUpArea = 0;
+            int outlet_linkid = 0;
+            
+            // find outlet link's area
+            try{
+                upAreas = this.getVarValues(2);
+            } catch(java.io.IOException e) {
+                return(false);
+            }
+            
+            // finds outlet link
+            for(i=0; i < this.connectionsArray.length; i++){
+                if(upAreas[0][i] > outUpArea){
+                    outUpArea = upAreas[0][i];
+                    outlet_linkid = i+1;
+                }
+            }
+            array_list.add(outlet_linkid);
+            
+        } else if(hydrographFlag == 2){
+            // gets all links
+            for(i=0; i < this.connectionsArray.length; i++)
+                array_list.add(i+1);
+            
+        } else {
+            return(false);
+        }
+        
+        try{
+            // open file writer, write each line, close
+            java.io.File outputFile = new java.io.File(outputFilePath);
+            java.io.FileWriter fw = new java.io.FileWriter(outputFile);
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(fw);
+            for(Integer cur_link: array_list)
+                metaBuffer.write(cur_link + "\n");
+            metaBuffer.close();
+            fw.close();
+            
+            return(true);
+        }catch(Exception e){
+            return(false);
+        }
+    }
+    
+    /**
+     * 
+     * @param rainfallIntensity
+     * @param rainfallTimeMin
+     * @param rainfallTimeMax
+     * @param demFileBaseName
+     * @param outputFolderPath
+     * @return 
+     */
+    public static boolean createAsynchFileUnifPrecip(
+            float rainfallIntensity,
+            int rainfallTimeMin,
+            int rainfallTimeMax,
+            String fileBaseName,
+            String outputFolderPath){
 
+        // define output file name
+        String outputFilePath = outputFolderPath;
+        if(!outputFilePath.endsWith(File.separator))
+            outputFilePath += File.separator;
+        outputFilePath += fileBaseName + ".ustr";
+
+        // write file
+        try{
+            // open file writer
+            java.io.File outputFile = new java.io.File(outputFilePath);
+            java.io.FileWriter fw = new java.io.FileWriter(outputFile);
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(fw);
+            
+            // write file
+            if(rainfallTimeMin <= 0){
+                metaBuffer.write("2\n");
+                metaBuffer.write("0 "+ rainfallIntensity +"\n");
+                metaBuffer.write(rainfallTimeMax + " 0.0");
+            } else {
+                metaBuffer.write("3\n");
+                metaBuffer.write("0 0.0\n");
+                metaBuffer.write(rainfallTimeMin + " " + rainfallIntensity + "\n");
+                metaBuffer.write(rainfallTimeMax + " 0.0\n");
+            }
+            
+            // close file writer
+            metaBuffer.close();
+            fw.close();
+            
+            return(true);
+        } catch(java.io.IOException e) {
+            System.out.println("Exception on unif. precip. file:" + e.getMessage());
+            return(false);
+        }
+    }
+    
+    /**
+     * 
+     * @param outletDisch
+     * @param topLayerWaterColumn
+     * @param k3
+     * @param fileBaseName
+     * @param outputFolderPath
+     * @return 
+     */
+    public boolean createAsynchFileInitCond254(
+            float outletDisch,
+            float topLayerWaterColumn,
+            float k3,
+            String fileBaseName,
+            String outputFolderPath){
+        
+        int i;
+        float[][] upAreas;
+        float cur_d, cur_ssewa;
+        
+        // find outlet link's area
+        try{
+            upAreas = this.getVarValues(2);
+        } catch(java.io.IOException e) {
+            return(false);
+        }
+        float outUpArea = 0;
+        for(i=0; i < this.connectionsArray.length; i++)
+            outUpArea = (upAreas[0][i] > outUpArea ? upAreas[0][i] : outUpArea);
+        
+        // calculate disch./area coef.
+        float coef = outletDisch / outUpArea;
+        
+        // define output file name
+        String outputFilePath = outputFolderPath;
+        if(!outputFilePath.endsWith(File.separator))
+            outputFilePath += File.separator;
+        outputFilePath += fileBaseName + ".rec";
+        
+        // write file
+        try{
+            // open file writer
+            java.io.File outputFile = new java.io.File(outputFilePath);
+            java.io.FileWriter fw = new java.io.FileWriter(outputFile);
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(fw);
+        
+            // 
+            metaBuffer.write("254\n");
+            metaBuffer.write(this.connectionsArray.length + "\n");
+            metaBuffer.write("0.0\n\n");
+            for(i=0; i < this.connectionsArray.length; i++){
+                cur_d = coef * upAreas[0][i];
+                cur_ssewa = cur_d * k3;  // TODO - double check this definition
+                metaBuffer.write((i+1) + "\n");
+                metaBuffer.write(cur_d + " 0.0 " + topLayerWaterColumn + " " + cur_ssewa + " 0.0 0.0 " + cur_d + "\n");
+                metaBuffer.write("\n");
+            }
+            
+            // close file writer
+            metaBuffer.close();
+            fw.close();
+                
+        } catch(java.io.IOException e) {
+            System.out.println("Exception on init. cond. file:" + e.getMessage());
+            return(false);
+        }
+        
+        return(true);
+    }
+    
+    /**
+     * 
+     * @param iniMon
+     * @param iniDay
+     * @param iniYar
+     * @param iniHor
+     * @param iniMin
+     * @param endMon
+     * @param endDay
+     * @param endYar
+     * @param endHor
+     * @param endMin
+     * @param hydrographFlag
+     * @param snapshotFlag
+     * @param has_rainfall
+     * @param fileBaseName
+     * @param outputFolderPath
+     * @return 
+     */
+    public boolean createAsynchFileGlobal254(
+            int iniMon, int iniDay, int iniYar, int iniHor, int iniMin,
+            int endMon, int endDay, int endYar, int endHor, int endMin,
+            short hydrographFlag, short snapshotFlag, boolean has_rainfall,
+            String fileBaseName, String outputFolderPath){
+        
+        // define output file name
+        String outputFilePath = outputFolderPath;
+        if(!outputFilePath.endsWith(File.separator))
+            outputFilePath += File.separator;
+        outputFilePath += fileBaseName + ".gbl";
+
+        // write file
+        try{
+            // open file writer
+            java.io.File outputFile = new java.io.File(outputFilePath);
+            java.io.FileWriter fw = new java.io.FileWriter(outputFile);
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(fw);
+            
+            // 
+            metaBuffer.write("%Model UID\n");
+            metaBuffer.write("254\n\n");
+            
+            String iYar = String.format("%04d", iniYar);
+            String iMon = String.format("%02d", iniMon % 13);
+            String iDay = String.format("%02d", iniDay % 32);
+            String iHor = String.format("%02d", iniHor % 24);
+            String iMin = String.format("%02d", iniMin % 60);
+            String eYar = String.format("%04d", endYar);
+            String eMon = String.format("%02d", endMon % 13);
+            String eDay = String.format("%02d", endDay % 32);
+            String eHor = String.format("%02d", endHor % 24);
+            String eMin = String.format("%02d", endMin % 60);
+            
+            // 
+            metaBuffer.write("%Begin/end date time\n");
+            metaBuffer.write(iYar+"-"+iMon+"-"+iDay+" "+iHor+":"+iMin+"\n");
+            metaBuffer.write(eYar+"-"+eMon+"-"+eDay+" "+eHor+":"+eMin+"\n");
+            metaBuffer.write("\n");
+            
+            metaBuffer.write("0  %Parameters to filenames\n\n");
+            
+            // 
+            metaBuffer.write("%Components to print\n");
+            if((hydrographFlag == 1) || (hydrographFlag == 2)){
+                metaBuffer.write("3\n");
+                metaBuffer.write("Time\n");
+                metaBuffer.write("LinkID\n");
+                metaBuffer.write("State0\n\n");
+            } else {
+                metaBuffer.write("0\n\n");
+            }
+            
+            // 
+            metaBuffer.write("%Peakflow function\n");
+            metaBuffer.write("Classic\n\n");
+            
+            // 
+            metaBuffer.write("%Global parameters\n");
+            metaBuffer.write("%12 v_0 lambda_1 lambda_2 v_h k_3 k_I_factor h_b S_L A B exponent v_B\n");
+            metaBuffer.write("12 0.33 0.20 -0.1 0.02 2.0425e-6 0.02 0.5 0.10 0.0 99.0 3.0 0.75\n\n");
+            
+            // 
+            metaBuffer.write("%No. steps stored at each link and\n");
+            metaBuffer.write("30 10 10\n\n");
+            
+            // 
+            metaBuffer.write("%Topology (0 = .rvr, 1 = database)\n");
+            metaBuffer.write("0 "+ fileBaseName +".rvr\n\n");
+            
+            // 
+            metaBuffer.write("%DEM Parameters (0 = .prm, 1 = database)\n");
+            metaBuffer.write("0 "+ fileBaseName +".prm\n\n");
+            
+            // 
+            metaBuffer.write("%Initial state (0 = .ini, 1 = .uini, 2 = .rec, 3 = .dbc)\n");
+            metaBuffer.write("2 "+ fileBaseName +".rec\n\n");
+            
+            // 
+            metaBuffer.write("%Forcings (0 = none, 1 = .str, 2 = binary, 3 = database, 4 = .ustr, 5 = forecasting, 6 = .gz binary, 7 = recurring)\n");
+            metaBuffer.write("3\n\n");
+            
+            // 
+            metaBuffer.write("%Rain\n");
+            if(has_rainfall){
+                metaBuffer.write("4 " + fileBaseName + ".ustr\n\n");
+            } else {
+                metaBuffer.write("0\n\n");
+            }
+            
+            // 
+            metaBuffer.write("%Evaporation\n");
+            metaBuffer.write("0\n\n");
+            
+            // 
+            metaBuffer.write("%Reservoirs\n");
+            metaBuffer.write("0\n\n");
+            
+            // 
+            metaBuffer.write("%Dam (0 = no dam, 1 = .dam, 2 = .qvs)\n");
+            metaBuffer.write("0\n\n");
+
+            // 
+            metaBuffer.write("%Reservoir ids (0 = no reservoirs, 1 = .rsv, 2 = .dbc file)\n");
+            metaBuffer.write("0\n\n");
+            
+            // 
+            metaBuffer.write("%Where to put write hydrographs\n");
+            metaBuffer.write("%(0 = no output, 1 = .dat file, 2 = .csv file, 3 = database, 5 = .h5 packet, 6 = .h5 array)\n");
+            if((hydrographFlag == 1) || (hydrographFlag == 2)){
+                metaBuffer.write("2 10.0 "+fileBaseName+"_output.csv\n\n");
+            } else {
+                metaBuffer.write("0\n\n");
+            }
+
+            // 
+            metaBuffer.write("%Where to put peakflow data\n");
+            metaBuffer.write("%(0 = no output, 1 = .pea file, 2 = database)\n");
+            metaBuffer.write("0\n\n");
+            
+            // 
+            metaBuffer.write("%.sav files for hydrographs and peak file\n");
+            if((hydrographFlag == 1) || (hydrographFlag == 2)){
+                metaBuffer.write("1 "+fileBaseName+".sav\n");
+            } else {
+                metaBuffer.write("0\n");
+            }
+            metaBuffer.write("0\n\n");
+            
+            // 
+            metaBuffer.write("%Snapshot information (0 = none, 1 = to .rec file, 2 = to database, 3 = to .h5 file, 4 = to recurrent .h5 file)\n");
+            if(snapshotFlag == 1){
+                metaBuffer.write("1 "+fileBaseName+"_output.rec\n\n");
+            } else if(snapshotFlag == 3){
+                metaBuffer.write("3 "+fileBaseName+"_output.h5\n\n");
+            } else {
+                metaBuffer.write("0\n\n");
+            }
+            
+            // 
+            metaBuffer.write("%Filename for scratch work\n");
+            metaBuffer.write("tmp\n\n");
+            
+            metaBuffer.write("%Numerical solver settings follow\n\n");
+            
+            metaBuffer.write("%facmin, facmax, fac\n");
+            metaBuffer.write(".1 10.0 .9\n\n");
+            
+            metaBuffer.write("%Solver flag (0 = data below, 1 = .rkd)\n");
+            metaBuffer.write("0\n");
+            
+            metaBuffer.write("%Numerical solver index (0-3 explicit, 4 implicit)\n");
+            metaBuffer.write("2\n");
+            
+            metaBuffer.write("%Error tolerances (abs, rel, abs dense, rel dense)\n");
+            metaBuffer.write("1e-4 1e-4 1e-4 1e-4 1e-4 1e-4 1e-4\n");
+            metaBuffer.write("1e-6 1e-6 1e-6 1e-6 1e-4 1e-4 1e-4\n");
+            metaBuffer.write("1e-4 1e-4 1e-4 1e-4 1e-4 1e-4 1e-4\n");
+            metaBuffer.write("1e-6 1e-6 1e-6 1e-6 1e-4 1e-4 1e-4\n");
+            
+            metaBuffer.write("# %End of file\n");
+            metaBuffer.write("-------------------------------\n");
+            
+            // close file writer
+            metaBuffer.close();
+            fw.close();
+            
+            return(true);
+            
+        } catch(java.io.IOException e) {
+            System.out.println("Exception on gbl file:" + e.getMessage());
+            return(false);
+        }
     }
     
     /**
