@@ -4897,6 +4897,13 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
         }
     }
     
+    /**
+     * 
+     * @param hydrographFlag
+     * @param fileBaseName
+     * @param outputFolderPath
+     * @return 
+     */
     public boolean createAsynchFileSav(
             short hydrographFlag, String fileBaseName, String outputFolderPath){
         
@@ -4955,6 +4962,57 @@ System.out.println("x" + x +"y" + y + "dem" + metaModif.toString());
             return(false);
         }
     }
+    
+    
+    public boolean createAsynchFileLookupTable(
+            hydroScalingAPI.io.MetaRaster metaRaster,
+            String fileBaseName, String outputFolderPath){
+        
+        double myLat, myLon;
+        int i;
+        
+        // get basic information
+        double resLon = metaRaster.getResLon();
+        double resLat = metaRaster.getResLat();
+        double minLon = metaRaster.getMinLon();
+        double minLat = metaRaster.getMinLat();
+        int nCol = metaRaster.getNumCols();
+        
+        // define output file name
+        String outputFilePath = outputFolderPath;
+        if(!outputFilePath.endsWith(File.separator))
+            outputFilePath += File.separator;
+        outputFilePath += fileBaseName + ".hillslopes";
+        
+        try{
+            // open file writer
+            java.io.File outputFile = new java.io.File(outputFilePath);
+            java.io.FileWriter fw = new java.io.FileWriter(outputFile);
+            java.io.BufferedWriter metaBuffer = new java.io.BufferedWriter(fw);
+            
+            // write header
+            metaBuffer.write("Hillslopes coordinates" + "\n");
+            metaBuffer.write("Link-ID,Longitude,Latitude" + "\n");
+            
+            // write each line
+            for (i=0; i < this.connectionsArray.length; i++) {
+                myLat=(this.contactsArray[i]/nCol)*resLat/3600.0f+minLat;
+                myLon=(this.contactsArray[i]%nCol)*resLon/3600.0f+minLon;
+                metaBuffer.write(""+(i+1)+","+myLon+","+myLat+"\n");
+            }
+            
+            // %localMetaRaster.getNumCols()+","+contactsArray[i]/localMetaRaster.getNumCols()
+            
+            // close file writer
+            metaBuffer.close();
+            fw.close();
+        }catch(Exception e){
+            return(false);
+        }
+        
+        return(true);
+    }
+    
     
     /**
      * 

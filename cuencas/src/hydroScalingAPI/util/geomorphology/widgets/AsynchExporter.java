@@ -67,6 +67,7 @@ public class AsynchExporter extends javax.swing.JDialog {
         buttonGroup_globalfile = new javax.swing.ButtonGroup();
         buttonGroup_hydrograph = new javax.swing.ButtonGroup();
         buttonGroup_snapshot = new javax.swing.ButtonGroup();
+        buttonGroup_lookuptable = new javax.swing.ButtonGroup();
         jPanel_inputgeneral = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         xText = new javax.swing.JTextField();
@@ -149,6 +150,10 @@ public class AsynchExporter extends javax.swing.JDialog {
         cancel = new javax.swing.JButton();
         run = new javax.swing.JButton();
         statusText = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel35 = new javax.swing.JLabel();
+        lookupCreate = new javax.swing.JRadioButton();
+        lookupDoNotCreate = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -776,7 +781,7 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGap(0, 0, 0))
         );
 
-        getContentPane().add(jPanel_output, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 470, 600, 50));
+        getContentPane().add(jPanel_output, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 520, 600, 50));
 
         cancel.setText("Cancel");
         cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -811,10 +816,46 @@ public class AsynchExporter extends javax.swing.JDialog {
                     .addComponent(run)
                     .addComponent(cancel)
                     .addComponent(statusText))
-                .addGap(0, 7, Short.MAX_VALUE))
+                .addGap(0, 1, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_footer, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 520, 600, 30));
+        getContentPane().add(jPanel_footer, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 570, 600, 30));
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Lookup table", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
+
+        jLabel35.setText("Look-up table:");
+
+        buttonGroup_lookuptable.add(lookupCreate);
+        lookupCreate.setSelected(true);
+        lookupCreate.setText("Create");
+
+        buttonGroup_lookuptable.add(lookupDoNotCreate);
+        lookupDoNotCreate.setText("Do not create");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel35)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lookupCreate)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lookupDoNotCreate)
+                .addContainerGap(263, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel35)
+                    .addComponent(lookupCreate)
+                    .addComponent(lookupDoNotCreate))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 470, 600, 50));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -832,14 +873,21 @@ public class AsynchExporter extends javax.swing.JDialog {
         x = Integer.parseInt(this.xText.getText());
         y = Integer.parseInt(this.yText.getText());
         files_created = 0;
-        
-        // pre load DEM
-        MetaRaster metaModif;
-        LinksAnalysis mylinksAnalysis;
         String demFilePath = this.metaDEMfolderText.getText();
         String demFileName = this.metaDEMfileText.getText();
         String fileBaseName = this.metaDEMfileText.getText() + "_" + x + "_" + y;
         String outputFolderPath = this.outputDirectoryText.getText();
+        
+        // basic check output folder
+        if(outputFolderPath.trim().equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(null, "Missing output folder path.");
+            this.statusText.setText("Failed.");
+            return;
+        }
+        
+        // pre load DEM
+        MetaRaster metaModif;
+        LinksAnalysis mylinksAnalysis;       
         try{
             java.io.File theFile;
             theFile = new java.io.File(demFilePath + demFileName + ".metaDEM");
@@ -852,7 +900,7 @@ public class AsynchExporter extends javax.swing.JDialog {
             metaModif.setLocationBinaryFile(theFile);
             metaModif.setFormat("Integer");
             Basin laCuenca = new Basin(x, y, matDirs, metaModif);
-            mylinksAnalysis = new LinksAnalysis(metaModif, matDirs);
+            mylinksAnalysis = new LinksAnalysis(laCuenca, metaModif, matDirs);
             
         } catch(Exception e){
             System.out.println("Exception at 1: " + e.getMessage());
@@ -953,6 +1001,14 @@ public class AsynchExporter extends javax.swing.JDialog {
             
         } else {
             System.out.println("Do not create global file.");
+        }
+        
+        // write lookup file
+        if(this.lookupCreate.isSelected()){
+            if(mylinksAnalysis.createAsynchFileLookupTable(metaModif, 
+                    fileBaseName, outputFolderPath)){
+                files_created += 1;
+            }
         }
         
         // 
@@ -1133,6 +1189,7 @@ public class AsynchExporter extends javax.swing.JDialog {
     private javax.swing.ButtonGroup buttonGroup_globalfile;
     private javax.swing.ButtonGroup buttonGroup_hydrograph;
     private javax.swing.ButtonGroup buttonGroup_initcond;
+    private javax.swing.ButtonGroup buttonGroup_lookuptable;
     private javax.swing.ButtonGroup buttonGroup_snapshot;
     private javax.swing.ButtonGroup buttonGroup_unifrainfall;
     private javax.swing.JButton cancel;
@@ -1176,12 +1233,14 @@ public class AsynchExporter extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel_footer;
     private javax.swing.JPanel jPanel_globalfile;
     private javax.swing.JPanel jPanel_initcond;
@@ -1189,6 +1248,8 @@ public class AsynchExporter extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel_output;
     private javax.swing.JPanel jPanel_unirain;
     private javax.swing.JTextField k3Text;
+    private javax.swing.JRadioButton lookupCreate;
+    private javax.swing.JRadioButton lookupDoNotCreate;
     private javax.swing.JTextField maskFolderText;
     private javax.swing.JTextField metaDEMfileText;
     private javax.swing.JTextField metaDEMfolderText;
