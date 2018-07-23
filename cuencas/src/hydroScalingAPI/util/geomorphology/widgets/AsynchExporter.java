@@ -156,7 +156,11 @@ public class AsynchExporter extends javax.swing.JDialog {
         lookupDoNotCreate = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        setMinimumSize(new java.awt.Dimension(610, 640));
+        setPreferredSize(new java.awt.Dimension(610, 640));
+        setResizable(false);
+        setSize(new java.awt.Dimension(610, 640));
+        getContentPane().setLayout(null);
 
         jPanel_inputgeneral.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Input - General", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
         jPanel_inputgeneral.setMaximumSize(new java.awt.Dimension(32767, 20000));
@@ -287,7 +291,8 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_inputgeneral, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 600, 160));
+        getContentPane().add(jPanel_inputgeneral);
+        jPanel_inputgeneral.setBounds(0, 0, 600, 160);
 
         jPanel_initcond.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Initial Condition - Optional", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
@@ -369,7 +374,7 @@ public class AsynchExporter extends javax.swing.JDialog {
                                 .addComponent(outletDischargeText, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(4, 4, 4)
                                 .addComponent(jLabel11)))
-                        .addGap(0, 59, Short.MAX_VALUE))
+                        .addGap(0, 210, Short.MAX_VALUE))
                     .addGroup(jPanel_initcondLayout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addGap(6, 6, 6)
@@ -407,7 +412,8 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_initcond, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 600, 100));
+        getContentPane().add(jPanel_initcond);
+        jPanel_initcond.setBounds(0, 160, 600, 100);
 
         jPanel_unirain.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Uniform Rainfall - Optional", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
@@ -477,7 +483,7 @@ public class AsynchExporter extends javax.swing.JDialog {
                         .addComponent(rainfallMaxText, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel27)))
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addContainerGap(224, Short.MAX_VALUE))
         );
         jPanel_unirainLayout.setVerticalGroup(
             jPanel_unirainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -498,7 +504,8 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_unirain, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 600, 70));
+        getContentPane().add(jPanel_unirain);
+        jPanel_unirain.setBounds(0, 260, 600, 70);
 
         jPanel_globalfile.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Global File - Optional", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
@@ -743,7 +750,8 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_globalfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 600, 140));
+        getContentPane().add(jPanel_globalfile);
+        jPanel_globalfile.setBounds(0, 330, 600, 140);
 
         jPanel_output.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Output", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
@@ -781,7 +789,8 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGap(0, 0, 0))
         );
 
-        getContentPane().add(jPanel_output, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 520, 600, 50));
+        getContentPane().add(jPanel_output);
+        jPanel_output.setBounds(0, 520, 600, 50);
 
         cancel.setText("Cancel");
         cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -819,7 +828,8 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGap(0, 1, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel_footer, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 570, 600, 30));
+        getContentPane().add(jPanel_footer);
+        jPanel_footer.setBounds(0, 570, 600, 30);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Lookup table", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
@@ -855,7 +865,8 @@ public class AsynchExporter extends javax.swing.JDialog {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 470, 600, 50));
+        getContentPane().add(jPanel1);
+        jPanel1.setBounds(0, 470, 600, 50);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
